@@ -5,28 +5,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Lavash Admin — Вхід / Реєстрація</title>
 
-  <link rel="icon" type="image/png" href="./assets/favicon.png?v=21" />
-  <link rel="stylesheet" href="./auth.css?v=21" />
+  <link rel="icon" type="image/png" href="./assets/favicon.png?v=31" />
+  <link rel="stylesheet" href="./auth.css?v=31" />
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="./config.js?v=21"></script>
-  <script defer src="./auth.js?v=21"></script>
+  <script src="./config.js?v=31"></script>
+  <script defer src="./auth.js?v=31"></script>
 </head>
 <body>
   <main class="auth-page">
     <section class="auth-shell">
-      <div class="auth-card">
+      <div id="authCard" class="auth-card">
         <div class="auth-card-glow"></div>
 
-        <div class="auth-brand-zone">
+        <!-- BRAND BLOCK: НЕ ЧІПАЄМО -->
+        <div id="authBrandZone" class="auth-brand-zone">
           <div class="auth-logo-wrap">
-            <img src="./assets/logo-lavash.svg?v=21" alt="Lavash" class="auth-logo" />
+            <img src="./assets/logo-lavash.svg?v=31" alt="Lavash" class="auth-logo" />
           </div>
 
           <h1 class="auth-brand">Lavash</h1>
-          <div id="authSubtitle" class="auth-subtitle">Безпечний доступ до системи</div>
+          <div id="authSubtitle" class="auth-subtitle hidden"></div>
 
           <button id="authSignOutBtn" class="auth-signout hidden" type="button">Вийти</button>
+        </div>
+
+        <!-- ENROLL HERO: показується ЗАМІСТЬ бренд-блоку -->
+        <div id="authEnrollHero" class="auth-enroll-hero hidden">
+          <div class="auth-enroll-hero-qr-wrap">
+            <div id="mfaQrMountHero" class="auth-enroll-hero-qr"></div>
+          </div>
         </div>
 
         <div id="authTabs" class="auth-tabs">
@@ -142,32 +150,25 @@
         </section>
 
         <section id="authViewEnroll" class="auth-view hidden">
-          <div class="auth-panel-head">
-            <h2 class="auth-panel-title">Підключення двофакторної автентифікації</h2>
-            <p class="auth-panel-text">
-              Скануй QR-код у Google Authenticator або Microsoft Authenticator, потім введи 6-значний код.
+          <div class="auth-panel-head centered auth-panel-head-compact">
+            <h2 class="auth-panel-title auth-panel-title-enroll">Підключення двофакторної автентифікації</h2>
+            <p class="auth-panel-text auth-panel-text-enroll">
+              Скануй QR або введи ключ вручну.
             </p>
           </div>
 
-          <div class="auth-mfa-grid">
-            <div class="auth-qr-card">
-              <div id="mfaQrMount"></div>
-            </div>
-
-            <div class="auth-secret-card">
+          <div class="auth-enroll-secret-wrap">
+            <div class="auth-secret-card auth-secret-card-center">
               <div class="auth-secret-label">Секретний ключ</div>
               <div id="mfaSecretText" class="auth-secret-value"></div>
-              <div class="auth-secret-note">
-                Якщо QR не відкривається — додай ключ вручну у свій застосунок автентифікації.
-              </div>
             </div>
           </div>
 
-          <form id="mfaEnrollForm" class="auth-form" autocomplete="off">
-            <div class="otp-section">
+          <form id="mfaEnrollForm" class="auth-form auth-form-enroll" autocomplete="off">
+            <div class="otp-section otp-section-enroll">
               <div class="otp-label">Код підтвердження</div>
 
-              <div id="mfaEnrollOtp" class="otp-inputs" data-otp-group="enroll">
+              <div id="mfaEnrollOtp" class="otp-inputs otp-inputs-enroll" data-otp-group="enroll">
                 <input class="otp-input" type="text" inputmode="numeric" maxlength="1" autocomplete="one-time-code" />
                 <input class="otp-input" type="text" inputmode="numeric" maxlength="1" />
                 <input class="otp-input" type="text" inputmode="numeric" maxlength="1" />
@@ -179,9 +180,9 @@
               <input id="mfaEnrollCodeInput" type="hidden" />
             </div>
 
-            <div class="auth-action-row">
+            <div class="auth-action-row auth-action-row-symmetric">
               <button id="enrollBackBtn" class="auth-secondary-btn" type="button">Назад</button>
-              <button class="auth-submit" type="submit">Підтвердити 2FA</button>
+              <button class="auth-submit" type="submit">Підтвердити і завершити</button>
             </div>
           </form>
         </section>
@@ -196,7 +197,7 @@
 
           <form id="mfaVerifyForm" class="auth-form" autocomplete="off">
             <div class="otp-section centered">
-              <div id="mfaVerifyOtp" class="otp-inputs" data-otp-group="verify">
+              <div id="mfaVerifyOtp" class="otp-inputs otp-inputs-verify" data-otp-group="verify">
                 <input class="otp-input" type="text" inputmode="numeric" maxlength="1" autocomplete="one-time-code" />
                 <input class="otp-input" type="text" inputmode="numeric" maxlength="1" />
                 <input class="otp-input" type="text" inputmode="numeric" maxlength="1" />
@@ -208,7 +209,7 @@
               <input id="mfaVerifyCodeInput" type="hidden" />
             </div>
 
-            <div class="auth-action-row">
+            <div class="auth-action-row auth-action-row-symmetric">
               <button id="verifyBackBtn" class="auth-secondary-btn" type="button">Назад</button>
               <button class="auth-submit" type="submit">Підтвердити</button>
             </div>
