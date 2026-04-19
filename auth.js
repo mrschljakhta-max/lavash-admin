@@ -65,14 +65,34 @@ function setBrandMode(mode) {
   const brand = el('authBrandZone');
   const enrollHero = el('authEnrollHero');
   const card = el('authCard');
-
-  if (!brand || !enrollHero || !card) return;
+  const tabs = el('authTabs');
+  const signOutBtn = el('authSignOutBtn');
 
   const isEnroll = mode === 'enroll';
 
-  brand.classList.toggle('hidden', isEnroll);
-  enrollHero.classList.toggle('hidden', !isEnroll);
-  card.classList.toggle('enroll-mode', isEnroll);
+  if (brand) {
+    brand.style.display = isEnroll ? 'none' : '';
+    brand.classList.toggle('hidden', isEnroll);
+  }
+
+  if (enrollHero) {
+    enrollHero.style.display = isEnroll ? 'grid' : 'none';
+    enrollHero.classList.toggle('hidden', !isEnroll);
+  }
+
+  if (tabs) {
+    tabs.style.display = isEnroll ? 'none' : '';
+    tabs.classList.toggle('hidden', isEnroll);
+  }
+
+  if (signOutBtn) {
+    signOutBtn.style.display = isEnroll ? 'none' : '';
+    signOutBtn.classList.toggle('hidden', isEnroll);
+  }
+
+  if (card) {
+    card.classList.toggle('enroll-mode', isEnroll);
+  }
 }
 
 function activateTab(mode) {
@@ -90,10 +110,6 @@ function activateTab(mode) {
   setBrandMode('default');
   setSubtitle('');
   setStatus(isLogin ? 'Введи email і пароль' : 'Заповни дані для реєстрації');
-}
-
-function hideTabs() {
-  el('authTabs')?.classList.add('hidden');
 }
 
 function togglePasswordVisibility(targetId, btn) {
@@ -353,12 +369,15 @@ async function getMfaState() {
 
 function renderQrCode(qrValue, mountId = 'mfaQrMountHero') {
   const mount = el(mountId);
-  if (!mount) return;
+  if (!mount) {
+    console.error('QR mount not found:', mountId);
+    return;
+  }
 
   mount.innerHTML = '';
 
   if (!qrValue) {
-    mount.textContent = 'QR недоступний';
+    mount.innerHTML = '<div style="color:#fff">QR недоступний</div>';
     return;
   }
 
@@ -372,10 +391,20 @@ function renderQrCode(qrValue, mountId = 'mfaQrMountHero') {
   }
 
   if (qrValue.trim().startsWith('<svg')) {
-    mount.innerHTML = qrValue;
-    const svg = mount.querySelector('svg');
-    if (svg) svg.classList.add('auth-qr-svg');
-    return;
+    const wrapper = document.createElement('div');
+    wrapper.innerHTML = qrValue;
+    const svg = wrapper.querySelector('svg');
+    if (svg) {
+      svg.classList.add('auth-qr-svg');
+      svg.style.display = 'block';
+      svg.style.width = '220px';
+      svg.style.height = '220px';
+      svg.style.background = '#fff';
+      svg.style.borderRadius = '16px';
+      svg.style.padding = '10px';
+      mount.appendChild(svg);
+      return;
+    }
   }
 
   const img = document.createElement('img');
@@ -387,10 +416,9 @@ function renderQrCode(qrValue, mountId = 'mfaQrMountHero') {
 
 async function startMfaEnroll() {
   try {
-    hideTabs();
     setBrandMode('enroll');
     showView('authViewEnroll');
-    el('authSignOutBtn')?.classList.remove('hidden');
+    el('authSignOutBtn')?.classList.add('hidden');
     setSubtitle('');
     setStatus('Створюємо QR-код…');
 
@@ -399,11 +427,18 @@ async function startMfaEnroll() {
     const { data, error } = await authSb.auth.mfa.enroll({ factorType: 'totp' });
     if (error) throw error;
 
-    currentEnrollFactor = data;
-    renderQrCode(data?.totp?.qr_code || '', 'mfaQrMountHero');
-    if (el('mfaSecretText')) el('mfaSecretText').textContent = data?.totp?.secret || '';
+    console.log('MFA enroll data:', data);
+    console.log('QR code payload:', data?.totp?.qr_code);
 
-    setStatus('Скануй QR і введи 6-значний код', 'ok');
+    currentEnrollFactor = data;
+
+    renderQrCode(data?.totp?.qr_code || '', 'mfaQrMountHero');
+
+    if (el('mfaSecretText')) {
+      el('mfaSecretText').textContent = data?.totp?.secret || '';
+    }
+
+    setStatus('Скануй QR-код і введи 6-значний код', 'ok');
     setTimeout(() => focusFirstOtp('mfaEnrollOtp'), 40);
   } catch (err) {
     console.error('startMfaEnroll failed:', err);
@@ -457,7 +492,6 @@ async function finishMfaEnroll(event) {
 
 async function openVerifyMfaView(factorId) {
   pendingLoginFactorId = factorId;
-  hideTabs();
   setBrandMode('default');
   showView('authViewVerify');
   el('authSignOutBtn')?.classList.remove('hidden');
@@ -633,7 +667,6 @@ async function handleRegisterSubmit(event) {
 }
 
 async function handleBlocked(user) {
-  hideTabs();
   setBrandMode('default');
   showView('authViewBlocked');
   el('authSignOutBtn')?.classList.remove('hidden');
@@ -658,8 +691,6 @@ async function handlePostAuthLanding() {
     }
 
     const { aal, factors } = await getMfaState();
-
-    el('authSignOutBtn')?.classList.remove('hidden');
 
     if (!factors.length) {
       await startMfaEnroll();
