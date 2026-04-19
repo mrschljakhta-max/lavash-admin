@@ -282,78 +282,20 @@ function bindFilterControls() {
   $('#refreshBtn')?.addEventListener('click', loadPendingRows);
 }
 
-function bindLogout() {
-  $('#logoutBtn')?.addEventListener('click', async () => {
-    try {
-      if (window.LAVASH_AUTH?.logout) {
-        await window.LAVASH_AUTH.logout();
-        return;
-      }
+function buildPendingContent() {
+  return `
+    <section class="records-panel" aria-label="Список записів">
+      <div class="records-panel__body" id="pendingGroups">
+        <div class="placeholder-card">Завантаження записів...</div>
+      </div>
+    </section>
 
-      window.location.href = '/lavash-admin/pages/index.html';
-    } catch (error) {
-      console.error('logout click error:', error);
-      window.location.href = '/lavash-admin/pages/index.html';
-    }
-  });
-}
-
-function bindLeftNavRoutes() {
-  const routeMap = {
-    editor: '/lavash-admin/pages/pending_v3.html',
-    upload: '/lavash-admin/pages/upload.html',
-    dicts: '/lavash-admin/pages/dicts.html',
-    logs: '/lavash-admin/pages/logs.html'
-  };
-
-  $all('.nav-item').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const route = btn.dataset.route;
-      const href = routeMap[route];
-
-      if (!href) return;
-      if (window.location.pathname === new URL(href, window.location.origin).pathname) return;
-
-      window.location.href = href;
-    });
-  });
-}
-
-function bindRightToolButtons() {
-  $all('.tool-item').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const tool = btn.dataset.tool;
-
-      if (tool === 'search') {
-        $('#searchInput')?.focus();
-        return;
-      }
-
-      if (tool === 'filters') {
-        $('#statusFilter')?.focus();
-        return;
-      }
-
-      if (tool === 'refresh') {
-        loadPendingRows();
-      }
-    });
-  });
-}
-
-async function hydrateUserBox(user) {
-  const emailNode = $('#userEmail');
-  if (emailNode) {
-    emailNode.textContent = user?.email || 'user@email.com';
-  }
-}
-
-async function initUserInfo() {
-  const user = await window.LAVASH_AUTH?.protectAppPage?.();
-  if (!user) return null;
-
-  await hydrateUserBox(user);
-  return user;
+    <section class="details-panel" aria-label="Деталі запису">
+      <div class="details-panel__body" id="candidates">
+        <div class="placeholder-card">Оберіть запис ліворуч</div>
+      </div>
+    </section>
+  `;
 }
 
 async function protectPage() {
@@ -373,10 +315,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     const user = await protectPage();
     if (!user) return;
 
-    await initUserInfo();
-    bindLogout();
-    bindLeftNavRoutes();
-    bindRightToolButtons();
+    initLavashLayout({
+      pageKey: 'editor',
+      title: 'Черга перевірки',
+      statusText: 'Підключено',
+      content: buildPendingContent(),
+      useRightTools: true
+    });
+
+    await hydrateLavashUser();
     bindFilterControls();
     await loadPendingRows();
   } catch (error) {
