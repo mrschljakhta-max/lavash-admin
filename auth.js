@@ -4,7 +4,15 @@ if (!window.APP_CONFIG?.supabaseUrl || !window.APP_CONFIG?.supabaseAnonKey) {
 
 const authSb = supabase.createClient(
   window.APP_CONFIG.supabaseUrl,
-  window.APP_CONFIG.supabaseAnonKey
+  window.APP_CONFIG.supabaseAnonKey,
+  {
+    auth: {
+      storage: window.sessionStorage,
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: true
+    }
+  }
 );
 
 const APP_ENTRY = 'pending_v3.html';
@@ -427,11 +435,7 @@ async function startMfaEnroll() {
     const { data, error } = await authSb.auth.mfa.enroll({ factorType: 'totp' });
     if (error) throw error;
 
-    console.log('MFA enroll data:', data);
-    console.log('QR code payload:', data?.totp?.qr_code);
-
     currentEnrollFactor = data;
-
     renderQrCode(data?.totp?.qr_code || '', 'mfaQrMountHero');
 
     if (el('mfaSecretText')) {
@@ -792,6 +796,7 @@ async function initAuthPage() {
   activateTab('login');
   await initExistingSession();
 }
+
 window.LAVASH_AUTH = {
   async protectAppPage() {
     const { data, error } = await authSb.auth.getUser();
@@ -836,17 +841,32 @@ window.LAVASH_AUTH = {
       console.error('hydrateAppUserBadge failed:', err);
       return null;
     }
+  },
+
+  async logout() {
+    try {
+      const { error } = await authSb.auth.signOut();
+      if (error) throw error;
+      window.location.replace('./index.html');
+    } catch (err) {
+      console.error('logout failed:', err);
+      alert('Помилка при виході');
+    }
   }
 };
+
 document.addEventListener('DOMContentLoaded', () => {
+  const path = window.location.pathname;
   const isAuthPage =
-    window.location.pathname.endsWith('index.html') ||
-    window.location.pathname === '/' ||
-    window.location.pathname.endsWith('/');
+    path.endsWith('/index.html') ||
+    path.endsWith('index.html') ||
+    path === '/' ||
+    path.endsWith('/lavash-admin/') ||
+    path.endsWith('/lavash-admin');
 
   if (isAuthPage) {
     initAuthPage();
   } else {
-    console.log('auth.js: skip init (not auth page)');
+    console.log('auth.js: skip init on non-auth page', path);
   }
 });
