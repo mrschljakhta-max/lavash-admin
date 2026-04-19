@@ -24,10 +24,6 @@ function el(id) {
   return document.getElementById(id);
 }
 
-function qs(selector, parent = document) {
-  return parent.querySelector(selector);
-}
-
 function qsa(selector, parent = document) {
   return Array.from(parent.querySelectorAll(selector));
 }
@@ -39,7 +35,18 @@ function showView(id) {
 
 function setSubtitle(text) {
   const node = el('authSubtitle');
-  if (node) node.textContent = text;
+  if (!node) return;
+
+  const value = String(text || '').trim();
+
+  if (!value) {
+    node.textContent = '';
+    node.classList.add('hidden');
+    return;
+  }
+
+  node.textContent = value;
+  node.classList.remove('hidden');
 }
 
 function setStatus(text, kind = 'neutral') {
@@ -54,6 +61,20 @@ function setStatus(text, kind = 'neutral') {
   label.textContent = text;
 }
 
+function setBrandMode(mode) {
+  const brand = el('authBrandZone');
+  const enrollHero = el('authEnrollHero');
+  const card = el('authCard');
+
+  if (!brand || !enrollHero || !card) return;
+
+  const isEnroll = mode === 'enroll';
+
+  brand.classList.toggle('hidden', isEnroll);
+  enrollHero.classList.toggle('hidden', !isEnroll);
+  card.classList.toggle('enroll-mode', isEnroll);
+}
+
 function activateTab(mode) {
   const isLogin = mode === 'login';
 
@@ -64,8 +85,10 @@ function activateTab(mode) {
 
   showView(isLogin ? 'authViewLogin' : 'authViewRegister');
   el('authTabs')?.classList.remove('hidden');
+  el('authSignOutBtn')?.classList.add('hidden');
 
-  setSubtitle(isLogin ? 'Безпечний доступ до системи' : 'Створення нового акаунта');
+  setBrandMode('default');
+  setSubtitle('');
   setStatus(isLogin ? 'Введи email і пароль' : 'Заповни дані для реєстрації');
 }
 
@@ -261,10 +284,11 @@ async function signOutAuth() {
   clearOtp('mfaEnrollOtp', 'mfaEnrollCodeInput');
   clearOtp('mfaVerifyOtp', 'mfaVerifyCodeInput');
 
+  setBrandMode('default');
   activateTab('login');
   showView('authViewLogin');
   el('authSignOutBtn')?.classList.add('hidden');
-  setSubtitle('Безпечний доступ до системи');
+  setSubtitle('');
   setStatus('Сеанс завершено');
 }
 
@@ -327,8 +351,8 @@ async function getMfaState() {
   };
 }
 
-function renderQrCode(qrValue) {
-  const mount = el('mfaQrMount');
+function renderQrCode(qrValue, mountId = 'mfaQrMountHero') {
+  const mount = el(mountId);
   if (!mount) return;
 
   mount.innerHTML = '';
@@ -364,9 +388,10 @@ function renderQrCode(qrValue) {
 async function startMfaEnroll() {
   try {
     hideTabs();
+    setBrandMode('enroll');
     showView('authViewEnroll');
     el('authSignOutBtn')?.classList.remove('hidden');
-    setSubtitle('Підключення двофакторного захисту');
+    setSubtitle('');
     setStatus('Створюємо QR-код…');
 
     clearOtp('mfaEnrollOtp', 'mfaEnrollCodeInput');
@@ -375,10 +400,10 @@ async function startMfaEnroll() {
     if (error) throw error;
 
     currentEnrollFactor = data;
-    renderQrCode(data?.totp?.qr_code || '');
+    renderQrCode(data?.totp?.qr_code || '', 'mfaQrMountHero');
     if (el('mfaSecretText')) el('mfaSecretText').textContent = data?.totp?.secret || '';
 
-    setStatus('Скануй QR-код і введи 6-значний код', 'ok');
+    setStatus('Скануй QR і введи 6-значний код', 'ok');
     setTimeout(() => focusFirstOtp('mfaEnrollOtp'), 40);
   } catch (err) {
     console.error('startMfaEnroll failed:', err);
@@ -433,9 +458,10 @@ async function finishMfaEnroll(event) {
 async function openVerifyMfaView(factorId) {
   pendingLoginFactorId = factorId;
   hideTabs();
+  setBrandMode('default');
   showView('authViewVerify');
   el('authSignOutBtn')?.classList.remove('hidden');
-  setSubtitle('Підтвердження входу');
+  setSubtitle('');
   clearOtp('mfaVerifyOtp', 'mfaVerifyCodeInput');
   setStatus('Введи код із застосунку автентифікації');
   setTimeout(() => focusFirstOtp('mfaVerifyOtp'), 40);
@@ -608,9 +634,10 @@ async function handleRegisterSubmit(event) {
 
 async function handleBlocked(user) {
   hideTabs();
+  setBrandMode('default');
   showView('authViewBlocked');
   el('authSignOutBtn')?.classList.remove('hidden');
-  setSubtitle('Доступ обмежено');
+  setSubtitle('');
 
   const blockedNode = el('blockedMessage');
   if (blockedNode) {
