@@ -65,7 +65,7 @@ body {
   border: 1px solid var(--line);
   box-shadow: var(--shadow);
   overflow: hidden;
-  animation: cardIn .45s ease-out;
+  animation: cardIn 0.45s ease-out;
 }
 
 .auth-card.enroll-mode {
@@ -85,7 +85,11 @@ body {
   padding-top: 4px;
   padding-bottom: 14px;
   text-align: center;
-  animation: fadeUp .5s ease-out;
+  animation: fadeUp 0.5s ease-out;
+}
+
+.auth-brand-zone.hidden {
+  display: none !important;
 }
 
 .auth-logo-wrap {
@@ -132,10 +136,14 @@ body {
 }
 
 .auth-enroll-hero {
-  padding: 8px 0 18px;
-  display: grid;
+  display: none;
   justify-items: center;
-  animation: fadeUp .35s ease-out;
+  padding: 8px 0 18px;
+  animation: fadeUp 0.35s ease-out;
+}
+
+.auth-enroll-hero:not(.hidden) {
+  display: grid !important;
 }
 
 .auth-enroll-hero-qr-wrap {
@@ -189,7 +197,7 @@ body {
   padding: 4px 8px 0;
   margin-bottom: 10px;
   border-bottom: 1px solid rgba(113, 143, 224, 0.15);
-  animation: fadeUp .55s ease-out;
+  animation: fadeUp 0.55s ease-out;
 }
 
 .auth-tab {
@@ -202,7 +210,7 @@ body {
   font-size: 18px;
   font-weight: 700;
   cursor: pointer;
-  transition: color .2s ease;
+  transition: color 0.2s ease;
 }
 
 .auth-tab.active {
@@ -223,7 +231,7 @@ body {
 
 .auth-view {
   padding-top: 10px;
-  animation: fadeUp .28s ease-out;
+  animation: fadeUp 0.28s ease-out;
 }
 
 .auth-form {
@@ -247,7 +255,7 @@ body {
   background: linear-gradient(180deg, rgba(21, 43, 101, 0.96), rgba(18, 37, 89, 0.98));
   border: 1px solid rgba(114, 147, 232, 0.12);
   overflow: hidden;
-  transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 
 .auth-input-wrap:focus-within {
@@ -303,7 +311,7 @@ body {
   font-size: 18px;
   font-weight: 800;
   cursor: pointer;
-  transition: transform .18s ease, box-shadow .18s ease, opacity .18s ease;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
 }
 
 .auth-submit:hover,
@@ -323,7 +331,7 @@ body {
   background: linear-gradient(180deg, rgba(39, 58, 104, 0.96), rgba(29, 45, 82, 0.96));
   border: 1px solid rgba(113, 145, 224, 0.15);
   padding: 0 24px;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 .auth-divider {
@@ -413,7 +421,7 @@ body {
   font-size: 14px;
   line-height: 1.6;
   font-weight: 800;
-  letter-spacing: .04em;
+  letter-spacing: 0.04em;
   word-break: break-word;
   overflow-wrap: anywhere;
 }
@@ -436,7 +444,7 @@ body {
   background: #ffffff;
   border-radius: 16px;
   padding: 10px;
-  box-shadow: 0 10px 32px rgba(0,0,0,.25);
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.25);
 }
 
 .otp-section {
@@ -450,6 +458,12 @@ body {
 
 .otp-section-enroll {
   justify-items: center;
+  width: 100%;
+}
+
+.otp-section-enroll .otp-label {
+  width: min(100%, 640px);
+  text-align: left;
 }
 
 .otp-label {
@@ -466,6 +480,7 @@ body {
 .otp-inputs-enroll {
   grid-template-columns: repeat(6, 62px);
   justify-content: center;
+  width: 100%;
 }
 
 .otp-inputs-verify {
@@ -485,7 +500,7 @@ body {
   font-size: 31px;
   font-weight: 800;
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
-  transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
 }
 
 .otp-input:focus {
@@ -504,6 +519,7 @@ body {
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   width: min(100%, 640px);
   margin: 0 auto;
+  align-items: stretch;
 }
 
 .auth-action-row.single {
@@ -578,7 +594,7 @@ body {
 @keyframes cardIn {
   from {
     opacity: 0;
-    transform: translateY(10px) scale(.985);
+    transform: translateY(10px) scale(0.985);
   }
   to {
     opacity: 1;
