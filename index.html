@@ -5,241 +5,232 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Lavash Admin — Вхід / Реєстрація</title>
 
-  <link rel="icon" type="image/png" href="./assets/favicon.png?v=31" />
-  <link rel="stylesheet" href="./auth.css?v=31" />
+  <link rel="icon" type="image/png" href="./assets/favicon.png?v=21" />
+  <link rel="stylesheet" href="./auth.css?v=21" />
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="./config.js?v=31"></script>
-  <script defer src="./auth.js?v=31"></script>
+  <script src="./config.js?v=21"></script>
+  <script defer src="./auth.js?v=21"></script>
 </head>
 <body>
   <main class="auth-page">
     <section class="auth-shell">
       <div class="auth-card">
+        <div class="auth-card-glow"></div>
+
         <div class="auth-brand-zone">
           <div class="auth-logo-wrap">
-            <img src="./assets/logo-lavash.svg?v=31" alt="Lavash" class="auth-logo" />
+            <img src="./assets/logo-lavash.svg?v=21" alt="Lavash" class="auth-logo" />
           </div>
 
           <h1 class="auth-brand">Lavash</h1>
-          <div id="authBrandSubtitle" class="auth-brand-subtitle">Захищений доступ до системи</div>
+          <div id="authSubtitle" class="auth-subtitle">Безпечний доступ до системи</div>
 
-          <button id="authSignOutBtn" class="auth-signout hidden" type="button">
-            Вийти
-          </button>
+          <button id="authSignOutBtn" class="auth-signout hidden" type="button">Вийти</button>
         </div>
 
-        <div class="auth-body-zone">
-          <div id="authTabs" class="auth-tabs">
-            <button id="tabLoginBtn" class="auth-tab active" type="button" aria-selected="true">Вхід</button>
-            <button id="tabRegisterBtn" class="auth-tab" type="button" aria-selected="false">Реєстрація</button>
+        <div id="authTabs" class="auth-tabs">
+          <button id="tabLoginBtn" class="auth-tab active" type="button" aria-selected="true">Вхід</button>
+          <button id="tabRegisterBtn" class="auth-tab" type="button" aria-selected="false">Реєстрація</button>
+        </div>
+
+        <section id="authViewLogin" class="auth-view">
+          <form id="loginForm" class="auth-form" autocomplete="on">
+            <div class="auth-field">
+              <div class="auth-input-wrap">
+                <div class="auth-icon">✉</div>
+                <input
+                  id="loginEmailInput"
+                  class="auth-input"
+                  type="email"
+                  placeholder="Email"
+                  autocomplete="email"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="auth-field">
+              <div class="auth-input-wrap">
+                <div class="auth-icon">🔒</div>
+                <input
+                  id="loginPasswordInput"
+                  class="auth-input"
+                  type="password"
+                  placeholder="Пароль"
+                  autocomplete="current-password"
+                  required
+                />
+                <button
+                  class="auth-toggle field-toggle"
+                  type="button"
+                  data-target="loginPasswordInput"
+                  aria-label="Показати або приховати пароль"
+                >👁</button>
+              </div>
+            </div>
+
+            <button class="auth-submit" type="submit">Увійти</button>
+          </form>
+        </section>
+
+        <section id="authViewRegister" class="auth-view hidden">
+          <form id="registerForm" class="auth-form" autocomplete="on">
+            <div class="auth-field">
+              <div class="auth-input-wrap">
+                <div class="auth-icon">✉</div>
+                <input
+                  id="registerEmailInput"
+                  class="auth-input"
+                  type="email"
+                  placeholder="Email"
+                  autocomplete="email"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="auth-field">
+              <div class="auth-input-wrap">
+                <div class="auth-icon">🔒</div>
+                <input
+                  id="registerPasswordInput"
+                  class="auth-input"
+                  type="password"
+                  placeholder="Пароль"
+                  autocomplete="new-password"
+                  required
+                />
+                <button
+                  class="auth-toggle field-toggle"
+                  type="button"
+                  data-target="registerPasswordInput"
+                  aria-label="Показати або приховати пароль"
+                >👁</button>
+              </div>
+            </div>
+
+            <div class="auth-field">
+              <div class="auth-input-wrap">
+                <div class="auth-icon">🔒</div>
+                <input
+                  id="registerPasswordConfirmInput"
+                  class="auth-input"
+                  type="password"
+                  placeholder="Підтвердження пароля"
+                  autocomplete="new-password"
+                  required
+                />
+                <button
+                  class="auth-toggle field-toggle"
+                  type="button"
+                  data-target="registerPasswordConfirmInput"
+                  aria-label="Показати або приховати пароль"
+                >👁</button>
+              </div>
+            </div>
+
+            <button class="auth-submit" type="submit">Зареєструватися</button>
+
+            <hr class="auth-divider" />
+
+            <div class="auth-inline-note">
+              Вже є акаунт?
+              <button id="switchToLoginBtn" class="auth-inline-link" type="button">Увійти</button>
+            </div>
+          </form>
+        </section>
+
+        <section id="authViewEnroll" class="auth-view hidden">
+          <div class="auth-panel-head">
+            <h2 class="auth-panel-title">Підключення двофакторної автентифікації</h2>
+            <p class="auth-panel-text">
+              Скануй QR-код у Google Authenticator або Microsoft Authenticator, потім введи 6-значний код.
+            </p>
           </div>
 
-          <section id="authViewLogin" class="auth-view">
-            <form id="loginForm" class="auth-form" autocomplete="on">
-              <div class="auth-field">
-                <label class="auth-label" for="loginEmailInput">Email</label>
-                <div class="auth-input-wrap">
-                  <div class="auth-icon">✉</div>
-                  <input
-                    id="loginEmailInput"
-                    class="auth-input"
-                    type="email"
-                    placeholder="Введіть email"
-                    autocomplete="email"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div class="auth-field">
-                <label class="auth-label" for="loginPasswordInput">Пароль</label>
-                <div class="auth-input-wrap">
-                  <div class="auth-icon">🔒</div>
-                  <input
-                    id="loginPasswordInput"
-                    class="auth-input"
-                    type="password"
-                    placeholder="Введіть пароль"
-                    autocomplete="current-password"
-                    required
-                  />
-                  <button
-                    class="auth-toggle field-toggle"
-                    type="button"
-                    data-target="loginPasswordInput"
-                    aria-label="Показати або приховати пароль"
-                  >👁</button>
-                </div>
-              </div>
-
-              <button class="auth-submit" type="submit">Увійти</button>
-            </form>
-          </section>
-
-          <section id="authViewRegister" class="auth-view hidden">
-            <form id="registerForm" class="auth-form" autocomplete="on">
-              <div class="auth-field">
-                <label class="auth-label" for="registerEmailInput">Email</label>
-                <div class="auth-input-wrap">
-                  <div class="auth-icon">✉</div>
-                  <input
-                    id="registerEmailInput"
-                    class="auth-input"
-                    type="email"
-                    placeholder="Введіть email"
-                    autocomplete="email"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div class="auth-field">
-                <label class="auth-label" for="registerPasswordInput">Пароль</label>
-                <div class="auth-input-wrap">
-                  <div class="auth-icon">🔒</div>
-                  <input
-                    id="registerPasswordInput"
-                    class="auth-input"
-                    type="password"
-                    placeholder="Створіть пароль"
-                    autocomplete="new-password"
-                    required
-                  />
-                  <button
-                    class="auth-toggle field-toggle"
-                    type="button"
-                    data-target="registerPasswordInput"
-                    aria-label="Показати або приховати пароль"
-                  >👁</button>
-                </div>
-              </div>
-
-              <div class="auth-field">
-                <label class="auth-label" for="registerPasswordConfirmInput">Підтвердження пароля</label>
-                <div class="auth-input-wrap">
-                  <div class="auth-icon">🔒</div>
-                  <input
-                    id="registerPasswordConfirmInput"
-                    class="auth-input"
-                    type="password"
-                    placeholder="Повторіть пароль"
-                    autocomplete="new-password"
-                    required
-                  />
-                  <button
-                    class="auth-toggle field-toggle"
-                    type="button"
-                    data-target="registerPasswordConfirmInput"
-                    aria-label="Показати або приховати пароль"
-                  >👁</button>
-                </div>
-              </div>
-
-              <button class="auth-submit" type="submit">Зареєструватися</button>
-
-              <hr class="auth-divider" />
-
-              <div class="auth-inline-note">
-                Вже є акаунт?
-                <button id="switchToLoginBtn" class="auth-inline-link" type="button">Увійти</button>
-              </div>
-            </form>
-          </section>
-
-          <section id="authViewEnroll" class="auth-view hidden">
-            <div class="auth-view-head">
-              <h2 class="auth-mfa-title">Підключення двофакторної автентифікації</h2>
-              <p class="auth-mfa-text">
-                Відскануйте QR-код у Google Authenticator, Microsoft Authenticator або іншому TOTP-додатку,
-                після чого введіть 6-значний код.
-              </p>
+          <div class="auth-mfa-grid">
+            <div class="auth-qr-card">
+              <div id="mfaQrMount"></div>
             </div>
 
-            <div class="auth-mfa-grid compact">
-              <div class="auth-qr-card">
-                <div id="mfaQrMount" class="auth-qr-mount"></div>
-              </div>
-
-              <div class="auth-secret-card">
-                <div class="auth-secret-label">Секретний ключ</div>
-                <div id="mfaSecretText" class="auth-secret-value"></div>
-                <button id="copySecretBtn" class="auth-secondary-btn auth-copy-btn" type="button">
-                  Скопіювати ключ
-                </button>
+            <div class="auth-secret-card">
+              <div class="auth-secret-label">Секретний ключ</div>
+              <div id="mfaSecretText" class="auth-secret-value"></div>
+              <div class="auth-secret-note">
+                Якщо QR не відкривається — додай ключ вручну у свій застосунок автентифікації.
               </div>
             </div>
-
-            <form id="mfaEnrollForm" class="auth-form auth-mfa-form">
-              <div class="auth-field">
-                <label class="auth-label" for="mfaEnrollCodeInput">Код підтвердження</label>
-                <div class="auth-input-wrap">
-                  <div class="auth-icon">#</div>
-                  <input
-                    id="mfaEnrollCodeInput"
-                    class="auth-input"
-                    type="text"
-                    inputmode="numeric"
-                    autocomplete="one-time-code"
-                    placeholder="Введіть 6-значний код"
-                    maxlength="6"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div class="auth-actions-row">
-                <button class="auth-submit" type="submit">Підтвердити і завершити</button>
-                <button id="enrollBackBtn" class="auth-secondary-btn" type="button">Назад</button>
-              </div>
-            </form>
-          </section>
-
-          <section id="authViewVerify" class="auth-view hidden">
-            <div class="auth-view-head">
-              <h2 class="auth-mfa-title">Підтвердження входу</h2>
-              <p class="auth-mfa-text">
-                Введіть 6-значний код із застосунку автентифікації.
-              </p>
-            </div>
-
-            <form id="mfaVerifyForm" class="auth-form auth-mfa-form">
-              <div class="otp-wrap">
-                <div class="otp-group" id="otpGroup" aria-label="Введення 6-значного коду">
-                  <input class="otp-input" type="text" inputmode="numeric" maxlength="1" autocomplete="one-time-code" />
-                  <input class="otp-input" type="text" inputmode="numeric" maxlength="1" />
-                  <input class="otp-input" type="text" inputmode="numeric" maxlength="1" />
-                  <input class="otp-input" type="text" inputmode="numeric" maxlength="1" />
-                  <input class="otp-input" type="text" inputmode="numeric" maxlength="1" />
-                  <input class="otp-input" type="text" inputmode="numeric" maxlength="1" />
-                </div>
-                <input id="mfaVerifyCodeInput" type="hidden" />
-              </div>
-
-              <div class="auth-actions-row">
-                <button class="auth-submit" type="submit">Підтвердити</button>
-                <button id="verifyBackBtn" class="auth-secondary-btn" type="button">Назад</button>
-              </div>
-            </form>
-          </section>
-
-          <section id="authViewBlocked" class="auth-view hidden">
-            <div class="auth-view-head">
-              <h2 class="auth-blocked-title">Доступ заборонено</h2>
-              <p id="blockedMessage" class="auth-blocked-text">
-                Ваш акаунт не має доступу до системи.
-              </p>
-            </div>
-
-            <div class="auth-actions-row single">
-              <button id="blockedBackBtn" class="auth-secondary-btn" type="button">Вийти</button>
-            </div>
-          </section>
-
-          <div class="auth-status">
-            <span id="authStatusDot" class="auth-status-dot"></span>
-            <span id="authStatusText" class="auth-status-text">Введіть email і пароль</span>
           </div>
+
+          <form id="mfaEnrollForm" class="auth-form" autocomplete="off">
+            <div class="otp-section">
+              <div class="otp-label">Код підтвердження</div>
+
+              <div id="mfaEnrollOtp" class="otp-inputs" data-otp-group="enroll">
+                <input class="otp-input" type="text" inputmode="numeric" maxlength="1" autocomplete="one-time-code" />
+                <input class="otp-input" type="text" inputmode="numeric" maxlength="1" />
+                <input class="otp-input" type="text" inputmode="numeric" maxlength="1" />
+                <input class="otp-input" type="text" inputmode="numeric" maxlength="1" />
+                <input class="otp-input" type="text" inputmode="numeric" maxlength="1" />
+                <input class="otp-input" type="text" inputmode="numeric" maxlength="1" />
+              </div>
+
+              <input id="mfaEnrollCodeInput" type="hidden" />
+            </div>
+
+            <div class="auth-action-row">
+              <button id="enrollBackBtn" class="auth-secondary-btn" type="button">Назад</button>
+              <button class="auth-submit" type="submit">Підтвердити 2FA</button>
+            </div>
+          </form>
+        </section>
+
+        <section id="authViewVerify" class="auth-view hidden">
+          <div class="auth-panel-head centered">
+            <h2 class="auth-panel-title">Підтвердження входу</h2>
+            <p class="auth-panel-text">
+              Введи 6-значний код із застосунку автентифікації.
+            </p>
+          </div>
+
+          <form id="mfaVerifyForm" class="auth-form" autocomplete="off">
+            <div class="otp-section centered">
+              <div id="mfaVerifyOtp" class="otp-inputs" data-otp-group="verify">
+                <input class="otp-input" type="text" inputmode="numeric" maxlength="1" autocomplete="one-time-code" />
+                <input class="otp-input" type="text" inputmode="numeric" maxlength="1" />
+                <input class="otp-input" type="text" inputmode="numeric" maxlength="1" />
+                <input class="otp-input" type="text" inputmode="numeric" maxlength="1" />
+                <input class="otp-input" type="text" inputmode="numeric" maxlength="1" />
+                <input class="otp-input" type="text" inputmode="numeric" maxlength="1" />
+              </div>
+
+              <input id="mfaVerifyCodeInput" type="hidden" />
+            </div>
+
+            <div class="auth-action-row">
+              <button id="verifyBackBtn" class="auth-secondary-btn" type="button">Назад</button>
+              <button class="auth-submit" type="submit">Підтвердити</button>
+            </div>
+          </form>
+        </section>
+
+        <section id="authViewBlocked" class="auth-view hidden">
+          <div class="auth-panel-head centered">
+            <h2 class="auth-panel-title auth-blocked-title">Доступ заборонено</h2>
+            <p id="blockedMessage" class="auth-panel-text auth-blocked-text">
+              Ваш акаунт не має дозволу на доступ до системи.
+            </p>
+          </div>
+
+          <div class="auth-action-row single">
+            <button id="blockedBackBtn" class="auth-secondary-btn" type="button">Вийти</button>
+          </div>
+        </section>
+
+        <div class="auth-status">
+          <span id="authStatusDot" class="auth-status-dot"></span>
+          <span id="authStatusText" class="auth-status-text">Введи email і пароль</span>
         </div>
       </div>
     </section>
