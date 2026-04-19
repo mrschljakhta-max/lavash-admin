@@ -5,64 +5,53 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Lavash Admin — Черга перевірки</title>
 
-  <link rel="stylesheet" href="./pending_v3.css?v=41" />
+  <link rel="stylesheet" href="./pending_v3.css?v=1" />
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="./config.js?v=41"></script>
-  <script defer src="./auth.js?v=41"></script>
-  <script defer src="./pending_v3.js?v=41"></script>
+  <script src="./config.js"></script>
+  <script defer src="./auth.js"></script>
+  <script defer src="./pending_v3.js"></script>
 </head>
+
 <body>
   <div class="app-shell">
-    <aside class="sidebar">
-      <div class="user-badge">
-        <div class="user-avatar">U</div>
-      </div>
 
-      <nav class="nav-icons">
-        <button class="nav-btn active">✖</button>
-        <button class="nav-btn">↑</button>
-        <button class="nav-btn">🧩</button>
-        <button class="nav-btn">📄</button>
-      </nav>
+    <aside class="sidebar">
+      <div class="user-avatar" id="userAvatar">U</div>
+
+      <div class="nav">
+        <button>✖</button>
+        <button>↑</button>
+        <button>🧩</button>
+        <button>📄</button>
+      </div>
     </aside>
 
     <main class="content">
-      <header class="page-head">
+
+      <div class="header">
         <h1>Черга перевірки</h1>
-        <div class="top-status warn">Перевірка підключення...</div>
-      </header>
+        <div id="status" class="status">Перевірка...</div>
+      </div>
 
-      <section class="toolbar">
-        <select id="statusFilter">
-          <option value="pending">очікує</option>
-          <option value="approved">підтверджено</option>
-          <option value="rejected">відхилено</option>
-        </select>
-
-        <select id="fieldFilter">
-          <option value="all">усі поля</option>
-        </select>
-
-        <select id="sourceFilter">
-          <option value="all">усі джерела</option>
-        </select>
-
-        <input id="searchInput" type="text" placeholder="Пошук по значенню..." />
+      <div class="toolbar">
+        <select id="statusFilter"></select>
+        <select id="fieldFilter"></select>
+        <select id="sourceFilter"></select>
+        <input id="searchInput" placeholder="Пошук..." />
         <button id="refreshBtn">Оновити</button>
-      </section>
+      </div>
 
-      <section class="grid-2">
-        <div class="panel panel-list">
-          <div id="pendingGroups" class="list-scroll">
-            <div class="placeholder">Завантаження...</div>
-          </div>
+      <div class="grid">
+
+        <div id="pendingGroups" class="left"></div>
+
+        <div id="candidates" class="right">
+          Обери запис зліва
         </div>
 
-        <div class="panel panel-candidates">
-          <div class="panel-title">Кандидати з довідника</div>
-          <div class="placeholder">Оберіть групу ліворуч</div>
-        </div>
-      </section>
+      </div>
+
     </main>
   </div>
 </body>
