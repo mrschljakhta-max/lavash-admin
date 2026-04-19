@@ -732,7 +732,7 @@ async function handlePostAuthLanding() {
     );
 
     setStatus('Вхід виконано. Переходимо до системи…', 'ok');
-    window.location.href = APP_ENTRY;
+    window.location.replace(APP_ENTRY);
   } catch (err) {
     console.error('handlePostAuthLanding failed:', err);
     setStatus(normalizeErrorMessage(err), 'error');
@@ -792,5 +792,50 @@ async function initAuthPage() {
   activateTab('login');
   await initExistingSession();
 }
+window.LAVASH_AUTH = {
+  async protectAppPage() {
+    const { data, error } = await authSb.auth.getUser();
+    if (error) {
+      console.error('protectAppPage getUser failed:', error);
+      window.location.replace('./index.html');
+      return null;
+    }
 
+    const user = data?.user || null;
+    if (!user) {
+      window.location.replace('./index.html');
+      return null;
+    }
+
+    return user;
+  },
+
+  async hydrateAppUserBadge() {
+    try {
+      const { data, error } = await authSb.auth.getUser();
+      if (error) throw error;
+
+      const user = data?.user || null;
+      if (!user) return null;
+
+      const avatarNode = document.querySelector('.user-avatar');
+      if (avatarNode) {
+        avatarNode.textContent = (user.email?.[0] || 'U').toUpperCase();
+      }
+
+      const badgeNode = document.querySelector('.user-badge');
+      if (badgeNode && !badgeNode.querySelector('.user-email')) {
+        const emailEl = document.createElement('div');
+        emailEl.className = 'user-email';
+        emailEl.textContent = user.email || '';
+        badgeNode.appendChild(emailEl);
+      }
+
+      return user;
+    } catch (err) {
+      console.error('hydrateAppUserBadge failed:', err);
+      return null;
+    }
+  }
+};
 document.addEventListener('DOMContentLoaded', initAuthPage);
