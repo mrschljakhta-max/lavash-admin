@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>Lavash Admin — Черга перевірки</title>
+
+  <link rel="icon" href="../assets/favicon/favicon.png?v=2">
+  <link rel="stylesheet" href="../styles/pending_v3.css?v=2">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../config.js?v=2"></script>
+  <script defer src="../auth.js?v=2"></script>
+  <script defer src="../scripts/pending_v3.js?v=2"></script>
+</head>
+
+<body class="app-page">
+
+  <!-- LEFT NAV -->
+  <div class="nav-left" id="navLeft">
+    <div class="nav-profile">
+      <div class="avatar" id="userAvatar">L</div>
+      <div class="profile-info">
+        <div id="userEmail">email</div>
+        <button onclick="logout()">Вийти</button>
+      </div>
+    </div>
+
+    <div class="nav-item" data-label="Редактор">
+      <img src="../assets/icons/nav-editor.svg">
+    </div>
+
+    <div class="nav-item" data-label="Завантаження">
+      <img src="../assets/icons/nav-upload.svg">
+    </div>
+
+    <div class="nav-item" data-label="Довідники">
+      <img src="../assets/icons/nav-dicts.svg">
+    </div>
+
+    <div class="nav-item" data-label="Логи">
+      <img src="../assets/icons/nav-logs.svg">
+    </div>
+  </div>
+
+  <!-- RIGHT NAV -->
+  <div class="nav-right">
+    <div class="nav-item" data-label="Пошук">
+      <img src="../assets/icons/tool-search.svg">
+    </div>
+
+    <div class="nav-item" data-label="Фільтр">
+      <img src="../assets/icons/tool-filter.svg">
+    </div>
+
+    <div class="nav-item" data-label="Оновити" onclick="reloadData()">
+      <img src="../assets/icons/tool-refresh.svg">
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="app-content">
+
+    <h1>Черга перевірки</h1>
+
+    <div id="pendingGroups"></div>
+
+  </div>
+
+</body>
+</html>
