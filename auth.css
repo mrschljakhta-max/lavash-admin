@@ -59,9 +59,7 @@ body {
   position: relative;
   padding: 26px 28px 22px;
   border-radius: var(--radius-xl);
-  background:
-    linear-gradient(180deg, rgba(10, 30, 93, 0.95), rgba(6, 20, 65, 0.97)),
-    linear-gradient(135deg, rgba(255, 255, 255, 0.05), transparent 35%);
+  background: linear-gradient(180deg, rgba(10, 30, 93, 0.97), rgba(6, 20, 65, 0.98));
   border: 1px solid var(--line);
   box-shadow: var(--shadow);
   overflow: hidden;
@@ -73,11 +71,7 @@ body {
 }
 
 .auth-card-glow {
-  position: absolute;
-  inset: -20% -10% auto -10%;
-  height: 180px;
-  background: radial-gradient(circle, rgba(82, 129, 255, 0.18), transparent 65%);
-  pointer-events: none;
+  display: none;
 }
 
 .auth-brand-zone {
@@ -133,6 +127,10 @@ body {
   font-weight: 700;
   cursor: pointer;
   z-index: 4;
+}
+
+.auth-signout.hidden {
+  display: none !important;
 }
 
 .auth-enroll-hero {
