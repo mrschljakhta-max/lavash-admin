@@ -17,6 +17,8 @@ const authSb = supabase.createClient(
 
 const APP_ENTRY = './pending_v3.html';
 
+const LOGIN_PAGE = '/lavash-admin/pages/index.html';
+
 const VIEWS = [
   'authViewLogin',
   'authViewRegister',
@@ -319,6 +321,8 @@ async function signOutAuth() {
   el('authSignOutBtn')?.classList.add('hidden');
   setSubtitle('');
   setStatus('Сеанс завершено');
+
+  window.location.replace(LOGIN_PAGE);
 }
 
 async function ensureAllowedUser(user) {
@@ -807,13 +811,13 @@ window.LAVASH_AUTH = {
     const { data, error } = await authSb.auth.getUser();
     if (error) {
       console.error('protectAppPage getUser failed:', error);
-      window.location.replace('./index.html');
+      window.location.replace('/lavash-admin/pages/index.html');
       return null;
     }
 
     const user = data?.user || null;
     if (!user) {
-      window.location.replace('./index.html');
+      window.location.replace('/lavash-admin/pages/index.html');
       return null;
     }
 
@@ -824,10 +828,10 @@ window.LAVASH_AUTH = {
     try {
       const { error } = await authSb.auth.signOut();
       if (error) throw error;
-      window.location.replace('./index.html');
+      window.location.replace('/lavash-admin/pages/index.html');
     } catch (err) {
       console.error('logout failed:', err);
-      alert('Помилка при виході');
+      window.location.replace('/lavash-admin/pages/index.html');
     }
   }
 };
