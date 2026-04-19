@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lavash Admin — Вхід / Реєстрація</title>
+  <link rel="stylesheet" href="./auth.css?v=10" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./config.js?v=10"></script>
+  <script defer src="./auth.js?v=10"></script>
+</head>
+<body>
+  <main class="auth-page">
+    <section class="auth-shell">
+      <div class="auth-card">
+        <div class="auth-logo-wrap">
+          <img src="./assets/logo-lavash.svg" alt="Lavash" class="auth-logo" />
+        </div>
+
+        <h1 class="auth-brand">Lavash</h1>
+        <button id="authSignOutBtn" class="auth-signout hidden" type="button">Вийти</button>
+
+        <div class="auth-tabs">
+          <button id="tabLoginBtn" class="auth-tab active" type="button" aria-selected="true">Вхід</button>
+          <button id="tabRegisterBtn" class="auth-tab" type="button" aria-selected="false">Реєстрація</button>
+        </div>
+
+        <section id="authViewLogin" class="auth-view">
+          <form id="loginForm" class="auth-form" autocomplete="on">
+            <div class="auth-field">
+              <div class="auth-input-wrap">
+                <div class="auth-icon">✉</div>
+                <input id="loginEmailInput" class="auth-input" type="email" placeholder="Email" autocomplete="email" required />
+              </div>
+            </div>
+            <div class="auth-field">
+              <div class="auth-input-wrap">
+                <div class="auth-icon">🔒</div>
+                <input id="loginPasswordInput" class="auth-input" type="password" placeholder="Пароль" autocomplete="current-password" required />
+                <button class="auth-toggle field-toggle" type="button" data-target="loginPasswordInput" aria-label="Показати або приховати пароль">👁</button>
+              </div>
+            </div>
+            <button class="auth-submit" type="submit">Увійти</button>
+          </form>
+        </section>
+
+        <section id="authViewRegister" class="auth-view hidden">
+          <form id="registerForm" class="auth-form" autocomplete="on">
+            <div class="auth-field">
+              <div class="auth-input-wrap">
+                <div class="auth-icon">✉</div>
+                <input id="registerEmailInput" class="auth-input" type="email" placeholder="Email" autocomplete="email" required />
+              </div>
+            </div>
+            <div class="auth-field">
+              <div class="auth-input-wrap">
+                <div class="auth-icon">🔒</div>
+                <input id="registerPasswordInput" class="auth-input" type="password" placeholder="Пароль" autocomplete="new-password" required />
+                <button class="auth-toggle field-toggle" type="button" data-target="registerPasswordInput" aria-label="Показати або приховати пароль">👁</button>
+              </div>
+            </div>
+            <div class="auth-field">
+              <div class="auth-input-wrap">
+                <div class="auth-icon">🔒</div>
+                <input id="registerPasswordConfirmInput" class="auth-input" type="password" placeholder="Підтвердження пароля" autocomplete="new-password" required />
+                <button class="auth-toggle field-toggle" type="button" data-target="registerPasswordConfirmInput" aria-label="Показати або приховати пароль">👁</button>
+              </div>
+            </div>
+            <button class="auth-submit" type="submit">Зареєструватися</button>
+            <hr class="auth-divider" />
+            <div class="auth-inline-note">Вже є акаунт? <button id="switchToLoginBtn" class="auth-inline-link" type="button">Увійти</button></div>
+          </form>
+        </section>
+
+        <section id="authViewEnroll" class="auth-view hidden">
+          <h2 class="auth-mfa-title">Підключення 2FA</h2>
+          <p class="auth-mfa-text">Скануй QR-код у Google Authenticator або Microsoft Authenticator і введи 6-значний код.</p>
+          <div class="auth-mfa-grid">
+            <div class="auth-qr-card"><div id="mfaQrMount"></div></div>
+            <div class="auth-secret-card">
+              <div class="auth-secret-label">Секретний ключ</div>
+              <div id="mfaSecretText" class="auth-secret-value"></div>
+            </div>
+          </div>
+          <form id="mfaEnrollForm" class="auth-form">
+            <div class="auth-field">
+              <div class="auth-input-wrap">
+                <div class="auth-icon">#</div>
+                <input id="mfaEnrollCodeInput" class="auth-input" type="text" inputmode="numeric" placeholder="Код 2FA" required />
+              </div>
+            </div>
+            <button class="auth-submit" type="submit">Підтвердити 2FA</button>
+          </form>
+        </section>
+
+        <section id="authViewVerify" class="auth-view hidden">
+          <h2 class="auth-mfa-title">Підтвердження входу</h2>
+          <p class="auth-mfa-text">Введи код із застосунку аутентифікації.</p>
+          <form id="mfaVerifyForm" class="auth-form">
+            <div class="auth-field">
+              <div class="auth-input-wrap">
+                <div class="auth-icon">#</div>
+                <input id="mfaVerifyCodeInput" class="auth-input" type="text" inputmode="numeric" placeholder="Код 2FA" required />
+              </div>
+            </div>
+            <button class="auth-submit" type="submit">Підтвердити вхід</button>
+          </form>
+        </section>
+
+        <section id="authViewBlocked" class="auth-view hidden">
+          <h2 class="auth-blocked-title">Доступ заборонено</h2>
+          <p id="blockedMessage" class="auth-blocked-text">Ваш акаунт не має доступу до системи.</p>
+          <div class="auth-blocked-actions"><button id="blockedBackBtn" class="auth-secondary-btn" type="button">Вийти</button></div>
+        </section>
+
+        <div class="auth-status">
+          <span id="authStatusDot" class="auth-status-dot"></span>
+          <span id="authStatusText" class="auth-status-text">Введи email і пароль</span>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
