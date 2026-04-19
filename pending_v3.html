@@ -5,66 +5,176 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Lavash Admin — Черга перевірки</title>
 
-  <link rel="stylesheet" href="./pending_v3.css?v=41" />
+  <link rel="icon" type="image/png" href="./assets/favicon/favicon.png?v=1" />
+  <link rel="stylesheet" href="./pending_v3.css?v=1" />
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="./config.js?v=41"></script>
-  <script defer src="./auth.js?v=41"></script>
-  <script defer src="./pending_v3.js?v=41"></script>
+  <script src="./config.js?v=1"></script>
+  <script defer src="./auth.js?v=1"></script>
+  <script defer src="./pending_v3.js?v=1"></script>
 </head>
 <body>
   <div class="app-shell">
-    <aside class="sidebar">
-      <div class="user-badge">
-        <div class="user-avatar" id="userAvatar">U</div>
-      </div>
 
-      <nav class="nav-icons">
-        <button class="nav-btn active" type="button">✖</button>
-        <button class="nav-btn" type="button">↑</button>
-        <button class="nav-btn" type="button">🧩</button>
-        <button class="nav-btn" type="button">📄</button>
-      </nav>
+    <!-- LEFT NAV -->
+    <aside class="left-nav" id="leftNav">
+      <div class="left-nav__inner">
+
+        <div class="left-nav__top">
+          <div class="brand-mini">
+            <img
+              src="./assets/logos/lavash-logo.svg"
+              alt="Lavash"
+              class="brand-mini__logo"
+            />
+            <span class="brand-mini__title">Lavash Admin</span>
+          </div>
+
+          <div class="user-box">
+            <div class="user-box__email" id="userEmail">user@email.com</div>
+            <button class="user-box__logout" id="logoutBtn" type="button">
+              Вихід
+            </button>
+          </div>
+        </div>
+
+        <nav class="left-nav__menu" aria-label="Основна навігація">
+          <button class="nav-item is-active" data-route="editor" type="button">
+            <span class="nav-item__icon-wrap">
+              <img src="./assets/icons/nav-editor.svg" alt="" class="nav-item__icon" />
+            </span>
+            <span class="nav-item__label">Редактор</span>
+          </button>
+
+          <button class="nav-item" data-route="upload" type="button">
+            <span class="nav-item__icon-wrap">
+              <img src="./assets/icons/nav-upload.svg" alt="" class="nav-item__icon" />
+            </span>
+            <span class="nav-item__label">Завантаження</span>
+          </button>
+
+          <button class="nav-item" data-route="dicts" type="button">
+            <span class="nav-item__icon-wrap">
+              <img src="./assets/icons/nav-dicts.svg" alt="" class="nav-item__icon" />
+            </span>
+            <span class="nav-item__label">Довідники</span>
+          </button>
+
+          <button class="nav-item" data-route="logs" type="button">
+            <span class="nav-item__icon-wrap">
+              <img src="./assets/icons/nav-logs.svg" alt="" class="nav-item__icon" />
+            </span>
+            <span class="nav-item__label">Логування</span>
+          </button>
+        </nav>
+
+      </div>
     </aside>
 
-    <main class="content">
-      <header class="page-head">
-        <h1>Черга перевірки</h1>
-        <div id="status" class="top-status warn">Перевірка підключення...</div>
+    <!-- MAIN -->
+    <main class="main-workspace">
+
+      <header class="workspace-header">
+        <div class="workspace-header__left">
+          <h1 class="workspace-title">Черга перевірки</h1>
+        </div>
+
+        <div class="workspace-header__right">
+          <div class="status-badge" id="statusBadge">Підключено</div>
+        </div>
       </header>
 
-      <section class="toolbar">
-        <select id="statusFilter">
-          <option value="all">усі статуси</option>
-        </select>
+      <section class="workspace-body">
+        <section class="records-panel" aria-label="Список записів">
+          <div class="records-panel__body" id="pendingGroups">
+            <div class="placeholder-card">Завантаження записів...</div>
+          </div>
+        </section>
 
-        <select id="fieldFilter">
-          <option value="all">усі поля</option>
-        </select>
-
-        <select id="sourceFilter">
-          <option value="all">усі джерела</option>
-        </select>
-
-        <input
-          id="searchInput"
-          type="text"
-          placeholder="Пошук по значенню..."
-        />
-
-        <button id="refreshBtn" type="button">Оновити</button>
+        <section class="details-panel" aria-label="Деталі запису">
+          <div class="details-panel__body" id="candidates">
+            <div class="placeholder-card">Оберіть запис ліворуч</div>
+          </div>
+        </section>
       </section>
 
-      <section class="grid">
-        <div id="pendingGroups" class="left">
-          <div class="placeholder">Завантаження...</div>
-        </div>
-
-        <div id="candidates" class="right">
-          Обери запис зліва
-        </div>
-      </section>
     </main>
+
+    <!-- RIGHT TOOLS -->
+    <aside class="right-tools" id="rightTools">
+      <div class="right-tools__inner">
+
+        <div class="right-tools__top">
+          <div class="right-tools__title-wrap">
+            <span class="right-tools__title">Інструменти</span>
+          </div>
+        </div>
+
+        <div class="right-tools__menu" aria-label="Інструменти сторінки">
+
+          <button class="tool-item" data-tool="search" type="button">
+            <span class="tool-item__icon-wrap">
+              <img src="./assets/icons/tool-search.svg" alt="" class="tool-item__icon" />
+            </span>
+            <span class="tool-item__label">Пошук</span>
+          </button>
+
+          <button class="tool-item" data-tool="filters" type="button">
+            <span class="tool-item__icon-wrap">
+              <img src="./assets/icons/tool-filter.svg" alt="" class="tool-item__icon" />
+            </span>
+            <span class="tool-item__label">Фільтри</span>
+          </button>
+
+          <button class="tool-item" data-tool="refresh" type="button">
+            <span class="tool-item__icon-wrap">
+              <img src="./assets/icons/tool-refresh.svg" alt="" class="tool-item__icon" />
+            </span>
+            <span class="tool-item__label">Оновити</span>
+          </button>
+        </div>
+
+        <div class="right-tools__panel">
+
+          <div class="tool-block tool-block--search">
+            <label class="tool-block__label" for="searchInput">Пошук</label>
+            <input
+              id="searchInput"
+              class="tool-input"
+              type="text"
+              placeholder="Пошук по значенню..."
+            />
+          </div>
+
+          <div class="tool-block">
+            <label class="tool-block__label" for="statusFilter">Статус</label>
+            <select id="statusFilter" class="tool-select">
+              <option value="all">усі статуси</option>
+            </select>
+          </div>
+
+          <div class="tool-block">
+            <label class="tool-block__label" for="fieldFilter">Поле</label>
+            <select id="fieldFilter" class="tool-select">
+              <option value="all">усі поля</option>
+            </select>
+          </div>
+
+          <div class="tool-block">
+            <label class="tool-block__label" for="sourceFilter">Джерело</label>
+            <select id="sourceFilter" class="tool-select">
+              <option value="all">усі джерела</option>
+            </select>
+          </div>
+
+          <button id="refreshBtn" class="tool-refresh-btn" type="button">
+            Оновити
+          </button>
+
+        </div>
+      </div>
+    </aside>
+
   </div>
 </body>
 </html>
