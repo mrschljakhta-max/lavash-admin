@@ -15,7 +15,7 @@ const authSb = supabase.createClient(
   }
 );
 
-const APP_ENTRY = 'pending_v3.html';
+const APP_ENTRY = './pending_v3.html';
 
 const VIEWS = [
   'authViewLogin',
@@ -820,34 +820,6 @@ window.LAVASH_AUTH = {
     return user;
   },
 
-  async hydrateAppUserBadge() {
-    try {
-      const { data, error } = await authSb.auth.getUser();
-      if (error) throw error;
-
-      const user = data?.user || null;
-      if (!user) return null;
-
-      const avatarNode = document.querySelector('.user-avatar');
-      if (avatarNode) {
-        avatarNode.textContent = (user.email?.[0] || 'U').toUpperCase();
-      }
-
-      const badgeNode = document.querySelector('.user-badge');
-      if (badgeNode && !badgeNode.querySelector('.user-email')) {
-        const emailEl = document.createElement('div');
-        emailEl.className = 'user-email';
-        emailEl.textContent = user.email || '';
-        badgeNode.appendChild(emailEl);
-      }
-
-      return user;
-    } catch (err) {
-      console.error('hydrateAppUserBadge failed:', err);
-      return null;
-    }
-  },
-
   async logout() {
     try {
       const { error } = await authSb.auth.signOut();
@@ -862,16 +834,9 @@ window.LAVASH_AUTH = {
 
 document.addEventListener('DOMContentLoaded', () => {
   const path = window.location.pathname;
-  const isAuthPage =
-    path.endsWith('/index.html') ||
-    path.endsWith('index.html') ||
-    path === '/' ||
-    path.endsWith('/lavash-admin/') ||
-    path.endsWith('/lavash-admin');
+  const isAuthPage = path.endsWith('/pages/index.html') || path.endsWith('/index.html');
 
   if (isAuthPage) {
     initAuthPage();
-  } else {
-    console.log('auth.js: skip init on non-auth page', path);
   }
 });
