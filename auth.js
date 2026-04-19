@@ -94,8 +94,8 @@ function setBrandMode(mode) {
   }
 
   if (signOutBtn) {
-    signOutBtn.style.display = isEnroll ? 'none' : '';
-    signOutBtn.classList.toggle('hidden', isEnroll);
+    signOutBtn.classList.add('hidden');
+    signOutBtn.style.display = 'none';
   }
 
   if (card) {
@@ -113,7 +113,12 @@ function activateTab(mode) {
 
   showView(isLogin ? 'authViewLogin' : 'authViewRegister');
   el('authTabs')?.classList.remove('hidden');
-  el('authSignOutBtn')?.classList.add('hidden');
+
+  const signOutBtn = el('authSignOutBtn');
+  if (signOutBtn) {
+    signOutBtn.classList.add('hidden');
+    signOutBtn.style.display = 'none';
+  }
 
   setBrandMode('default');
   setSubtitle('');
@@ -498,7 +503,7 @@ async function openVerifyMfaView(factorId) {
   pendingLoginFactorId = factorId;
   setBrandMode('default');
   showView('authViewVerify');
-  el('authSignOutBtn')?.classList.remove('hidden');
+  el('authSignOutBtn')?.classList.add('hidden');
   setSubtitle('');
   clearOtp('mfaVerifyOtp', 'mfaVerifyCodeInput');
   setStatus('Введи код із застосунку автентифікації');
@@ -673,7 +678,7 @@ async function handleRegisterSubmit(event) {
 async function handleBlocked(user) {
   setBrandMode('default');
   showView('authViewBlocked');
-  el('authSignOutBtn')?.classList.remove('hidden');
+  el('authSignOutBtn')?.classList.add('hidden');
   setSubtitle('');
 
   const blockedNode = el('blockedMessage');
