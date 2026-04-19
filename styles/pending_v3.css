@@ -1,0 +1,81 @@
+body {
+  margin: 0;
+  font-family: Arial;
+  background: #050d2a;
+  color: white;
+}
+
+/* LEFT NAV */
+.nav-left {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 70px;
+  height: 100vh;
+  background: #07173f;
+  transition: 0.3s;
+  overflow: hidden;
+}
+
+.nav-left:hover {
+  width: 220px;
+}
+
+/* PROFILE */
+.nav-profile {
+  padding: 20px;
+}
+
+.avatar {
+  width: 50px;
+  height: 50px;
+  background: #1e3a8a;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.profile-info {
+  display: none;
+}
+
+.nav-left:hover .profile-info {
+  display: block;
+}
+
+/* NAV ITEMS */
+.nav-item {
+  width: 60px;
+  height: 60px;
+  margin: 10px auto;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0c1f5a;
+  cursor: pointer;
+}
+
+.nav-item img {
+  width: 26px;
+}
+
+/* RIGHT NAV */
+.nav-right {
+  position: fixed;
+  right: 0;
+  top: 100px;
+  width: 70px;
+}
+
+.nav-right .nav-item {
+  margin-bottom: 10px;
+}
+
+/* CONTENT */
+.app-content {
+  margin-left: 80px;
+  padding: 40px;
+}
