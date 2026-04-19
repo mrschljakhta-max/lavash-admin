@@ -3,6 +3,8 @@ if (!window.APP_CONFIG?.supabaseUrl || !window.APP_CONFIG?.supabaseAnonKey) {
 }
 const authSb = supabase.createClient(window.APP_CONFIG.supabaseUrl, window.APP_CONFIG.supabaseAnonKey);
 const APP_ENTRY = 'pending_v3.html';
+console.log('SUPABASE URL =', window.APP_CONFIG?.supabaseUrl);
+console.log('SUPABASE KEY PREFIX =', window.APP_CONFIG?.supabaseAnonKey?.slice(0, 20));
 let currentEnrollFactor = null;
 function el(id){return document.getElementById(id)}
 const VIEWS=['authViewLogin','authViewRegister','authViewEnroll','authViewVerify','authViewBlocked'];
