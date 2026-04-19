@@ -1,31 +1,738 @@
 if (!window.APP_CONFIG?.supabaseUrl || !window.APP_CONFIG?.supabaseAnonKey) {
   throw new Error('APP_CONFIG is missing. Check config.js');
 }
-const authSb = supabase.createClient(window.APP_CONFIG.supabaseUrl, window.APP_CONFIG.supabaseAnonKey);
+
+const authSb = supabase.createClient(
+  window.APP_CONFIG.supabaseUrl,
+  window.APP_CONFIG.supabaseAnonKey
+);
+
 const APP_ENTRY = 'pending_v3.html';
-console.log('SUPABASE URL =', window.APP_CONFIG?.supabaseUrl);
-console.log('SUPABASE KEY PREFIX =', window.APP_CONFIG?.supabaseAnonKey?.slice(0, 20));
+
+const VIEWS = [
+  'authViewLogin',
+  'authViewRegister',
+  'authViewEnroll',
+  'authViewVerify',
+  'authViewBlocked'
+];
+
 let currentEnrollFactor = null;
-function el(id){return document.getElementById(id)}
-const VIEWS=['authViewLogin','authViewRegister','authViewEnroll','authViewVerify','authViewBlocked'];
-function showView(id){VIEWS.forEach(v=>el(v)?.classList.add('hidden'));el(id)?.classList.remove('hidden')}
-function setStatus(text,kind='neutral'){const dot=el('authStatusDot');const label=el('authStatusText');if(!dot||!label)return;dot.classList.remove('ok','error');if(kind==='ok')dot.classList.add('ok');if(kind==='error')dot.classList.add('error');label.textContent=text}
-function activateTab(mode){const loginActive=mode==='login';el('tabLoginBtn')?.classList.toggle('active',loginActive);el('tabRegisterBtn')?.classList.toggle('active',!loginActive);showView(loginActive?'authViewLogin':'authViewRegister');setStatus(loginActive?'Введи email і пароль':'Створи новий акаунт')}
-function togglePasswordVisibility(targetId,btn){const input=el(targetId);if(!input)return;const next=input.type==='password'?'text':'password';input.type=next;btn.textContent=next==='password'?'👁':'🙈'}
-function normalizeErrorMessage(error){if(!error)return 'Невідома помилка'; if(typeof error==='string')return error; if(error.message)return error.message; try{return JSON.stringify(error)}catch{return 'Невідома помилка'}}
-async function logActivity(action,payload={},explicitUser=null){try{let user=explicitUser||null;if(!user){const authResp=await authSb.auth.getUser();user=authResp?.data?.user||null}const row={user_id:user?.id||null,action:action||'unknown',details:JSON.stringify({actor_email:user?.email||payload.actor_email||null,status:payload.status||'info',message:payload.message||null,entity_type:payload.entity_type||null,entity_id:payload.entity_id||null,meta:payload.meta||{}})};const {error}=await authSb.from('activity_logs').insert([row]);if(error)console.warn('activity_logs insert warning:',error)}catch(err){console.warn('activity_logs crashed but ignored:',err)}}
-async function signOutAuth(){try{await authSb.auth.signOut()}catch(err){console.warn('signOut failed:',err)}currentEnrollFactor=null;showView('authViewLogin');activateTab('login');el('authSignOutBtn')?.classList.add('hidden');setStatus('Сеанс завершено')}
-async function ensureAllowedUser(user){const {data,error}=await authSb.from('allowed_users').select('email,is_active').eq('email',user.email).maybeSingle();if(error)throw error;return !!(data&&data.is_active!==false)}
-async function syncProfile(user){try{const displayName=user.user_metadata?.display_name||user.email?.split('@')[0]||'Оператор';const row={id:user.id,email:user.email,display_name:displayName,is_active:true};let resp=await authSb.from('profiles').upsert(row,{onConflict:'id'});if(!resp.error)return true;resp=await authSb.from('profiles').update({email:row.email,display_name:row.display_name,is_active:row.is_active}).eq('id',row.id);if(!resp.error)return true;resp=await authSb.from('profiles').insert([row]);if(!resp.error)return true;console.warn('profiles sync skipped:',resp.error);return false}catch(err){console.warn('syncProfile crashed but ignored:',err);return false}}
-async function getMfaState(){const [aalResp,factorResp]=await Promise.all([authSb.auth.mfa.getAuthenticatorAssuranceLevel(),authSb.auth.mfa.listFactors()]);if(aalResp.error)throw aalResp.error;if(factorResp.error)throw factorResp.error;return {aal:aalResp.data,factors:factorResp.data.totp||[]}}
-async function startMfaEnroll(){try{setStatus('Створюємо QR-код…');const {data,error}=await authSb.auth.mfa.enroll({factorType:'totp'});if(error)throw error;currentEnrollFactor=data;const mount=el('mfaQrMount');if(mount){mount.innerHTML='';const qr=data?.totp?.qr_code||'';if(qr.startsWith('data:image')){const img=document.createElement('img');img.src=qr;img.alt='QR код для 2FA';img.className='auth-qr-image';mount.appendChild(img)}else if(qr.trim().startsWith('<svg')){mount.innerHTML=qr;const svg=mount.querySelector('svg');if(svg)svg.classList.add('auth-qr-svg')}else{const img=document.createElement('img');img.src=`data:image/svg+xml;utf-8,${encodeURIComponent(qr)}`;img.alt='QR код для 2FA';img.className='auth-qr-image';mount.appendChild(img)}}if(el('mfaSecretText'))el('mfaSecretText').textContent=data.totp.secret;showView('authViewEnroll');el('authSignOutBtn')?.classList.remove('hidden');setStatus('Скануй QR та введи код','ok')}catch(err){console.error('startMfaEnroll failed:',err);setStatus(normalizeErrorMessage(err),'error')}}
-async function finishMfaEnroll(){try{const code=el('mfaEnrollCodeInput')?.value.trim();if(!currentEnrollFactor?.id||!code){setStatus('Введи код із Google Authenticator','error');return}setStatus('Перевіряємо код…');const challenge=await authSb.auth.mfa.challenge({factorId:currentEnrollFactor.id});if(challenge.error){setStatus(challenge.error.message,'error');return}const verify=await authSb.auth.mfa.verify({factorId:currentEnrollFactor.id,challengeId:challenge.data.id,code});if(verify.error){setStatus(verify.error.message,'error');return}await logActivity('mfa_enroll',{status:'ok',message:'Користувач підключив 2FA.'});setStatus('2FA підключено. Переходимо в систему…','ok');window.location.href=APP_ENTRY}catch(err){console.error('finishMfaEnroll failed:',err);setStatus(normalizeErrorMessage(err),'error')}}
-async function verifyMfaLogin(){try{const code=el('mfaVerifyCodeInput')?.value.trim();if(!code){setStatus('Введи код 2FA','error');return}setStatus('Перевіряємо код…');const {factors}=await getMfaState();const factor=factors[0];if(!factor){await startMfaEnroll();return}const challenge=await authSb.auth.mfa.challenge({factorId:factor.id});if(challenge.error){setStatus(challenge.error.message,'error');return}const verify=await authSb.auth.mfa.verify({factorId:factor.id,challengeId:challenge.data.id,code});if(verify.error){setStatus(verify.error.message,'error');return}await logActivity('mfa_verify',{status:'ok',message:'Користувач успішно підтвердив 2FA.'});setStatus('Вхід підтверджено','ok');window.location.href=APP_ENTRY}catch(err){console.error('verifyMfaLogin failed:',err);setStatus(normalizeErrorMessage(err),'error')}}
-async function handleLoginSubmit(event){event.preventDefault();try{const email=el('loginEmailInput')?.value.trim();const password=el('loginPasswordInput')?.value;if(!email||!password){setStatus('Введи email і пароль','error');return}setStatus('Виконуємо вхід…');const {data,error}=await authSb.auth.signInWithPassword({email,password});if(error){await logActivity('login_failed',{status:'error',message:error.message,actor_email:email});setStatus(error.message,'error');return}await logActivity('login_success',{status:'ok',message:'Користувач успішно увійшов.',actor_email:email},data?.user||null);await handlePostAuthLanding()}catch(err){console.error('handleLoginSubmit fatal:',err);setStatus(normalizeErrorMessage(err),'error')}}
-async function handleRegisterSubmit(event){event.preventDefault();try{const email=el('registerEmailInput')?.value.trim();const password=el('registerPasswordInput')?.value;const passwordConfirm=el('registerPasswordConfirmInput')?.value;if(!email||!password||!passwordConfirm){setStatus('Заповни всі поля для реєстрації','error');return}if(password!==passwordConfirm){setStatus('Паролі не співпадають','error');return}if(password.length<6){setStatus('Пароль має містити щонайменше 6 символів','error');return}setStatus('Створюємо акаунт…');const {data,error}=await authSb.auth.signUp({email,password,options:{data:{display_name:email.split('@')[0]}}});if(error){await logActivity('register_failed',{status:'error',message:error.message,actor_email:email});setStatus(error.message,'error');return}await logActivity('register_success',{status:'ok',message:'Користувача зареєстровано.',actor_email:email},data?.user||null);setStatus('Акаунт створено. Виконай вхід, щоб продовжити.','ok');activateTab('login');if(el('loginEmailInput'))el('loginEmailInput').value=email;if(el('registerPasswordInput'))el('registerPasswordInput').value='';if(el('registerPasswordConfirmInput'))el('registerPasswordConfirmInput').value=''}catch(err){console.error('handleRegisterSubmit fatal:',err);setStatus(normalizeErrorMessage(err),'error')}}
-async function handlePostAuthLanding(){try{const authResp=await authSb.auth.getUser();const user=authResp?.data?.user||null;if(!user){activateTab('login');return}const allowed=await ensureAllowedUser(user);if(!allowed){showView('authViewBlocked');if(el('blockedMessage'))el('blockedMessage').textContent=`Акаунт ${user.email} не має доступу до системи.`;el('authSignOutBtn')?.classList.remove('hidden');setStatus('Доступ заборонено','error');return}await syncProfile(user);const {aal,factors}=await getMfaState();el('authSignOutBtn')?.classList.remove('hidden');if(!factors.length){await startMfaEnroll();return}if(aal.currentLevel!=='aal2'&&aal.nextLevel==='aal2'){showView('authViewVerify');setStatus('Потрібен код 2FA');return}setStatus('Вхід виконано, переходимо…','ok');window.location.href=APP_ENTRY}catch(err){console.error('handlePostAuthLanding failed:',err);setStatus(normalizeErrorMessage(err),'error')}}
-async function initAuthPage(){try{el('tabLoginBtn')?.addEventListener('click',()=>activateTab('login'));el('tabRegisterBtn')?.addEventListener('click',()=>activateTab('register'));el('switchToLoginBtn')?.addEventListener('click',()=>activateTab('login'));document.querySelectorAll('.field-toggle').forEach(btn=>btn.addEventListener('click',()=>togglePasswordVisibility(btn.dataset.target,btn)));el('loginForm')?.addEventListener('submit',handleLoginSubmit);el('registerForm')?.addEventListener('submit',handleRegisterSubmit);el('mfaEnrollForm')?.addEventListener('submit',e=>{e.preventDefault();finishMfaEnroll()});el('mfaVerifyForm')?.addEventListener('submit',e=>{e.preventDefault();verifyMfaLogin()});el('blockedBackBtn')?.addEventListener('click',signOutAuth);el('authSignOutBtn')?.addEventListener('click',signOutAuth);const {data:{session}}=await authSb.auth.getSession();if(session){await handlePostAuthLanding()}else{activateTab('login')}}catch(err){console.error('initAuthPage failed:',err);setStatus(normalizeErrorMessage(err),'error')}}
-async function protectAppPage(){try{const {data:{session}}=await authSb.auth.getSession();if(!session){window.location.replace('index.html');return false}const {data:{user}}=await authSb.auth.getUser();if(!user){window.location.replace('index.html');return false}const allowed=await ensureAllowedUser(user);if(!allowed){await signOutAuth();return false}const {aal,factors}=await getMfaState();if(!factors.length||(aal.currentLevel!=='aal2'&&aal.nextLevel==='aal2')){window.location.replace('index.html');return false}return user}catch(err){console.error('protectAppPage failed:',err);window.location.replace('index.html');return false}}
-async function hydrateAppUserBadge(){try{const {data:{user}}=await authSb.auth.getUser();if(!user)return;const displayName=user.user_metadata?.display_name||user.email?.split('@')[0]||'Оператор';const avatar=document.querySelector('.user-avatar');const title=document.querySelector('.user-title');const subtitle=document.querySelector('.user-subtitle');if(avatar)avatar.textContent=(displayName[0]||'U').toUpperCase();if(title)title.textContent=displayName;if(subtitle)subtitle.textContent=user.email;const badge=document.querySelector('.user-badge');if(badge){badge.style.cursor='pointer';badge.title='Вийти з системи';badge.addEventListener('click',async()=>{await signOutAuth()},{once:true})}}catch(err){console.warn('hydrateAppUserBadge failed:',err)}}
-document.addEventListener('DOMContentLoaded',initAuthPage);
-window.LAVASH_AUTH={sb:authSb,protectAppPage,hydrateAppUserBadge,signOutAuth,logActivity};
+let pendingLoginFactorId = null;
+
+function el(id) {
+  return document.getElementById(id);
+}
+
+function qs(selector, parent = document) {
+  return parent.querySelector(selector);
+}
+
+function qsa(selector, parent = document) {
+  return Array.from(parent.querySelectorAll(selector));
+}
+
+function showView(id) {
+  VIEWS.forEach((viewId) => el(viewId)?.classList.add('hidden'));
+  el(id)?.classList.remove('hidden');
+}
+
+function setSubtitle(text) {
+  const node = el('authSubtitle');
+  if (node) node.textContent = text;
+}
+
+function setStatus(text, kind = 'neutral') {
+  const dot = el('authStatusDot');
+  const label = el('authStatusText');
+  if (!dot || !label) return;
+
+  dot.classList.remove('ok', 'error');
+  if (kind === 'ok') dot.classList.add('ok');
+  if (kind === 'error') dot.classList.add('error');
+
+  label.textContent = text;
+}
+
+function activateTab(mode) {
+  const isLogin = mode === 'login';
+
+  el('tabLoginBtn')?.classList.toggle('active', isLogin);
+  el('tabRegisterBtn')?.classList.toggle('active', !isLogin);
+  el('tabLoginBtn')?.setAttribute('aria-selected', String(isLogin));
+  el('tabRegisterBtn')?.setAttribute('aria-selected', String(!isLogin));
+
+  showView(isLogin ? 'authViewLogin' : 'authViewRegister');
+  el('authTabs')?.classList.remove('hidden');
+
+  setSubtitle(isLogin ? 'Безпечний доступ до системи' : 'Створення нового акаунта');
+  setStatus(isLogin ? 'Введи email і пароль' : 'Заповни дані для реєстрації');
+}
+
+function hideTabs() {
+  el('authTabs')?.classList.add('hidden');
+}
+
+function togglePasswordVisibility(targetId, btn) {
+  const input = el(targetId);
+  if (!input) return;
+
+  const next = input.type === 'password' ? 'text' : 'password';
+  input.type = next;
+  btn.textContent = next === 'password' ? '👁' : '🙈';
+}
+
+function normalizeErrorMessage(error) {
+  if (!error) return 'Невідома помилка';
+  if (typeof error === 'string') return error;
+  if (error.message) return error.message;
+
+  try {
+    return JSON.stringify(error);
+  } catch {
+    return 'Невідома помилка';
+  }
+}
+
+function normalizeOtpValue(value) {
+  return String(value || '').replace(/\D/g, '').slice(0, 6);
+}
+
+function getOtpInputs(containerId) {
+  return qsa('.otp-input', el(containerId));
+}
+
+function collectOtpCode(containerId, hiddenInputId) {
+  const code = getOtpInputs(containerId).map((input) => input.value).join('');
+  const hidden = el(hiddenInputId);
+  if (hidden) hidden.value = code;
+  return code;
+}
+
+function clearOtp(containerId, hiddenInputId) {
+  getOtpInputs(containerId).forEach((input) => {
+    input.value = '';
+  });
+
+  const hidden = el(hiddenInputId);
+  if (hidden) hidden.value = '';
+}
+
+function focusFirstOtp(containerId) {
+  const first = getOtpInputs(containerId)[0];
+  first?.focus();
+}
+
+function fillOtp(containerId, hiddenInputId, code) {
+  const digits = normalizeOtpValue(code).split('');
+  const inputs = getOtpInputs(containerId);
+
+  inputs.forEach((input, index) => {
+    input.value = digits[index] || '';
+  });
+
+  const hidden = el(hiddenInputId);
+  if (hidden) hidden.value = digits.join('');
+
+  const firstEmpty = inputs.find((input) => !input.value);
+  (firstEmpty || inputs[inputs.length - 1])?.focus();
+}
+
+function setupOtpGroup(containerId, hiddenInputId) {
+  const container = el(containerId);
+  if (!container) return;
+
+  const inputs = getOtpInputs(containerId);
+
+  inputs.forEach((input, index) => {
+    input.addEventListener('input', (event) => {
+      const raw = event.target.value || '';
+      const normalized = raw.replace(/\D/g, '');
+
+      if (!normalized) {
+        event.target.value = '';
+        collectOtpCode(containerId, hiddenInputId);
+        return;
+      }
+
+      if (normalized.length > 1) {
+        fillOtp(containerId, hiddenInputId, normalized);
+        return;
+      }
+
+      event.target.value = normalized;
+      collectOtpCode(containerId, hiddenInputId);
+
+      if (index < inputs.length - 1) {
+        inputs[index + 1].focus();
+        inputs[index + 1].select();
+      }
+    });
+
+    input.addEventListener('keydown', (event) => {
+      const key = event.key;
+
+      if (key === 'Backspace') {
+        if (input.value) {
+          input.value = '';
+          collectOtpCode(containerId, hiddenInputId);
+          event.preventDefault();
+          return;
+        }
+
+        if (index > 0) {
+          inputs[index - 1].value = '';
+          inputs[index - 1].focus();
+          collectOtpCode(containerId, hiddenInputId);
+          event.preventDefault();
+        }
+        return;
+      }
+
+      if (key === 'ArrowLeft' && index > 0) {
+        inputs[index - 1].focus();
+        event.preventDefault();
+        return;
+      }
+
+      if (key === 'ArrowRight' && index < inputs.length - 1) {
+        inputs[index + 1].focus();
+        event.preventDefault();
+        return;
+      }
+
+      if (key === ' ' || (key.length === 1 && !/\d/.test(key))) {
+        event.preventDefault();
+      }
+    });
+
+    input.addEventListener('paste', (event) => {
+      event.preventDefault();
+      const pasted = normalizeOtpValue(event.clipboardData?.getData('text') || '');
+      if (!pasted) return;
+      fillOtp(containerId, hiddenInputId, pasted);
+    });
+
+    input.addEventListener('focus', () => {
+      input.select();
+    });
+  });
+}
+
+async function logActivity(action, payload = {}, explicitUser = null) {
+  try {
+    let user = explicitUser || null;
+
+    if (!user) {
+      const authResp = await authSb.auth.getUser();
+      user = authResp?.data?.user || null;
+    }
+
+    const row = {
+      user_id: user?.id || null,
+      action: action || 'unknown',
+      details: JSON.stringify({
+        actor_email: user?.email || payload.actor_email || null,
+        status: payload.status || 'info',
+        message: payload.message || null,
+        entity_type: payload.entity_type || null,
+        entity_id: payload.entity_id || null,
+        meta: payload.meta || {}
+      })
+    };
+
+    const { error } = await authSb.from('activity_logs').insert([row]);
+    if (error) console.warn('activity_logs insert warning:', error);
+  } catch (err) {
+    console.warn('activity_logs crashed but ignored:', err);
+  }
+}
+
+async function signOutAuth() {
+  try {
+    await authSb.auth.signOut();
+  } catch (err) {
+    console.warn('signOut failed:', err);
+  }
+
+  currentEnrollFactor = null;
+  pendingLoginFactorId = null;
+
+  clearOtp('mfaEnrollOtp', 'mfaEnrollCodeInput');
+  clearOtp('mfaVerifyOtp', 'mfaVerifyCodeInput');
+
+  activateTab('login');
+  showView('authViewLogin');
+  el('authSignOutBtn')?.classList.add('hidden');
+  setSubtitle('Безпечний доступ до системи');
+  setStatus('Сеанс завершено');
+}
+
+async function ensureAllowedUser(user) {
+  const { data, error } = await authSb
+    .from('allowed_users')
+    .select('email,is_active')
+    .eq('email', user.email)
+    .maybeSingle();
+
+  if (error) throw error;
+
+  return !!(data && data.is_active !== false);
+}
+
+async function syncProfile(user) {
+  try {
+    const displayName = user.user_metadata?.display_name || user.email?.split('@')[0] || 'Оператор';
+    const row = {
+      id: user.id,
+      email: user.email,
+      display_name: displayName,
+      is_active: true
+    };
+
+    let resp = await authSb.from('profiles').upsert(row, { onConflict: 'id' });
+    if (!resp.error) return true;
+
+    resp = await authSb
+      .from('profiles')
+      .update({
+        email: row.email,
+        display_name: row.display_name,
+        is_active: row.is_active
+      })
+      .eq('id', row.id);
+
+    if (!resp.error) return true;
+
+    console.warn('profiles sync skipped:', resp.error);
+    return false;
+  } catch (err) {
+    console.warn('syncProfile crashed but ignored:', err);
+    return false;
+  }
+}
+
+async function getMfaState() {
+  const [aalResp, factorResp] = await Promise.all([
+    authSb.auth.mfa.getAuthenticatorAssuranceLevel(),
+    authSb.auth.mfa.listFactors()
+  ]);
+
+  if (aalResp.error) throw aalResp.error;
+  if (factorResp.error) throw factorResp.error;
+
+  return {
+    aal: aalResp.data,
+    factors: factorResp.data?.totp || []
+  };
+}
+
+function renderQrCode(qrValue) {
+  const mount = el('mfaQrMount');
+  if (!mount) return;
+
+  mount.innerHTML = '';
+
+  if (!qrValue) {
+    mount.textContent = 'QR недоступний';
+    return;
+  }
+
+  if (qrValue.startsWith('data:image')) {
+    const img = document.createElement('img');
+    img.src = qrValue;
+    img.alt = 'QR код для 2FA';
+    img.className = 'auth-qr-image';
+    mount.appendChild(img);
+    return;
+  }
+
+  if (qrValue.trim().startsWith('<svg')) {
+    mount.innerHTML = qrValue;
+    const svg = mount.querySelector('svg');
+    if (svg) svg.classList.add('auth-qr-svg');
+    return;
+  }
+
+  const img = document.createElement('img');
+  img.src = `data:image/svg+xml;utf-8,${encodeURIComponent(qrValue)}`;
+  img.alt = 'QR код для 2FA';
+  img.className = 'auth-qr-image';
+  mount.appendChild(img);
+}
+
+async function startMfaEnroll() {
+  try {
+    hideTabs();
+    showView('authViewEnroll');
+    el('authSignOutBtn')?.classList.remove('hidden');
+    setSubtitle('Підключення двофакторного захисту');
+    setStatus('Створюємо QR-код…');
+
+    clearOtp('mfaEnrollOtp', 'mfaEnrollCodeInput');
+
+    const { data, error } = await authSb.auth.mfa.enroll({ factorType: 'totp' });
+    if (error) throw error;
+
+    currentEnrollFactor = data;
+    renderQrCode(data?.totp?.qr_code || '');
+    if (el('mfaSecretText')) el('mfaSecretText').textContent = data?.totp?.secret || '';
+
+    setStatus('Скануй QR-код і введи 6-значний код', 'ok');
+    setTimeout(() => focusFirstOtp('mfaEnrollOtp'), 40);
+  } catch (err) {
+    console.error('startMfaEnroll failed:', err);
+    setStatus(normalizeErrorMessage(err), 'error');
+  }
+}
+
+async function finishMfaEnroll(event) {
+  event?.preventDefault();
+
+  try {
+    const code = collectOtpCode('mfaEnrollOtp', 'mfaEnrollCodeInput');
+
+    if (!currentEnrollFactor?.id || code.length !== 6) {
+      setStatus('Введи повний 6-значний код із застосунку', 'error');
+      return;
+    }
+
+    setStatus('Перевіряємо код…');
+
+    const challenge = await authSb.auth.mfa.challenge({
+      factorId: currentEnrollFactor.id
+    });
+
+    if (challenge.error) throw challenge.error;
+
+    const verify = await authSb.auth.mfa.verify({
+      factorId: currentEnrollFactor.id,
+      challengeId: challenge.data.id,
+      code
+    });
+
+    if (verify.error) throw verify.error;
+
+    await logActivity('mfa_enroll', {
+      status: 'ok',
+      message: 'Користувач підключив 2FA.'
+    });
+
+    setStatus('2FA підключено. Перевіряємо доступ…', 'ok');
+    currentEnrollFactor = null;
+
+    await handlePostAuthLanding();
+  } catch (err) {
+    console.error('finishMfaEnroll failed:', err);
+    clearOtp('mfaEnrollOtp', 'mfaEnrollCodeInput');
+    focusFirstOtp('mfaEnrollOtp');
+    setStatus(normalizeErrorMessage(err), 'error');
+  }
+}
+
+async function openVerifyMfaView(factorId) {
+  pendingLoginFactorId = factorId;
+  hideTabs();
+  showView('authViewVerify');
+  el('authSignOutBtn')?.classList.remove('hidden');
+  setSubtitle('Підтвердження входу');
+  clearOtp('mfaVerifyOtp', 'mfaVerifyCodeInput');
+  setStatus('Введи код із застосунку автентифікації');
+  setTimeout(() => focusFirstOtp('mfaVerifyOtp'), 40);
+}
+
+async function verifyMfaLogin(event) {
+  event?.preventDefault();
+
+  try {
+    const code = collectOtpCode('mfaVerifyOtp', 'mfaVerifyCodeInput');
+
+    if (!pendingLoginFactorId) {
+      setStatus('Не знайдено активний фактор 2FA', 'error');
+      return;
+    }
+
+    if (code.length !== 6) {
+      setStatus('Введи повний 6-значний код', 'error');
+      return;
+    }
+
+    setStatus('Перевіряємо код…');
+
+    const challenge = await authSb.auth.mfa.challenge({
+      factorId: pendingLoginFactorId
+    });
+
+    if (challenge.error) throw challenge.error;
+
+    const verify = await authSb.auth.mfa.verify({
+      factorId: pendingLoginFactorId,
+      challengeId: challenge.data.id,
+      code
+    });
+
+    if (verify.error) throw verify.error;
+
+    await logActivity('mfa_verify', {
+      status: 'ok',
+      message: 'Користувач успішно підтвердив 2FA.'
+    });
+
+    setStatus('Код підтверджено. Перевіряємо доступ…', 'ok');
+    await handlePostAuthLanding();
+  } catch (err) {
+    console.error('verifyMfaLogin failed:', err);
+    clearOtp('mfaVerifyOtp', 'mfaVerifyCodeInput');
+    focusFirstOtp('mfaVerifyOtp');
+    setStatus(normalizeErrorMessage(err), 'error');
+  }
+}
+
+async function handleLoginSubmit(event) {
+  event.preventDefault();
+
+  try {
+    const email = el('loginEmailInput')?.value.trim();
+    const password = el('loginPasswordInput')?.value || '';
+
+    if (!email || !password) {
+      setStatus('Введи email і пароль', 'error');
+      return;
+    }
+
+    setStatus('Виконуємо вхід…');
+
+    const { data, error } = await authSb.auth.signInWithPassword({ email, password });
+
+    if (error) {
+      await logActivity('login_failed', {
+        status: 'error',
+        message: error.message,
+        actor_email: email
+      });
+
+      setStatus(error.message, 'error');
+      return;
+    }
+
+    await logActivity(
+      'login_success',
+      {
+        status: 'ok',
+        message: 'Користувач успішно пройшов email/password.',
+        actor_email: email
+      },
+      data?.user || null
+    );
+
+    await handlePostAuthLanding();
+  } catch (err) {
+    console.error('handleLoginSubmit fatal:', err);
+    setStatus(normalizeErrorMessage(err), 'error');
+  }
+}
+
+async function handleRegisterSubmit(event) {
+  event.preventDefault();
+
+  try {
+    const email = el('registerEmailInput')?.value.trim();
+    const password = el('registerPasswordInput')?.value || '';
+    const passwordConfirm = el('registerPasswordConfirmInput')?.value || '';
+
+    if (!email || !password || !passwordConfirm) {
+      setStatus('Заповни всі поля для реєстрації', 'error');
+      return;
+    }
+
+    if (password !== passwordConfirm) {
+      setStatus('Паролі не співпадають', 'error');
+      return;
+    }
+
+    if (password.length < 6) {
+      setStatus('Пароль має містити щонайменше 6 символів', 'error');
+      return;
+    }
+
+    setStatus('Створюємо акаунт…');
+
+    const { data, error } = await authSb.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          display_name: email.split('@')[0]
+        }
+      }
+    });
+
+    if (error) {
+      await logActivity('register_failed', {
+        status: 'error',
+        message: error.message,
+        actor_email: email
+      });
+
+      setStatus(error.message, 'error');
+      return;
+    }
+
+    await logActivity(
+      'register_success',
+      {
+        status: 'ok',
+        message: 'Користувача зареєстровано.',
+        actor_email: email
+      },
+      data?.user || null
+    );
+
+    if (data?.session) {
+      setStatus('Акаунт створено. Налаштуй 2FA', 'ok');
+      await startMfaEnroll();
+      return;
+    }
+
+    setStatus('Акаунт створено. Тепер увійди, щоб продовжити', 'ok');
+    activateTab('login');
+
+    if (el('loginEmailInput')) el('loginEmailInput').value = email;
+    if (el('registerPasswordInput')) el('registerPasswordInput').value = '';
+    if (el('registerPasswordConfirmInput')) el('registerPasswordConfirmInput').value = '';
+  } catch (err) {
+    console.error('handleRegisterSubmit fatal:', err);
+    setStatus(normalizeErrorMessage(err), 'error');
+  }
+}
+
+async function handleBlocked(user) {
+  hideTabs();
+  showView('authViewBlocked');
+  el('authSignOutBtn')?.classList.remove('hidden');
+  setSubtitle('Доступ обмежено');
+
+  const blockedNode = el('blockedMessage');
+  if (blockedNode) {
+    blockedNode.textContent = `Користувач ${user.email} успішно автентифікований, але не має доступу до Lavash. Зверніться до адміністратора.`;
+  }
+
+  setStatus('Доступ заборонено', 'error');
+}
+
+async function handlePostAuthLanding() {
+  try {
+    const authResp = await authSb.auth.getUser();
+    const user = authResp?.data?.user || null;
+
+    if (!user) {
+      activateTab('login');
+      return;
+    }
+
+    const { aal, factors } = await getMfaState();
+
+    el('authSignOutBtn')?.classList.remove('hidden');
+
+    if (!factors.length) {
+      await startMfaEnroll();
+      return;
+    }
+
+    const firstFactor = factors[0];
+    if (aal?.currentLevel !== 'aal2') {
+      await openVerifyMfaView(firstFactor.id);
+      return;
+    }
+
+    const allowed = await ensureAllowedUser(user);
+    if (!allowed) {
+      await logActivity(
+        'access_denied_whitelist',
+        {
+          status: 'error',
+          message: 'Користувача немає в allowed_users або is_active = false.',
+          actor_email: user.email
+        },
+        user
+      );
+
+      await handleBlocked(user);
+      return;
+    }
+
+    await syncProfile(user);
+
+    await logActivity(
+      'access_granted',
+      {
+        status: 'ok',
+        message: 'Користувач успішно увійшов у систему.',
+        actor_email: user.email
+      },
+      user
+    );
+
+    setStatus('Вхід виконано. Переходимо до системи…', 'ok');
+    window.location.href = APP_ENTRY;
+  } catch (err) {
+    console.error('handlePostAuthLanding failed:', err);
+    setStatus(normalizeErrorMessage(err), 'error');
+  }
+}
+
+async function handleEnrollBack() {
+  await signOutAuth();
+}
+
+async function handleVerifyBack() {
+  await signOutAuth();
+}
+
+async function initExistingSession() {
+  try {
+    const { data, error } = await authSb.auth.getSession();
+    if (error) throw error;
+
+    if (data?.session) {
+      await handlePostAuthLanding();
+    } else {
+      activateTab('login');
+    }
+  } catch (err) {
+    console.error('initExistingSession failed:', err);
+    activateTab('login');
+    setStatus(normalizeErrorMessage(err), 'error');
+  }
+}
+
+function bindEvents() {
+  el('tabLoginBtn')?.addEventListener('click', () => activateTab('login'));
+  el('tabRegisterBtn')?.addEventListener('click', () => activateTab('register'));
+  el('switchToLoginBtn')?.addEventListener('click', () => activateTab('login'));
+
+  qsa('.field-toggle').forEach((btn) => {
+    btn.addEventListener('click', () => togglePasswordVisibility(btn.dataset.target, btn));
+  });
+
+  el('loginForm')?.addEventListener('submit', handleLoginSubmit);
+  el('registerForm')?.addEventListener('submit', handleRegisterSubmit);
+  el('mfaEnrollForm')?.addEventListener('submit', finishMfaEnroll);
+  el('mfaVerifyForm')?.addEventListener('submit', verifyMfaLogin);
+
+  el('blockedBackBtn')?.addEventListener('click', signOutAuth);
+  el('authSignOutBtn')?.addEventListener('click', signOutAuth);
+  el('enrollBackBtn')?.addEventListener('click', handleEnrollBack);
+  el('verifyBackBtn')?.addEventListener('click', handleVerifyBack);
+
+  setupOtpGroup('mfaEnrollOtp', 'mfaEnrollCodeInput');
+  setupOtpGroup('mfaVerifyOtp', 'mfaVerifyCodeInput');
+}
+
+async function initAuthPage() {
+  bindEvents();
+  activateTab('login');
+  await initExistingSession();
+}
+
+document.addEventListener('DOMContentLoaded', initAuthPage);
