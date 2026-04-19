@@ -838,4 +838,15 @@ window.LAVASH_AUTH = {
     }
   }
 };
-document.addEventListener('DOMContentLoaded', initAuthPage);
+document.addEventListener('DOMContentLoaded', () => {
+  const isAuthPage =
+    window.location.pathname.endsWith('index.html') ||
+    window.location.pathname === '/' ||
+    window.location.pathname.endsWith('/');
+
+  if (isAuthPage) {
+    initAuthPage();
+  } else {
+    console.log('auth.js: skip init (not auth page)');
+  }
+});
