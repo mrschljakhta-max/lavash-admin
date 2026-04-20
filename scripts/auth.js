@@ -798,7 +798,7 @@ function bindEvents() {
 
   setupOtpGroup('mfaEnrollOtp', 'mfaEnrollCodeInput');
   setupOtpGroup('mfaVerifyOtp', 'mfaVerifyCodeInput');
-}
+} 
 
 async function initAuthPage() {
   bindEvents();
