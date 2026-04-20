@@ -1,20 +1,10 @@
 (() => {
-  const LAVASH_LOGIN_PAGE = '/lavash-admin/pages/index.html';
-
-  const LAVASH_ROUTES = {
-    editor: '/lavash-admin/pages/pending_v3.html',
-    upload: '/lavash-admin/pages/upload.html',
-    dicts: '/lavash-admin/pages/dicts.html',
-    logs: '/lavash-admin/pages/logs.html'
-  };
-
   function lavashCurrentPageKey() {
-    const path = window.location.pathname;
+    const hash = window.location.hash.replace('#', '').trim();
 
-    if (path.endsWith('/pending_v3.html')) return 'editor';
-    if (path.endsWith('/upload.html')) return 'upload';
-    if (path.endsWith('/dicts.html')) return 'dicts';
-    if (path.endsWith('/logs.html')) return 'logs';
+    if (hash === 'upload') return 'upload';
+    if (hash === 'dicts') return 'dicts';
+    if (hash === 'logs') return 'logs';
 
     return 'editor';
   }
@@ -27,7 +17,7 @@
           <div class="left-nav__top">
             <div class="brand-mini">
               <img
-                src="/lavash-admin/assets/lavash-logo.svg?v=7"
+                src="/lavash-admin/assets/lavash-logo.svg?v=8"
                 alt="Lavash"
                 class="brand-mini__logo"
               />
@@ -41,30 +31,30 @@
           </div>
 
           <nav class="left-nav__menu" aria-label="Основна навігація">
-            <button class="nav-item ${activeKey === 'editor' ? 'is-active' : ''}" data-route="editor" type="button">
+            <button class="nav-item ${activeKey === 'editor' ? 'is-active' : ''}" data-route="pending" type="button">
               <span class="nav-item__icon-wrap">
-                <img src="/lavash-admin/assets/icons/nav-editor.svg?v=7" alt="" class="nav-item__icon" />
+                <img src="/lavash-admin/assets/icons/nav-editor.svg?v=8" alt="" class="nav-item__icon" />
               </span>
               <span class="nav-item__label">Редактор</span>
             </button>
 
             <button class="nav-item ${activeKey === 'upload' ? 'is-active' : ''}" data-route="upload" type="button">
               <span class="nav-item__icon-wrap">
-                <img src="/lavash-admin/assets/icons/nav-upload.svg?v=7" alt="" class="nav-item__icon" />
+                <img src="/lavash-admin/assets/icons/nav-upload.svg?v=8" alt="" class="nav-item__icon" />
               </span>
               <span class="nav-item__label">Завантаження</span>
             </button>
 
             <button class="nav-item ${activeKey === 'dicts' ? 'is-active' : ''}" data-route="dicts" type="button">
               <span class="nav-item__icon-wrap">
-                <img src="/lavash-admin/assets/icons/nav-dicts.svg?v=7" alt="" class="nav-item__icon" />
+                <img src="/lavash-admin/assets/icons/nav-dicts.svg?v=8" alt="" class="nav-item__icon" />
               </span>
               <span class="nav-item__label">Довідники</span>
             </button>
 
             <button class="nav-item ${activeKey === 'logs' ? 'is-active' : ''}" data-route="logs" type="button">
               <span class="nav-item__icon-wrap">
-                <img src="/lavash-admin/assets/icons/nav-logs.svg?v=7" alt="" class="nav-item__icon" />
+                <img src="/lavash-admin/assets/icons/nav-logs.svg?v=8" alt="" class="nav-item__icon" />
               </span>
               <span class="nav-item__label">Логування</span>
             </button>
@@ -89,21 +79,21 @@
           <div class="right-tools__menu" aria-label="Інструменти сторінки">
             <button class="tool-item" data-tool="search" type="button">
               <span class="tool-item__icon-wrap">
-                <img src="/lavash-admin/assets/icons/tool-search.svg?v=7" alt="" class="tool-item__icon" />
+                <img src="/lavash-admin/assets/icons/tool-search.svg?v=8" alt="" class="tool-item__icon" />
               </span>
               <span class="tool-item__label">Пошук</span>
             </button>
 
             <button class="tool-item" data-tool="filters" type="button">
               <span class="tool-item__icon-wrap">
-                <img src="/lavash-admin/assets/icons/tool-filter.svg?v=7" alt="" class="tool-item__icon" />
+                <img src="/lavash-admin/assets/icons/tool-filter.svg?v=8" alt="" class="tool-item__icon" />
               </span>
               <span class="tool-item__label">Фільтри</span>
             </button>
 
             <button class="tool-item" data-tool="refresh" type="button">
               <span class="tool-item__icon-wrap">
-                <img src="/lavash-admin/assets/icons/tool-refresh.svg?v=7" alt="" class="tool-item__icon" />
+                <img src="/lavash-admin/assets/icons/tool-refresh.svg?v=8" alt="" class="tool-item__icon" />
               </span>
               <span class="tool-item__label">Оновити</span>
             </button>
@@ -199,10 +189,7 @@
     document.querySelectorAll('.nav-item').forEach((btn) => {
       btn.addEventListener('click', () => {
         const route = btn.dataset.route;
-        const href = LAVASH_ROUTES[route];
-        if (!href) return;
-        if (window.location.pathname === new URL(href, window.location.origin).pathname) return;
-        window.location.href = href;
+        window.location.hash = route;
       });
     });
 
@@ -214,10 +201,10 @@
             await window.LAVASH_AUTH.logout();
             return;
           }
-          window.location.href = LAVASH_LOGIN_PAGE;
+          window.location.href = '/lavash-admin/pages/index.html';
         } catch (error) {
           console.error('layout logout error:', error);
-          window.location.href = LAVASH_LOGIN_PAGE;
+          window.location.href = '/lavash-admin/pages/index.html';
         }
       });
     }
@@ -264,5 +251,4 @@
 
   window.initLavashLayout = initLavashLayout;
   window.hydrateLavashUser = hydrateLavashUser;
-  window.lavashCurrentPageKey = lavashCurrentPageKey;
 })();
