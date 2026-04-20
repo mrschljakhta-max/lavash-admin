@@ -13,7 +13,7 @@ const authSb = supabase.createClient(
       detectSessionInUrl: true
     }
   }
-);
+); 
 
 const APP_ENTRY = '/lavash-admin/pages/app.html#pending';
 const LOGIN_PAGE = '/lavash-admin/pages/index.html';
