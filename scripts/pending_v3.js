@@ -282,52 +282,7 @@ function bindFilterControls() {
   $('#refreshBtn')?.addEventListener('click', loadPendingRows);
 }
 
-function buildPendingContent() {
-  return `
-    <section class="records-panel" aria-label="Список записів">
-      <div class="records-panel__body" id="pendingGroups">
-        <div class="placeholder-card">Завантаження записів...</div>
-      </div>
-    </section>
-
-    <section class="details-panel" aria-label="Деталі запису">
-      <div class="details-panel__body" id="candidates">
-        <div class="placeholder-card">Оберіть запис ліворуч</div>
-      </div>
-    </section>
-  `;
-}
-
-async function protectPage() {
-  if (!window.LAVASH_AUTH?.protectAppPage) {
-    window.location.replace('/lavash-admin/pages/index.html');
-    return null;
-  }
-
-  const user = await window.LAVASH_AUTH.protectAppPage();
-  if (!user) return null;
-
-  return user;
-}
-
-document.addEventListener('DOMContentLoaded', async () => {
-  try {
-    const user = await protectPage();
-    if (!user) return;
-
-    initLavashLayout({
-      pageKey: 'editor',
-      title: 'Черга перевірки',
-      statusText: 'Підключено',
-      content: buildPendingContent(),
-      useRightTools: true
-    });
-
-    await hydrateLavashUser();
-    bindFilterControls();
-    await loadPendingRows();
-  } catch (error) {
-    console.error('pending_v3 init error:', error);
-    setStatusBadge('Критична помилка');
-  }
-});
+window.initPendingPage = async function initPendingPage() {
+  bindFilterControls();
+  await loadPendingRows();
+};
