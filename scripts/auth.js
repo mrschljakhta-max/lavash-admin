@@ -15,8 +15,7 @@ const authSb = supabase.createClient(
   }
 );
 
-const APP_ENTRY = './pending_v3.html';
-
+const APP_ENTRY = '/lavash-admin/pages/app.html#pending';
 const LOGIN_PAGE = '/lavash-admin/pages/index.html';
 
 const VIEWS = [
@@ -798,7 +797,7 @@ function bindEvents() {
 
   setupOtpGroup('mfaEnrollOtp', 'mfaEnrollCodeInput');
   setupOtpGroup('mfaVerifyOtp', 'mfaVerifyCodeInput');
-} 
+}
 
 async function initAuthPage() {
   bindEvents();
