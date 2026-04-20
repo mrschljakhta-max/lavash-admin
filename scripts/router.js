@@ -2,7 +2,7 @@ const ROUTES = {
   pending: "../pages/pending_v3.html",
   editor: "../pages/editor.html",
   upload: "../pages/upload.html",
-  dicts: "../pages/dicts.html",
+  dicts: "../pages/dicts.html", 
   logs: "../pages/logs.html"
 };
 
