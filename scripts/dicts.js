@@ -48,9 +48,6 @@ const dictsState = {
       type: 'dictionary',
       icon: 'uav',
       total: 1248,
-      active: 1206,
-      links: 5,
-      updated: '28.05.2024',
       status: 'active'
     },
     {
@@ -61,61 +58,46 @@ const dictsState = {
       type: 'dictionary',
       icon: 'settlement',
       total: 15892,
-      active: 15431,
-      links: 8,
-      updated: '29.05.2024',
       status: 'active'
     },
     {
       id: '3',
       title: 'Станції',
       slug: 'dict_stations',
-      description: 'Довідник радіоелектронних станцій та комплексів, які використовуються у запитах та подіях.',
+      description: 'Довідник радіоелектронних станцій та комплексів.',
       type: 'dictionary',
       icon: 'station',
       total: 3751,
-      active: 3489,
-      links: 6,
-      updated: '28.05.2024',
       status: 'active'
     },
     {
       id: '4',
       title: 'Підрозділи',
       slug: 'dict_units',
-      description: 'Ієрархія підрозділів, скорочень, parent-child зв’язків та службових ознак.',
+      description: 'Ієрархія підрозділів і службових зв’язків.',
       type: 'dictionary',
       icon: 'unit',
       total: 2156,
-      active: 2098,
-      links: 4,
-      updated: '27.05.2024',
       status: 'active'
     },
     {
       id: '5',
       title: 'Типи станцій',
       slug: 'dict_station_types',
-      description: 'Типи станцій, band-групи, категорії та частотні характеристики.',
+      description: 'Типи станцій і категорії.',
       type: 'dictionary',
       icon: 'stack',
       total: 142,
-      active: 137,
-      links: 3,
-      updated: '25.05.2024',
       status: 'active'
     },
     {
       id: '6',
       title: 'Pending',
       slug: 'dict_pending',
-      description: 'Службовий довідник невизначених або спірних значень для ручної нормалізації.',
+      description: 'Службовий довідник невизначених або спірних значень.',
       type: 'service',
       icon: 'pending',
       total: 87,
-      active: 87,
-      links: 2,
-      updated: '29.05.2024',
       status: 'active'
     }
   ],
@@ -159,7 +141,7 @@ function renderDictCard(item, index, total) {
   if (abs >= 2) cls += ' is-far';
   if (item.__create) cls += ' dict-card--create';
 
-  const transformX = offset * 195;
+  const transformX = offset * 205;
   const scale = offset === 0 ? 1 : abs === 1 ? 0.87 : 0.74;
   const rotate = offset === 0 ? 0 : offset < 0 ? -7 : 7;
   const opacity = abs > 2 ? 0 : 1;
@@ -277,9 +259,6 @@ function bindDictCreateModal() {
       type: type || 'dictionary',
       icon: icon || 'stack',
       total: 0,
-      active: 0,
-      links: 0,
-      updated: new Date().toLocaleDateString('uk-UA'),
       status: 'draft'
     });
 
