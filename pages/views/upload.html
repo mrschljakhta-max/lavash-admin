@@ -1,21 +1,5 @@
-<div class="upload-page upload-page--compact">
-
-  <section class="upload-topbar">
-    <div class="upload-topbar__title-wrap">
-      <h2 class="upload-page__title">Завантаження</h2>
-    </div>
-
-    <div class="upload-stat-card upload-stat-card--top">
-      <img src="/lavash-admin/assets/icons/upload/stack.svg" class="icon-lg" alt="">
-      <div>
-        <div class="upload-stat-card__value" id="totalFilesCount">0</div>
-        <div class="upload-stat-card__label">Файлів у черзі</div>
-      </div>
-    </div>
-  </section>
-
+<div class="upload-page upload-page--clean">
   <section class="upload-grid">
-
     <!-- WORD -->
     <article class="upload-card upload-card--word">
       <div class="upload-card__head">
@@ -117,56 +101,6 @@
         </div>
       </div>
     </article>
-  </section>
-
-  <section class="pipeline-card pipeline-card--compact">
-    <div class="pipeline-card__head">
-      <h3 class="pipeline-card__title">Етапи обробки</h3>
-      <div class="pipeline-card__subtitle">
-        4 ключові кроки перед записом у базу
-      </div>
-    </div>
-
-    <div class="pipeline-grid pipeline-grid--compact">
-      <div class="pipeline-step" id="pipelineStepValidate">
-        <img src="/lavash-admin/assets/icons/upload/shield.svg" class="icon-lg" alt="">
-        <div class="pipeline-step__title">Перевірка</div>
-        <div class="pipeline-step__text">
-          Формат, назва, цілісність і підготовка файлів
-        </div>
-      </div>
-
-      <div class="pipeline-step" id="pipelineStepParse">
-        <img src="/lavash-admin/assets/icons/upload/settings.svg" class="icon-lg" alt="">
-        <div class="pipeline-step__title">Парсинг</div>
-        <div class="pipeline-step__text">
-          Розбір вмісту документа та структури даних
-        </div>
-      </div>
-
-      <div class="pipeline-step" id="pipelineStepExtract">
-        <img src="/lavash-admin/assets/icons/upload/target.svg" class="icon-lg" alt="">
-        <div class="pipeline-step__title">Виділення подій</div>
-        <div class="pipeline-step__text">
-          Формування записів і визначення сутностей
-        </div>
-      </div>
-
-      <div class="pipeline-step" id="pipelineStepDb">
-        <img src="/lavash-admin/assets/icons/upload/database.svg" class="icon-lg" alt="">
-        <div class="pipeline-step__title">Запис у Supabase</div>
-        <div class="pipeline-step__text">
-          Збереження даних, логів і статусів обробки
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="upload-actions upload-actions--sticky">
-    <button class="upload-start-btn" id="startUpload" type="button">
-      <img src="/lavash-admin/assets/icons/upload/bolt.svg" class="icon-sm" alt="">
-      Завантажити і обробити
-    </button>
   </section>
 </div>
 
