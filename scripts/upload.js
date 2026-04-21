@@ -14,9 +14,6 @@ function bytesToSize(bytes) {
 function updateQueueCounters() {
   const total = uploadState.docxFiles.length + uploadState.excelFiles.length;
 
-  const topNode = document.getElementById('totalFilesCount');
-  if (topNode) topNode.textContent = String(total);
-
   const sideNode = document.getElementById('uploadQueueCount');
   if (sideNode) sideNode.textContent = String(total);
 }
@@ -273,11 +270,10 @@ async function startUploadFlow() {
 }
 
 function bindUploadActions() {
-  const centerStartBtn = document.getElementById('startUpload');
   const sideStartBtn = document.getElementById('uploadStartSideBtn');
   const panelStartBtn = document.getElementById('uploadStartPanelBtn');
 
-  [centerStartBtn, sideStartBtn, panelStartBtn].forEach((btn) => {
+  [sideStartBtn, panelStartBtn].forEach((btn) => {
     if (!btn) return;
     btn.addEventListener('click', startUploadFlow);
   });
