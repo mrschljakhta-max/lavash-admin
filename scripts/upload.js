@@ -11,9 +11,17 @@ function bytesToSize(bytes) {
   return `${(bytes / (1024 ** i)).toFixed(i === 0 ? 0 : 1)} ${sizes[i]}`;
 }
 
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
+}
+
 function updateQueueCounters() {
   const total = uploadState.docxFiles.length + uploadState.excelFiles.length;
-
   const sideNode = document.getElementById('uploadQueueCount');
   if (sideNode) sideNode.textContent = String(total);
 }
@@ -41,7 +49,7 @@ function renderFileList(type) {
       <div class="upload-file-item__left">
         <img src="${icon}" class="icon-sm" alt="">
         <div>
-          <div class="upload-file-item__name">${file.name}</div>
+          <div class="upload-file-item__name">${escapeHtml(file.name)}</div>
           <div class="upload-file-item__meta">${bytesToSize(file.size)}</div>
         </div>
       </div>
@@ -232,6 +240,181 @@ function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+/* =========================
+   DEBUG MODAL
+========================= */
+
+function openUploadDebugModal(title, html) {
+  const modal = document.getElementById('uploadDebugModal');
+  const titleNode = document.getElementById('uploadDebugTitle');
+  const bodyNode = document.getElementById('uploadDebugBody');
+
+  if (!modal || !titleNode || !bodyNode) return;
+
+  titleNode.textContent = title;
+  bodyNode.innerHTML = html;
+  modal.classList.remove('hidden');
+}
+
+function closeUploadDebugModal() {
+  const modal = document.getElementById('uploadDebugModal');
+  if (modal) modal.classList.add('hidden');
+}
+
+function renderDebugFileRows(files, iconPath) {
+  if (!files.length) {
+    return `<div class="debug-empty">Файлів поки немає</div>`;
+  }
+
+  return files.map((file) => `
+    <div class="debug-file-row">
+      <div class="debug-file-row__left">
+        <img src="${iconPath}" class="icon-sm" alt="">
+        <div>
+          <div class="debug-file-row__name">${escapeHtml(file.name)}</div>
+          <div class="debug-file-row__meta">${bytesToSize(file.size)}</div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function showDebugQueue() {
+  const total = uploadState.docxFiles.length + uploadState.excelFiles.length;
+
+  openUploadDebugModal('Черга файлів', `
+    <div class="debug-grid">
+      <div class="debug-stat">
+        <div class="debug-stat__value">${total}</div>
+        <div class="debug-stat__label">усього файлів у черзі</div>
+      </div>
+
+      <div class="debug-columns">
+        <div class="debug-panel">
+          <div class="debug-panel__title">Word файли (${uploadState.docxFiles.length})</div>
+          <div class="debug-file-list">
+            ${renderDebugFileRows(uploadState.docxFiles, '/lavash-admin/assets/icons/upload/file-word.svg')}
+          </div>
+        </div>
+
+        <div class="debug-panel">
+          <div class="debug-panel__title">Excel файли (${uploadState.excelFiles.length})</div>
+          <div class="debug-file-list">
+            ${renderDebugFileRows(uploadState.excelFiles, '/lavash-admin/assets/icons/upload/file-xls.svg')}
+          </div>
+        </div>
+      </div>
+    </div>
+  `);
+}
+
+function showDebugValidate() {
+  const files = [...uploadState.docxFiles, ...uploadState.excelFiles];
+
+  const rows = files.length
+    ? files.map((file) => {
+        const lower = file.name.toLowerCase();
+        const validType = lower.endsWith('.docx') || lower.endsWith('.xlsx') || lower.endsWith('.xls');
+        const validSize = file.size > 0;
+
+        return `
+          <div class="debug-check-row">
+            <div class="debug-check-row__name">${escapeHtml(file.name)}</div>
+            <div class="debug-check-row__chips">
+              <span class="debug-chip ${validType ? 'ok' : 'bad'}">формат: ${validType ? 'ok' : 'bad'}</span>
+              <span class="debug-chip ${validSize ? 'ok' : 'bad'}">розмір: ${validSize ? 'ok' : 'bad'}</span>
+            </div>
+          </div>
+        `;
+      }).join('')
+    : `<div class="debug-empty">Немає файлів для перевірки</div>`;
+
+  openUploadDebugModal('Перевірка', `
+    <div class="debug-panel">
+      <div class="debug-panel__title">Попередня валідація файлів</div>
+      <div class="debug-check-list">${rows}</div>
+    </div>
+  `);
+}
+
+function showDebugParse() {
+  const docxCount = uploadState.docxFiles.length;
+  const excelCount = uploadState.excelFiles.length;
+
+  openUploadDebugModal('Парсинг', `
+    <div class="debug-columns">
+      <div class="debug-panel">
+        <div class="debug-panel__title">Word parser</div>
+        <div class="debug-kv"><span>Файлів:</span><strong>${docxCount}</strong></div>
+        <div class="debug-kv"><span>Очікувана дія:</span><strong>витяг таблиць / тексту</strong></div>
+        <div class="debug-kv"><span>Ціль:</span><strong>події, типи БпЛА, НП, результат</strong></div>
+      </div>
+
+      <div class="debug-panel">
+        <div class="debug-panel__title">Excel parser</div>
+        <div class="debug-kv"><span>Файлів:</span><strong>${excelCount}</strong></div>
+        <div class="debug-kv"><span>Очікувана дія:</span><strong>читання рядків і колонок</strong></div>
+        <div class="debug-kv"><span>Ціль:</span><strong>імпорт табличних записів</strong></div>
+      </div>
+    </div>
+  `);
+}
+
+function showDebugEvents() {
+  const docxCount = uploadState.docxFiles.length;
+  const excelCount = uploadState.excelFiles.length;
+  const estimated = (docxCount * 12) + (excelCount * 20);
+
+  openUploadDebugModal('Події', `
+    <div class="debug-columns">
+      <div class="debug-panel">
+        <div class="debug-panel__title">Попередня оцінка</div>
+        <div class="debug-kv"><span>Word файли:</span><strong>${docxCount}</strong></div>
+        <div class="debug-kv"><span>Excel файли:</span><strong>${excelCount}</strong></div>
+        <div class="debug-kv"><span>Орієнтовно подій:</span><strong>${estimated}</strong></div>
+      </div>
+
+      <div class="debug-panel">
+        <div class="debug-panel__title">Що буде формуватись</div>
+        <ul class="debug-list">
+          <li>нормалізовані записи</li>
+          <li>pending-сутності</li>
+          <li>службові логи</li>
+          <li>зв'язки між джерелом і результатом</li>
+        </ul>
+      </div>
+    </div>
+  `);
+}
+
+function showDebugDatabase() {
+  const total = uploadState.docxFiles.length + uploadState.excelFiles.length;
+
+  openUploadDebugModal('Supabase', `
+    <div class="debug-panel">
+      <div class="debug-panel__title">План запису в базу</div>
+      <div class="debug-kv"><span>Файлів до обробки:</span><strong>${total}</strong></div>
+      <div class="debug-kv"><span>Етап:</span><strong>batch upload</strong></div>
+      <div class="debug-kv"><span>Очікувані операції:</span><strong>insert / normalize / log</strong></div>
+      <div class="debug-kv"><span>Ціль:</span><strong>Supabase tables + processing logs</strong></div>
+    </div>
+  `);
+}
+
+function bindDebugActions() {
+  const closeBtn = document.getElementById('uploadDebugClose');
+  const backdrop = document.getElementById('uploadDebugBackdrop');
+
+  closeBtn?.addEventListener('click', closeUploadDebugModal);
+  backdrop?.addEventListener('click', closeUploadDebugModal);
+
+  document.querySelector('[data-upload-tool="queue"]')?.addEventListener('click', showDebugQueue);
+  document.querySelector('[data-upload-tool="validate"]')?.addEventListener('click', showDebugValidate);
+  document.querySelector('[data-upload-tool="parse"]')?.addEventListener('click', showDebugParse);
+  document.querySelector('[data-upload-tool="extract"]')?.addEventListener('click', showDebugEvents);
+  document.querySelector('[data-upload-tool="database"]')?.addEventListener('click', showDebugDatabase);
+}
+
 async function runFakeUploadFlow() {
   showOverlay('Підготовка...', 'Ініціалізуємо процес обробки файлів');
 
@@ -271,12 +454,9 @@ async function startUploadFlow() {
 
 function bindUploadActions() {
   const sideStartBtn = document.getElementById('uploadStartSideBtn');
-  const panelStartBtn = document.getElementById('uploadStartPanelBtn');
-
-  [sideStartBtn, panelStartBtn].forEach((btn) => {
-    if (!btn) return;
-    btn.addEventListener('click', startUploadFlow);
-  });
+  if (sideStartBtn) {
+    sideStartBtn.addEventListener('click', startUploadFlow);
+  }
 }
 
 window.initUploadPage = async function initUploadPage() {
@@ -291,4 +471,5 @@ window.initUploadPage = async function initUploadPage() {
   updateQueueCounters();
   resetUploadRightStages();
   bindUploadActions();
+  bindDebugActions();
 };
