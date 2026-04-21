@@ -156,34 +156,35 @@
   }
 
   function initLavashLayout(options = {}) {
-    const {
-      pageKey = lavashCurrentPageKey(),
-      title = 'Lavash Admin',
-      statusText = 'Підключено',
-      content = '',
-      useRightTools = true
-    } = options;
+  const {
+    pageKey = lavashCurrentPageKey(),
+    title = 'Lavash Admin',
+    statusText = 'Підключено',
+    content = '',
+    useRightTools = true,
+    contentClass = 'workspace-body--page'
+  } = options;
 
-    const mount = document.getElementById('app');
-    if (!mount) return;
+  const mount = document.getElementById('app');
+  if (!mount) return;
 
-    mount.innerHTML = `
-      <div class="app-shell">
-        ${lavashBuildLeftNav(pageKey)}
+  mount.innerHTML = `
+    <div class="app-shell">
+      ${lavashBuildLeftNav(pageKey)}
 
-        <main class="main-workspace">
-          ${lavashBuildHeader(title, statusText)}
-          <section class="workspace-body" id="workspaceBody">
-            ${content}
-          </section>
-        </main>
+      <main class="main-workspace">
+        ${lavashBuildHeader(title, statusText)}
+        <section class="workspace-body ${contentClass}" id="workspaceBody">
+          ${content}
+        </section>
+      </main>
 
-        ${useRightTools ? lavashBuildRightTools() : '<aside class="right-tools right-tools--empty"></aside>'}
-      </div>
-    `;
+      ${useRightTools ? lavashBuildRightTools() : '<aside class="right-tools right-tools--empty"></aside>'}
+    </div>
+  `;
 
-    bindLavashLayoutEvents();
-  }
+  bindLavashLayoutEvents();
+}
 
   function bindLavashLayoutEvents() {
     document.querySelectorAll('.nav-item').forEach((btn) => {
