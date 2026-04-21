@@ -310,10 +310,21 @@ select {
 /* BODY */
 .workspace-body {
   min-height: 0;
+}
+
+.workspace-body--split {
+  min-height: 0;
   display: grid;
   grid-template-columns: 340px 1fr;
   gap: 16px;
   overflow: hidden;
+}
+
+.workspace-body--page {
+  min-height: 0;
+  display: block;
+  overflow: auto;
+  padding-right: 4px;
 }
 
 /* RECORDS PANEL */
