@@ -1,17 +1,223 @@
-<!DOCTYPE html>
-<html lang="uk">
-<head>
-  <meta charset="UTF-8" />
-  <title>Lavash</title>
+<div class="upload-page">
 
-  <link rel="stylesheet" href="../styles/pending_v3.css">
-</head>
+  <section class="upload-hero">
+    <div class="upload-hero__left">
+      <div class="upload-hero__badge">
+        <img src="/lavash-admin/assets/icons/upload/cloud-upload.svg" class="icon-sm" alt="">
+        Центр завантаження
+      </div>
 
-<body>
-  <h1>Сторінка в розробці</h1>
+      <h2 class="upload-page__title">Завантаження файлів</h2>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../scripts/config.js"></script>
-  <script src="../scripts/auth.js"></script>
-</body>
-</html>
+      <p class="upload-page__subtitle">
+        Додавай Word та Excel файли окремо. Система підготує їх до перевірки, парсингу,
+        виділення подій та запису в Supabase.
+      </p>
+    </div>
+
+    <div class="upload-hero__right">
+      <div class="upload-stat-card">
+        <img src="/lavash-admin/assets/icons/upload/stack.svg" class="icon-lg" alt="">
+        <div>
+          <div class="upload-stat-card__value" id="totalFilesCount">0</div>
+          <div class="upload-stat-card__label">Файлів у черзі</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="upload-grid">
+
+    <!-- WORD -->
+    <article class="upload-card upload-card--word">
+      <div class="upload-card__head">
+        <div class="upload-card__title-wrap">
+          <img src="/lavash-admin/assets/icons/upload/file-word.svg" class="icon-lg" alt="">
+          <div>
+            <h3 class="upload-card__title">Word (.docx)</h3>
+            <div class="upload-card__hint">
+              Файли для парсингу таблиць і текстових подій
+            </div>
+          </div>
+        </div>
+
+        <div class="upload-card__counter">
+          <img src="/lavash-admin/assets/icons/upload/list.svg" class="icon-sm" alt="">
+          <span id="docxCount">0</span>
+        </div>
+      </div>
+
+      <div class="drop-zone" id="docxDrop">
+        <div class="drop-zone__icon-wrap">
+          <img src="/lavash-admin/assets/icons/upload/cloud-upload.svg" class="icon-xl" alt="">
+        </div>
+
+        <div class="drop-zone__title">Перетягни Word файли сюди</div>
+        <div class="drop-zone__subtitle">або обери вручну з пристрою</div>
+
+        <button class="upload-action-btn" id="docxBtn" type="button">
+          <img src="/lavash-admin/assets/icons/upload/upload.svg" class="icon-sm" alt="">
+          Обрати Word файли
+        </button>
+
+        <input type="file" id="docxInput" accept=".docx" multiple hidden />
+      </div>
+
+      <div class="upload-list-wrap">
+        <div class="upload-list__head">
+          <span>Список Word файлів</span>
+
+          <button class="upload-clear-btn" id="clearDocxBtn" type="button">
+            <img src="/lavash-admin/assets/icons/upload/x.svg" class="icon-xs" alt="">
+            Очистити
+          </button>
+        </div>
+
+        <div class="upload-list" id="docxList">
+          <div class="upload-list__empty">Word файли ще не додані</div>
+        </div>
+      </div>
+    </article>
+
+    <!-- EXCEL -->
+    <article class="upload-card upload-card--excel">
+      <div class="upload-card__head">
+        <div class="upload-card__title-wrap">
+          <img src="/lavash-admin/assets/icons/upload/file-xls.svg" class="icon-lg" alt="">
+          <div>
+            <h3 class="upload-card__title">Excel (.xlsx)</h3>
+            <div class="upload-card__hint">
+              Файли табличних даних для імпорту і нормалізації
+            </div>
+          </div>
+        </div>
+
+        <div class="upload-card__counter">
+          <img src="/lavash-admin/assets/icons/upload/list.svg" class="icon-sm" alt="">
+          <span id="excelCount">0</span>
+        </div>
+      </div>
+
+      <div class="drop-zone" id="excelDrop">
+        <div class="drop-zone__icon-wrap">
+          <img src="/lavash-admin/assets/icons/upload/cloud-upload.svg" class="icon-xl" alt="">
+        </div>
+
+        <div class="drop-zone__title">Перетягни Excel файли сюди</div>
+        <div class="drop-zone__subtitle">або обери вручну з пристрою</div>
+
+        <button class="upload-action-btn" id="excelBtn" type="button">
+          <img src="/lavash-admin/assets/icons/upload/upload.svg" class="icon-sm" alt="">
+          Обрати Excel файли
+        </button>
+
+        <input type="file" id="excelInput" accept=".xlsx,.xls" multiple hidden />
+      </div>
+
+      <div class="upload-list-wrap">
+        <div class="upload-list__head">
+          <span>Список Excel файлів</span>
+
+          <button class="upload-clear-btn" id="clearExcelBtn" type="button">
+            <img src="/lavash-admin/assets/icons/upload/x.svg" class="icon-xs" alt="">
+            Очистити
+          </button>
+        </div>
+
+        <div class="upload-list" id="excelList">
+          <div class="upload-list__empty">Excel файли ще не додані</div>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <section class="pipeline-card">
+    <div class="pipeline-card__head">
+      <h3 class="pipeline-card__title">Етапи обробки</h3>
+      <div class="pipeline-card__subtitle">
+        Система проходить 4 ключові кроки перед записом у базу
+      </div>
+    </div>
+
+    <div class="pipeline-grid">
+      <div class="pipeline-step" id="pipelineStepValidate">
+        <img src="/lavash-admin/assets/icons/upload/shield.svg" class="icon-lg" alt="">
+        <div class="pipeline-step__title">Перевірка</div>
+        <div class="pipeline-step__text">
+          Аналіз формату, назв файлів, цілісності та початкової допустимості
+        </div>
+      </div>
+
+      <div class="pipeline-step" id="pipelineStepParse">
+        <img src="/lavash-admin/assets/icons/upload/settings.svg" class="icon-lg" alt="">
+        <div class="pipeline-step__title">Парсинг</div>
+        <div class="pipeline-step__text">
+          Розбір структури Word та Excel документів, витяг полів і значень
+        </div>
+      </div>
+
+      <div class="pipeline-step" id="pipelineStepExtract">
+        <img src="/lavash-admin/assets/icons/upload/target.svg" class="icon-lg" alt="">
+        <div class="pipeline-step__title">Виділення подій</div>
+        <div class="pipeline-step__text">
+          Формування сутностей, подій, записів для нормалізації та pending-черги
+        </div>
+      </div>
+
+      <div class="pipeline-step" id="pipelineStepDb">
+        <img src="/lavash-admin/assets/icons/upload/database.svg" class="icon-lg" alt="">
+        <div class="pipeline-step__title">Запис у Supabase</div>
+        <div class="pipeline-step__text">
+          Завантаження результатів у таблиці, журнали та службові структури бази
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="upload-actions">
+    <button class="upload-start-btn" id="startUpload" type="button">
+      <img src="/lavash-admin/assets/icons/upload/bolt.svg" class="icon-sm" alt="">
+      Завантажити і обробити
+    </button>
+  </section>
+</div>
+
+<div id="uploadOverlay" class="upload-overlay hidden">
+  <div class="upload-overlay__box">
+    <div class="upload-overlay__top">
+      <img src="/lavash-admin/assets/icons/upload/loader.svg" class="upload-overlay__loader" alt="">
+    </div>
+
+    <div class="upload-overlay__title" id="uploadOverlayTitle">Підготовка...</div>
+    <div class="upload-overlay__subtitle" id="uploadOverlaySubtitle">
+      Ініціалізуємо процес обробки файлів
+    </div>
+
+    <div class="upload-overlay__stages">
+      <div class="upload-overlay__stage" id="overlayStageValidate">
+        <img src="/lavash-admin/assets/icons/upload/shield.svg" class="icon-sm" alt="">
+        <span>Перевірка</span>
+      </div>
+
+      <div class="upload-overlay__stage" id="overlayStageParse">
+        <img src="/lavash-admin/assets/icons/upload/settings.svg" class="icon-sm" alt="">
+        <span>Парсинг</span>
+      </div>
+
+      <div class="upload-overlay__stage" id="overlayStageExtract">
+        <img src="/lavash-admin/assets/icons/upload/target.svg" class="icon-sm" alt="">
+        <span>Події</span>
+      </div>
+
+      <div class="upload-overlay__stage" id="overlayStageDb">
+        <img src="/lavash-admin/assets/icons/upload/database.svg" class="icon-sm" alt="">
+        <span>Supabase</span>
+      </div>
+    </div>
+
+    <div class="upload-overlay__footer">
+      <img src="/lavash-admin/assets/icons/upload/clock.svg" class="icon-xs" alt="">
+      <span>Будь ласка, не закривай сторінку під час обробки</span>
+    </div>
+  </div>
+</div>
