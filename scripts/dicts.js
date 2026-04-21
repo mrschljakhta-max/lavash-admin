@@ -40,66 +40,12 @@ const DICT_ICONS = {
 
 const dictsState = {
   items: [
-    {
-      id: '1',
-      title: 'БпЛА',
-      slug: 'dict_uav',
-      description: 'Довідник типів безпілотних літальних апаратів для нормалізації подій і запитів.',
-      type: 'dictionary',
-      icon: 'uav',
-      total: 1248,
-      status: 'active'
-    },
-    {
-      id: '2',
-      title: 'Населені пункти',
-      slug: 'dict_settlements',
-      description: 'Довідник населених пунктів, координат, районів, областей і службових ознак.',
-      type: 'dictionary',
-      icon: 'settlement',
-      total: 15892,
-      status: 'active'
-    },
-    {
-      id: '3',
-      title: 'Станції',
-      slug: 'dict_stations',
-      description: 'Довідник радіоелектронних станцій та комплексів.',
-      type: 'dictionary',
-      icon: 'station',
-      total: 3751,
-      status: 'active'
-    },
-    {
-      id: '4',
-      title: 'Підрозділи',
-      slug: 'dict_units',
-      description: 'Ієрархія підрозділів і службових зв’язків.',
-      type: 'dictionary',
-      icon: 'unit',
-      total: 2156,
-      status: 'active'
-    },
-    {
-      id: '5',
-      title: 'Типи станцій',
-      slug: 'dict_station_types',
-      description: 'Типи станцій і категорії.',
-      type: 'dictionary',
-      icon: 'stack',
-      total: 142,
-      status: 'active'
-    },
-    {
-      id: '6',
-      title: 'Pending',
-      slug: 'dict_pending',
-      description: 'Службовий довідник невизначених або спірних значень.',
-      type: 'service',
-      icon: 'pending',
-      total: 87,
-      status: 'active'
-    }
+    { id: '1', title: 'БпЛА', slug: 'dict_uav', description: 'Довідник типів безпілотних літальних апаратів.', type: 'dictionary', icon: 'uav', total: 1248, status: 'active' },
+    { id: '2', title: 'Населені пункти', slug: 'dict_settlements', description: 'Довідник населених пунктів.', type: 'dictionary', icon: 'settlement', total: 15892, status: 'active' },
+    { id: '3', title: 'Станції', slug: 'dict_stations', description: 'Довідник радіоелектронних станцій.', type: 'dictionary', icon: 'station', total: 3751, status: 'active' },
+    { id: '4', title: 'Підрозділи', slug: 'dict_units', description: 'Ієрархія підрозділів.', type: 'dictionary', icon: 'unit', total: 2156, status: 'active' },
+    { id: '5', title: 'Типи станцій', slug: 'dict_station_types', description: 'Типи станцій і категорії.', type: 'dictionary', icon: 'stack', total: 142, status: 'active' },
+    { id: '6', title: 'Pending', slug: 'dict_pending', description: 'Службовий довідник невизначених значень.', type: 'service', icon: 'pending', total: 87, status: 'active' }
   ],
   activeIndex: 2,
   filteredItems: [],
@@ -131,7 +77,15 @@ function shiftDicts(step) {
   renderDictsCarousel();
 }
 
-function renderDictCard(item, index, total) {
+function computeCardZIndex(offset) {
+  const abs = Math.abs(offset);
+  if (offset === 0) return 100;
+  if (abs === 1) return 70;
+  if (abs === 2) return 50;
+  return 30;
+}
+
+function renderDictCard(item, index) {
   const offset = index - dictsState.activeIndex;
   const abs = Math.abs(offset);
 
@@ -141,17 +95,18 @@ function renderDictCard(item, index, total) {
   if (abs >= 2) cls += ' is-far';
   if (item.__create) cls += ' dict-card--create';
 
-  const transformX = offset * 205;
-  const scale = offset === 0 ? 1 : abs === 1 ? 0.87 : 0.74;
+  const transformX = offset * 175;
+  const scale = offset === 0 ? 1 : abs === 1 ? 0.86 : 0.72;
   const rotate = offset === 0 ? 0 : offset < 0 ? -7 : 7;
   const opacity = abs > 2 ? 0 : 1;
+  const zIndex = computeCardZIndex(offset);
 
   return `
     <button
       class="${cls}"
       type="button"
       data-index="${index}"
-      style="transform: translateX(${transformX}px) scale(${scale}) rotateY(${rotate}deg); opacity:${opacity}; z-index:${total - abs};"
+      style="transform: translateX(${transformX}px) scale(${scale}) rotateY(${rotate}deg); opacity:${opacity}; z-index:${zIndex};"
     >
       <div class="dict-card__icon">
         ${item.__create ? DICT_ICONS.plus : (DICT_ICONS[item.icon] || DICT_ICONS.stack)}
@@ -187,7 +142,7 @@ function renderDictsCarousel() {
     dictsState.activeIndex = 0;
   }
 
-  wrap.innerHTML = visible.map((item, index) => renderDictCard(item, index, visible.length)).join('');
+  wrap.innerHTML = visible.map((item, index) => renderDictCard(item, index)).join('');
 
   dots.innerHTML = visible
     .map((_, index) => `<button class="dict-dot ${index === dictsState.activeIndex ? 'is-active' : ''}" type="button" data-dot-index="${index}"></button>`)
