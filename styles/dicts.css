@@ -7,19 +7,6 @@
   display: grid;
   gap: 8px;
 }
- 
-.dicts-hero__head {
-  padding-bottom: 10px;
-  border-bottom: 1px solid rgba(118, 150, 236, 0.10);
-}
-
-.dicts-hero__title {
-  margin: 0;
-  font-size: clamp(38px, 4.2vw, 62px);
-  line-height: 0.95;
-  font-weight: 900;
-  color: var(--text-main);
-}
 
 .dicts-carousel-wrap {
   position: relative;
@@ -76,6 +63,7 @@
 }
 
 .dict-card.is-active {
+  z-index: 100 !important;
   border-color: rgba(76, 132, 255, 0.72);
   box-shadow:
     0 0 0 1px rgba(76, 132, 255, 0.32) inset,
