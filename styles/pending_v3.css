@@ -1981,3 +1981,52 @@ select {
     grid-template-columns: 1fr;
   }
 }
+
+/* =========================
+   UPLOAD STAGE STATES
+========================= */
+
+.tool-item--upload.is-active {
+  background: rgba(76, 132, 255, 0.18);
+  border: 1px solid rgba(76, 132, 255, 0.55);
+  box-shadow: 0 0 0 1px rgba(76, 132, 255, 0.18) inset;
+}
+
+.tool-item--upload.is-active .tool-item__label {
+  color: #eef4ff;
+}
+
+.tool-item--upload.is-active .tool-item__icon {
+  filter: brightness(1.15);
+}
+
+.tool-item--upload.is-done {
+  background: rgba(0, 255, 170, 0.10);
+  border: 1px solid rgba(0, 255, 170, 0.26);
+}
+
+.tool-item--upload.is-done .tool-item__label {
+  color: #d9fff2;
+}
+
+.tool-item--upload.is-error {
+  background: rgba(255, 88, 136, 0.12);
+  border: 1px solid rgba(255, 88, 136, 0.34);
+  box-shadow: 0 0 0 1px rgba(255, 88, 136, 0.12) inset;
+}
+
+.tool-item--upload.is-error .tool-item__label {
+  color: #ffd7e3;
+}
+
+.tool-item--upload.is-error .tool-item__icon {
+  filter: brightness(1.1);
+}
+
+/* overlay stages */
+
+.upload-overlay__stage.is-error {
+  background: rgba(255, 88, 136, 0.10);
+  border-color: rgba(255, 88, 136, 0.30);
+  color: #ffd7e3;
+}
