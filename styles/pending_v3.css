@@ -1758,3 +1758,226 @@ select {
     max-height: 220px;
   }
 }
+
+
+
+/* =========================
+   UPLOAD DEBUG MODAL
+========================= */
+
+.upload-debug-modal.hidden {
+  display: none;
+}
+
+.upload-debug-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 10020;
+}
+
+.upload-debug-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(2, 8, 24, 0.78);
+  backdrop-filter: blur(6px);
+}
+
+.upload-debug-modal__dialog {
+  position: relative;
+  width: min(920px, calc(100vw - 40px));
+  max-height: calc(100vh - 40px);
+  margin: 20px auto;
+  background: linear-gradient(180deg, rgba(8, 24, 72, 0.98), rgba(5, 19, 58, 0.99));
+  border: 1px solid rgba(118, 150, 236, 0.14);
+  border-radius: 24px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.upload-debug-modal__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 20px 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.upload-debug-modal__eyebrow {
+  font-size: 12px;
+  color: var(--text-soft);
+  margin-bottom: 6px;
+}
+
+.upload-debug-modal__title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 900;
+  color: var(--text-main);
+}
+
+.upload-debug-modal__close {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  border: none;
+  background: rgba(255,255,255,0.06);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.upload-debug-modal__close:hover {
+  background: rgba(255,255,255,0.12);
+}
+
+.upload-debug-modal__body {
+  padding: 20px;
+  overflow: auto;
+}
+
+.debug-grid,
+.debug-columns {
+  display: grid;
+  gap: 16px;
+}
+
+.debug-columns {
+  grid-template-columns: 1fr 1fr;
+}
+
+.debug-panel,
+.debug-stat {
+  border-radius: 18px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.06);
+  padding: 16px;
+}
+
+.debug-panel__title {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 12px;
+}
+
+.debug-stat__value {
+  font-size: 34px;
+  font-weight: 900;
+  color: var(--text-main);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.debug-stat__label {
+  font-size: 13px;
+  color: var(--text-soft);
+}
+
+.debug-file-list,
+.debug-check-list {
+  display: grid;
+  gap: 10px;
+}
+
+.debug-file-row,
+.debug-check-row {
+  border-radius: 14px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.05);
+  padding: 12px;
+}
+
+.debug-file-row__left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.debug-file-row__name,
+.debug-check-row__name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.debug-file-row__meta {
+  font-size: 12px;
+  color: var(--text-soft);
+  margin-top: 4px;
+}
+
+.debug-check-row__chips {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.debug-chip {
+  min-height: 28px;
+  padding: 0 10px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.debug-chip.ok {
+  background: rgba(0, 255, 170, 0.10);
+  border: 1px solid rgba(0, 255, 170, 0.22);
+  color: #b8ffea;
+}
+
+.debug-chip.bad {
+  background: rgba(255, 88, 136, 0.10);
+  border: 1px solid rgba(255, 88, 136, 0.22);
+  color: #ffc0d2;
+}
+
+.debug-kv {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  font-size: 13px;
+  color: var(--text-soft);
+}
+
+.debug-kv:last-child {
+  border-bottom: none;
+}
+
+.debug-kv strong {
+  color: var(--text-main);
+  font-weight: 800;
+}
+
+.debug-list {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--text-soft);
+  line-height: 1.6;
+}
+
+.debug-empty {
+  min-height: 70px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.03);
+  border: 1px dashed rgba(255,255,255,0.08);
+  color: var(--text-soft);
+  font-size: 13px;
+}
+
+@media (max-width: 900px) {
+  .debug-columns {
+    grid-template-columns: 1fr;
+  }
+}
