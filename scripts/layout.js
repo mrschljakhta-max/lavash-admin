@@ -17,7 +17,7 @@
           <div class="left-nav__top">
             <div class="brand-mini">
               <img
-                src="/lavash-admin/assets/lavash-logo.svg?v=10"
+                src="/lavash-admin/assets/lavash-logo.svg?v=11"
                 alt="Lavash"
                 class="brand-mini__logo"
               />
@@ -33,28 +33,28 @@
           <nav class="left-nav__menu" aria-label="Основна навігація">
             <button class="nav-item ${activeKey === 'editor' ? 'is-active' : ''}" data-route="pending" type="button">
               <span class="nav-item__icon-wrap">
-                <img src="/lavash-admin/assets/icons/nav-editor.svg?v=10" alt="" class="nav-item__icon" />
+                <img src="/lavash-admin/assets/icons/nav-editor.svg?v=11" alt="" class="nav-item__icon" />
               </span>
               <span class="nav-item__label">Редактор</span>
             </button>
 
             <button class="nav-item ${activeKey === 'upload' ? 'is-active' : ''}" data-route="upload" type="button">
               <span class="nav-item__icon-wrap">
-                <img src="/lavash-admin/assets/icons/nav-upload.svg?v=10" alt="" class="nav-item__icon" />
+                <img src="/lavash-admin/assets/icons/nav-upload.svg?v=11" alt="" class="nav-item__icon" />
               </span>
               <span class="nav-item__label">Завантаження</span>
             </button>
 
             <button class="nav-item ${activeKey === 'dicts' ? 'is-active' : ''}" data-route="dicts" type="button">
               <span class="nav-item__icon-wrap">
-                <img src="/lavash-admin/assets/icons/nav-dicts.svg?v=10" alt="" class="nav-item__icon" />
+                <img src="/lavash-admin/assets/icons/nav-dicts.svg?v=11" alt="" class="nav-item__icon" />
               </span>
               <span class="nav-item__label">Довідники</span>
             </button>
 
             <button class="nav-item ${activeKey === 'logs' ? 'is-active' : ''}" data-route="logs" type="button">
               <span class="nav-item__icon-wrap">
-                <img src="/lavash-admin/assets/icons/nav-logs.svg?v=10" alt="" class="nav-item__icon" />
+                <img src="/lavash-admin/assets/icons/nav-logs.svg?v=11" alt="" class="nav-item__icon" />
               </span>
               <span class="nav-item__label">Логування</span>
             </button>
@@ -69,7 +69,6 @@
     return `
       <aside class="right-tools" id="rightTools">
         <div class="right-tools__inner">
-
           <div class="right-tools__top">
             <div class="right-tools__title-wrap">
               <span class="right-tools__title">Інструменти</span>
@@ -79,21 +78,21 @@
           <div class="right-tools__menu" aria-label="Інструменти сторінки">
             <button class="tool-item" data-tool="search" type="button">
               <span class="tool-item__icon-wrap">
-                <img src="/lavash-admin/assets/icons/tool-search.svg?v=10" alt="" class="tool-item__icon" />
+                <img src="/lavash-admin/assets/icons/tool-search.svg?v=11" alt="" class="tool-item__icon" />
               </span>
               <span class="tool-item__label">Пошук</span>
             </button>
 
             <button class="tool-item" data-tool="filters" type="button">
               <span class="tool-item__icon-wrap">
-                <img src="/lavash-admin/assets/icons/tool-filter.svg?v=10" alt="" class="tool-item__icon" />
+                <img src="/lavash-admin/assets/icons/tool-filter.svg?v=11" alt="" class="tool-item__icon" />
               </span>
               <span class="tool-item__label">Фільтри</span>
             </button>
 
             <button class="tool-item" data-tool="refresh" type="button">
               <span class="tool-item__icon-wrap">
-                <img src="/lavash-admin/assets/icons/tool-refresh.svg?v=10" alt="" class="tool-item__icon" />
+                <img src="/lavash-admin/assets/icons/tool-refresh.svg?v=11" alt="" class="tool-item__icon" />
               </span>
               <span class="tool-item__label">Оновити</span>
             </button>
@@ -130,7 +129,6 @@
               Оновити
             </button>
           </div>
-
         </div>
       </aside>
     `;
@@ -148,7 +146,6 @@
           </div>
 
           <div class="right-tools__menu" aria-label="Інструменти завантаження">
-
             <button class="tool-item tool-item--upload" type="button" data-upload-tool="queue">
               <span class="tool-item__icon-wrap">
                 <img src="/lavash-admin/assets/icons/upload/stack.svg" alt="" class="tool-item__icon" />
@@ -246,7 +243,6 @@
               Завантажити і обробити
             </button>
           </div>
-
         </div>
       </aside>
     `;
