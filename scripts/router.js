@@ -15,7 +15,11 @@ const LAVASH_VIEW_ROUTES = {
     view: '/lavash-admin/pages/views/upload.html',
     pageKey: 'upload',
     useRightTools: false,
-    init: async () => {}
+    init: async () => {
+      if (window.initUploadPage) {
+        await window.initUploadPage();
+      }
+    }
   },
   dicts: {
     title: 'Довідники',
