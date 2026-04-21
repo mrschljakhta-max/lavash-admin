@@ -56,8 +56,7 @@
   cursor: pointer;
   will-change: transform, opacity, filter;
   backface-visibility: hidden;
-  isolation: isolate;
-  transform-style: preserve-3d;
+  transform-style: flat;
 }
 
 .dict-card:hover {
