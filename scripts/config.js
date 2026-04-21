@@ -1,6 +1,6 @@
 window.APP_CONFIG = {
   supabaseUrl: 'https://vfshxogiuaefrgppuypt.supabase.co',
-  supabaseAnonKey: 'ТУТ_СВІЙ_ANON_KEY',
+  supabaseAnonKey: 'sb_publishable_yenD-zpmlFuhKKnojukBZg_z7pr_jzg',
 
   uploadBucket: 'uploads',
   uploadBatchTable: 'upload_batches',
