@@ -1,6 +1,5 @@
 <div class="upload-page upload-page--clean">
   <section class="upload-grid">
-    <!-- WORD -->
     <article class="upload-card upload-card--word">
       <div class="upload-card__head">
         <div class="upload-card__title-wrap">
@@ -51,7 +50,6 @@
       </div>
     </article>
 
-    <!-- EXCEL -->
     <article class="upload-card upload-card--excel">
       <div class="upload-card__head">
         <div class="upload-card__title-wrap">
@@ -141,5 +139,24 @@
       <img src="/lavash-admin/assets/icons/upload/clock.svg" class="icon-xs" alt="">
       <span>Будь ласка, не закривай сторінку під час обробки</span>
     </div>
+  </div>
+</div>
+
+<div id="uploadDebugModal" class="upload-debug-modal hidden">
+  <div class="upload-debug-modal__backdrop" id="uploadDebugBackdrop"></div>
+
+  <div class="upload-debug-modal__dialog">
+    <div class="upload-debug-modal__head">
+      <div class="upload-debug-modal__title-wrap">
+        <div class="upload-debug-modal__eyebrow">Debug режим</div>
+        <h3 class="upload-debug-modal__title" id="uploadDebugTitle">Деталі</h3>
+      </div>
+
+      <button class="upload-debug-modal__close" id="uploadDebugClose" type="button">
+        <img src="/lavash-admin/assets/icons/upload/x.svg" class="icon-xs" alt="">
+      </button>
+    </div>
+
+    <div class="upload-debug-modal__body" id="uploadDebugBody"></div>
   </div>
 </div>
