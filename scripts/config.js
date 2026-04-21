@@ -1,11 +1,12 @@
 window.APP_CONFIG = {
   supabaseUrl: 'https://vfshxogiuaefrgppuypt.supabase.co',
-  supabaseAnonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZmc2h4b2dpdWFlZnJncHB1eXB0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4NDYyNDksImV4cCI6MjA4OTQyMjI0OX0.5y0CIogdEmKvFCgrT2ePeXwC8scfrJXwfQbVfj1c9js'
-};
-uploadBucket: 'uploads',
-uploadBatchTable: 'upload_batches',
-uploadedFilesTable: 'uploaded_files',
+  supabaseAnonKey: 'ТУТ_ТВІЙ_ANON_KEY',
 
-edgeWordProcessUrl: 'https://YOUR-PROJECT.supabase.co/functions/v1/process-word-batch',
-edgeExcelProcessUrl: 'https://YOUR-PROJECT.supabase.co/functions/v1/process-excel-batch',
-edgeBatchFinalizeUrl: 'https://YOUR-PROJECT.supabase.co/functions/v1/finalize-upload-batch',
+  uploadBucket: 'uploads',
+  uploadBatchTable: 'upload_batches',
+  uploadedFilesTable: 'uploaded_files',
+
+  edgeWordProcessUrl: 'https://YOUR-PROJECT.supabase.co/functions/v1/process-word-batch',
+  edgeExcelProcessUrl: 'https://YOUR-PROJECT.supabase.co/functions/v1/process-excel-batch',
+  edgeBatchFinalizeUrl: 'https://YOUR-PROJECT.supabase.co/functions/v1/finalize-upload-batch'
+};
