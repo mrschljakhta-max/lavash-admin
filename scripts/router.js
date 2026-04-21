@@ -5,6 +5,7 @@ const LAVASH_VIEW_ROUTES = {
     pageKey: 'editor',
     useRightTools: true,
     contentClass: 'workspace-body--split',
+    rightToolsVariant: 'default',
     init: async () => {
       if (window.initPendingPage) {
         await window.initPendingPage();
@@ -15,8 +16,9 @@ const LAVASH_VIEW_ROUTES = {
     title: 'Завантаження',
     view: '/lavash-admin/pages/views/upload.html',
     pageKey: 'upload',
-    useRightTools: false,
+    useRightTools: true,
     contentClass: 'workspace-body--page',
+    rightToolsVariant: 'upload',
     init: async () => {
       if (window.initUploadPage) {
         await window.initUploadPage();
@@ -29,6 +31,7 @@ const LAVASH_VIEW_ROUTES = {
     pageKey: 'dicts',
     useRightTools: false,
     contentClass: 'workspace-body--page',
+    rightToolsVariant: 'default',
     init: async () => {}
   },
   logs: {
@@ -37,6 +40,7 @@ const LAVASH_VIEW_ROUTES = {
     pageKey: 'logs',
     useRightTools: false,
     contentClass: 'workspace-body--page',
+    rightToolsVariant: 'default',
     init: async () => {}
   }
 };
@@ -58,7 +62,8 @@ async function loadLavashView(routeName) {
     statusText: 'Підключено',
     content: '<div class="placeholder-card">Завантаження сторінки...</div>',
     useRightTools: route.useRightTools,
-    contentClass: route.contentClass
+    contentClass: route.contentClass,
+    rightToolsVariant: route.rightToolsVariant
   });
 
   await hydrateLavashUser();
