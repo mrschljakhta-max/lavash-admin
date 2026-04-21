@@ -121,9 +121,6 @@ const dictsState = {
   ],
   activeIndex: 2,
   filteredItems: [],
-  autoScrollTimer: null,
-  autoScrollDelay: 4200,
-  isHovered: false,
   isModalOpen: false
 };
 
@@ -135,13 +132,21 @@ function getVisibleDicts() {
   return dictsState.filteredItems.length ? dictsState.filteredItems : dictsState.items;
 }
 
-function getActiveDict() {
-  const visible = getVisibleDicts();
-  return visible[dictsState.activeIndex] || visible[0] || null;
-}
-
 function getRenderItems() {
   return [...getVisibleDicts(), { __create: true, id: '__create__', icon: 'plus' }];
+}
+
+function shiftDicts(step) {
+  const visible = getVisibleDicts();
+  if (!visible.length) return;
+
+  const maxIndex = visible.length - 1;
+  dictsState.activeIndex += step;
+
+  if (dictsState.activeIndex < 0) dictsState.activeIndex = maxIndex;
+  if (dictsState.activeIndex > maxIndex) dictsState.activeIndex = 0;
+
+  renderDictsCarousel();
 }
 
 function renderDictCard(item, index, total) {
@@ -154,8 +159,8 @@ function renderDictCard(item, index, total) {
   if (abs >= 2) cls += ' is-far';
   if (item.__create) cls += ' dict-card--create';
 
-  const transformX = offset * 190;
-  const scale = offset === 0 ? 1 : abs === 1 ? 0.88 : 0.76;
+  const transformX = offset * 195;
+  const scale = offset === 0 ? 1 : abs === 1 ? 0.87 : 0.74;
   const rotate = offset === 0 ? 0 : offset < 0 ? -7 : 7;
   const opacity = abs > 2 ? 0 : 1;
 
@@ -218,8 +223,6 @@ function renderDictsCarousel() {
 
       dictsState.activeIndex = idx;
       renderDictsCarousel();
-      renderDictFocus();
-      restartAutoScroll();
     });
   });
 
@@ -235,106 +238,18 @@ function renderDictsCarousel() {
 
       dictsState.activeIndex = idx;
       renderDictsCarousel();
-      renderDictFocus();
-      restartAutoScroll();
     });
   });
 }
 
-function renderDictFocus() {
-  const active = getActiveDict();
-  if (!active) return;
-
-  const icon = document.getElementById('dictFocusIcon');
-  const title = document.getElementById('dictFocusTitle');
-  const type = document.getElementById('dictFocusType');
-  const slug = document.getElementById('dictFocusSlug');
-  const description = document.getElementById('dictFocusDescription');
-  const statusText = document.getElementById('dictFocusStatusText');
-  const total = document.getElementById('dictFocusTotal');
-  const activeCount = document.getElementById('dictFocusActive');
-  const links = document.getElementById('dictFocusLinks');
-  const updated = document.getElementById('dictFocusUpdated');
-
-  if (icon) icon.innerHTML = DICT_ICONS[active.icon] || DICT_ICONS.stack;
-  if (title) title.textContent = active.title;
-  if (type) type.textContent = active.type;
-  if (slug) slug.textContent = `slug: ${active.slug}`;
-  if (description) description.textContent = active.description;
-  if (statusText) statusText.textContent = active.status === 'active' ? 'Активний довідник' : 'Чернетка';
-  if (total) total.textContent = formatNumber(active.total);
-  if (activeCount) activeCount.textContent = formatNumber(active.active);
-  if (links) links.textContent = formatNumber(active.links);
-  if (updated) updated.textContent = active.updated;
-
-  const openRecordsBtn = document.getElementById('dictOpenRecordsBtn');
-  const openSchemaBtn = document.getElementById('dictOpenSchemaBtn');
-  const editBtn = document.getElementById('dictEditBtn');
-  const syncBtn = document.getElementById('dictSyncBtn');
-  const exportBtn = document.getElementById('dictExportBtn');
-
-  if (openRecordsBtn) {
-    openRecordsBtn.onclick = () => alert(`Тут відкриємо табличний режим для: ${active.title}`);
-  }
-  if (openSchemaBtn) {
-    openSchemaBtn.onclick = () => alert(`Тут відкриємо режим схеми для: ${active.title}`);
-  }
-  if (editBtn) {
-    editBtn.onclick = () => alert(`Редагування довідника: ${active.title}`);
-  }
-  if (syncBtn) {
-    syncBtn.onclick = () => alert(`Sync для: ${active.slug}`);
-  }
-  if (exportBtn) {
-    exportBtn.onclick = () => alert(`Експорт довідника: ${active.slug}`);
-  }
-}
-
-function shiftDicts(step) {
-  const visible = getVisibleDicts();
-  if (!visible.length) return;
-
-  const maxIndex = visible.length - 1;
-
-  dictsState.activeIndex += step;
-
-  if (dictsState.activeIndex < 0) dictsState.activeIndex = maxIndex;
-  if (dictsState.activeIndex > maxIndex) dictsState.activeIndex = 0;
-
-  renderDictsCarousel();
-  renderDictFocus();
-}
-
-function startAutoScroll() {
-  stopAutoScroll();
-
-  dictsState.autoScrollTimer = setInterval(() => {
-    if (dictsState.isHovered || dictsState.isModalOpen) return;
-    shiftDicts(1);
-  }, dictsState.autoScrollDelay);
-}
-
-function stopAutoScroll() {
-  if (dictsState.autoScrollTimer) {
-    clearInterval(dictsState.autoScrollTimer);
-    dictsState.autoScrollTimer = null;
-  }
-}
-
-function restartAutoScroll() {
-  startAutoScroll();
-}
-
 function openDictCreateModal() {
   dictsState.isModalOpen = true;
-  stopAutoScroll();
   document.getElementById('dictCreateModal')?.classList.remove('hidden');
 }
 
 function closeDictCreateModal() {
   dictsState.isModalOpen = false;
   document.getElementById('dictCreateModal')?.classList.add('hidden');
-  restartAutoScroll();
 }
 
 function bindDictCreateModal() {
@@ -372,7 +287,6 @@ function bindDictCreateModal() {
     dictsState.activeIndex = dictsState.items.length - 1;
     closeDictCreateModal();
     renderDictsCarousel();
-    renderDictFocus();
   });
 }
 
@@ -428,8 +342,6 @@ function applyDictFilters() {
 
   dictsState.activeIndex = 0;
   renderDictsCarousel();
-  renderDictFocus();
-  restartAutoScroll();
 }
 
 function resetDictFilters() {
@@ -444,8 +356,6 @@ function resetDictFilters() {
   dictsState.filteredItems = [];
   dictsState.activeIndex = 0;
   renderDictsCarousel();
-  renderDictFocus();
-  restartAutoScroll();
 }
 
 function bindDictsRightPanel() {
@@ -466,42 +376,15 @@ function bindDictsRightPanel() {
 }
 
 function bindDictsPageEvents() {
-  document.getElementById('dictsPrevBtn')?.addEventListener('click', () => {
-    shiftDicts(-1);
-    restartAutoScroll();
-  });
-
-  document.getElementById('dictsNextBtn')?.addEventListener('click', () => {
-    shiftDicts(1);
-    restartAutoScroll();
-  });
+  document.getElementById('dictsPrevBtn')?.addEventListener('click', () => shiftDicts(-1));
+  document.getElementById('dictsNextBtn')?.addEventListener('click', () => shiftDicts(1));
 
   const carousel = document.getElementById('dictsCarousel');
   if (carousel) {
     carousel.addEventListener('wheel', (e) => {
       e.preventDefault();
       shiftDicts(e.deltaY > 0 ? 1 : -1);
-      restartAutoScroll();
     }, { passive: false });
-
-    carousel.addEventListener('mouseenter', () => {
-      dictsState.isHovered = true;
-    });
-
-    carousel.addEventListener('mouseleave', () => {
-      dictsState.isHovered = false;
-    });
-  }
-
-  const focus = document.getElementById('dictsFocusCard');
-  if (focus) {
-    focus.addEventListener('mouseenter', () => {
-      dictsState.isHovered = true;
-    });
-
-    focus.addEventListener('mouseleave', () => {
-      dictsState.isHovered = false;
-    });
   }
 }
 
@@ -510,6 +393,4 @@ window.initDictsPage = async function initDictsPage() {
   bindDictCreateModal();
   bindDictsRightPanel();
   renderDictsCarousel();
-  renderDictFocus();
-  startAutoScroll();
 };
