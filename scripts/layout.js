@@ -17,7 +17,7 @@
           <div class="left-nav__top">
             <div class="brand-mini">
               <img
-                src="/lavash-admin/assets/lavash-logo.svg?v=8"
+                src="/lavash-admin/assets/lavash-logo.svg?v=10"
                 alt="Lavash"
                 class="brand-mini__logo"
               />
@@ -33,28 +33,28 @@
           <nav class="left-nav__menu" aria-label="Основна навігація">
             <button class="nav-item ${activeKey === 'editor' ? 'is-active' : ''}" data-route="pending" type="button">
               <span class="nav-item__icon-wrap">
-                <img src="/lavash-admin/assets/icons/nav-editor.svg?v=8" alt="" class="nav-item__icon" />
+                <img src="/lavash-admin/assets/icons/nav-editor.svg?v=10" alt="" class="nav-item__icon" />
               </span>
               <span class="nav-item__label">Редактор</span>
             </button>
 
             <button class="nav-item ${activeKey === 'upload' ? 'is-active' : ''}" data-route="upload" type="button">
               <span class="nav-item__icon-wrap">
-                <img src="/lavash-admin/assets/icons/nav-upload.svg?v=8" alt="" class="nav-item__icon" />
+                <img src="/lavash-admin/assets/icons/nav-upload.svg?v=10" alt="" class="nav-item__icon" />
               </span>
               <span class="nav-item__label">Завантаження</span>
             </button>
 
             <button class="nav-item ${activeKey === 'dicts' ? 'is-active' : ''}" data-route="dicts" type="button">
               <span class="nav-item__icon-wrap">
-                <img src="/lavash-admin/assets/icons/nav-dicts.svg?v=8" alt="" class="nav-item__icon" />
+                <img src="/lavash-admin/assets/icons/nav-dicts.svg?v=10" alt="" class="nav-item__icon" />
               </span>
               <span class="nav-item__label">Довідники</span>
             </button>
 
             <button class="nav-item ${activeKey === 'logs' ? 'is-active' : ''}" data-route="logs" type="button">
               <span class="nav-item__icon-wrap">
-                <img src="/lavash-admin/assets/icons/nav-logs.svg?v=8" alt="" class="nav-item__icon" />
+                <img src="/lavash-admin/assets/icons/nav-logs.svg?v=10" alt="" class="nav-item__icon" />
               </span>
               <span class="nav-item__label">Логування</span>
             </button>
@@ -65,7 +65,7 @@
     `;
   }
 
-  function lavashBuildRightTools() {
+  function lavashBuildDefaultRightTools() {
     return `
       <aside class="right-tools" id="rightTools">
         <div class="right-tools__inner">
@@ -79,21 +79,21 @@
           <div class="right-tools__menu" aria-label="Інструменти сторінки">
             <button class="tool-item" data-tool="search" type="button">
               <span class="tool-item__icon-wrap">
-                <img src="/lavash-admin/assets/icons/tool-search.svg?v=8" alt="" class="tool-item__icon" />
+                <img src="/lavash-admin/assets/icons/tool-search.svg?v=10" alt="" class="tool-item__icon" />
               </span>
               <span class="tool-item__label">Пошук</span>
             </button>
 
             <button class="tool-item" data-tool="filters" type="button">
               <span class="tool-item__icon-wrap">
-                <img src="/lavash-admin/assets/icons/tool-filter.svg?v=8" alt="" class="tool-item__icon" />
+                <img src="/lavash-admin/assets/icons/tool-filter.svg?v=10" alt="" class="tool-item__icon" />
               </span>
               <span class="tool-item__label">Фільтри</span>
             </button>
 
             <button class="tool-item" data-tool="refresh" type="button">
               <span class="tool-item__icon-wrap">
-                <img src="/lavash-admin/assets/icons/tool-refresh.svg?v=8" alt="" class="tool-item__icon" />
+                <img src="/lavash-admin/assets/icons/tool-refresh.svg?v=10" alt="" class="tool-item__icon" />
               </span>
               <span class="tool-item__label">Оновити</span>
             </button>
@@ -102,12 +102,7 @@
           <div class="right-tools__panel" id="layoutRightPanel">
             <div class="tool-block tool-block--search">
               <label class="tool-block__label" for="searchInput">Пошук</label>
-              <input
-                id="searchInput"
-                class="tool-input"
-                type="text"
-                placeholder="Пошук по значенню..."
-              />
+              <input id="searchInput" class="tool-input" type="text" placeholder="Пошук по значенню..." />
             </div>
 
             <div class="tool-block">
@@ -141,6 +136,122 @@
     `;
   }
 
+  function lavashBuildUploadRightTools() {
+    return `
+      <aside class="right-tools right-tools--upload" id="rightTools">
+        <div class="right-tools__inner">
+
+          <div class="right-tools__top">
+            <div class="right-tools__title-wrap">
+              <span class="right-tools__title">Обробка</span>
+            </div>
+          </div>
+
+          <div class="right-tools__menu" aria-label="Інструменти завантаження">
+
+            <button class="tool-item tool-item--upload" type="button" data-upload-tool="queue">
+              <span class="tool-item__icon-wrap">
+                <img src="/lavash-admin/assets/icons/upload/stack.svg" alt="" class="tool-item__icon" />
+              </span>
+              <span class="tool-item__label">Черга</span>
+            </button>
+
+            <button class="tool-item tool-item--upload" type="button" data-upload-tool="validate">
+              <span class="tool-item__icon-wrap">
+                <img src="/lavash-admin/assets/icons/upload/shield.svg" alt="" class="tool-item__icon" />
+              </span>
+              <span class="tool-item__label">Перевірка</span>
+            </button>
+
+            <button class="tool-item tool-item--upload" type="button" data-upload-tool="parse">
+              <span class="tool-item__icon-wrap">
+                <img src="/lavash-admin/assets/icons/upload/settings.svg" alt="" class="tool-item__icon" />
+              </span>
+              <span class="tool-item__label">Парсинг</span>
+            </button>
+
+            <button class="tool-item tool-item--upload" type="button" data-upload-tool="extract">
+              <span class="tool-item__icon-wrap">
+                <img src="/lavash-admin/assets/icons/upload/target.svg" alt="" class="tool-item__icon" />
+              </span>
+              <span class="tool-item__label">Події</span>
+            </button>
+
+            <button class="tool-item tool-item--upload" type="button" data-upload-tool="database">
+              <span class="tool-item__icon-wrap">
+                <img src="/lavash-admin/assets/icons/upload/database.svg" alt="" class="tool-item__icon" />
+              </span>
+              <span class="tool-item__label">Supabase</span>
+            </button>
+
+            <button class="tool-item tool-item--upload tool-item--accent" type="button" id="uploadStartSideBtn">
+              <span class="tool-item__icon-wrap">
+                <img src="/lavash-admin/assets/icons/upload/bolt.svg" alt="" class="tool-item__icon" />
+              </span>
+              <span class="tool-item__label">Запуск</span>
+            </button>
+          </div>
+
+          <div class="right-tools__panel right-tools__panel--upload" id="layoutRightPanel">
+            <div class="tool-block tool-block--upload-queue">
+              <label class="tool-block__label">Файлів у черзі</label>
+              <div class="upload-side-stat">
+                <span class="upload-side-stat__value" id="uploadQueueCount">0</span>
+                <span class="upload-side-stat__text">готово до обробки</span>
+              </div>
+            </div>
+
+            <div class="tool-block tool-block--upload-stage" id="uploadStageValidateBlock">
+              <div class="upload-stage-line">
+                <img src="/lavash-admin/assets/icons/upload/shield.svg" class="icon-sm" alt="">
+                <div>
+                  <div class="upload-stage-line__title">Перевірка</div>
+                  <div class="upload-stage-line__text">Формат, назва, цілісність</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="tool-block tool-block--upload-stage" id="uploadStageParseBlock">
+              <div class="upload-stage-line">
+                <img src="/lavash-admin/assets/icons/upload/settings.svg" class="icon-sm" alt="">
+                <div>
+                  <div class="upload-stage-line__title">Парсинг</div>
+                  <div class="upload-stage-line__text">Розбір структури документа</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="tool-block tool-block--upload-stage" id="uploadStageExtractBlock">
+              <div class="upload-stage-line">
+                <img src="/lavash-admin/assets/icons/upload/target.svg" class="icon-sm" alt="">
+                <div>
+                  <div class="upload-stage-line__title">Виділення подій</div>
+                  <div class="upload-stage-line__text">Формування записів і сутностей</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="tool-block tool-block--upload-stage" id="uploadStageDbBlock">
+              <div class="upload-stage-line">
+                <img src="/lavash-admin/assets/icons/upload/database.svg" class="icon-sm" alt="">
+                <div>
+                  <div class="upload-stage-line__title">Запис у Supabase</div>
+                  <div class="upload-stage-line__text">Збереження даних і логів</div>
+                </div>
+              </div>
+            </div>
+
+            <button id="uploadStartPanelBtn" class="tool-refresh-btn tool-refresh-btn--upload" type="button">
+              <img src="/lavash-admin/assets/icons/upload/bolt.svg" class="icon-sm" alt="">
+              Завантажити і обробити
+            </button>
+          </div>
+
+        </div>
+      </aside>
+    `;
+  }
+
   function lavashBuildHeader(title = 'Lavash Admin', statusText = 'Підключено') {
     return `
       <header class="workspace-header">
@@ -156,35 +267,40 @@
   }
 
   function initLavashLayout(options = {}) {
-  const {
-    pageKey = lavashCurrentPageKey(),
-    title = 'Lavash Admin',
-    statusText = 'Підключено',
-    content = '',
-    useRightTools = true,
-    contentClass = 'workspace-body--page'
-  } = options;
+    const {
+      pageKey = lavashCurrentPageKey(),
+      title = 'Lavash Admin',
+      statusText = 'Підключено',
+      content = '',
+      useRightTools = true,
+      contentClass = 'workspace-body--page',
+      rightToolsVariant = 'default'
+    } = options;
 
-  const mount = document.getElementById('app');
-  if (!mount) return;
+    const mount = document.getElementById('app');
+    if (!mount) return;
 
-  mount.innerHTML = `
-    <div class="app-shell">
-      ${lavashBuildLeftNav(pageKey)}
+    const rightToolsHtml = !useRightTools
+      ? '<aside class="right-tools right-tools--empty"></aside>'
+      : (rightToolsVariant === 'upload' ? lavashBuildUploadRightTools() : lavashBuildDefaultRightTools());
 
-      <main class="main-workspace">
-        ${lavashBuildHeader(title, statusText)}
-        <section class="workspace-body ${contentClass}" id="workspaceBody">
-          ${content}
-        </section>
-      </main>
+    mount.innerHTML = `
+      <div class="app-shell">
+        ${lavashBuildLeftNav(pageKey)}
 
-      ${useRightTools ? lavashBuildRightTools() : '<aside class="right-tools right-tools--empty"></aside>'}
-    </div>
-  `;
+        <main class="main-workspace">
+          ${lavashBuildHeader(title, statusText)}
+          <section class="workspace-body ${contentClass}" id="workspaceBody">
+            ${content}
+          </section>
+        </main>
 
-  bindLavashLayoutEvents();
-}
+        ${rightToolsHtml}
+      </div>
+    `;
+
+    bindLavashLayoutEvents();
+  }
 
   function bindLavashLayoutEvents() {
     document.querySelectorAll('.nav-item').forEach((btn) => {
@@ -210,7 +326,7 @@
       });
     }
 
-    document.querySelectorAll('.tool-item').forEach((btn) => {
+    document.querySelectorAll('.tool-item[data-tool]').forEach((btn) => {
       btn.addEventListener('click', () => {
         const tool = btn.dataset.tool;
 
