@@ -1,22 +1,21 @@
 .dicts-page {
   display: grid;
-  gap: 22px;
+  gap: 12px;
 }
 
 .dicts-hero {
   display: grid;
-  gap: 18px;
+  gap: 8px;
 }
 
-.dicts-hero__eyebrow {
-  color: var(--text-soft);
-  font-size: 13px;
-  margin-bottom: 6px;
+.dicts-hero__head {
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(118, 150, 236, 0.10);
 }
 
 .dicts-hero__title {
   margin: 0;
-  font-size: clamp(32px, 4vw, 54px);
+  font-size: clamp(34px, 4.2vw, 56px);
   line-height: 0.95;
   font-weight: 900;
   color: var(--text-main);
@@ -24,7 +23,7 @@
 
 .dicts-carousel-wrap {
   position: relative;
-  min-height: 360px;
+  min-height: 430px;
   display: grid;
   place-items: center;
   overflow: hidden;
@@ -33,60 +32,63 @@
 .dicts-carousel {
   position: relative;
   width: 100%;
-  height: 360px;
-  perspective: 1200px;
+  height: 430px;
+  perspective: 1600px;
 }
 
 .dict-card {
   position: absolute;
   left: 50%;
-  top: 10px;
-  width: 210px;
-  height: 320px;
-  margin-left: -105px;
+  top: 18px;
+  width: 250px;
+  height: 360px;
+  margin-left: -125px;
   border: 1px solid rgba(118, 150, 236, 0.10);
-  background:
-    linear-gradient(180deg, rgba(16, 40, 107, 0.92), rgba(10, 28, 84, 0.96));
-  border-radius: 26px;
-  box-shadow: 0 18px 34px rgba(0, 0, 0, 0.22);
-  transition: transform 0.35s ease, opacity 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
-  padding: 26px 20px 22px;
+  background: linear-gradient(180deg, rgba(16, 40, 107, 0.94), rgba(10, 28, 84, 0.98));
+  border-radius: 30px;
+  box-shadow: 0 22px 42px rgba(0, 0, 0, 0.24);
+  transition:
+    transform 0.65s cubic-bezier(.22, .9, .2, 1),
+    opacity 0.65s cubic-bezier(.22, .9, .2, 1),
+    box-shadow 0.45s ease,
+    border-color 0.45s ease;
+  padding: 28px 22px 24px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   color: var(--text-main);
   cursor: pointer;
+  will-change: transform, opacity;
 }
 
 .dict-card:hover {
-  box-shadow: 0 22px 44px rgba(41, 99, 255, 0.20);
+  box-shadow: 0 26px 54px rgba(41, 99, 255, 0.22);
 }
 
 .dict-card.is-active {
-  border-color: rgba(76, 132, 255, 0.65);
+  border-color: rgba(76, 132, 255, 0.70);
   box-shadow:
-    0 0 0 1px rgba(76, 132, 255, 0.28) inset,
-    0 26px 50px rgba(47, 98, 255, 0.24);
+    0 0 0 1px rgba(76, 132, 255, 0.30) inset,
+    0 30px 64px rgba(47, 98, 255, 0.22);
 }
 
 .dict-card.is-near {
-  opacity: 0.86;
+  opacity: 0.82;
 }
 
 .dict-card.is-far {
-  opacity: 0.54;
+  opacity: 0.38;
 }
 
 .dict-card--create {
   border-style: dashed;
-  background:
-    linear-gradient(180deg, rgba(12, 26, 74, 0.78), rgba(8, 18, 58, 0.90));
+  background: linear-gradient(180deg, rgba(12, 26, 74, 0.80), rgba(8, 18, 58, 0.92));
 }
 
 .dict-card__icon {
-  width: 88px;
-  height: 88px;
-  border-radius: 22px;
+  width: 96px;
+  height: 96px;
+  border-radius: 24px;
   background: rgba(255, 255, 255, 0.04);
   display: grid;
   place-items: center;
@@ -95,8 +97,8 @@
 }
 
 .dict-card__icon svg {
-  width: 52px;
-  height: 52px;
+  width: 56px;
+  height: 56px;
 }
 
 .dict-card__body {
@@ -106,15 +108,15 @@
 }
 
 .dict-card__title {
-  font-size: 22px;
-  line-height: 1.1;
+  font-size: 24px;
+  line-height: 1.05;
   font-weight: 900;
 }
 
 .dict-card__meta,
 .dict-card__description {
   color: var(--text-soft);
-  font-size: 14px;
+  font-size: 15px;
   line-height: 1.45;
 }
 
@@ -126,7 +128,7 @@
 }
 
 .dict-chip {
-  min-height: 28px;
+  min-height: 30px;
   padding: 0 12px;
   border-radius: 999px;
   display: inline-flex;
@@ -148,13 +150,13 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  width: 54px;
-  height: 54px;
+  width: 58px;
+  height: 58px;
   border-radius: 999px;
   border: 1px solid rgba(118, 150, 236, 0.16);
   background: rgba(18, 35, 90, 0.94);
   color: var(--text-main);
-  font-size: 32px;
+  font-size: 34px;
   line-height: 1;
   display: grid;
   place-items: center;
@@ -163,17 +165,18 @@
 }
 
 .dicts-carousel__nav--left {
-  left: 8px;
+  left: 10px;
 }
 
 .dicts-carousel__nav--right {
-  right: 8px;
+  right: 10px;
 }
 
 .dicts-carousel__dots {
   display: flex;
   justify-content: center;
   gap: 10px;
+  margin-top: -6px;
 }
 
 .dict-dot {
@@ -190,26 +193,25 @@
 }
 
 .dicts-focus {
-  border-radius: 28px;
+  border-radius: 24px;
   border: 1px solid rgba(118, 150, 236, 0.12);
-  background:
-    linear-gradient(180deg, rgba(10, 28, 84, 0.96), rgba(7, 20, 63, 0.98));
-  padding: 22px;
+  background: linear-gradient(180deg, rgba(10, 28, 84, 0.96), rgba(7, 20, 63, 0.98));
+  padding: 16px 18px;
   display: grid;
-  gap: 20px;
+  gap: 14px;
 }
 
-.dicts-focus__left {
+.dicts-focus--compact .dicts-focus__left {
   display: grid;
-  grid-template-columns: 132px 1fr;
-  gap: 22px;
+  grid-template-columns: 102px 1fr;
+  gap: 18px;
   align-items: center;
 }
 
 .dicts-focus__icon {
-  width: 132px;
-  height: 132px;
-  border-radius: 28px;
+  width: 102px;
+  height: 102px;
+  border-radius: 24px;
   background: rgba(118, 150, 236, 0.08);
   display: grid;
   place-items: center;
@@ -217,64 +219,65 @@
 }
 
 .dicts-focus__icon svg {
-  width: 72px;
-  height: 72px;
+  width: 58px;
+  height: 58px;
 }
 
 .dicts-focus__title-row {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   flex-wrap: wrap;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .dicts-focus__title {
   margin: 0;
-  font-size: 28px;
+  font-size: 22px;
   line-height: 1;
   font-weight: 900;
 }
 
 .dicts-focus__badge {
-  min-height: 30px;
-  padding: 0 12px;
+  min-height: 28px;
+  padding: 0 10px;
   border-radius: 999px;
   display: inline-flex;
   align-items: center;
   background: rgba(76, 132, 255, 0.10);
   border: 1px solid rgba(76, 132, 255, 0.20);
-  font-size: 12px;
+  font-size: 11px;
   color: #9bb6ff;
   font-weight: 800;
 }
 
 .dicts-focus__slug {
   color: var(--text-soft);
-  font-size: 15px;
-  margin-bottom: 10px;
+  font-size: 14px;
+  margin-bottom: 8px;
 }
 
 .dicts-focus__description {
   margin: 0;
   color: var(--text-soft);
-  line-height: 1.7;
-  max-width: 760px;
+  line-height: 1.55;
+  max-width: 920px;
+  font-size: 14px;
 }
 
 .dicts-focus__status {
-  margin-top: 14px;
+  margin-top: 10px;
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
   color: #8ff4c6;
 }
 
 .dicts-focus__status-dot {
-  width: 12px;
-  height: 12px;
+  width: 11px;
+  height: 11px;
   border-radius: 999px;
   background: #18d48f;
   box-shadow: 0 0 16px rgba(24, 212, 143, 0.44);
@@ -283,42 +286,42 @@
 .dicts-focus__stats {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 14px;
+  gap: 12px;
 }
 
 .dict-stat-card {
-  border-radius: 20px;
+  border-radius: 18px;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.05);
-  padding: 18px;
+  padding: 14px 16px;
 }
 
 .dict-stat-card__label {
   color: var(--text-soft);
-  font-size: 13px;
-  margin-bottom: 10px;
+  font-size: 12px;
+  margin-bottom: 8px;
 }
 
 .dict-stat-card__value {
-  font-size: 40px;
+  font-size: 28px;
   font-weight: 900;
   line-height: 1;
 }
 
 .dict-stat-card__value--small {
-  font-size: 28px;
+  font-size: 22px;
 }
 
 .dicts-focus__actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 10px;
 }
 
 .dict-action-btn {
-  min-height: 52px;
-  padding: 0 18px;
-  border-radius: 16px;
+  min-height: 46px;
+  padding: 0 16px;
+  border-radius: 14px;
   border: 1px solid rgba(118, 150, 236, 0.14);
   background: rgba(255, 255, 255, 0.03);
   color: var(--text-main);
@@ -441,8 +444,24 @@
   resize: vertical;
 }
 
+@media (max-width: 1280px) {
+  .dicts-carousel-wrap {
+    min-height: 390px;
+  }
+
+  .dicts-carousel {
+    height: 390px;
+  }
+
+  .dict-card {
+    width: 220px;
+    height: 330px;
+    margin-left: -110px;
+  }
+}
+
 @media (max-width: 1100px) {
-  .dicts-focus__left {
+  .dicts-focus--compact .dicts-focus__left {
     grid-template-columns: 1fr;
   }
 
@@ -461,21 +480,21 @@
 
 @media (max-width: 720px) {
   .dicts-carousel-wrap {
-    min-height: 300px;
+    min-height: 330px;
   }
 
   .dicts-carousel {
-    height: 300px;
+    height: 330px;
   }
 
   .dict-card {
     width: 180px;
-    height: 270px;
+    height: 280px;
     margin-left: -90px;
   }
 
   .dict-card__title {
-    font-size: 19px;
+    font-size: 20px;
   }
 
   .dicts-focus__stats {
