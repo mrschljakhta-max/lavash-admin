@@ -79,10 +79,10 @@ function shiftDicts(step) {
 
 function computeCardZIndex(offset) {
   const abs = Math.abs(offset);
-  if (offset === 0) return 100;
-  if (abs === 1) return 70;
-  if (abs === 2) return 50;
-  return 30;
+  if (offset === 0) return 500;
+  if (abs === 1) return 300;
+  if (abs === 2) return 200;
+  return 100;
 }
 
 function renderDictCard(item, index) {
@@ -106,7 +106,11 @@ function renderDictCard(item, index) {
       class="${cls}"
       type="button"
       data-index="${index}"
-      style="transform: translateX(${transformX}px) scale(${scale}) rotateY(${rotate}deg); opacity:${opacity}; z-index:${zIndex};"
+      style="
+        transform: translate3d(${transformX}px, 0, 0) scale(${scale}) rotateY(${rotate}deg);
+        opacity:${opacity};
+        z-index:${zIndex};
+      "
     >
       <div class="dict-card__icon">
         ${item.__create ? DICT_ICONS.plus : (DICT_ICONS[item.icon] || DICT_ICONS.stack)}
