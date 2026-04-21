@@ -11,10 +11,14 @@ function bytesToSize(bytes) {
   return `${(bytes / (1024 ** i)).toFixed(i === 0 ? 0 : 1)} ${sizes[i]}`;
 }
 
-function updateTotalFilesCount() {
+function updateQueueCounters() {
   const total = uploadState.docxFiles.length + uploadState.excelFiles.length;
-  const node = document.getElementById('totalFilesCount');
-  if (node) node.textContent = String(total);
+
+  const topNode = document.getElementById('totalFilesCount');
+  if (topNode) topNode.textContent = String(total);
+
+  const sideNode = document.getElementById('uploadQueueCount');
+  if (sideNode) sideNode.textContent = String(total);
 }
 
 function renderFileList(type) {
@@ -31,7 +35,7 @@ function renderFileList(type) {
 
   if (!files.length) {
     listNode.innerHTML = `<div class="upload-list__empty">${type === 'docx' ? 'Word' : 'Excel'} файли ще не додані</div>`;
-    updateTotalFilesCount();
+    updateQueueCounters();
     return;
   }
 
@@ -64,11 +68,11 @@ function renderFileList(type) {
         renderFileList('excel');
       }
 
-      updateTotalFilesCount();
+      updateQueueCounters();
     });
   });
 
-  updateTotalFilesCount();
+  updateQueueCounters();
 }
 
 function pushUniqueFiles(type, fileList) {
@@ -137,46 +141,79 @@ function setupDropZone(type) {
   });
 }
 
-function resetPipelineStates() {
-  const ids = [
-    'pipelineStepValidate',
-    'pipelineStepParse',
-    'pipelineStepExtract',
-    'pipelineStepDb',
+function resetUploadRightStages() {
+  [
+    'uploadStageValidateBlock',
+    'uploadStageParseBlock',
+    'uploadStageExtractBlock',
+    'uploadStageDbBlock',
     'overlayStageValidate',
     'overlayStageParse',
     'overlayStageExtract',
     'overlayStageDb'
-  ];
-
-  ids.forEach((id) => {
+  ].forEach((id) => {
     const node = document.getElementById(id);
-    if (node) {
-      node.classList.remove('is-active', 'is-done');
-    }
+    if (node) node.classList.remove('is-active', 'is-done');
   });
 }
 
-function markStageActive(stepId, overlayId) {
-  resetPipelineStates();
-
-  const allDone = {
-    pipelineStepValidate: [],
-    pipelineStepParse: ['pipelineStepValidate', 'overlayStageValidate'],
-    pipelineStepExtract: ['pipelineStepValidate', 'pipelineStepParse', 'overlayStageValidate', 'overlayStageParse'],
-    pipelineStepDb: ['pipelineStepValidate', 'pipelineStepParse', 'pipelineStepExtract', 'overlayStageValidate', 'overlayStageParse', 'overlayStageExtract']
+function activateUploadStage(name) {
+  const map = {
+    validate: {
+      active: ['uploadStageValidateBlock', 'overlayStageValidate'],
+      done: []
+    },
+    parse: {
+      active: ['uploadStageParseBlock', 'overlayStageParse'],
+      done: ['uploadStageValidateBlock', 'overlayStageValidate']
+    },
+    extract: {
+      active: ['uploadStageExtractBlock', 'overlayStageExtract'],
+      done: ['uploadStageValidateBlock', 'overlayStageValidate', 'uploadStageParseBlock', 'overlayStageParse']
+    },
+    db: {
+      active: ['uploadStageDbBlock', 'overlayStageDb'],
+      done: [
+        'uploadStageValidateBlock', 'overlayStageValidate',
+        'uploadStageParseBlock', 'overlayStageParse',
+        'uploadStageExtractBlock', 'overlayStageExtract'
+      ]
+    }
   };
 
-  (allDone[stepId] || []).forEach((id) => {
+  resetUploadRightStages();
+
+  const state = map[name];
+  if (!state) return;
+
+  state.done.forEach((id) => {
     const node = document.getElementById(id);
     if (node) node.classList.add('is-done');
   });
 
-  const step = document.getElementById(stepId);
-  const overlay = document.getElementById(overlayId);
+  state.active.forEach((id) => {
+    const node = document.getElementById(id);
+    if (node) node.classList.add('is-active');
+  });
+}
 
-  if (step) step.classList.add('is-active');
-  if (overlay) overlay.classList.add('is-active');
+function finishUploadStages() {
+  [
+    'uploadStageValidateBlock',
+    'uploadStageParseBlock',
+    'uploadStageExtractBlock',
+    'uploadStageDbBlock',
+    'overlayStageValidate',
+    'overlayStageParse',
+    'overlayStageExtract',
+    'overlayStageDb'
+  ].forEach((id) => {
+    const node = document.getElementById(id);
+    if (node) {
+      node.classList.remove('is-active');
+      node.classList.add('is-done');
+    }
+  });
 }
 
 function showOverlay(title, subtitle) {
@@ -201,50 +238,48 @@ function sleep(ms) {
 async function runFakeUploadFlow() {
   showOverlay('Підготовка...', 'Ініціалізуємо процес обробки файлів');
 
-  markStageActive('pipelineStepValidate', 'overlayStageValidate');
+  activateUploadStage('validate');
   await sleep(700);
   showOverlay('Перевірка файлів', 'Аналізуємо формат, структуру і допустимість файлів');
 
-  markStageActive('pipelineStepParse', 'overlayStageParse');
+  activateUploadStage('parse');
   await sleep(900);
   showOverlay('Парсинг документів', 'Розбираємо вміст Word і Excel файлів');
 
-  markStageActive('pipelineStepExtract', 'overlayStageExtract');
+  activateUploadStage('extract');
   await sleep(900);
   showOverlay('Виділення подій', 'Формуємо події, сутності та службові записи');
 
-  markStageActive('pipelineStepDb', 'overlayStageDb');
+  activateUploadStage('db');
   await sleep(900);
   showOverlay('Запис у Supabase', 'Передаємо результати обробки в базу даних');
 
-  ['pipelineStepValidate', 'pipelineStepParse', 'pipelineStepExtract', 'pipelineStepDb',
-   'overlayStageValidate', 'overlayStageParse', 'overlayStageExtract', 'overlayStageDb'
-  ].forEach((id) => {
-    const node = document.getElementById(id);
-    if (node) {
-      node.classList.remove('is-active');
-      node.classList.add('is-done');
-    }
-  });
+  finishUploadStages();
 
   showOverlay('Готово', 'Файли оброблено. Можна переходити до наступного етапу.');
   await sleep(900);
   hideOverlay();
 }
 
+async function startUploadFlow() {
+  const total = uploadState.docxFiles.length + uploadState.excelFiles.length;
+
+  if (!total) {
+    alert('Спочатку додай хоча б один Word або Excel файл.');
+    return;
+  }
+
+  await runFakeUploadFlow();
+}
+
 function bindUploadActions() {
-  const startBtn = document.getElementById('startUpload');
-  if (!startBtn) return;
+  const centerStartBtn = document.getElementById('startUpload');
+  const sideStartBtn = document.getElementById('uploadStartSideBtn');
+  const panelStartBtn = document.getElementById('uploadStartPanelBtn');
 
-  startBtn.addEventListener('click', async () => {
-    const total = uploadState.docxFiles.length + uploadState.excelFiles.length;
-
-    if (!total) {
-      alert('Спочатку додай хоча б один Word або Excel файл.');
-      return;
-    }
-
-    await runFakeUploadFlow();
+  [centerStartBtn, sideStartBtn, panelStartBtn].forEach((btn) => {
+    if (!btn) return;
+    btn.addEventListener('click', startUploadFlow);
   });
 }
 
@@ -257,6 +292,7 @@ window.initUploadPage = async function initUploadPage() {
 
   renderFileList('docx');
   renderFileList('excel');
-  updateTotalFilesCount();
+  updateQueueCounters();
+  resetUploadRightStages();
   bindUploadActions();
 };
