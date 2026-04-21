@@ -6,6 +6,7 @@ const LAVASH_VIEW_ROUTES = {
     useRightTools: true,
     contentClass: 'workspace-body--split',
     rightToolsVariant: 'default',
+    extraCss: [],
     init: async () => {
       if (window.initPendingPage) {
         await window.initPendingPage();
@@ -19,6 +20,7 @@ const LAVASH_VIEW_ROUTES = {
     useRightTools: true,
     contentClass: 'workspace-body--page',
     rightToolsVariant: 'upload',
+    extraCss: [],
     init: async () => {
       if (window.initUploadPage) {
         await window.initUploadPage();
@@ -29,10 +31,15 @@ const LAVASH_VIEW_ROUTES = {
     title: 'Довідники',
     view: '/lavash-admin/pages/views/dicts.html',
     pageKey: 'dicts',
-    useRightTools: false,
+    useRightTools: true,
     contentClass: 'workspace-body--page',
     rightToolsVariant: 'default',
-    init: async () => {}
+    extraCss: ['/lavash-admin/styles/dicts.css?v=1'],
+    init: async () => {
+      if (window.initDictsPage) {
+        await window.initDictsPage();
+      }
+    }
   },
   logs: {
     title: 'Логування',
@@ -41,9 +48,22 @@ const LAVASH_VIEW_ROUTES = {
     useRightTools: false,
     contentClass: 'workspace-body--page',
     rightToolsVariant: 'default',
+    extraCss: [],
     init: async () => {}
   }
 };
+
+function ensureRouteCss(hrefs = []) {
+  document.querySelectorAll('link[data-route-css="true"]').forEach((node) => node.remove());
+
+  hrefs.forEach((href) => {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = href;
+    link.dataset.routeCss = 'true';
+    document.head.appendChild(link);
+  });
+}
 
 function getRouteFromHash() {
   const hash = window.location.hash.replace('#', '').trim();
@@ -55,6 +75,8 @@ async function loadLavashView(routeName) {
 
   const user = await window.LAVASH_AUTH?.protectAppPage?.();
   if (!user) return;
+
+  ensureRouteCss(route.extraCss || []);
 
   initLavashLayout({
     pageKey: route.pageKey,
@@ -85,11 +107,7 @@ async function loadLavashView(routeName) {
     }
   } catch (error) {
     console.error('loadLavashView failed:', error);
-    contentMount.innerHTML = `
-      <div class="placeholder-card">
-        Помилка завантаження сторінки.
-      </div>
-    `;
+    contentMount.innerHTML = `<div class="placeholder-card">Помилка завантаження сторінки.</div>`;
   }
 }
 
