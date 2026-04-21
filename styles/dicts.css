@@ -1,15 +1,15 @@
 .dicts-page {
   display: grid;
-  gap: 12px;
+  gap: 10px;
 }
 
 .dicts-hero {
   display: grid;
-  gap: 8px;
+  gap: 10px;
 }
 
 .dicts-hero__head {
-  padding-bottom: 8px;
+  padding-bottom: 10px;
   border-bottom: 1px solid rgba(118, 150, 236, 0.10);
 }
 
@@ -23,61 +23,73 @@
 
 .dicts-carousel-wrap {
   position: relative;
-  min-height: 430px;
+  min-height: 560px;
   display: grid;
   place-items: center;
+  overflow: hidden;
+}
+
+.dicts-carousel-stage {
+  position: relative;
+  width: 100%;
+  min-height: 560px;
   overflow: hidden;
 }
 
 .dicts-carousel {
   position: relative;
   width: 100%;
-  height: 430px;
-  perspective: 1600px;
+  height: 560px;
+  perspective: 1800px;
+  transform-style: preserve-3d;
 }
 
 .dict-card {
   position: absolute;
   left: 50%;
-  top: 18px;
-  width: 250px;
-  height: 360px;
-  margin-left: -125px;
+  top: 28px;
+  width: 290px;
+  height: 420px;
+  margin-left: -145px;
   border: 1px solid rgba(118, 150, 236, 0.10);
   background: linear-gradient(180deg, rgba(16, 40, 107, 0.94), rgba(10, 28, 84, 0.98));
-  border-radius: 30px;
+  border-radius: 32px;
   box-shadow: 0 22px 42px rgba(0, 0, 0, 0.24);
   transition:
-    transform 0.65s cubic-bezier(.22, .9, .2, 1),
-    opacity 0.65s cubic-bezier(.22, .9, .2, 1),
+    transform 0.85s cubic-bezier(.22, 1, .22, 1),
+    opacity 0.85s cubic-bezier(.22, 1, .22, 1),
+    filter 0.85s cubic-bezier(.22, 1, .22, 1),
     box-shadow 0.45s ease,
     border-color 0.45s ease;
-  padding: 28px 22px 24px;
+  padding: 30px 24px 26px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   color: var(--text-main);
   cursor: pointer;
-  will-change: transform, opacity;
+  will-change: transform, opacity, filter;
+  backface-visibility: hidden;
 }
 
 .dict-card:hover {
-  box-shadow: 0 26px 54px rgba(41, 99, 255, 0.22);
+  box-shadow: 0 28px 58px rgba(41, 99, 255, 0.22);
 }
 
 .dict-card.is-active {
-  border-color: rgba(76, 132, 255, 0.70);
+  border-color: rgba(76, 132, 255, 0.72);
   box-shadow:
     0 0 0 1px rgba(76, 132, 255, 0.30) inset,
-    0 30px 64px rgba(47, 98, 255, 0.22);
+    0 34px 72px rgba(47, 98, 255, 0.24);
 }
 
 .dict-card.is-near {
-  opacity: 0.82;
+  opacity: 0.84;
+  filter: saturate(0.9);
 }
 
 .dict-card.is-far {
-  opacity: 0.38;
+  opacity: 0.42;
+  filter: saturate(0.75);
 }
 
 .dict-card--create {
@@ -86,9 +98,9 @@
 }
 
 .dict-card__icon {
-  width: 96px;
-  height: 96px;
-  border-radius: 24px;
+  width: 104px;
+  height: 104px;
+  border-radius: 26px;
   background: rgba(255, 255, 255, 0.04);
   display: grid;
   place-items: center;
@@ -97,18 +109,18 @@
 }
 
 .dict-card__icon svg {
-  width: 56px;
-  height: 56px;
+  width: 60px;
+  height: 60px;
 }
 
 .dict-card__body {
   display: grid;
-  gap: 12px;
+  gap: 14px;
   text-align: center;
 }
 
 .dict-card__title {
-  font-size: 24px;
+  font-size: 26px;
   line-height: 1.05;
   font-weight: 900;
 }
@@ -150,33 +162,33 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  width: 58px;
-  height: 58px;
+  width: 64px;
+  height: 64px;
   border-radius: 999px;
   border: 1px solid rgba(118, 150, 236, 0.16);
   background: rgba(18, 35, 90, 0.94);
   color: var(--text-main);
-  font-size: 34px;
+  font-size: 38px;
   line-height: 1;
   display: grid;
   place-items: center;
-  z-index: 40;
+  z-index: 50;
   cursor: pointer;
 }
 
 .dicts-carousel__nav--left {
-  left: 10px;
+  left: 16px;
 }
 
 .dicts-carousel__nav--right {
-  right: 10px;
+  right: 16px;
 }
 
 .dicts-carousel__dots {
   display: flex;
   justify-content: center;
   gap: 10px;
-  margin-top: -6px;
+  margin-top: -10px;
 }
 
 .dict-dot {
@@ -192,148 +204,7 @@
   background: linear-gradient(90deg, var(--accent-1), var(--accent-2), var(--accent-3));
 }
 
-.dicts-focus {
-  border-radius: 24px;
-  border: 1px solid rgba(118, 150, 236, 0.12);
-  background: linear-gradient(180deg, rgba(10, 28, 84, 0.96), rgba(7, 20, 63, 0.98));
-  padding: 16px 18px;
-  display: grid;
-  gap: 14px;
-}
-
-.dicts-focus--compact .dicts-focus__left {
-  display: grid;
-  grid-template-columns: 102px 1fr;
-  gap: 18px;
-  align-items: center;
-}
-
-.dicts-focus__icon {
-  width: 102px;
-  height: 102px;
-  border-radius: 24px;
-  background: rgba(118, 150, 236, 0.08);
-  display: grid;
-  place-items: center;
-  color: #7e8dff;
-}
-
-.dicts-focus__icon svg {
-  width: 58px;
-  height: 58px;
-}
-
-.dicts-focus__title-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-bottom: 6px;
-}
-
-.dicts-focus__title {
-  margin: 0;
-  font-size: 22px;
-  line-height: 1;
-  font-weight: 900;
-}
-
-.dicts-focus__badge {
-  min-height: 28px;
-  padding: 0 10px;
-  border-radius: 999px;
-  display: inline-flex;
-  align-items: center;
-  background: rgba(76, 132, 255, 0.10);
-  border: 1px solid rgba(76, 132, 255, 0.20);
-  font-size: 11px;
-  color: #9bb6ff;
-  font-weight: 800;
-}
-
-.dicts-focus__slug {
-  color: var(--text-soft);
-  font-size: 14px;
-  margin-bottom: 8px;
-}
-
-.dicts-focus__description {
-  margin: 0;
-  color: var(--text-soft);
-  line-height: 1.55;
-  max-width: 920px;
-  font-size: 14px;
-}
-
-.dicts-focus__status {
-  margin-top: 10px;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 14px;
-  font-weight: 700;
-  color: #8ff4c6;
-}
-
-.dicts-focus__status-dot {
-  width: 11px;
-  height: 11px;
-  border-radius: 999px;
-  background: #18d48f;
-  box-shadow: 0 0 16px rgba(24, 212, 143, 0.44);
-}
-
-.dicts-focus__stats {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-}
-
-.dict-stat-card {
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  padding: 14px 16px;
-}
-
-.dict-stat-card__label {
-  color: var(--text-soft);
-  font-size: 12px;
-  margin-bottom: 8px;
-}
-
-.dict-stat-card__value {
-  font-size: 28px;
-  font-weight: 900;
-  line-height: 1;
-}
-
-.dict-stat-card__value--small {
-  font-size: 22px;
-}
-
-.dicts-focus__actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.dict-action-btn {
-  min-height: 46px;
-  padding: 0 16px;
-  border-radius: 14px;
-  border: 1px solid rgba(118, 150, 236, 0.14);
-  background: rgba(255, 255, 255, 0.03);
-  color: var(--text-main);
-  font-weight: 800;
-  cursor: pointer;
-}
-
-.dict-action-btn--primary {
-  background: linear-gradient(90deg, var(--accent-1), var(--accent-2), var(--accent-3));
-  border: none;
-  color: #fff;
-}
+/* MODAL */
 
 .dict-modal.hidden {
   display: none;
@@ -444,31 +315,41 @@
   resize: vertical;
 }
 
-@media (max-width: 1280px) {
-  .dicts-carousel-wrap {
-    min-height: 390px;
+.dict-action-btn {
+  min-height: 46px;
+  padding: 0 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(118, 150, 236, 0.14);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-main);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.dict-action-btn--primary {
+  background: linear-gradient(90deg, var(--accent-1), var(--accent-2), var(--accent-3));
+  border: none;
+  color: #fff;
+}
+
+@media (max-width: 1400px) {
+  .dicts-carousel-wrap,
+  .dicts-carousel-stage {
+    min-height: 510px;
   }
 
   .dicts-carousel {
-    height: 390px;
+    height: 510px;
   }
 
   .dict-card {
-    width: 220px;
-    height: 330px;
-    margin-left: -110px;
+    width: 260px;
+    height: 390px;
+    margin-left: -130px;
   }
 }
 
 @media (max-width: 1100px) {
-  .dicts-focus--compact .dicts-focus__left {
-    grid-template-columns: 1fr;
-  }
-
-  .dicts-focus__stats {
-    grid-template-columns: 1fr 1fr;
-  }
-
   .dict-form-grid {
     grid-template-columns: 1fr;
   }
@@ -479,25 +360,22 @@
 }
 
 @media (max-width: 720px) {
-  .dicts-carousel-wrap {
-    min-height: 330px;
+  .dicts-carousel-wrap,
+  .dicts-carousel-stage {
+    min-height: 400px;
   }
 
   .dicts-carousel {
-    height: 330px;
+    height: 400px;
   }
 
   .dict-card {
-    width: 180px;
-    height: 280px;
-    margin-left: -90px;
+    width: 210px;
+    height: 310px;
+    margin-left: -105px;
   }
 
   .dict-card__title {
-    font-size: 20px;
-  }
-
-  .dicts-focus__stats {
-    grid-template-columns: 1fr;
+    font-size: 22px;
   }
 }
