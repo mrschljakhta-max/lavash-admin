@@ -7,7 +7,7 @@
   display: grid;
   gap: 8px;
 }
-
+ 
 .dicts-hero__head {
   padding-bottom: 10px;
   border-bottom: 1px solid rgba(118, 150, 236, 0.10);
