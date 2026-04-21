@@ -1661,3 +1661,100 @@ select {
     width: 280px;
   }
 }
+
+
+/* =========================
+   UPLOAD LIST HEIGHT + CUSTOM SCROLL
+========================= */
+
+.upload-page--clean .upload-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  align-items: stretch;
+}
+
+.upload-page--clean .upload-card {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 220px);
+}
+
+.upload-page--clean .upload-list-wrap {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.upload-page--clean .upload-list--compact {
+  flex: 1 1 auto;
+  min-height: 96px;
+  max-height: 260px;
+  overflow-y: auto;
+  padding-right: 6px;
+
+  scrollbar-width: thin;
+  scrollbar-color: rgba(118, 150, 236, 0.75) rgba(255,255,255,0.05);
+}
+
+/* Chrome / Edge / Opera */
+.upload-page--clean .upload-list--compact::-webkit-scrollbar {
+  width: 10px;
+}
+
+.upload-page--clean .upload-list--compact::-webkit-scrollbar-track {
+  background: rgba(255,255,255,0.04);
+  border-radius: 999px;
+}
+
+.upload-page--clean .upload-list--compact::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    180deg,
+    rgba(118, 150, 236, 0.95),
+    rgba(104, 116, 255, 0.95),
+    rgba(141, 88, 255, 0.95)
+  );
+  border-radius: 999px;
+  border: 2px solid rgba(9, 24, 69, 0.9);
+}
+
+.upload-page--clean .upload-list--compact::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(
+    180deg,
+    rgba(150, 178, 255, 1),
+    rgba(120, 136, 255, 1),
+    rgba(164, 120, 255, 1)
+  );
+}
+
+/* Порожній стан теж акуратно розтягуємо */
+.upload-page--clean .upload-list__empty {
+  min-height: 58px;
+  display: grid;
+  place-items: center;
+}
+
+/* Щоб список файлів виглядав щільніше і акуратніше */
+.upload-page--clean .upload-file-item {
+  margin-bottom: 10px;
+}
+
+.upload-page--clean .upload-file-item:last-child {
+  margin-bottom: 0;
+}
+
+/* На менших екранах не робимо надто високі картки */
+@media (max-width: 1280px) {
+  .upload-page--clean .upload-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .upload-page--clean .upload-card {
+    min-height: auto;
+  }
+
+  .upload-page--clean .upload-list--compact {
+    max-height: 220px;
+  }
+}
