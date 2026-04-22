@@ -14,8 +14,6 @@
   --accent-3: #a86cff;
 }
 
-/* ===== BASE ===== */
-
 * {
   box-sizing: border-box;
 }
@@ -44,35 +42,40 @@ body.lavash-modal-open {
   display: flex;
   width: 100%;
   min-height: 100vh;
-  overflow: hidden;
+  overflow: visible;
+  position: relative;
 }
 
-/* ===== LEFT NAV ===== */
+/* ===== LEFT NAV / OVERLAY MODE ===== */
 
 .left-nav {
   width: var(--left-nav-collapsed);
   min-width: var(--left-nav-collapsed);
-  background: linear-gradient(180deg, #07173d, #040f2a);
-  border-right: 1px solid var(--line-soft);
-  display: flex;
-  flex-direction: column;
-  padding: 16px 14px;
-  transition: width 0.24s ease, min-width 0.24s ease;
   position: relative;
-  z-index: 20;
-  overflow: hidden;
-}
-
-.left-nav:hover {
-  width: var(--left-nav-expanded);
-  min-width: var(--left-nav-expanded);
+  z-index: 40;
+  overflow: visible;
+  border-right: 1px solid var(--line-soft);
+  background: linear-gradient(180deg, #07173d, #040f2a);
 }
 
 .left-nav__inner {
-  width: 100%;
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: var(--left-nav-collapsed);
+  min-height: 100vh;
+  background: linear-gradient(180deg, #07173d, #040f2a);
+  padding: 16px 14px;
   display: flex;
   flex-direction: column;
   gap: 18px;
+  overflow: hidden;
+  transition: width 0.24s ease;
+  box-shadow: none;
+}
+
+.left-nav:hover .left-nav__inner {
+  width: var(--left-nav-expanded);
+  box-shadow: 22px 0 44px rgba(0, 0, 0, 0.22);
 }
 
 .left-nav__top {
@@ -86,9 +89,9 @@ body.lavash-modal-open {
 .brand-mini {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 14px;
   min-height: 46px;
-  justify-content: center;
 }
 
 .left-nav:hover .brand-mini {
@@ -119,7 +122,7 @@ body.lavash-modal-open {
   pointer-events: auto;
 }
 
-/* ===== USER BLOCK ===== */
+/* ===== USER ===== */
 
 .user-box-mini {
   width: 100%;
@@ -130,14 +133,11 @@ body.lavash-modal-open {
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
   opacity: 1;
-  transform: translateY(0);
   transition: opacity 0.18s ease, transform 0.18s ease;
 }
 
-.user-box-mini::before {
-  content: "";
+.user-box-mini__dot {
   width: 14px;
   height: 14px;
   border-radius: 50%;
@@ -156,7 +156,6 @@ body.lavash-modal-open {
   border-radius: 22px;
   border: 1px solid rgba(118,150,236,0.12);
   background: rgba(255,255,255,0.03);
-  padding: 14px;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -164,15 +163,13 @@ body.lavash-modal-open {
   max-height: 0;
   overflow: hidden;
   transform: translateY(-6px);
+  padding: 0 14px;
   transition:
     opacity 0.18s ease,
     transform 0.18s ease,
     max-height 0.22s ease,
     padding 0.22s ease,
-    margin 0.22s ease,
     border-width 0.22s ease;
-  padding-top: 0;
-  padding-bottom: 0;
   border-width: 0;
 }
 
@@ -312,30 +309,36 @@ body.lavash-modal-open {
   overflow: auto;
 }
 
-/* ===== RIGHT TOOLS ===== */
+/* ===== RIGHT NAV / OVERLAY MODE ===== */
 
 .right-tools {
   width: var(--right-nav-collapsed);
   min-width: var(--right-nav-collapsed);
+  position: relative;
+  z-index: 35;
+  overflow: visible;
   border-left: 1px solid var(--line-soft);
   background: linear-gradient(180deg, rgba(5, 15, 52, 0.96), rgba(3, 10, 40, 0.98));
-  padding: 16px 14px;
-  position: relative;
-  z-index: 15;
-  overflow: hidden;
-  transition: width 0.24s ease, min-width 0.24s ease;
-}
-
-.right-tools:hover {
-  width: var(--right-nav-expanded);
-  min-width: var(--right-nav-expanded);
 }
 
 .right-tools__inner {
+  position: absolute;
+  inset: 0 0 0 auto;
+  width: var(--right-nav-collapsed);
+  min-height: 100vh;
+  background: linear-gradient(180deg, rgba(5, 15, 52, 0.96), rgba(3, 10, 40, 0.98));
+  padding: 16px 14px;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  height: 100%;
+  overflow: hidden;
+  transition: width 0.24s ease;
+  box-shadow: none;
+}
+
+.right-tools:hover .right-tools__inner {
+  width: var(--right-nav-expanded);
+  box-shadow: -22px 0 44px rgba(0, 0, 0, 0.22);
 }
 
 .right-tools__top {
@@ -650,26 +653,6 @@ body.lavash-modal-open {
 @media (max-width: 1100px) {
   .workspace-title {
     font-size: 44px;
-  }
-
-  .left-nav {
-    width: 84px;
-    min-width: 84px;
-  }
-
-  .left-nav:hover {
-    width: 280px;
-    min-width: 280px;
-  }
-
-  .right-tools {
-    width: 88px;
-    min-width: 88px;
-  }
-
-  .right-tools:hover {
-    width: 300px;
-    min-width: 300px;
   }
 }
 
