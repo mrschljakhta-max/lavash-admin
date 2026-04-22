@@ -65,74 +65,138 @@
     `;
   }
 
-  function lavashBuildDefaultRightTools() {
-    return `
-      <aside class="right-tools" id="rightTools">
-        <div class="right-tools__inner">
-          <div class="right-tools__top">
-            <div class="right-tools__title-wrap">
-              <span class="right-tools__title">Інструменти</span>
-            </div>
-          </div>
+  function lavashBuildDefaultRightTools(pageKey = lavashCurrentPageKey()) {
+  const isDictsPage = pageKey === 'dicts';
 
-          <div class="right-tools__menu" aria-label="Інструменти сторінки">
-            <button class="tool-item" data-tool="search" type="button">
-              <span class="tool-item__icon-wrap">
-                <img src="/lavash-admin/assets/icons/tool-search.svg?v=11" alt="" class="tool-item__icon" />
-              </span>
-              <span class="tool-item__label">Пошук</span>
-            </button>
-
-            <button class="tool-item" data-tool="filters" type="button">
-              <span class="tool-item__icon-wrap">
-                <img src="/lavash-admin/assets/icons/tool-filter.svg?v=11" alt="" class="tool-item__icon" />
-              </span>
-              <span class="tool-item__label">Фільтри</span>
-            </button>
-
-            <button class="tool-item" data-tool="refresh" type="button">
-              <span class="tool-item__icon-wrap">
-                <img src="/lavash-admin/assets/icons/tool-refresh.svg?v=11" alt="" class="tool-item__icon" />
-              </span>
-              <span class="tool-item__label">Оновити</span>
-            </button>
-          </div>
-
-          <div class="right-tools__panel" id="layoutRightPanel">
-            <div class="tool-block tool-block--search">
-              <label class="tool-block__label" for="searchInput">Пошук</label>
-              <input id="searchInput" class="tool-input" type="text" placeholder="Пошук по значенню..." />
-            </div>
-
-            <div class="tool-block">
-              <label class="tool-block__label" for="statusFilter">Статус</label>
-              <select id="statusFilter" class="tool-select">
-                <option value="all">усі статуси</option>
-              </select>
-            </div>
-
-            <div class="tool-block">
-              <label class="tool-block__label" for="fieldFilter">Поле</label>
-              <select id="fieldFilter" class="tool-select">
-                <option value="all">усі поля</option>
-              </select>
-            </div>
-
-            <div class="tool-block">
-              <label class="tool-block__label" for="sourceFilter">Джерело</label>
-              <select id="sourceFilter" class="tool-select">
-                <option value="all">усі джерела</option>
-              </select>
-            </div>
-
-            <button id="refreshBtn" class="tool-refresh-btn" type="button">
-              Оновити
-            </button>
+  return `
+    <aside class="right-tools" id="rightTools">
+      <div class="right-tools__inner">
+        <div class="right-tools__top">
+          <div class="right-tools__title-wrap">
+            <span class="right-tools__title">Інструменти</span>
           </div>
         </div>
-      </aside>
-    `;
-  }
+
+        <div class="right-tools__menu" aria-label="Інструменти сторінки">
+          ${isDictsPage ? `
+            <div class="dicts-mode-switcher" id="dictsModeSwitcher">
+              <button
+                class="tool-item tool-item--dicts-mode"
+                id="dictsModeTrigger"
+                type="button"
+                aria-expanded="false"
+                aria-controls="dictsModePopover"
+                title="Режими довідників"
+              >
+                <span class="tool-item__icon-wrap tool-item__icon-wrap--svg">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="4" width="7" height="7" rx="1.6"></rect>
+                    <rect x="14" y="4" width="7" height="7" rx="1.6"></rect>
+                    <rect x="3" y="15" width="7" height="6" rx="1.6"></rect>
+                    <path d="M14 18h7"></path>
+                    <path d="M17.5 15v6"></path>
+                  </svg>
+                </span>
+                <span class="tool-item__label">Режими</span>
+              </button>
+
+              <div class="dicts-mode-switcher__popover hidden" id="dictsModePopover">
+                <button type="button" class="dicts-mode-action is-active" data-dicts-mode="carousel">
+                  <span class="dicts-mode-action__icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="3" y="6" width="5" height="12" rx="1.5"></rect>
+                      <rect x="9.5" y="4" width="5" height="16" rx="1.5"></rect>
+                      <rect x="16" y="6" width="5" height="12" rx="1.5"></rect>
+                    </svg>
+                  </span>
+                  <span class="dicts-mode-action__label">Карусель</span>
+                </button>
+
+                <button type="button" class="dicts-mode-action" data-dicts-mode="schema">
+                  <span class="dicts-mode-action__icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="3" y="4" width="6" height="5" rx="1.2"></rect>
+                      <rect x="15" y="4" width="6" height="5" rx="1.2"></rect>
+                      <rect x="9" y="15" width="6" height="5" rx="1.2"></rect>
+                      <path d="M6 9v3"></path>
+                      <path d="M18 9v3"></path>
+                      <path d="M6 12h12"></path>
+                      <path d="M12 12v3"></path>
+                    </svg>
+                  </span>
+                  <span class="dicts-mode-action__label">Схема</span>
+                </button>
+
+                <button type="button" class="dicts-mode-action dicts-mode-action--accent" id="dictsAddDictionaryBtn">
+                  <span class="dicts-mode-action__icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                      <path d="M12 5v14"></path>
+                      <path d="M5 12h14"></path>
+                    </svg>
+                  </span>
+                  <span class="dicts-mode-action__label">Додати довідник</span>
+                </button>
+              </div>
+            </div>
+          ` : ''}
+
+          <button class="tool-item" data-tool="search" type="button">
+            <span class="tool-item__icon-wrap">
+              <img src="/lavash-admin/assets/icons/tool-search.svg?v=11" alt="" class="tool-item__icon" />
+            </span>
+            <span class="tool-item__label">Пошук</span>
+          </button>
+
+          <button class="tool-item" data-tool="filters" type="button">
+            <span class="tool-item__icon-wrap">
+              <img src="/lavash-admin/assets/icons/tool-filter.svg?v=11" alt="" class="tool-item__icon" />
+            </span>
+            <span class="tool-item__label">Фільтри</span>
+          </button>
+
+          <button class="tool-item" data-tool="refresh" type="button">
+            <span class="tool-item__icon-wrap">
+              <img src="/lavash-admin/assets/icons/tool-refresh.svg?v=11" alt="" class="tool-item__icon" />
+            </span>
+            <span class="tool-item__label">Оновити</span>
+          </button>
+        </div>
+
+        <div class="right-tools__panel" id="layoutRightPanel">
+          <div class="tool-block tool-block--search">
+            <label class="tool-block__label" for="searchInput">Пошук</label>
+            <input id="searchInput" class="tool-input" type="text" placeholder="Пошук по значенню..." />
+          </div>
+
+          <div class="tool-block">
+            <label class="tool-block__label" for="statusFilter">Статус</label>
+            <select id="statusFilter" class="tool-select">
+              <option value="all">усі статуси</option>
+            </select>
+          </div>
+
+          <div class="tool-block">
+            <label class="tool-block__label" for="fieldFilter">Поле</label>
+            <select id="fieldFilter" class="tool-select">
+              <option value="all">усі поля</option>
+            </select>
+          </div>
+
+          <div class="tool-block">
+            <label class="tool-block__label" for="sourceFilter">Джерело</label>
+            <select id="sourceFilter" class="tool-select">
+              <option value="all">усі джерела</option>
+            </select>
+          </div>
+
+          <button id="refreshBtn" class="tool-refresh-btn" type="button">
+            Оновити
+          </button>
+        </div>
+      </div>
+    </aside>
+  `;
+}
 
   function lavashBuildUploadRightTools() {
     return `
@@ -278,7 +342,7 @@
 
     const rightToolsHtml = !useRightTools
       ? '<aside class="right-tools right-tools--empty"></aside>'
-      : (rightToolsVariant === 'upload' ? lavashBuildUploadRightTools() : lavashBuildDefaultRightTools());
+      : (rightToolsVariant === 'upload' ? lavashBuildUploadRightTools() : lavashBuildDefaultRightTools(pageKey));
 
     mount.innerHTML = `
       <div class="app-shell">
