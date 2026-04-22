@@ -13,6 +13,7 @@ const LAVASH_VIEW_ROUTES = {
       }
     }
   },
+
   upload: {
     title: 'Завантаження',
     view: '/lavash-admin/pages/views/upload.html',
@@ -27,6 +28,7 @@ const LAVASH_VIEW_ROUTES = {
       }
     }
   },
+
   dicts: {
     title: 'Довідники',
     view: '/lavash-admin/pages/views/dicts.html',
@@ -34,13 +36,14 @@ const LAVASH_VIEW_ROUTES = {
     useRightTools: true,
     contentClass: 'workspace-body--page',
     rightToolsVariant: 'default',
-    extraCss: ['/lavash-admin/styles/dicts.css?v=1'],
+    extraCss: ['/lavash-admin/styles/dicts.css?v=12'],
     init: async () => {
       if (window.initDictsPage) {
         await window.initDictsPage();
       }
     }
   },
+
   logs: {
     title: 'Логування',
     view: '/lavash-admin/pages/views/logs.html',
@@ -49,7 +52,11 @@ const LAVASH_VIEW_ROUTES = {
     contentClass: 'workspace-body--page',
     rightToolsVariant: 'default',
     extraCss: [],
-    init: async () => {}
+    init: async () => {
+      if (window.initLogsPage) {
+        await window.initLogsPage();
+      }
+    }
   }
 };
 
