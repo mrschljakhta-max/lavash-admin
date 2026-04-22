@@ -53,8 +53,12 @@ const dictsState = {
   drag: {
     isDown: false,
     startX: 0,
-    diffX: 0
-  }
+    diffX: 0,
+    lastX: 0,
+    lastT: 0,
+    velocity: 0
+  },
+  animating: false
 };
 
 function formatNumber(value) {
@@ -71,7 +75,7 @@ function getRenderItems() {
 
 function shiftDicts(step) {
   const visible = getVisibleDicts();
-  if (!visible.length) return;
+  if (!visible.length || dictsState.animating) return;
 
   const maxIndex = visible.length - 1;
   dictsState.activeIndex += step;
@@ -79,22 +83,43 @@ function shiftDicts(step) {
   if (dictsState.activeIndex < 0) dictsState.activeIndex = maxIndex;
   if (dictsState.activeIndex > maxIndex) dictsState.activeIndex = 0;
 
+  dictsState.animating = true;
   renderDictsCarousel();
+
+  window.clearTimeout(dictsState.__animTimer);
+  dictsState.__animTimer = window.setTimeout(() => {
+    dictsState.animating = false;
+  }, 620);
+}
+
+function goToDict(index) {
+  const visible = getVisibleDicts();
+  if (!visible.length || dictsState.animating) return;
+  if (index === dictsState.activeIndex) return;
+
+  dictsState.activeIndex = index;
+  dictsState.animating = true;
+  renderDictsCarousel();
+
+  window.clearTimeout(dictsState.__animTimer);
+  dictsState.__animTimer = window.setTimeout(() => {
+    dictsState.animating = false;
+  }, 620);
 }
 
 function computeDepth(offset) {
   const abs = Math.abs(offset);
-  if (offset === 0) return 180;
-  if (abs === 1) return 90;
-  if (abs === 2) return 20;
-  return -30;
+  if (offset === 0) return 190;
+  if (abs === 1) return 95;
+  if (abs === 2) return 24;
+  return -18;
 }
 
 function computeTransform(offset) {
   const abs = Math.abs(offset);
 
-  let x = offset * 120;
-  let scale = 0.82;
+  let x = offset * 110;
+  let scale = 0.84;
   let rotate = 0;
 
   if (offset === 0) {
@@ -102,33 +127,37 @@ function computeTransform(offset) {
     scale = 1;
     rotate = 0;
   } else if (abs === 1) {
-    x = offset * 98;
-    scale = 0.92;
-    rotate = offset < 0 ? 9 : -9;
+    x = offset * 92;
+    scale = 0.93;
+    rotate = offset < 0 ? 8 : -8;
   } else if (abs === 2) {
-    x = offset * 156;
-    scale = 0.84;
-    rotate = offset < 0 ? 12 : -12;
+    x = offset * 146;
+    scale = 0.86;
+    rotate = offset < 0 ? 10 : -10;
   } else {
-    x = offset * 210;
-    scale = 0.74;
-    rotate = offset < 0 ? 14 : -14;
+    x = offset * 190;
+    scale = 0.78;
+    rotate = offset < 0 ? 12 : -12;
   }
 
   return { x, scale, rotate, depth: computeDepth(offset) };
+}
+
+function getCardClass(offset, item) {
+  const abs = Math.abs(offset);
+  let cls = 'dict-card';
+  if (offset === 0) cls += ' is-active';
+  if (abs === 1) cls += ' is-near';
+  if (abs >= 2) cls += ' is-far';
+  if (item.__create) cls += ' dict-card--create';
+  return cls;
 }
 
 function renderDictCard(item, index) {
   const offset = index - dictsState.activeIndex;
   const abs = Math.abs(offset);
   const { x, scale, rotate, depth } = computeTransform(offset);
-
-  let cls = 'dict-card';
-  if (offset === 0) cls += ' is-active';
-  if (abs === 1) cls += ' is-near';
-  if (abs >= 2) cls += ' is-far';
-  if (item.__create) cls += ' dict-card--create';
-
+  const cls = getCardClass(offset, item);
   const opacity = abs > 2 ? 0 : 1;
 
   return `
@@ -144,7 +173,6 @@ function renderDictCard(item, index) {
 
       <div class="dict-card__body">
         <div class="dict-card__title">${item.__create ? 'Новий довідник' : item.title}</div>
-
         ${
           item.__create
             ? `<div class="dict-card__description">Створити новий довідник системи</div>`
@@ -167,10 +195,30 @@ function updateSpotlight() {
   carousel.style.setProperty('--dicts-spotlight-x', '0px');
 }
 
+function renderDots(visible) {
+  const dots = document.getElementById('dictsDots');
+  if (!dots) return;
+
+  dots.innerHTML = visible
+    .map((_, index) => `<button class="dict-dot ${index === dictsState.activeIndex ? 'is-active' : ''}" type="button" data-dot-index="${index}"></button>`)
+    .join('');
+
+  dots.querySelectorAll('.dict-dot').forEach((dot) => {
+    dot.addEventListener('click', () => {
+      const idx = Number(dot.dataset.dotIndex);
+      const picked = visible[idx];
+      if (picked?.__create) {
+        openDictCreateModal();
+        return;
+      }
+      goToDict(idx);
+    });
+  });
+}
+
 function renderDictsCarousel() {
   const wrap = document.getElementById('dictsCarousel');
-  const dots = document.getElementById('dictsDots');
-  if (!wrap || !dots) return;
+  if (!wrap) return;
 
   const visible = getRenderItems();
 
@@ -179,10 +227,6 @@ function renderDictsCarousel() {
   }
 
   wrap.innerHTML = visible.map((item, index) => renderDictCard(item, index)).join('');
-
-  dots.innerHTML = visible
-    .map((_, index) => `<button class="dict-dot ${index === dictsState.activeIndex ? 'is-active' : ''}" type="button" data-dot-index="${index}"></button>`)
-    .join('');
 
   wrap.querySelectorAll('.dict-card').forEach((card) => {
     card.addEventListener('click', () => {
@@ -194,28 +238,11 @@ function renderDictsCarousel() {
         return;
       }
 
-      if (idx === dictsState.activeIndex) return;
-
-      dictsState.activeIndex = idx;
-      renderDictsCarousel();
+      goToDict(idx);
     });
   });
 
-  dots.querySelectorAll('.dict-dot').forEach((dot) => {
-    dot.addEventListener('click', () => {
-      const idx = Number(dot.dataset.dotIndex);
-      const picked = visible[idx];
-
-      if (picked?.__create) {
-        openDictCreateModal();
-        return;
-      }
-
-      dictsState.activeIndex = idx;
-      renderDictsCarousel();
-    });
-  });
-
+  renderDots(visible);
   updateSpotlight();
 }
 
@@ -357,23 +384,39 @@ function bindDragCarousel() {
     dictsState.drag.isDown = true;
     dictsState.drag.startX = e.clientX;
     dictsState.drag.diffX = 0;
+    dictsState.drag.lastX = e.clientX;
+    dictsState.drag.lastT = performance.now();
+    dictsState.drag.velocity = 0;
+    carousel.setPointerCapture?.(e.pointerId);
   });
 
   window.addEventListener('pointermove', (e) => {
     if (!dictsState.drag.isDown) return;
+
+    const now = performance.now();
+    const dt = Math.max(1, now - dictsState.drag.lastT);
+    const dx = e.clientX - dictsState.drag.lastX;
+
     dictsState.drag.diffX = e.clientX - dictsState.drag.startX;
+    dictsState.drag.velocity = dx / dt;
+
+    dictsState.drag.lastX = e.clientX;
+    dictsState.drag.lastT = now;
   });
 
   window.addEventListener('pointerup', () => {
     if (!dictsState.drag.isDown) return;
 
     const diff = dictsState.drag.diffX;
+    const velocity = dictsState.drag.velocity;
+
     dictsState.drag.isDown = false;
     dictsState.drag.diffX = 0;
 
-    if (Math.abs(diff) < 40) return;
-    if (diff < 0) shiftDicts(1);
-    else shiftDicts(-1);
+    if (Math.abs(diff) > 36 || Math.abs(velocity) > 0.35) {
+      if (diff < 0 || velocity < -0.35) shiftDicts(1);
+      else shiftDicts(-1);
+    }
   });
 }
 
