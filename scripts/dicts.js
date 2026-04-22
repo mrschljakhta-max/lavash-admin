@@ -50,6 +50,7 @@ const dictsState = {
   activeIndex: 2,
   filteredItems: [],
   isModalOpen: false,
+  viewMode: 'carousel',
   drag: {
     isDown: false,
     startX: 0,
@@ -493,9 +494,81 @@ function bindActiveCardHover() {
 
   activeCard.addEventListener('mouseleave', reset);
 }
+
+function setDictsViewMode(mode) {
+  dictsState.viewMode = mode;
+
+  const carouselView = document.getElementById('dictsCarouselView');
+  const schemaView = document.getElementById('dictsSchemaView');
+
+  if (carouselView) {
+    carouselView.classList.toggle('hidden', mode !== 'carousel');
+  }
+
+  if (schemaView) {
+    schemaView.classList.toggle('hidden', mode !== 'schema');
+  }
+
+  document.querySelectorAll('.dicts-mode-action[data-dicts-mode]').forEach((btn) => {
+    btn.classList.toggle('is-active', btn.dataset.dictsMode === mode);
+  });
+}
+
+function toggleDictsModePopover(force = null) {
+  const popover = document.getElementById('dictsModePopover');
+  const trigger = document.getElementById('dictsModeTrigger');
+  if (!popover || !trigger) return;
+
+  const shouldOpen = force === null ? popover.classList.contains('hidden') : force;
+
+  popover.classList.toggle('hidden', !shouldOpen);
+  trigger.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
+}
+
+function bindDictsModeSwitcher() {
+  const trigger = document.getElementById('dictsModeTrigger');
+  const popover = document.getElementById('dictsModePopover');
+  const addBtn = document.getElementById('dictsAddDictionaryBtn');
+
+  if (!trigger || !popover) return;
+
+  trigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleDictsModePopover();
+  });
+
+  popover.querySelectorAll('[data-dicts-mode]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const mode = btn.dataset.dictsMode;
+      setDictsViewMode(mode);
+      toggleDictsModePopover(false);
+    });
+  });
+
+  addBtn?.addEventListener('click', () => {
+    toggleDictsModePopover(false);
+    alert('Далі тут відкриємо діалог додавання довідника.');
+  });
+
+  document.addEventListener('click', (e) => {
+    const switcher = document.getElementById('dictsModeSwitcher');
+    if (!switcher) return;
+    if (!switcher.contains(e.target)) {
+      toggleDictsModePopover(false);
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      toggleDictsModePopover(false);
+    }
+  });
+}
 window.initDictsPage = async function initDictsPage() {
   bindDictsPageEvents();
   bindDictCreateModal();
   bindDictsRightPanel();
+  bindDictsModeSwitcher();
   renderDictsCarousel();
+  setDictsViewMode(dictsState.viewMode);
 };
