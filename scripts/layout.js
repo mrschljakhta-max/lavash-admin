@@ -80,67 +80,25 @@
 
           <div class="right-tools__menu" aria-label="Інструменти сторінки">
             ${isDictsPage ? `
-              <div class="dicts-mode-switcher" id="dictsModeSwitcher">
-                <button
-                  class="tool-item tool-item--dicts-mode"
-                  id="dictsModeTrigger"
-                  type="button"
-                  aria-expanded="false"
-                  aria-controls="dictsModePopover"
-                  title="Режими довідників"
-                >
-                  <span class="tool-item__icon-wrap tool-item__icon-wrap--svg">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-                      <rect x="3" y="4" width="7" height="7" rx="1.6"></rect>
-                      <rect x="14" y="4" width="7" height="7" rx="1.6"></rect>
-                      <rect x="3" y="15" width="7" height="6" rx="1.6"></rect>
-                      <path d="M14 18h7"></path>
-                      <path d="M17.5 15v6"></path>
-                    </svg>
-                  </span>
-                  <span class="tool-item__label">Режими</span>
-                </button>
-
-                <div class="dicts-mode-switcher__popover" id="dictsModePopover">
-                  <div class="dicts-radial-menu">
-                    <button type="button" class="dicts-mode-action dicts-mode-action--radial is-active" data-dicts-mode="carousel">
-                      <span class="dicts-mode-action__icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-                          <rect x="3" y="6" width="5" height="12" rx="1.5"></rect>
-                          <rect x="9.5" y="4" width="5" height="16" rx="1.5"></rect>
-                          <rect x="16" y="6" width="5" height="12" rx="1.5"></rect>
-                        </svg>
-                      </span>
-                      <span class="dicts-mode-action__label">Карусель</span>
-                    </button>
-
-                    <button type="button" class="dicts-mode-action dicts-mode-action--radial" data-dicts-mode="schema">
-                      <span class="dicts-mode-action__icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-                          <rect x="3" y="4" width="6" height="5" rx="1.2"></rect>
-                          <rect x="15" y="4" width="6" height="5" rx="1.2"></rect>
-                          <rect x="9" y="15" width="6" height="5" rx="1.2"></rect>
-                          <path d="M6 9v3"></path>
-                          <path d="M18 9v3"></path>
-                          <path d="M6 12h12"></path>
-                          <path d="M12 12v3"></path>
-                        </svg>
-                      </span>
-                      <span class="dicts-mode-action__label">Схема</span>
-                    </button>
-
-                    <button type="button" class="dicts-mode-action dicts-mode-action--radial dicts-mode-action--accent" id="dictsAddDictionaryBtn">
-                      <span class="dicts-mode-action__icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-                          <path d="M12 5v14"></path>
-                          <path d="M5 12h14"></path>
-                        </svg>
-                      </span>
-                      <span class="dicts-mode-action__label">Додати довідник</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
+              <button
+                class="tool-item tool-item--dicts-mode"
+                id="dictsModeTrigger"
+                type="button"
+                aria-haspopup="dialog"
+                aria-controls="dictsModeDialog"
+                title="Режими довідників"
+              >
+                <span class="tool-item__icon-wrap tool-item__icon-wrap--svg">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="4" width="7" height="7" rx="1.6"></rect>
+                    <rect x="14" y="4" width="7" height="7" rx="1.6"></rect>
+                    <rect x="3" y="15" width="7" height="6" rx="1.6"></rect>
+                    <path d="M14 18h7"></path>
+                    <path d="M17.5 15v6"></path>
+                  </svg>
+                </span>
+                <span class="tool-item__label">Режими</span>
+              </button>
             ` : ''}
 
             <button class="tool-item" data-tool="search" type="button">
@@ -285,6 +243,74 @@
     `;
   }
 
+  function lavashBuildDictsModeDialog() {
+    return `
+      <div class="lavash-modal hidden" id="dictsModeDialog" aria-hidden="true">
+        <div class="lavash-modal__backdrop" data-close="dicts-mode-dialog"></div>
+
+        <div class="lavash-modal__card lavash-modal__card--dicts-modes" role="dialog" aria-modal="true" aria-labelledby="dictsModeDialogTitle">
+          <div class="lavash-modal__header">
+            <div>
+              <h3 class="lavash-modal__title" id="dictsModeDialogTitle">Режими довідників</h3>
+              <p class="lavash-modal__subtitle">Оберіть потрібний режим відображення або створіть новий довідник</p>
+            </div>
+
+            <button class="lavash-modal__close" id="dictsModeDialogClose" type="button" aria-label="Закрити">
+              <span>✕</span>
+            </button>
+          </div>
+
+          <div class="dicts-mode-dialog__grid">
+            <button type="button" class="dicts-mode-dialog__action is-active" data-dicts-mode="carousel">
+              <span class="dicts-mode-dialog__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="6" width="5" height="12" rx="1.5"></rect>
+                  <rect x="9.5" y="4" width="5" height="16" rx="1.5"></rect>
+                  <rect x="16" y="6" width="5" height="12" rx="1.5"></rect>
+                </svg>
+              </span>
+              <span class="dicts-mode-dialog__text">
+                <strong>Карусель</strong>
+                <small>Картки довідників у форматі слайдера</small>
+              </span>
+            </button>
+
+            <button type="button" class="dicts-mode-dialog__action" data-dicts-mode="schema">
+              <span class="dicts-mode-dialog__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="4" width="6" height="5" rx="1.2"></rect>
+                  <rect x="15" y="4" width="6" height="5" rx="1.2"></rect>
+                  <rect x="9" y="15" width="6" height="5" rx="1.2"></rect>
+                  <path d="M6 9v3"></path>
+                  <path d="M18 9v3"></path>
+                  <path d="M6 12h12"></path>
+                  <path d="M12 12v3"></path>
+                </svg>
+              </span>
+              <span class="dicts-mode-dialog__text">
+                <strong>Схема</strong>
+                <small>Структурне відображення довідників</small>
+              </span>
+            </button>
+
+            <button type="button" class="dicts-mode-dialog__action dicts-mode-dialog__action--accent" id="dictsAddDictionaryBtn">
+              <span class="dicts-mode-dialog__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                  <path d="M12 5v14"></path>
+                  <path d="M5 12h14"></path>
+                </svg>
+              </span>
+              <span class="dicts-mode-dialog__text">
+                <strong>Додати довідник</strong>
+                <small>Відкрити форму створення нового довідника</small>
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
   function lavashBuildHeader(title = 'Lavash Admin', statusText = 'Підключено') {
     return `
       <header class="workspace-header">
@@ -319,6 +345,8 @@
           ? lavashBuildUploadRightTools()
           : lavashBuildDefaultRightTools(pageKey));
 
+    const dictsDialogHtml = pageKey === 'dicts' ? lavashBuildDictsModeDialog() : '';
+
     mount.innerHTML = `
       <div class="app-shell">
         ${lavashBuildLeftNav(pageKey)}
@@ -332,6 +360,8 @@
 
         ${rightToolsHtml}
       </div>
+
+      ${dictsDialogHtml}
     `;
 
     bindLavashLayoutEvents();
@@ -384,62 +414,52 @@
       });
     });
 
-    bindDictsModePopover();
+    bindDictsModeDialog();
   }
 
-  function bindDictsModePopover() {
-    const switcher = document.getElementById('dictsModeSwitcher');
+  function bindDictsModeDialog() {
     const trigger = document.getElementById('dictsModeTrigger');
-    const popover = document.getElementById('dictsModePopover');
+    const dialog = document.getElementById('dictsModeDialog');
 
-    if (!switcher || !trigger || !popover) return;
+    if (!trigger || !dialog) return;
 
-    const modeButtons = popover.querySelectorAll('[data-dicts-mode]');
+    const closeBtn = document.getElementById('dictsModeDialogClose');
+    const backdrop = dialog.querySelector('[data-close="dicts-mode-dialog"]');
+    const modeButtons = dialog.querySelectorAll('[data-dicts-mode]');
     const addBtn = document.getElementById('dictsAddDictionaryBtn');
 
-    if (!document.body.contains(popover) || popover.parentElement !== document.body) {
-      document.body.appendChild(popover);
+    function openDialog() {
+      dialog.classList.remove('hidden');
+      dialog.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('lavash-modal-open');
     }
 
-    function positionPopover() {
-      const rect = trigger.getBoundingClientRect();
-      const popoverWidth = 220;
-      const popoverHeight = 220;
-
-      const left = rect.left - popoverWidth + 36;
-      const top = rect.top + rect.height / 2 - popoverHeight / 2;
-
-      popover.style.left = `${left}px`;
-      popover.style.top = `${top}px`;
-    }
-
-    function openPopover() {
-      positionPopover();
-      popover.classList.add('is-open');
-      trigger.setAttribute('aria-expanded', 'true');
-    }
-
-    function closePopover() {
-      popover.classList.remove('is-open');
-      trigger.setAttribute('aria-expanded', 'false');
-    }
-
-    function togglePopover() {
-      if (popover.classList.contains('is-open')) {
-        closePopover();
-      } else {
-        openPopover();
-      }
+    function closeDialog() {
+      dialog.classList.add('hidden');
+      dialog.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('lavash-modal-open');
     }
 
     trigger.addEventListener('click', (event) => {
       event.preventDefault();
-      event.stopPropagation();
-      togglePopover();
+      openDialog();
     });
 
-    popover.addEventListener('click', (event) => {
-      event.stopPropagation();
+    closeBtn?.addEventListener('click', closeDialog);
+    backdrop?.addEventListener('click', closeDialog);
+
+    dialog.addEventListener('click', (event) => {
+      const card = dialog.querySelector('.lavash-modal__card');
+      if (!card) return;
+      if (!card.contains(event.target) && event.target === dialog) {
+        closeDialog();
+      }
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && !dialog.classList.contains('hidden')) {
+        closeDialog();
+      }
     });
 
     modeButtons.forEach((btn) => {
@@ -457,55 +477,24 @@
           }));
         }
 
-        closePopover();
+        closeDialog();
       });
     });
 
-    if (addBtn) {
-      addBtn.addEventListener('click', () => {
-        if (typeof window.openAddDictionaryModal === 'function') {
-          window.openAddDictionaryModal();
-        } else {
-          const fallbackBtn =
-            document.getElementById('addDictionaryBtn') ||
-            document.getElementById('openAddDictionaryModalBtn') ||
-            document.querySelector('[data-action="add-dictionary"]');
+    addBtn?.addEventListener('click', () => {
+      if (typeof window.openAddDictionaryModal === 'function') {
+        window.openAddDictionaryModal();
+      } else {
+        const fallbackBtn =
+          document.getElementById('addDictionaryBtn') ||
+          document.getElementById('openAddDictionaryModalBtn') ||
+          document.querySelector('[data-action="add-dictionary"]');
 
-          fallbackBtn?.click();
-        }
-
-        closePopover();
-      });
-    }
-
-    document.addEventListener('click', (event) => {
-      if (!popover.classList.contains('is-open')) return;
-
-      const clickedTrigger = trigger.contains(event.target);
-      const clickedPopover = popover.contains(event.target);
-
-      if (!clickedTrigger && !clickedPopover) {
-        closePopover();
+        fallbackBtn?.click();
       }
+
+      closeDialog();
     });
-
-    document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape') {
-        closePopover();
-      }
-    });
-
-    window.addEventListener('resize', () => {
-      if (popover.classList.contains('is-open')) {
-        positionPopover();
-      }
-    });
-
-    window.addEventListener('scroll', () => {
-      if (popover.classList.contains('is-open')) {
-        positionPopover();
-      }
-    }, true);
   }
 
   async function hydrateLavashUser() {
