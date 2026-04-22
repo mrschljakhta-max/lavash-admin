@@ -35,8 +35,6 @@ body.lavash-modal-open {
   overflow: hidden;
 }
 
-/* ===== APP LAYOUT ===== */
-
 .app-shell,
 .app-layout {
   display: flex;
@@ -46,14 +44,13 @@ body.lavash-modal-open {
   position: relative;
 }
 
-/* ===== LEFT NAV ===== */
+/* LEFT NAV */
 
 .left-nav {
   width: var(--left-nav-collapsed);
   min-width: var(--left-nav-collapsed);
   position: relative;
   z-index: 40;
-  overflow: visible;
   border-right: 1px solid var(--line-soft);
   background: linear-gradient(180deg, #07173d, #040f2a);
 }
@@ -64,10 +61,10 @@ body.lavash-modal-open {
   width: var(--left-nav-collapsed);
   min-height: 100vh;
   background: linear-gradient(180deg, #07173d, #040f2a);
-  padding: 16px 14px;
+  padding: 16px 10px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
   overflow: hidden;
   transition: width 0.24s ease;
   box-shadow: none;
@@ -82,9 +79,10 @@ body.lavash-modal-open {
   display: flex;
   flex-direction: column;
   gap: 14px;
+  position: relative;
 }
 
-/* ===== BRAND ===== */
+/* BRAND */
 
 .brand-mini {
   display: flex;
@@ -92,6 +90,7 @@ body.lavash-modal-open {
   justify-content: center;
   gap: 14px;
   min-height: 46px;
+  padding: 0 8px;
 }
 
 .left-nav:hover .brand-mini {
@@ -122,14 +121,25 @@ body.lavash-modal-open {
   pointer-events: auto;
 }
 
-/* ===== USER ===== */
+/* USER AREA - fixed height in both states */
 
-.user-box-mini {
+.user-stack {
+  position: relative;
   width: 100%;
-  height: 72px;
+  height: 128px;
+}
+
+.user-box-mini,
+.user-box {
+  position: absolute;
+  inset: 0;
+  width: 100%;
   border-radius: 22px;
   border: 1px solid rgba(118,150,236,0.12);
   background: rgba(255,255,255,0.03);
+}
+
+.user-box-mini {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -149,39 +159,24 @@ body.lavash-modal-open {
   opacity: 0;
   transform: translateY(-6px);
   pointer-events: none;
-  position: absolute;
 }
 
 .user-box {
-  width: 100%;
-  min-height: 128px;
-  border-radius: 22px;
-  border: 1px solid rgba(118,150,236,0.12);
-  background: rgba(255,255,255,0.03);
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 12px;
+  padding: 14px;
   opacity: 0;
-  max-height: 0;
-  overflow: hidden;
   transform: translateY(-6px);
-  padding: 0 14px;
-  transition:
-    opacity 0.18s ease,
-    transform 0.18s ease,
-    max-height 0.22s ease,
-    padding 0.22s ease,
-    border-width 0.22s ease;
-  border-width: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease, transform 0.18s ease;
 }
 
 .left-nav:hover .user-box {
   opacity: 1;
-  max-height: 180px;
   transform: translateY(0);
-  padding: 14px;
-  border-width: 1px;
+  pointer-events: auto;
 }
 
 .user-box__email {
@@ -203,7 +198,7 @@ body.lavash-modal-open {
   cursor: pointer;
 }
 
-/* ===== LEFT MENU ===== */
+/* LEFT MENU */
 
 .left-nav__menu {
   display: flex;
@@ -269,7 +264,7 @@ body.lavash-modal-open {
   pointer-events: auto;
 }
 
-/* ===== MAIN ===== */
+/* MAIN */
 
 .main-workspace {
   flex: 1 1 auto;
@@ -312,14 +307,13 @@ body.lavash-modal-open {
   overflow: auto;
 }
 
-/* ===== RIGHT NAV ===== */
+/* RIGHT NAV */
 
 .right-tools {
   width: var(--right-nav-collapsed);
   min-width: var(--right-nav-collapsed);
   position: relative;
   z-index: 35;
-  overflow: visible;
   border-left: 1px solid var(--line-soft);
   background: linear-gradient(180deg, rgba(5, 15, 52, 0.96), rgba(3, 10, 40, 0.98));
 }
@@ -330,10 +324,10 @@ body.lavash-modal-open {
   width: var(--right-nav-collapsed);
   min-height: 100vh;
   background: linear-gradient(180deg, rgba(5, 15, 52, 0.96), rgba(3, 10, 40, 0.98));
-  padding: 16px 14px;
+  padding: 16px 10px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
   overflow: hidden;
   transition: width 0.24s ease;
   box-shadow: none;
@@ -349,6 +343,7 @@ body.lavash-modal-open {
   align-items: center;
   justify-content: flex-start;
   min-height: 42px;
+  padding: 0 8px;
 }
 
 .right-tools__title {
@@ -448,8 +443,6 @@ body.lavash-modal-open {
   pointer-events: auto;
 }
 
-/* ===== TOOL BLOCKS ===== */
-
 .tool-block {
   border-radius: 18px;
   border: 1px solid rgba(118,150,236,0.12);
@@ -498,7 +491,7 @@ body.lavash-modal-open {
   transform: translateY(-1px);
 }
 
-/* ===== MODAL ===== */
+/* MODAL */
 
 .lavash-modal {
   position: fixed;
@@ -575,8 +568,6 @@ body.lavash-modal-open {
 .lavash-modal__close:hover {
   background: rgba(255,255,255,0.08);
 }
-
-/* ===== DICTS MODE DIALOG ===== */
 
 .dicts-mode-dialog__grid {
   display: grid;
