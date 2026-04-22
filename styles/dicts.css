@@ -70,7 +70,8 @@
 }
 
 @keyframes dictFloat {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0);
   }
   50% {
@@ -182,8 +183,9 @@
 }
 
 .dict-card.is-near {
-  z-index: 2;
-  opacity: 0.86;
+  z-index: 6;
+  opacity: 0.96;
+  filter: none;
 }
 
 .dict-card.is-active {
@@ -204,8 +206,9 @@
 }
 
 .dict-card.is-far {
-  opacity: 0.34;
-  filter: blur(1.8px) saturate(0.82);
+  z-index: 3;
+  opacity: 0.72;
+  filter: blur(0.6px) saturate(0.9);
 }
 
 .dict-card:hover {
