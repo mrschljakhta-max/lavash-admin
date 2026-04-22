@@ -110,16 +110,16 @@ function goToDict(index) {
 function computeDepth(offset) {
   const abs = Math.abs(offset);
   if (offset === 0) return 190;
-  if (abs === 1) return 95;
-  if (abs === 2) return 24;
-  return -18;
+  if (abs === 1) return 120;  // ближче до центральної
+  if (abs === 2) return 70;
+  return 20;
 }
 
 function computeTransform(offset) {
   const abs = Math.abs(offset);
 
-  let x = offset * 110;
-  let scale = 0.84;
+  let x = offset * 96;
+  let scale = 0.86;
   let rotate = 0;
 
   if (offset === 0) {
@@ -127,17 +127,17 @@ function computeTransform(offset) {
     scale = 1;
     rotate = 0;
   } else if (abs === 1) {
-    x = offset * 92;
-    scale = 0.93;
-    rotate = offset < 0 ? 8 : -8;
+    x = offset * 72;     // було далі, тепер ближче до центру
+    scale = 0.95;        // трохи більші
+    rotate = offset < 0 ? 6 : -6;   // менший нахил
   } else if (abs === 2) {
-    x = offset * 146;
-    scale = 0.86;
-    rotate = offset < 0 ? 10 : -10;
+    x = offset * 122;    // теж підтягнули
+    scale = 0.89;
+    rotate = offset < 0 ? 8 : -8;
   } else {
-    x = offset * 190;
-    scale = 0.78;
-    rotate = offset < 0 ? 12 : -12;
+    x = offset * 168;
+    scale = 0.80;
+    rotate = offset < 0 ? 10 : -10;
   }
 
   return { x, scale, rotate, depth: computeDepth(offset) };
