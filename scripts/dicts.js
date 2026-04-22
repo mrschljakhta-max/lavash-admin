@@ -71,7 +71,19 @@ function getVisibleDicts() {
 }
 
 function getRenderItems() {
-  return [...getVisibleDicts(), { __create: true, id: '__create__', icon: 'plus', title: 'Новий довідник', description: 'Створити новий довідник системи', type: 'service', total: 0, status: 'draft' }];
+  return [
+    ...getVisibleDicts(),
+    {
+      __create: true,
+      id: '__create__',
+      icon: 'plus',
+      title: 'Новий довідник',
+      description: 'Створити новий довідник системи',
+      type: 'service',
+      total: 0,
+      status: 'draft'
+    }
+  ];
 }
 
 function computeDepth(offset) {
@@ -113,6 +125,7 @@ function computeTransform(offset) {
 function getCardClass(offset, item) {
   const abs = Math.abs(offset);
   let cls = 'dict-card';
+
   if (offset === 0) cls += ' is-active';
   else if (abs === 1) cls += ' is-near';
   else cls += ' is-far';
@@ -186,52 +199,6 @@ function renderDots(visible) {
       goToDict(idx);
     });
   });
-}
-
-function bindActiveCardHover() {
-  const activeCard = document.querySelector('.dict-card.is-active');
-  if (!activeCard) return;
-
-  const reset = () => {
-    activeCard.classList.remove('is-hovering');
-    activeCard.style.setProperty('--mx', '0px');
-    activeCard.style.setProperty('--my', '0px');
-    activeCard.style.setProperty('--glare-x', '50%');
-    activeCard.style.setProperty('--glare-y', '50%');
-
-    const index = Number(activeCard.dataset.index);
-    const { x, scale, rotate, depth } = computeTransform(index - dictsState.activeIndex);
-
-    activeCard.style.transform =
-      `translate3d(${x}px, 0, ${depth}px) scale(${scale}) rotateX(0deg) rotateY(${rotate}deg)`;
-  };
-
-  activeCard.addEventListener('mousemove', (e) => {
-    const rect = activeCard.getBoundingClientRect();
-    const px = (e.clientX - rect.left) / rect.width;
-    const py = (e.clientY - rect.top) / rect.height;
-
-    const rotateYExtra = (px - 0.5) * 10;
-    const rotateXExtra = (0.5 - py) * 8;
-
-    const moveX = (px - 0.5) * 12;
-    const moveY = (py - 0.5) * 10;
-
-    const index = Number(activeCard.dataset.index);
-    const itemOffset = index - dictsState.activeIndex;
-    const { x, scale, rotate, depth } = computeTransform(itemOffset);
-
-    activeCard.classList.add('is-hovering');
-    activeCard.style.setProperty('--mx', `${moveX}px`);
-    activeCard.style.setProperty('--my', `${moveY}px`);
-    activeCard.style.setProperty('--glare-x', `${px * 100}%`);
-    activeCard.style.setProperty('--glare-y', `${py * 100}%`);
-
-    activeCard.style.transform =
-      `translate3d(${x}px, 0, ${depth}px) scale(${scale}) rotateX(${rotateXExtra}deg) rotateY(${rotate + rotateYExtra}deg)`;
-  });
-
-  activeCard.addEventListener('mouseleave', reset);
 }
 
 function renderDictsCarousel() {
@@ -413,8 +380,13 @@ function setDictsViewMode(mode) {
   const carouselView = document.getElementById('dictsCarouselView');
   const schemaView = document.getElementById('dictsSchemaView');
 
-  if (carouselView) carouselView.classList.toggle('hidden', mode !== 'carousel');
-  if (schemaView) schemaView.classList.toggle('hidden', mode !== 'schema');
+  if (carouselView) {
+    carouselView.classList.toggle('hidden', mode !== 'carousel');
+  }
+
+  if (schemaView) {
+    schemaView.classList.toggle('hidden', mode !== 'schema');
+  }
 
   document.querySelectorAll('.dicts-mode-action[data-dicts-mode]').forEach((btn) => {
     btn.classList.toggle('is-active', btn.dataset.dictsMode === mode);
@@ -426,7 +398,9 @@ function toggleDictsModePopover(force = null) {
   const trigger = document.getElementById('dictsModeTrigger');
   if (!popover || !trigger) return;
 
-  const shouldOpen = force === null ? popover.classList.contains('hidden') : force;
+  const isHidden = popover.classList.contains('hidden');
+  const shouldOpen = force === null ? isHidden : force;
+
   popover.classList.toggle('hidden', !shouldOpen);
   trigger.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
 }
@@ -436,22 +410,31 @@ function bindDictsModeSwitcher() {
   const popover = document.getElementById('dictsModePopover');
   const addBtn = document.getElementById('dictsAddDictionaryBtn');
 
-  if (!trigger || !popover) return;
+  if (!trigger || !popover) {
+    console.warn('dicts mode switcher: trigger or popover not found');
+    return;
+  }
 
   trigger.addEventListener('click', (e) => {
+    e.preventDefault();
     e.stopPropagation();
     toggleDictsModePopover();
   });
 
   popover.querySelectorAll('[data-dicts-mode]').forEach((btn) => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+
       const mode = btn.dataset.dictsMode;
       setDictsViewMode(mode);
       toggleDictsModePopover(false);
     });
   });
 
-  addBtn?.addEventListener('click', () => {
+  addBtn?.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
     toggleDictsModePopover(false);
     openDictCreateModal();
   });
@@ -469,6 +452,52 @@ function bindDictsModeSwitcher() {
       toggleDictsModePopover(false);
     }
   });
+}
+
+function bindActiveCardHover() {
+  const activeCard = document.querySelector('.dict-card.is-active');
+  if (!activeCard) return;
+
+  const reset = () => {
+    activeCard.classList.remove('is-hovering');
+    activeCard.style.setProperty('--mx', '0px');
+    activeCard.style.setProperty('--my', '0px');
+    activeCard.style.setProperty('--glare-x', '50%');
+    activeCard.style.setProperty('--glare-y', '50%');
+
+    const index = Number(activeCard.dataset.index);
+    const { x, scale, rotate, depth } = computeTransform(index - dictsState.activeIndex);
+
+    activeCard.style.transform =
+      `translate3d(${x}px, 0, ${depth}px) scale(${scale}) rotateX(0deg) rotateY(${rotate}deg)`;
+  };
+
+  activeCard.addEventListener('mousemove', (e) => {
+    const rect = activeCard.getBoundingClientRect();
+    const px = (e.clientX - rect.left) / rect.width;
+    const py = (e.clientY - rect.top) / rect.height;
+
+    const rotateYExtra = (px - 0.5) * 10;
+    const rotateXExtra = (0.5 - py) * 8;
+
+    const moveX = (px - 0.5) * 12;
+    const moveY = (py - 0.5) * 10;
+
+    const index = Number(activeCard.dataset.index);
+    const itemOffset = index - dictsState.activeIndex;
+    const { x, scale, rotate, depth } = computeTransform(itemOffset);
+
+    activeCard.classList.add('is-hovering');
+    activeCard.style.setProperty('--mx', `${moveX}px`);
+    activeCard.style.setProperty('--my', `${moveY}px`);
+    activeCard.style.setProperty('--glare-x', `${px * 100}%`);
+    activeCard.style.setProperty('--glare-y', `${py * 100}%`);
+
+    activeCard.style.transform =
+      `translate3d(${x}px, 0, ${depth}px) scale(${scale}) rotateX(${rotateXExtra}deg) rotateY(${rotate + rotateYExtra}deg)`;
+  });
+
+  activeCard.addEventListener('mouseleave', reset);
 }
 
 function bindDragCarousel() {
@@ -534,7 +563,9 @@ window.initDictsPage = async function initDictsPage() {
   bindDictsPageEvents();
   bindDictCreateModal();
   bindDictsRightPanel();
-  bindDictsModeSwitcher();
+
   renderDictsCarousel();
+
+  bindDictsModeSwitcher();
   setDictsViewMode(dictsState.viewMode);
 };
