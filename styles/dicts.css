@@ -52,6 +52,32 @@
   transition: transform 0.82s cubic-bezier(.16, 1, .3, 1), opacity 0.4s ease;
 }
 
+/* === MAGIC CARD ANIMATION === */
+
+@property --dict-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes dictSpinBorder {
+  0% {
+    --dict-angle: 0deg;
+  }
+  100% {
+    --dict-angle: 360deg;
+  }
+}
+
+@keyframes dictFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
 /* === КАРТКИ === */
 
 .dict-card {
@@ -68,11 +94,11 @@
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.22);
 
   transition:
-  transform 0.82s cubic-bezier(.16, 1, .3, 1),
-  opacity 0.62s ease,
-  filter 0.62s ease,
-  box-shadow 0.36s ease,
-  border-color 0.36s ease;
+    transform 0.82s cubic-bezier(.16, 1, .3, 1),
+    opacity 0.62s ease,
+    filter 0.62s ease,
+    box-shadow 0.36s ease,
+    border-color 0.36s ease;
 
   padding: 20px 16px 16px;
   display: flex;
@@ -85,15 +111,74 @@
   transform-style: preserve-3d;
   backface-visibility: hidden;
   z-index: 1;
+  overflow: visible;
+}
+
+.dict-card__surface {
+  position: absolute;
+  inset: 0;
+  border-radius: 26px;
+  background: linear-gradient(180deg, rgba(18, 44, 118, 0.96), rgba(11, 29, 92, 0.99));
+  z-index: 1;
   overflow: hidden;
 }
 
-.dict-card::after {
+.dict-card__surface::after {
   content: "";
   position: absolute;
   inset: 0;
   background: linear-gradient(180deg, rgba(255,255,255,0.04), transparent 28%, transparent 72%, rgba(0,0,0,0.08));
   pointer-events: none;
+}
+
+.dict-card__magic-border,
+.dict-card__magic-glow {
+  position: absolute;
+  inset: 0;
+  border-radius: 26px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+.dict-card__magic-border {
+  padding: 2px;
+  background: linear-gradient(
+    var(--dict-angle),
+    #5ddcff,
+    #6c73ff 34%,
+    #8a4dff 68%,
+    #5ddcff
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  z-index: 3;
+}
+
+.dict-card__magic-glow {
+  inset: auto 18px -14px 18px;
+  height: 62px;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    rgba(93, 220, 255, 0.16),
+    rgba(108, 115, 255, 0.24),
+    rgba(138, 77, 255, 0.16)
+  );
+  filter: blur(18px);
+  z-index: 0;
+}
+
+.dict-card__content {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .dict-card.is-near {
@@ -103,11 +188,19 @@
 
 .dict-card.is-active {
   z-index: 10;
-  border-color: rgba(76, 132, 255, 0.72);
   box-shadow:
-    0 0 0 1px rgba(76, 132, 255, 0.25) inset,
-    0 0 24px rgba(76, 132, 255, 0.22),
-    0 26px 58px rgba(47, 98, 255, 0.22);
+    0 0 0 1px rgba(76, 132, 255, 0.18) inset,
+    0 0 24px rgba(76, 132, 255, 0.16),
+    0 26px 58px rgba(47, 98, 255, 0.18);
+}
+
+.dict-card.is-active .dict-card__magic-border,
+.dict-card.is-active .dict-card__magic-glow {
+  opacity: 1;
+}
+
+.dict-card.is-active .dict-card__magic-border {
+  animation: dictSpinBorder 4s linear infinite;
 }
 
 .dict-card.is-far {
@@ -121,6 +214,9 @@
 
 .dict-card--create {
   border-style: dashed;
+}
+
+.dict-card--create .dict-card__surface {
   background: linear-gradient(180deg, rgba(14, 30, 82, 0.85), rgba(9, 20, 60, 0.95));
 }
 
@@ -389,17 +485,6 @@
   background: linear-gradient(90deg, var(--accent-1), var(--accent-2), var(--accent-3));
   border: none;
   color: #fff;
-}
-
-/* === ANIMATION === */
-
-@keyframes dictFloat {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-5px);
-  }
 }
 
 /* === ADAPTIVE === */
