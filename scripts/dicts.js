@@ -49,7 +49,12 @@ const dictsState = {
   ],
   activeIndex: 2,
   filteredItems: [],
-  isModalOpen: false
+  isModalOpen: false,
+  drag: {
+    isDown: false,
+    startX: 0,
+    diffX: 0
+  }
 };
 
 function formatNumber(value) {
@@ -80,14 +85,43 @@ function shiftDicts(step) {
 function computeDepth(offset) {
   const abs = Math.abs(offset);
   if (offset === 0) return 220;
-  if (abs === 1) return 80;
+  if (abs === 1) return 90;
   if (abs === 2) return 10;
   return -40;
+}
+
+function computeTransform(offset) {
+  const abs = Math.abs(offset);
+
+  let x = offset * 150;
+  let scale = 0.78;
+  let rotate = 0;
+
+  if (offset === 0) {
+    x = 0;
+    scale = 1;
+    rotate = 0;
+  } else if (abs === 1) {
+    x = offset * 132;
+    scale = 0.90;
+    rotate = offset < 0 ? 13 : -13;
+  } else if (abs === 2) {
+    x = offset * 208;
+    scale = 0.78;
+    rotate = offset < 0 ? 18 : -18;
+  } else {
+    x = offset * 250;
+    scale = 0.68;
+    rotate = offset < 0 ? 20 : -20;
+  }
+
+  return { x, scale, rotate, depth: computeDepth(offset) };
 }
 
 function renderDictCard(item, index) {
   const offset = index - dictsState.activeIndex;
   const abs = Math.abs(offset);
+  const { x, scale, rotate, depth } = computeTransform(offset);
 
   let cls = 'dict-card';
   if (offset === 0) cls += ' is-active';
@@ -95,10 +129,6 @@ function renderDictCard(item, index) {
   if (abs >= 2) cls += ' is-far';
   if (item.__create) cls += ' dict-card--create';
 
-  const transformX = offset * 175;
-  const scale = offset === 0 ? 1 : abs === 1 ? 0.86 : 0.72;
-  const rotate = offset === 0 ? 0 : offset < 0 ? -7 : 7;
-  const depth = computeDepth(offset);
   const opacity = abs > 2 ? 0 : 1;
 
   return `
@@ -106,10 +136,7 @@ function renderDictCard(item, index) {
       class="${cls}"
       type="button"
       data-index="${index}"
-      style="
-        transform: translate3d(${transformX}px, 0, ${depth}px) scale(${scale}) rotateY(${rotate}deg);
-        opacity:${opacity};
-      "
+      style="transform: translate3d(${x}px, 0, ${depth}px) scale(${scale}) rotateY(${rotate}deg); opacity:${opacity};"
     >
       <div class="dict-card__icon">
         ${item.__create ? DICT_ICONS.plus : (DICT_ICONS[item.icon] || DICT_ICONS.stack)}
@@ -132,6 +159,18 @@ function renderDictCard(item, index) {
       </div>
     </button>
   `;
+}
+
+function updateSpotlight() {
+  const carousel = document.getElementById('dictsCarousel');
+  if (!carousel) return;
+
+  const visible = getRenderItems();
+  const activeIndex = dictsState.activeIndex;
+  const activeOffset = activeIndex - dictsState.activeIndex;
+  const { x } = computeTransform(activeOffset);
+
+  carousel.style.setProperty('--dicts-spotlight-x', `${x}px`);
 }
 
 function renderDictsCarousel() {
@@ -180,6 +219,8 @@ function renderDictsCarousel() {
       renderDictsCarousel();
     });
   });
+
+  updateSpotlight();
 }
 
 function openDictCreateModal() {
@@ -312,6 +353,34 @@ function bindDictsRightPanel() {
   document.getElementById('dictResetBtn')?.addEventListener('click', resetDictFilters);
 }
 
+function bindDragCarousel() {
+  const carousel = document.getElementById('dictsCarousel');
+  if (!carousel) return;
+
+  carousel.addEventListener('pointerdown', (e) => {
+    dictsState.drag.isDown = true;
+    dictsState.drag.startX = e.clientX;
+    dictsState.drag.diffX = 0;
+  });
+
+  window.addEventListener('pointermove', (e) => {
+    if (!dictsState.drag.isDown) return;
+    dictsState.drag.diffX = e.clientX - dictsState.drag.startX;
+  });
+
+  window.addEventListener('pointerup', () => {
+    if (!dictsState.drag.isDown) return;
+
+    const diff = dictsState.drag.diffX;
+    dictsState.drag.isDown = false;
+    dictsState.drag.diffX = 0;
+
+    if (Math.abs(diff) < 40) return;
+    if (diff < 0) shiftDicts(1);
+    else shiftDicts(-1);
+  });
+}
+
 function bindDictsPageEvents() {
   document.getElementById('dictsPrevBtn')?.addEventListener('click', () => shiftDicts(-1));
   document.getElementById('dictsNextBtn')?.addEventListener('click', () => shiftDicts(1));
@@ -323,6 +392,8 @@ function bindDictsPageEvents() {
       shiftDicts(e.deltaY > 0 ? 1 : -1);
     }, { passive: false });
   }
+
+  bindDragCarousel();
 }
 
 window.initDictsPage = async function initDictsPage() {
