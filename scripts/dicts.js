@@ -127,20 +127,17 @@ function computeTransform(offset) {
     x = 0;
     scale = 1;
     rotate = 0;
-  } 
-  else if (abs === 1) {
-    x = offset * 160;   // сусідні — залишаємо як є
+  } else if (abs === 1) {
+    x = offset * 160;   // ці лишаємо як є
     scale = 0.92;
     rotate = offset < 0 ? 5 : -5;
-  } 
-  else if (abs === 2) {
-    x = offset * 240;   // 🔥 БУЛО ~300 → стало ближче
-    scale = 0.86;
+  } else if (abs === 2) {
+    x = offset * 225;   // було далі, тепер ближче під сусідні
+    scale = 0.84;
     rotate = offset < 0 ? 7 : -7;
-  } 
-  else {
-    x = offset * 300;   // 🔥 крайні ще ближче
-    scale = 0.80;
+  } else {
+    x = offset * 280;   // теж трохи підтягнули
+    scale = 0.78;
     rotate = offset < 0 ? 9 : -9;
   }
 
