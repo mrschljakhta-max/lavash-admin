@@ -13,7 +13,6 @@
     return `
       <aside class="left-nav" id="leftNav">
         <div class="left-nav__inner">
-
           <div class="left-nav__top">
             <div class="brand-mini">
               <img
@@ -63,7 +62,6 @@
               <span class="nav-item__label">Логування</span>
             </button>
           </nav>
-
         </div>
       </aside>
     `;
@@ -75,7 +73,6 @@
     return `
       <aside class="right-tools" id="rightTools">
         <div class="right-tools__inner">
-
           <div class="right-tools__top">
             <div class="right-tools__title-wrap">
               <span class="right-tools__title">Інструменти</span>
@@ -137,7 +134,6 @@
     return `
       <aside class="right-tools right-tools--upload" id="rightTools">
         <div class="right-tools__inner">
-
           <div class="right-tools__top">
             <div class="right-tools__title-wrap">
               <span class="right-tools__title">Обробка</span>
@@ -451,6 +447,14 @@
 
     closeBtn?.addEventListener('click', closeDialog);
     backdrop?.addEventListener('click', closeDialog);
+
+    dialog.addEventListener('click', (event) => {
+      const card = dialog.querySelector('.lavash-modal__card');
+      if (!card) return;
+      if (!card.contains(event.target) && event.target === dialog) {
+        closeDialog();
+      }
+    });
 
     document.addEventListener('keydown', (event) => {
       if (event.key === 'Escape' && !dialog.classList.contains('hidden')) {
