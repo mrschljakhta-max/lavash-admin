@@ -164,13 +164,7 @@ function renderDictCard(item, index) {
 function updateSpotlight() {
   const carousel = document.getElementById('dictsCarousel');
   if (!carousel) return;
-
-  const visible = getRenderItems();
-  const activeIndex = dictsState.activeIndex;
-  const activeOffset = activeIndex - dictsState.activeIndex;
-  const { x } = computeTransform(activeOffset);
-
-  carousel.style.setProperty('--dicts-spotlight-x', `${x}px`);
+  carousel.style.setProperty('--dicts-spotlight-x', '0px');
 }
 
 function renderDictsCarousel() {
@@ -199,6 +193,8 @@ function renderDictsCarousel() {
         openDictCreateModal();
         return;
       }
+
+      if (idx === dictsState.activeIndex) return;
 
       dictsState.activeIndex = idx;
       renderDictsCarousel();
