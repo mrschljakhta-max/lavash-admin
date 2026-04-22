@@ -235,3 +235,92 @@ img {
   font-weight: 700;
   white-space: nowrap;
   opacity: 0;
+.tool-item__icon-wrap--svg svg {
+  width: 24px;
+  height: 24px;
+  display: block;
+  color: var(--text-main);
+}
+
+.dicts-mode-switcher {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.dicts-mode-switcher__popover {
+  position: absolute;
+  right: calc(100% + 14px);
+  top: 50%;
+  transform: translateY(-50%);
+  width: 250px;
+  padding: 12px;
+  border-radius: 22px;
+  border: 1px solid rgba(118, 150, 236, 0.14);
+  background: linear-gradient(180deg, rgba(10, 25, 78, 0.98), rgba(6, 18, 58, 0.99));
+  box-shadow: 0 24px 54px rgba(0, 0, 0, 0.34);
+  backdrop-filter: blur(12px);
+  display: grid;
+  gap: 10px;
+  z-index: 300;
+  opacity: 1;
+  pointer-events: auto;
+  transition: opacity 0.22s ease, transform 0.22s ease;
+}
+
+.dicts-mode-switcher__popover.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-50%) translateX(8px);
+}
+
+.dicts-mode-action {
+  min-height: 58px;
+  border-radius: 16px;
+  border: 1px solid rgba(118, 150, 236, 0.12);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-main);
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+}
+
+.dicts-mode-action:hover {
+  transform: translateX(-2px);
+  border-color: rgba(118, 150, 236, 0.22);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.dicts-mode-action.is-active {
+  border-color: rgba(93, 220, 255, 0.26);
+  background: linear-gradient(90deg, rgba(70, 108, 255, 0.22), rgba(137, 94, 255, 0.18));
+  box-shadow: 0 0 16px rgba(90, 122, 255, 0.14);
+}
+
+.dicts-mode-action--accent {
+  border-color: rgba(123, 101, 255, 0.24);
+  background: linear-gradient(90deg, rgba(68, 112, 255, 0.22), rgba(137, 94, 255, 0.22));
+}
+
+.dicts-mode-action__icon {
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+  display: grid;
+  place-items: center;
+  color: #9aa8ff;
+}
+
+.dicts-mode-action__icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.dicts-mode-action__label {
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
