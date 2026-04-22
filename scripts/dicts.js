@@ -89,7 +89,7 @@ function shiftDicts(step) {
   window.clearTimeout(dictsState.__animTimer);
   dictsState.__animTimer = window.setTimeout(() => {
     dictsState.animating = false;
-  }, 620);
+  }, 720);
 }
 
 function goToDict(index) {
@@ -104,22 +104,23 @@ function goToDict(index) {
   window.clearTimeout(dictsState.__animTimer);
   dictsState.__animTimer = window.setTimeout(() => {
     dictsState.animating = false;
-  }, 620);
+  }, 720);
 }
 
 function computeDepth(offset) {
   const abs = Math.abs(offset);
-  if (offset === 0) return 190;
-  if (abs === 1) return 120;  // ближче до центральної
-  if (abs === 2) return 70;
+
+  if (offset === 0) return 220;   // центр
+  if (abs === 1) return 145;      // ближні — майже поруч
+  if (abs === 2) return 85;       // крайні — ще читаються
   return 20;
 }
 
 function computeTransform(offset) {
   const abs = Math.abs(offset);
 
-  let x = offset * 96;
-  let scale = 0.86;
+  let x = offset * 120;
+  let scale = 0.84;
   let rotate = 0;
 
   if (offset === 0) {
@@ -127,17 +128,17 @@ function computeTransform(offset) {
     scale = 1;
     rotate = 0;
   } else if (abs === 1) {
-    x = offset * 72;     // було далі, тепер ближче до центру
-    scale = 0.95;        // трохи більші
-    rotate = offset < 0 ? 6 : -6;   // менший нахил
+    x = offset * 118;             // видно ~80-90%
+    scale = 0.94;
+    rotate = offset < 0 ? 4 : -4;
   } else if (abs === 2) {
-    x = offset * 122;    // теж підтягнули
-    scale = 0.89;
-    rotate = offset < 0 ? 8 : -8;
+    x = offset * 228;             // видно ~50%
+    scale = 0.86;
+    rotate = offset < 0 ? 6 : -6;
   } else {
-    x = offset * 168;
-    scale = 0.80;
-    rotate = offset < 0 ? 10 : -10;
+    x = offset * 320;
+    scale = 0.76;
+    rotate = offset < 0 ? 8 : -8;
   }
 
   return { x, scale, rotate, depth: computeDepth(offset) };
@@ -167,23 +168,29 @@ function renderDictCard(item, index) {
       data-index="${index}"
       style="transform: translate3d(${x}px, 0, ${depth}px) scale(${scale}) rotateY(${rotate}deg); opacity:${opacity};"
     >
-      <div class="dict-card__icon">
-        ${item.__create ? DICT_ICONS.plus : (DICT_ICONS[item.icon] || DICT_ICONS.stack)}
-      </div>
+      <span class="dict-card__magic-glow"></span>
+      <span class="dict-card__magic-border"></span>
+      <span class="dict-card__surface"></span>
 
-      <div class="dict-card__body">
-        <div class="dict-card__title">${item.__create ? 'Новий довідник' : item.title}</div>
-        ${
-          item.__create
-            ? `<div class="dict-card__description">Створити новий довідник системи</div>`
-            : `
-              <div class="dict-card__meta">${formatNumber(item.total)} записів</div>
-              <div class="dict-card__chips">
-                <span class="dict-chip dict-chip--status">${item.status}</span>
-                <span class="dict-chip">${item.type}</span>
-              </div>
-            `
-        }
+      <div class="dict-card__content">
+        <div class="dict-card__icon">
+          ${item.__create ? DICT_ICONS.plus : (DICT_ICONS[item.icon] || DICT_ICONS.stack)}
+        </div>
+
+        <div class="dict-card__body">
+          <div class="dict-card__title">${item.__create ? 'Новий довідник' : item.title}</div>
+          ${
+            item.__create
+              ? `<div class="dict-card__description">Створити новий довідник системи</div>`
+              : `
+                <div class="dict-card__meta">${formatNumber(item.total)} записів</div>
+                <div class="dict-card__chips">
+                  <span class="dict-chip dict-chip--status">${item.status}</span>
+                  <span class="dict-chip">${item.type}</span>
+                </div>
+              `
+          }
+        </div>
       </div>
     </button>
   `;
