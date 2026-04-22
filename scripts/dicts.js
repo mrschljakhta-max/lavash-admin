@@ -128,11 +128,11 @@ function computeTransform(offset) {
     scale = 1;
     rotate = 0;
   } else if (abs === 1) {
-    x = offset * 108;   // <-- КРУТИ ОЦЕ
+    x = offset * 158;   // <-- КРУТИ ОЦЕ
     scale = 0.92;
     rotate = offset < 0 ? 5 : -5;
   } else if (abs === 2) {
-    x = offset * 210;   // <-- І ОЦЕ
+    x = offset * 310;   // <-- І ОЦЕ
     scale = 0.84;
     rotate = offset < 0 ? 7 : -7;
   } else {
