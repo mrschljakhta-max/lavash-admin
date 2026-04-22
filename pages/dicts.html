@@ -1,20 +1,33 @@
 <div class="dicts-page" id="dictsPage">
-  <section class="dicts-hero">
-    <div class="dicts-carousel-wrap">
-      <button class="dicts-carousel__nav dicts-carousel__nav--left" id="dictsPrevBtn" type="button" aria-label="Назад">
-        ‹
-      </button>
+  <section id="dictsCarouselView" class="dicts-view">
+    <section class="dicts-hero">
+      <div class="dicts-carousel-wrap">
+        <button class="dicts-carousel__nav dicts-carousel__nav--left" id="dictsPrevBtn" type="button" aria-label="Назад">
+          ‹
+        </button>
 
-      <div class="dicts-carousel-stage">
-        <div class="dicts-carousel" id="dictsCarousel"></div>
+        <div class="dicts-carousel-stage">
+          <div class="dicts-carousel" id="dictsCarousel"></div>
+        </div>
+
+        <button class="dicts-carousel__nav dicts-carousel__nav--right" id="dictsNextBtn" type="button" aria-label="Вперед">
+          ›
+        </button>
       </div>
 
-      <button class="dicts-carousel__nav dicts-carousel__nav--right" id="dictsNextBtn" type="button" aria-label="Вперед">
-        ›
-      </button>
-    </div>
+      <div class="dicts-carousel__dots" id="dictsDots"></div>
+    </section>
+  </section>
 
-    <div class="dicts-carousel__dots" id="dictsDots"></div>
+  <section id="dictsSchemaView" class="dicts-view dicts-schema-view hidden">
+    <div class="dicts-schema-view__inner">
+      <div>
+        <div class="dicts-schema-view__title">Режим схеми зв’язків</div>
+        <div class="dicts-schema-view__text">
+          Тут буде режим перегляду взаємозв’язків між довідниками і таблицями в стилі schema visualizer.
+        </div>
+      </div>
+    </div>
   </section>
 
   <div id="dictCreateModal" class="dict-modal hidden">
