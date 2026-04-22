@@ -128,16 +128,16 @@ function computeTransform(offset) {
     scale = 1;
     rotate = 0;
   } else if (abs === 1) {
-    x = offset * 158;   // <-- КРУТИ ОЦЕ
-    scale = 0.92;
+    x = offset * 155;   // <- розсуваємо тільки сусідні картки
+    scale = 0.91;
     rotate = offset < 0 ? 5 : -5;
   } else if (abs === 2) {
-    x = offset * 310;   // <-- І ОЦЕ
-    scale = 0.84;
+    x = offset * 228;   // <- майже не чіпаємо
+    scale = 0.86;
     rotate = offset < 0 ? 7 : -7;
   } else {
-    x = offset * 300;
-    scale = 0.76;
+    x = offset * 320;
+    scale = 0.78;
     rotate = offset < 0 ? 9 : -9;
   }
 
