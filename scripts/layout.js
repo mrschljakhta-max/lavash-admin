@@ -165,7 +165,7 @@
             </button>
           </div>
 
-          <div class="right-tools__panel" id="layoutRightPanel"></div>
+          ${isDictsPage ? '' : '<div class="right-tools__panel" id="layoutRightPanel"></div>'}
         </div>
       </aside>
     `;
