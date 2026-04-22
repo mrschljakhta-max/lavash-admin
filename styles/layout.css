@@ -220,3 +220,84 @@
 .tool-refresh-btn:hover {
   transform: translateY(-2px);
 }
+
+
+/* ===== RIGHT PANEL ===== */
+.right-tools {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ===== TOOL BUTTON ===== */
+.tool-item {
+  background: rgba(255,255,255,0.05);
+  border: none;
+  color: #fff;
+  padding: 12px 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  transition: 0.3s;
+}
+
+.tool-item:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+/* ===== SWITCHER ===== */
+.dicts-mode-switcher {
+  position: relative;
+}
+
+/* ===== POPOVER ===== */
+.dicts-mode-popover {
+  position: absolute;
+  top: 60px;
+  right: 0;
+
+  width: 220px;
+  padding: 12px;
+
+  background: #0c1730;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.08);
+
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+}
+
+.dicts-mode-popover.active {
+  display: flex;
+}
+
+/* ===== MODE BUTTON ===== */
+.mode-btn {
+  background: rgba(255,255,255,0.05);
+  border: none;
+  color: #fff;
+  padding: 12px;
+  border-radius: 12px;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  transition: 0.3s;
+}
+
+.mode-btn:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+/* ADD BUTTON */
+.mode-btn.add-dict {
+  background: linear-gradient(135deg, #4f7cff, #7a5cff);
+  font-weight: 600;
+}
