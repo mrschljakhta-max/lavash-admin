@@ -127,21 +127,29 @@ function computeTransform(offset) {
     x = 0;
     scale = 1;
     rotate = 0;
-  } else if (abs === 1) {
-    x = offset * 155;   // <- розсуваємо тільки сусідні картки
-    scale = 0.91;
+  } 
+  else if (abs === 1) {
+    x = offset * 160;   // сусідні — залишаємо як є
+    scale = 0.92;
     rotate = offset < 0 ? 5 : -5;
-  } else if (abs === 2) {
-    x = offset * 228;   // <- майже не чіпаємо
+  } 
+  else if (abs === 2) {
+    x = offset * 240;   // 🔥 БУЛО ~300 → стало ближче
     scale = 0.86;
     rotate = offset < 0 ? 7 : -7;
-  } else {
-    x = offset * 320;
-    scale = 0.78;
+  } 
+  else {
+    x = offset * 300;   // 🔥 крайні ще ближче
+    scale = 0.80;
     rotate = offset < 0 ? 9 : -9;
   }
 
-  return { x, scale, rotate, depth: computeDepth(offset) };
+  return {
+    x,
+    scale,
+    rotate,
+    depth: computeDepth(offset)
+  };
 }
 
 function getCardClass(offset, item) {
