@@ -101,7 +101,7 @@
                   <span class="tool-item__label">Режими</span>
                 </button>
 
-                <div class="dicts-mode-switcher__popover hidden" id="dictsModePopover">
+                <div class="dicts-mode-switcher__popover" id="dictsModePopover">
                   <div class="dicts-radial-menu">
                     <button type="button" class="dicts-mode-action dicts-mode-action--radial is-active" data-dicts-mode="carousel">
                       <span class="dicts-mode-action__icon">
@@ -394,26 +394,29 @@
 
     if (!switcher || !trigger || !popover) return;
 
-    const closePopover = () => {
-      trigger.setAttribute('aria-expanded', 'false');
-      popover.classList.add('hidden');
-    };
+    const modeButtons = popover.querySelectorAll('[data-dicts-mode]');
+    const addBtn = document.getElementById('dictsAddDictionaryBtn');
 
-    const openPopover = () => {
+    function openPopover() {
+      switcher.classList.add('is-open');
       trigger.setAttribute('aria-expanded', 'true');
-      popover.classList.remove('hidden');
-    };
+    }
 
-    const togglePopover = () => {
-      const isOpen = trigger.getAttribute('aria-expanded') === 'true';
-      if (isOpen) {
+    function closePopover() {
+      switcher.classList.remove('is-open');
+      trigger.setAttribute('aria-expanded', 'false');
+    }
+
+    function togglePopover() {
+      if (switcher.classList.contains('is-open')) {
         closePopover();
       } else {
         openPopover();
       }
-    };
+    }
 
     trigger.addEventListener('click', (event) => {
+      event.preventDefault();
       event.stopPropagation();
       togglePopover();
     });
@@ -422,21 +425,6 @@
       event.stopPropagation();
     });
 
-    document.addEventListener('click', (event) => {
-      const isOpen = trigger.getAttribute('aria-expanded') === 'true';
-      if (!isOpen) return;
-      if (!switcher.contains(event.target)) {
-        closePopover();
-      }
-    });
-
-    document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape') {
-        closePopover();
-      }
-    });
-
-    const modeButtons = popover.querySelectorAll('[data-dicts-mode]');
     modeButtons.forEach((btn) => {
       btn.addEventListener('click', () => {
         modeButtons.forEach((item) => item.classList.remove('is-active'));
@@ -456,7 +444,6 @@
       });
     });
 
-    const addBtn = document.getElementById('dictsAddDictionaryBtn');
     if (addBtn) {
       addBtn.addEventListener('click', () => {
         if (typeof window.openAddDictionaryModal === 'function') {
@@ -473,6 +460,19 @@
         closePopover();
       });
     }
+
+    document.addEventListener('click', (event) => {
+      if (!switcher.classList.contains('is-open')) return;
+      if (!switcher.contains(event.target)) {
+        closePopover();
+      }
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        closePopover();
+      }
+    });
   }
 
   async function hydrateLavashUser() {
