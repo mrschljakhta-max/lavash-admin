@@ -191,7 +191,7 @@
 .dicts-carousel__dots {
   position: absolute;
   left: 50%;
-  bottom: 12px;
+  bottom: 42px;
   transform: translateX(-50%);
   display: flex;
   justify-content: center;
