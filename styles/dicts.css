@@ -16,7 +16,7 @@
   display: grid;
   place-items: center;
   overflow: hidden;
-  padding-bottom: 54px; /* місце під dots */
+  padding-bottom: 54px;
 }
 
 .dicts-carousel-stage {
@@ -32,6 +32,23 @@
   height: 560px;
   perspective: 1800px;
   transform-style: preserve-3d;
+}
+
+/* Spotlight */
+.dicts-carousel::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 24px;
+  width: 420px;
+  height: 220px;
+  transform: translateX(-50%);
+  background: radial-gradient(circle, rgba(57, 107, 255, 0.28) 0%, rgba(57, 107, 255, 0.12) 38%, rgba(57, 107, 255, 0.03) 62%, transparent 78%);
+  filter: blur(34px);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.95;
+  transition: transform 0.8s cubic-bezier(.22, 1, .22, 1), opacity 0.5s ease;
 }
 
 /* === КАРТКИ === */
@@ -50,10 +67,11 @@
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.22);
 
   transition:
-    transform 0.9s cubic-bezier(.22, 1, .22, 1),
-    opacity 0.9s ease,
-    filter 0.9s ease,
-    box-shadow 0.4s ease;
+    transform 0.72s cubic-bezier(.22, 1, .22, 1),
+    opacity 0.62s ease,
+    filter 0.62s ease,
+    box-shadow 0.42s ease,
+    border-color 0.42s ease;
 
   padding: 20px 16px 16px;
   display: flex;
@@ -62,10 +80,19 @@
 
   color: var(--text-main);
   cursor: pointer;
-  will-change: transform;
+  will-change: transform, opacity, filter;
   transform-style: preserve-3d;
   backface-visibility: hidden;
   z-index: 1;
+  overflow: hidden;
+}
+
+.dict-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0.045), transparent 28%, transparent 72%, rgba(0,0,0,0.08));
+  pointer-events: none;
 }
 
 .dict-card.is-near {
@@ -75,18 +102,20 @@
 
 .dict-card.is-active {
   z-index: 10;
-  border-color: rgba(76, 132, 255, 0.70);
+  border-color: rgba(76, 132, 255, 0.72);
   box-shadow:
     0 0 0 1px rgba(76, 132, 255, 0.25) inset,
-    0 32px 60px rgba(47, 98, 255, 0.22);
+    0 0 24px rgba(76, 132, 255, 0.22),
+    0 26px 58px rgba(47, 98, 255, 0.22);
 }
 
 .dict-card.is-far {
-  opacity: 0.36;
+  opacity: 0.34;
+  filter: blur(1.8px) saturate(0.82);
 }
 
 .dict-card:hover {
-  box-shadow: 0 28px 52px rgba(41, 99, 255, 0.22);
+  box-shadow: 0 28px 52px rgba(41, 99, 255, 0.24);
 }
 
 .dict-card--create {
@@ -105,6 +134,12 @@
   place-items: center;
   color: #8a92ff;
   margin: 0 auto;
+  transition: transform 0.6s ease, box-shadow 0.6s ease;
+}
+
+.dict-card.is-active .dict-card__icon {
+  animation: dictFloat 3.2s ease-in-out infinite;
+  box-shadow: 0 0 20px rgba(124, 143, 255, 0.18);
 }
 
 .dict-card__icon svg {
@@ -122,6 +157,7 @@
   font-size: 18px;
   line-height: 1.08;
   font-weight: 900;
+  letter-spacing: -0.02em;
 }
 
 .dict-card__meta,
@@ -176,6 +212,13 @@
   place-items: center;
   z-index: 50;
   cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+}
+
+.dicts-carousel__nav:hover {
+  transform: translateY(-50%) scale(1.05);
+  box-shadow: 0 0 22px rgba(74, 117, 255, 0.18);
+  background: rgba(23, 46, 118, 0.98);
 }
 
 .dicts-carousel__nav--left {
@@ -191,7 +234,7 @@
 .dicts-carousel__dots {
   position: absolute;
   left: 50%;
-  bottom: 52px;
+  bottom: 42px;
   transform: translateX(-50%);
   display: flex;
   justify-content: center;
@@ -206,10 +249,17 @@
   background: rgba(255, 255, 255, 0.14);
   border: none;
   cursor: pointer;
+  transition: width 0.25s ease, box-shadow 0.25s ease, background 0.25s ease, transform 0.25s ease;
+}
+
+.dict-dot:hover {
+  transform: translateY(-1px);
 }
 
 .dict-dot.is-active {
+  width: 34px;
   background: linear-gradient(90deg, var(--accent-1), var(--accent-2), var(--accent-3));
+  box-shadow: 0 0 12px rgba(118, 142, 255, 0.42);
 }
 
 /* === MODAL === */
@@ -340,6 +390,17 @@
   color: #fff;
 }
 
+/* === ANIMATION === */
+
+@keyframes dictFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
 /* === ADAPTIVE === */
 
 @media (max-width: 1500px) {
@@ -396,5 +457,9 @@
     width: 52px;
     height: 52px;
     font-size: 30px;
+  }
+
+  .dicts-carousel__dots {
+    bottom: 30px;
   }
 }
