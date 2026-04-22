@@ -551,3 +551,66 @@
     bottom: 30px;
   }
 }
+
+
+.dict-card.is-active {
+  --mx: 0px;
+  --my: 0px;
+  --rx: 0deg;
+  --ry: 0deg;
+}
+
+.dict-card.is-active .dict-card__content {
+  transition: transform 0.22s ease;
+  transform: translate3d(var(--mx), var(--my), 0);
+}
+
+.dict-card.is-active .dict-card__icon {
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+.dict-card.is-active .dict-card__magic-glow {
+  transition: opacity 0.35s ease, transform 0.22s ease, filter 0.22s ease;
+  transform: translate3d(calc(var(--mx) * 0.35), 0, 0) scale(1.02);
+}
+
+.dict-card.is-active .dict-card__magic-border {
+  transition: opacity 0.35s ease, filter 0.22s ease;
+  filter: brightness(1.02);
+}
+
+.dict-card.is-active.is-hovering .dict-card__content {
+  transform: translate3d(var(--mx), var(--my), 0);
+}
+
+.dict-card.is-active.is-hovering .dict-card__icon {
+  transform: translate3d(calc(var(--mx) * 0.55), calc(var(--my) * 0.55), 0);
+}
+
+.dict-card.is-active.is-hovering .dict-card__magic-glow {
+  transform: translate3d(calc(var(--mx) * 0.45), 0, 0) scale(1.05);
+  filter: blur(20px) brightness(1.08);
+}
+
+.dict-card.is-active.is-hovering .dict-card__surface::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 26px;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      220px circle at var(--glare-x, 50%) var(--glare-y, 50%),
+      rgba(255,255,255,0.10),
+      rgba(255,255,255,0.04) 20%,
+      transparent 55%
+    );
+  z-index: 2;
+}
+
+.dict-card.is-active.is-hovering {
+  box-shadow:
+    0 0 0 1px rgba(76, 132, 255, 0.18) inset,
+    0 0 28px rgba(76, 132, 255, 0.22),
+    0 30px 68px rgba(47, 98, 255, 0.24);
+}
