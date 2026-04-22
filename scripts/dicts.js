@@ -77,6 +77,14 @@ function shiftDicts(step) {
   renderDictsCarousel();
 }
 
+function computeDepth(offset) {
+  const abs = Math.abs(offset);
+  if (offset === 0) return 220;
+  if (abs === 1) return 80;
+  if (abs === 2) return 10;
+  return -40;
+}
+
 function renderDictCard(item, index) {
   const offset = index - dictsState.activeIndex;
   const abs = Math.abs(offset);
@@ -90,6 +98,7 @@ function renderDictCard(item, index) {
   const transformX = offset * 175;
   const scale = offset === 0 ? 1 : abs === 1 ? 0.86 : 0.72;
   const rotate = offset === 0 ? 0 : offset < 0 ? -7 : 7;
+  const depth = computeDepth(offset);
   const opacity = abs > 2 ? 0 : 1;
 
   return `
@@ -98,7 +107,7 @@ function renderDictCard(item, index) {
       type="button"
       data-index="${index}"
       style="
-        transform: translate3d(${transformX}px, 0, 0) scale(${scale}) rotateY(${rotate}deg);
+        transform: translate3d(${transformX}px, 0, ${depth}px) scale(${scale}) rotateY(${rotate}deg);
         opacity:${opacity};
       "
     >
@@ -136,20 +145,7 @@ function renderDictsCarousel() {
     dictsState.activeIndex = 0;
   }
 
-  const ordered = visible
-    .map((item, index) => ({
-      item,
-      index,
-      abs: Math.abs(index - dictsState.activeIndex),
-      active: index === dictsState.activeIndex ? 1 : 0
-    }))
-    .sort((a, b) => {
-      if (a.active !== b.active) return a.active - b.active;
-      if (a.abs !== b.abs) return b.abs - a.abs;
-      return a.index - b.index;
-    });
-
-  wrap.innerHTML = ordered.map(({ item, index }) => renderDictCard(item, index)).join('');
+  wrap.innerHTML = visible.map((item, index) => renderDictCard(item, index)).join('');
 
   dots.innerHTML = visible
     .map((_, index) => `<button class="dict-dot ${index === dictsState.activeIndex ? 'is-active' : ''}" type="button" data-dot-index="${index}"></button>`)
