@@ -383,6 +383,96 @@
         }
       });
     });
+
+    bindDictsModePopover();
+  }
+
+  function bindDictsModePopover() {
+    const switcher = document.getElementById('dictsModeSwitcher');
+    const trigger = document.getElementById('dictsModeTrigger');
+    const popover = document.getElementById('dictsModePopover');
+
+    if (!switcher || !trigger || !popover) return;
+
+    const closePopover = () => {
+      trigger.setAttribute('aria-expanded', 'false');
+      popover.classList.add('hidden');
+    };
+
+    const openPopover = () => {
+      trigger.setAttribute('aria-expanded', 'true');
+      popover.classList.remove('hidden');
+    };
+
+    const togglePopover = () => {
+      const isOpen = trigger.getAttribute('aria-expanded') === 'true';
+      if (isOpen) {
+        closePopover();
+      } else {
+        openPopover();
+      }
+    };
+
+    trigger.addEventListener('click', (event) => {
+      event.stopPropagation();
+      togglePopover();
+    });
+
+    popover.addEventListener('click', (event) => {
+      event.stopPropagation();
+    });
+
+    document.addEventListener('click', (event) => {
+      const isOpen = trigger.getAttribute('aria-expanded') === 'true';
+      if (!isOpen) return;
+      if (!switcher.contains(event.target)) {
+        closePopover();
+      }
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        closePopover();
+      }
+    });
+
+    const modeButtons = popover.querySelectorAll('[data-dicts-mode]');
+    modeButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        modeButtons.forEach((item) => item.classList.remove('is-active'));
+        btn.classList.add('is-active');
+
+        const mode = btn.dataset.dictsMode;
+
+        if (typeof window.setDictsViewMode === 'function') {
+          window.setDictsViewMode(mode);
+        } else {
+          document.dispatchEvent(new CustomEvent('lavash:dicts-mode-change', {
+            detail: { mode }
+          }));
+        }
+
+        closePopover();
+      });
+    });
+
+    const addBtn = document.getElementById('dictsAddDictionaryBtn');
+    if (addBtn) {
+      addBtn.addEventListener('click', () => {
+        if (typeof window.openAddDictionaryModal === 'function') {
+          window.openAddDictionaryModal();
+        } else {
+          const fallbackBtn =
+            document.getElementById('addDictionaryBtn') ||
+            document.getElementById('openAddDictionaryModalBtn') ||
+            document.querySelector('[data-action="add-dictionary"]');
+
+          fallbackBtn?.click();
+        }
+
+        closePopover();
+      });
+    }
   }
 
   async function hydrateLavashUser() {
