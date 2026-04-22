@@ -102,41 +102,43 @@
                 </button>
 
                 <div class="dicts-mode-switcher__popover hidden" id="dictsModePopover">
-                  <button type="button" class="dicts-mode-action is-active" data-dicts-mode="carousel">
-                    <span class="dicts-mode-action__icon">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="3" y="6" width="5" height="12" rx="1.5"></rect>
-                        <rect x="9.5" y="4" width="5" height="16" rx="1.5"></rect>
-                        <rect x="16" y="6" width="5" height="12" rx="1.5"></rect>
-                      </svg>
-                    </span>
-                    <span class="dicts-mode-action__label">Карусель</span>
-                  </button>
+                  <div class="dicts-radial-menu">
+                    <button type="button" class="dicts-mode-action dicts-mode-action--radial is-active" data-dicts-mode="carousel">
+                      <span class="dicts-mode-action__icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                          <rect x="3" y="6" width="5" height="12" rx="1.5"></rect>
+                          <rect x="9.5" y="4" width="5" height="16" rx="1.5"></rect>
+                          <rect x="16" y="6" width="5" height="12" rx="1.5"></rect>
+                        </svg>
+                      </span>
+                      <span class="dicts-mode-action__label">Карусель</span>
+                    </button>
 
-                  <button type="button" class="dicts-mode-action" data-dicts-mode="schema">
-                    <span class="dicts-mode-action__icon">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="3" y="4" width="6" height="5" rx="1.2"></rect>
-                        <rect x="15" y="4" width="6" height="5" rx="1.2"></rect>
-                        <rect x="9" y="15" width="6" height="5" rx="1.2"></rect>
-                        <path d="M6 9v3"></path>
-                        <path d="M18 9v3"></path>
-                        <path d="M6 12h12"></path>
-                        <path d="M12 12v3"></path>
-                      </svg>
-                    </span>
-                    <span class="dicts-mode-action__label">Схема</span>
-                  </button>
+                    <button type="button" class="dicts-mode-action dicts-mode-action--radial" data-dicts-mode="schema">
+                      <span class="dicts-mode-action__icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                          <rect x="3" y="4" width="6" height="5" rx="1.2"></rect>
+                          <rect x="15" y="4" width="6" height="5" rx="1.2"></rect>
+                          <rect x="9" y="15" width="6" height="5" rx="1.2"></rect>
+                          <path d="M6 9v3"></path>
+                          <path d="M18 9v3"></path>
+                          <path d="M6 12h12"></path>
+                          <path d="M12 12v3"></path>
+                        </svg>
+                      </span>
+                      <span class="dicts-mode-action__label">Схема</span>
+                    </button>
 
-                  <button type="button" class="dicts-mode-action dicts-mode-action--accent" id="dictsAddDictionaryBtn">
-                    <span class="dicts-mode-action__icon">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-                        <path d="M12 5v14"></path>
-                        <path d="M5 12h14"></path>
-                      </svg>
-                    </span>
-                    <span class="dicts-mode-action__label">Додати довідник</span>
-                  </button>
+                    <button type="button" class="dicts-mode-action dicts-mode-action--radial dicts-mode-action--accent" id="dictsAddDictionaryBtn">
+                      <span class="dicts-mode-action__icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                          <path d="M12 5v14"></path>
+                          <path d="M5 12h14"></path>
+                        </svg>
+                      </span>
+                      <span class="dicts-mode-action__label">Додати довідник</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             ` : ''}
