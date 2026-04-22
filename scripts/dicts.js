@@ -47,7 +47,7 @@ const dictsState = {
     { id: '5', title: 'Типи станцій', slug: 'dict_station_types', description: 'Типи станцій і категорії.', type: 'dictionary', icon: 'stack', total: 142, status: 'active' },
     { id: '6', title: 'Pending', slug: 'dict_pending', description: 'Службовий довідник невизначених значень.', type: 'service', icon: 'pending', total: 87, status: 'active' }
   ],
-  activeIndex: 2,
+  activeIndex: 3,
   filteredItems: [],
   isModalOpen: false,
   viewMode: 'carousel',
@@ -71,7 +71,198 @@ function getVisibleDicts() {
 }
 
 function getRenderItems() {
-  return [...getVisibleDicts(), { __create: true, id: '__create__', icon: 'plus' }];
+  return [...getVisibleDicts(), { __create: true, id: '__create__', icon: 'plus', title: 'Новий довідник', description: 'Створити новий довідник системи', type: 'service', total: 0, status: 'draft' }];
+}
+
+function computeDepth(offset) {
+  const abs = Math.abs(offset);
+  if (offset === 0) return 220;
+  if (abs === 1) return 135;
+  if (abs === 2) return 80;
+  return 20;
+}
+
+function computeTransform(offset) {
+  const abs = Math.abs(offset);
+
+  let x = offset * 120;
+  let scale = 0.84;
+  let rotate = 0;
+
+  if (offset === 0) {
+    x = 0;
+    scale = 1;
+    rotate = 0;
+  } else if (abs === 1) {
+    x = offset * 160;
+    scale = 0.92;
+    rotate = offset < 0 ? 5 : -5;
+  } else if (abs === 2) {
+    x = offset * 210;
+    scale = 0.84;
+    rotate = offset < 0 ? 7 : -7;
+  } else {
+    x = offset * 280;
+    scale = 0.78;
+    rotate = offset < 0 ? 9 : -9;
+  }
+
+  return { x, scale, rotate, depth: computeDepth(offset) };
+}
+
+function getCardClass(offset, item) {
+  const abs = Math.abs(offset);
+  let cls = 'dict-card';
+  if (offset === 0) cls += ' is-active';
+  else if (abs === 1) cls += ' is-near';
+  else cls += ' is-far';
+
+  if (item.__create) cls += ' dict-card--create';
+  return cls;
+}
+
+function renderDictCard(item, index) {
+  const offset = index - dictsState.activeIndex;
+  const abs = Math.abs(offset);
+  const { x, scale, rotate, depth } = computeTransform(offset);
+  const cls = getCardClass(offset, item);
+  const opacity = abs > 2 ? 0 : 1;
+
+  return `
+    <button
+      class="${cls}"
+      type="button"
+      data-index="${index}"
+      style="transform: translate3d(${x}px, 0, ${depth}px) scale(${scale}) rotateY(${rotate}deg); opacity:${opacity};"
+    >
+      <span class="dict-card__magic-glow"></span>
+      <span class="dict-card__magic-border"></span>
+      <span class="dict-card__surface"></span>
+
+      <div class="dict-card__content">
+        <div class="dict-card__icon">
+          ${item.__create ? DICT_ICONS.plus : (DICT_ICONS[item.icon] || DICT_ICONS.stack)}
+        </div>
+
+        <div class="dict-card__body">
+          <div class="dict-card__title">${item.title}</div>
+          ${item.__create
+            ? `<div class="dict-card__description">${item.description}</div>`
+            : `
+              <div class="dict-card__meta">${formatNumber(item.total)} записів</div>
+              <div class="dict-card__chips">
+                <span class="dict-chip dict-chip--status">${item.status}</span>
+                <span class="dict-chip">${item.type}</span>
+              </div>
+            `}
+        </div>
+      </div>
+    </button>
+  `;
+}
+
+function updateSpotlight() {
+  const carousel = document.getElementById('dictsCarousel');
+  if (!carousel) return;
+  carousel.style.setProperty('--dicts-spotlight-x', '0px');
+}
+
+function renderDots(visible) {
+  const dots = document.getElementById('dictsDots');
+  if (!dots) return;
+
+  dots.innerHTML = visible
+    .map((_, index) => `<button class="dict-dot ${index === dictsState.activeIndex ? 'is-active' : ''}" type="button" data-dot-index="${index}"></button>`)
+    .join('');
+
+  dots.querySelectorAll('.dict-dot').forEach((dot) => {
+    dot.addEventListener('click', () => {
+      const idx = Number(dot.dataset.dotIndex);
+      const picked = visible[idx];
+      if (picked?.__create) {
+        openDictCreateModal();
+        return;
+      }
+      goToDict(idx);
+    });
+  });
+}
+
+function bindActiveCardHover() {
+  const activeCard = document.querySelector('.dict-card.is-active');
+  if (!activeCard) return;
+
+  const reset = () => {
+    activeCard.classList.remove('is-hovering');
+    activeCard.style.setProperty('--mx', '0px');
+    activeCard.style.setProperty('--my', '0px');
+    activeCard.style.setProperty('--glare-x', '50%');
+    activeCard.style.setProperty('--glare-y', '50%');
+
+    const index = Number(activeCard.dataset.index);
+    const { x, scale, rotate, depth } = computeTransform(index - dictsState.activeIndex);
+
+    activeCard.style.transform =
+      `translate3d(${x}px, 0, ${depth}px) scale(${scale}) rotateX(0deg) rotateY(${rotate}deg)`;
+  };
+
+  activeCard.addEventListener('mousemove', (e) => {
+    const rect = activeCard.getBoundingClientRect();
+    const px = (e.clientX - rect.left) / rect.width;
+    const py = (e.clientY - rect.top) / rect.height;
+
+    const rotateYExtra = (px - 0.5) * 10;
+    const rotateXExtra = (0.5 - py) * 8;
+
+    const moveX = (px - 0.5) * 12;
+    const moveY = (py - 0.5) * 10;
+
+    const index = Number(activeCard.dataset.index);
+    const itemOffset = index - dictsState.activeIndex;
+    const { x, scale, rotate, depth } = computeTransform(itemOffset);
+
+    activeCard.classList.add('is-hovering');
+    activeCard.style.setProperty('--mx', `${moveX}px`);
+    activeCard.style.setProperty('--my', `${moveY}px`);
+    activeCard.style.setProperty('--glare-x', `${px * 100}%`);
+    activeCard.style.setProperty('--glare-y', `${py * 100}%`);
+
+    activeCard.style.transform =
+      `translate3d(${x}px, 0, ${depth}px) scale(${scale}) rotateX(${rotateXExtra}deg) rotateY(${rotate + rotateYExtra}deg)`;
+  });
+
+  activeCard.addEventListener('mouseleave', reset);
+}
+
+function renderDictsCarousel() {
+  const wrap = document.getElementById('dictsCarousel');
+  if (!wrap) return;
+
+  const visible = getRenderItems();
+
+  if (dictsState.activeIndex > visible.length - 1) {
+    dictsState.activeIndex = 0;
+  }
+
+  wrap.innerHTML = visible.map((item, index) => renderDictCard(item, index)).join('');
+
+  wrap.querySelectorAll('.dict-card').forEach((card) => {
+    card.addEventListener('click', () => {
+      const idx = Number(card.dataset.index);
+      const picked = visible[idx];
+
+      if (picked?.__create) {
+        openDictCreateModal();
+        return;
+      }
+
+      goToDict(idx);
+    });
+  });
+
+  renderDots(visible);
+  updateSpotlight();
+  bindActiveCardHover();
 }
 
 function shiftDicts(step) {
@@ -106,158 +297,6 @@ function goToDict(index) {
   dictsState.__animTimer = window.setTimeout(() => {
     dictsState.animating = false;
   }, 720);
-}
-
-function computeDepth(offset) {
-  const abs = Math.abs(offset);
-
-  if (offset === 0) return 220;   // центр
-  if (abs === 1) return 145;      // ближні — майже поруч
-  if (abs === 2) return 85;       // крайні — ще читаються
-  return 20;
-}
-
-function computeTransform(offset) {
-  const abs = Math.abs(offset);
-
-  let x = offset * 120;
-  let scale = 0.84;
-  let rotate = 0;
-
-  if (offset === 0) {
-    x = 0;
-    scale = 1;
-    rotate = 0;
-  } else if (abs === 1) {
-    x = offset * 160;   // ці лишаємо як є
-    scale = 0.92;
-    rotate = offset < 0 ? 5 : -5;
-  } else if (abs === 2) {
-    x = offset * 200;   // було далі, тепер ближче під сусідні
-    scale = 0.84;
-    rotate = offset < 0 ? 7 : -7;
-  } else {
-    x = offset * 280;   // теж трохи підтягнули
-    scale = 0.78;
-    rotate = offset < 0 ? 9 : -9;
-  }
-
-  return {
-    x,
-    scale,
-    rotate,
-    depth: computeDepth(offset)
-  };
-}
-
-function getCardClass(offset, item) {
-  const abs = Math.abs(offset);
-  let cls = 'dict-card';
-  if (offset === 0) cls += ' is-active';
-  if (abs === 1) cls += ' is-near';
-  if (abs >= 2) cls += ' is-far';
-  if (item.__create) cls += ' dict-card--create';
-  return cls;
-}
-
-function renderDictCard(item, index) {
-  const offset = index - dictsState.activeIndex;
-  const abs = Math.abs(offset);
-  const { x, scale, rotate, depth } = computeTransform(offset);
-  const cls = getCardClass(offset, item);
-  const opacity = abs > 2 ? 0 : 1;
-
-  return `
-    <button
-      class="${cls}"
-      type="button"
-      data-index="${index}"
-      style="transform: translate3d(${x}px, 0, ${depth}px) scale(${scale}) rotateY(${rotate}deg); opacity:${opacity};"
-    >
-      <span class="dict-card__magic-glow"></span>
-      <span class="dict-card__magic-border"></span>
-      <span class="dict-card__surface"></span>
-
-      <div class="dict-card__content">
-        <div class="dict-card__icon">
-          ${item.__create ? DICT_ICONS.plus : (DICT_ICONS[item.icon] || DICT_ICONS.stack)}
-        </div>
-
-        <div class="dict-card__body">
-          <div class="dict-card__title">${item.__create ? 'Новий довідник' : item.title}</div>
-          ${
-            item.__create
-              ? `<div class="dict-card__description">Створити новий довідник системи</div>`
-              : `
-                <div class="dict-card__meta">${formatNumber(item.total)} записів</div>
-                <div class="dict-card__chips">
-                  <span class="dict-chip dict-chip--status">${item.status}</span>
-                  <span class="dict-chip">${item.type}</span>
-                </div>
-              `
-          }
-        </div>
-      </div>
-    </button>
-  `;
-}
-
-function updateSpotlight() {
-  const carousel = document.getElementById('dictsCarousel');
-  if (!carousel) return;
-  carousel.style.setProperty('--dicts-spotlight-x', '0px');
-}
-
-function renderDots(visible) {
-  const dots = document.getElementById('dictsDots');
-  if (!dots) return;
-
-  dots.innerHTML = visible
-    .map((_, index) => `<button class="dict-dot ${index === dictsState.activeIndex ? 'is-active' : ''}" type="button" data-dot-index="${index}"></button>`)
-    .join('');
-
-  dots.querySelectorAll('.dict-dot').forEach((dot) => {
-    dot.addEventListener('click', () => {
-      const idx = Number(dot.dataset.dotIndex);
-      const picked = visible[idx];
-      if (picked?.__create) {
-        openDictCreateModal();
-        return;
-      }
-      goToDict(idx);
-    });
-  });
-}
-
-function renderDictsCarousel() {
-  const wrap = document.getElementById('dictsCarousel');
-  if (!wrap) return;
-
-  const visible = getRenderItems();
-
-  if (dictsState.activeIndex > visible.length - 1) {
-    dictsState.activeIndex = 0;
-  }
-
-  wrap.innerHTML = visible.map((item, index) => renderDictCard(item, index)).join('');
-
-  wrap.querySelectorAll('.dict-card').forEach((card) => {
-    card.addEventListener('click', () => {
-      const idx = Number(card.dataset.index);
-      const picked = visible[idx];
-
-      if (picked?.__create) {
-        openDictCreateModal();
-        return;
-      }
-
-      goToDict(idx);
-    });
-  });
-
-  renderDots(visible);
-  updateSpotlight();
-  bindActiveCardHover();
 }
 
 function openDictCreateModal() {
@@ -307,7 +346,7 @@ function bindDictCreateModal() {
 
 function buildDictsRightPanel() {
   return `
-    <div class="tool-block">
+    <div class="tool-block tool-block--search">
       <label class="tool-block__label" for="dictSearchInput">Пошук</label>
       <input id="dictSearchInput" class="tool-input" type="text" placeholder="Пошук довідника..." />
     </div>
@@ -331,9 +370,7 @@ function buildDictsRightPanel() {
       </select>
     </div>
 
-    <button id="dictAddBtn" class="tool-refresh-btn" type="button">+ Новий довідник</button>
-    <button id="dictSchemaBtn" class="tool-refresh-btn" type="button">Схема</button>
-    <button id="dictResetBtn" class="tool-refresh-btn" type="button">Скинути фільтри</button>
+    <button id="refreshBtn" class="tool-refresh-btn" type="button">Оновити</button>
   `;
 }
 
@@ -359,20 +396,6 @@ function applyDictFilters() {
   renderDictsCarousel();
 }
 
-function resetDictFilters() {
-  const search = document.getElementById('dictSearchInput');
-  const type = document.getElementById('dictTypeFilter');
-  const status = document.getElementById('dictStatusFilter');
-
-  if (search) search.value = '';
-  if (type) type.value = 'all';
-  if (status) status.value = 'all';
-
-  dictsState.filteredItems = [];
-  dictsState.activeIndex = 0;
-  renderDictsCarousel();
-}
-
 function bindDictsRightPanel() {
   const panel = document.getElementById('layoutRightPanel');
   if (!panel) return;
@@ -382,12 +405,70 @@ function bindDictsRightPanel() {
   document.getElementById('dictSearchInput')?.addEventListener('input', applyDictFilters);
   document.getElementById('dictTypeFilter')?.addEventListener('change', applyDictFilters);
   document.getElementById('dictStatusFilter')?.addEventListener('change', applyDictFilters);
+}
 
-  document.getElementById('dictAddBtn')?.addEventListener('click', openDictCreateModal);
-  document.getElementById('dictSchemaBtn')?.addEventListener('click', () => {
-    alert('Наступним кроком тут відкриємо режим схеми взаємозв’язків.');
+function setDictsViewMode(mode) {
+  dictsState.viewMode = mode;
+
+  const carouselView = document.getElementById('dictsCarouselView');
+  const schemaView = document.getElementById('dictsSchemaView');
+
+  if (carouselView) carouselView.classList.toggle('hidden', mode !== 'carousel');
+  if (schemaView) schemaView.classList.toggle('hidden', mode !== 'schema');
+
+  document.querySelectorAll('.dicts-mode-action[data-dicts-mode]').forEach((btn) => {
+    btn.classList.toggle('is-active', btn.dataset.dictsMode === mode);
   });
-  document.getElementById('dictResetBtn')?.addEventListener('click', resetDictFilters);
+}
+
+function toggleDictsModePopover(force = null) {
+  const popover = document.getElementById('dictsModePopover');
+  const trigger = document.getElementById('dictsModeTrigger');
+  if (!popover || !trigger) return;
+
+  const shouldOpen = force === null ? popover.classList.contains('hidden') : force;
+  popover.classList.toggle('hidden', !shouldOpen);
+  trigger.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
+}
+
+function bindDictsModeSwitcher() {
+  const trigger = document.getElementById('dictsModeTrigger');
+  const popover = document.getElementById('dictsModePopover');
+  const addBtn = document.getElementById('dictsAddDictionaryBtn');
+
+  if (!trigger || !popover) return;
+
+  trigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleDictsModePopover();
+  });
+
+  popover.querySelectorAll('[data-dicts-mode]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const mode = btn.dataset.dictsMode;
+      setDictsViewMode(mode);
+      toggleDictsModePopover(false);
+    });
+  });
+
+  addBtn?.addEventListener('click', () => {
+    toggleDictsModePopover(false);
+    openDictCreateModal();
+  });
+
+  document.addEventListener('click', (e) => {
+    const switcher = document.getElementById('dictsModeSwitcher');
+    if (!switcher) return;
+    if (!switcher.contains(e.target)) {
+      toggleDictsModePopover(false);
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      toggleDictsModePopover(false);
+    }
+  });
 }
 
 function bindDragCarousel() {
@@ -448,122 +529,7 @@ function bindDictsPageEvents() {
 
   bindDragCarousel();
 }
-function bindActiveCardHover() {
-  const activeCard = document.querySelector('.dict-card.is-active');
-  if (!activeCard) return;
 
-  const reset = () => {
-    activeCard.classList.remove('is-hovering');
-    activeCard.style.setProperty('--mx', '0px');
-    activeCard.style.setProperty('--my', '0px');
-    activeCard.style.setProperty('--glare-x', '50%');
-    activeCard.style.setProperty('--glare-y', '50%');
-
-    const index = Number(activeCard.dataset.index);
-    const item = getRenderItems()[index];
-    const { x, scale, rotate, depth } = computeTransform(index - dictsState.activeIndex);
-
-    activeCard.style.transform =
-      `translate3d(${x}px, 0, ${depth}px) scale(${scale}) rotateY(${rotate}deg)`;
-  };
-
-  activeCard.addEventListener('mousemove', (e) => {
-    const rect = activeCard.getBoundingClientRect();
-    const px = (e.clientX - rect.left) / rect.width;
-    const py = (e.clientY - rect.top) / rect.height;
-
-    const rotateYExtra = (px - 0.5) * 10;
-    const rotateXExtra = (0.5 - py) * 8;
-
-    const moveX = (px - 0.5) * 12;
-    const moveY = (py - 0.5) * 10;
-
-    const index = Number(activeCard.dataset.index);
-    const itemOffset = index - dictsState.activeIndex;
-    const { x, scale, rotate, depth } = computeTransform(itemOffset);
-
-    activeCard.classList.add('is-hovering');
-    activeCard.style.setProperty('--mx', `${moveX}px`);
-    activeCard.style.setProperty('--my', `${moveY}px`);
-    activeCard.style.setProperty('--glare-x', `${px * 100}%`);
-    activeCard.style.setProperty('--glare-y', `${py * 100}%`);
-
-    activeCard.style.transform =
-      `translate3d(${x}px, 0, ${depth}px) scale(${scale}) rotateX(${rotateXExtra}deg) rotateY(${rotate + rotateYExtra}deg)`;
-  });
-
-  activeCard.addEventListener('mouseleave', reset);
-}
-
-function setDictsViewMode(mode) {
-  dictsState.viewMode = mode;
-
-  const carouselView = document.getElementById('dictsCarouselView');
-  const schemaView = document.getElementById('dictsSchemaView');
-
-  if (carouselView) {
-    carouselView.classList.toggle('hidden', mode !== 'carousel');
-  }
-
-  if (schemaView) {
-    schemaView.classList.toggle('hidden', mode !== 'schema');
-  }
-
-  document.querySelectorAll('.dicts-mode-action[data-dicts-mode]').forEach((btn) => {
-    btn.classList.toggle('is-active', btn.dataset.dictsMode === mode);
-  });
-}
-
-function toggleDictsModePopover(force = null) {
-  const popover = document.getElementById('dictsModePopover');
-  const trigger = document.getElementById('dictsModeTrigger');
-  if (!popover || !trigger) return;
-
-  const shouldOpen = force === null ? popover.classList.contains('hidden') : force;
-
-  popover.classList.toggle('hidden', !shouldOpen);
-  trigger.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
-}
-
-function bindDictsModeSwitcher() {
-  const trigger = document.getElementById('dictsModeTrigger');
-  const popover = document.getElementById('dictsModePopover');
-  const addBtn = document.getElementById('dictsAddDictionaryBtn');
-
-  if (!trigger || !popover) return;
-
-  trigger.addEventListener('click', (e) => {
-    e.stopPropagation();
-    toggleDictsModePopover();
-  });
-
-  popover.querySelectorAll('[data-dicts-mode]').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const mode = btn.dataset.dictsMode;
-      setDictsViewMode(mode);
-      toggleDictsModePopover(false);
-    });
-  });
-
-  addBtn?.addEventListener('click', () => {
-    toggleDictsModePopover(false);
-    alert('Далі тут відкриємо діалог додавання довідника.');
-  });
-
-  document.addEventListener('click', (e) => {
-    const switcher = document.getElementById('dictsModeSwitcher');
-    if (!switcher) return;
-    if (!switcher.contains(e.target)) {
-      toggleDictsModePopover(false);
-    }
-  });
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      toggleDictsModePopover(false);
-    }
-  });
-}
 window.initDictsPage = async function initDictsPage() {
   bindDictsPageEvents();
   bindDictCreateModal();
