@@ -382,33 +382,31 @@ body {
 
 .dicts-mode-switcher {
   position: relative;
-  z-index: 9999;
-  overflow: visible;
 }
 
-.tool-item--dicts-mode {
-  position: relative;
-  z-index: 2;
-}
-
-.dicts-mode-switcher.is-open .tool-item--dicts-mode .tool-item__icon-wrap--svg svg {
+.tool-item--dicts-mode[aria-expanded="true"] .tool-item__icon-wrap--svg svg {
   transform: rotate(45deg);
 }
 
 .dicts-mode-switcher__popover {
-  position: absolute;
-  top: 50%;
-  right: calc(100% - 36px);
+  position: fixed;
   width: 220px;
   height: 220px;
-  transform: translateY(-50%);
   background: transparent;
   border: none;
   box-shadow: none;
   padding: 0;
-  z-index: 10000;
+  z-index: 2147483647;
   overflow: visible;
   pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.dicts-mode-switcher__popover.is-open {
+  pointer-events: auto;
+  opacity: 1;
+  visibility: visible;
 }
 
 .dicts-radial-menu {
@@ -433,11 +431,7 @@ body {
   transition: opacity 0.28s ease, transform 0.35s ease;
 }
 
-.dicts-mode-switcher.is-open .dicts-mode-switcher__popover {
-  pointer-events: auto;
-}
-
-.dicts-mode-switcher.is-open .dicts-radial-menu::before {
+.dicts-mode-switcher__popover.is-open .dicts-radial-menu::before {
   opacity: 1;
   transform: translateY(-50%) scale(1);
 }
@@ -495,7 +489,7 @@ body {
   --delay: 0.10s;
 }
 
-.dicts-mode-switcher.is-open .dicts-mode-action--radial {
+.dicts-mode-switcher__popover.is-open .dicts-mode-action--radial {
   opacity: 1;
   pointer-events: auto;
   transform: translate(var(--x), calc(var(--y) - 50%)) scale(1);
@@ -556,7 +550,6 @@ body {
 
 @media (max-width: 1200px) {
   .dicts-mode-switcher__popover {
-    right: calc(100% - 20px);
     width: 200px;
     height: 200px;
   }
