@@ -256,6 +256,7 @@ function renderDictsCarousel() {
 
   renderDots(visible);
   updateSpotlight();
+  bindActiveCardHover();
 }
 
 function openDictCreateModal() {
@@ -446,7 +447,52 @@ function bindDictsPageEvents() {
 
   bindDragCarousel();
 }
+function bindActiveCardHover() {
+  const activeCard = document.querySelector('.dict-card.is-active');
+  if (!activeCard) return;
 
+  const reset = () => {
+    activeCard.classList.remove('is-hovering');
+    activeCard.style.setProperty('--mx', '0px');
+    activeCard.style.setProperty('--my', '0px');
+    activeCard.style.setProperty('--glare-x', '50%');
+    activeCard.style.setProperty('--glare-y', '50%');
+
+    const index = Number(activeCard.dataset.index);
+    const item = getRenderItems()[index];
+    const { x, scale, rotate, depth } = computeTransform(index - dictsState.activeIndex);
+
+    activeCard.style.transform =
+      `translate3d(${x}px, 0, ${depth}px) scale(${scale}) rotateY(${rotate}deg)`;
+  };
+
+  activeCard.addEventListener('mousemove', (e) => {
+    const rect = activeCard.getBoundingClientRect();
+    const px = (e.clientX - rect.left) / rect.width;
+    const py = (e.clientY - rect.top) / rect.height;
+
+    const rotateYExtra = (px - 0.5) * 10;
+    const rotateXExtra = (0.5 - py) * 8;
+
+    const moveX = (px - 0.5) * 12;
+    const moveY = (py - 0.5) * 10;
+
+    const index = Number(activeCard.dataset.index);
+    const itemOffset = index - dictsState.activeIndex;
+    const { x, scale, rotate, depth } = computeTransform(itemOffset);
+
+    activeCard.classList.add('is-hovering');
+    activeCard.style.setProperty('--mx', `${moveX}px`);
+    activeCard.style.setProperty('--my', `${moveY}px`);
+    activeCard.style.setProperty('--glare-x', `${px * 100}%`);
+    activeCard.style.setProperty('--glare-y', `${py * 100}%`);
+
+    activeCard.style.transform =
+      `translate3d(${x}px, 0, ${depth}px) scale(${scale}) rotateX(${rotateXExtra}deg) rotateY(${rotate + rotateYExtra}deg)`;
+  });
+
+  activeCard.addEventListener('mouseleave', reset);
+}
 window.initDictsPage = async function initDictsPage() {
   bindDictsPageEvents();
   bindDictCreateModal();
