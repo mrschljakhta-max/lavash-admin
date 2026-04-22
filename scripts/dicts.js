@@ -84,17 +84,17 @@ function shiftDicts(step) {
 
 function computeDepth(offset) {
   const abs = Math.abs(offset);
-  if (offset === 0) return 220;
+  if (offset === 0) return 180;
   if (abs === 1) return 90;
-  if (abs === 2) return 10;
-  return -40;
+  if (abs === 2) return 20;
+  return -30;
 }
 
 function computeTransform(offset) {
   const abs = Math.abs(offset);
 
-  let x = offset * 150;
-  let scale = 0.78;
+  let x = offset * 120;
+  let scale = 0.82;
   let rotate = 0;
 
   if (offset === 0) {
@@ -102,17 +102,17 @@ function computeTransform(offset) {
     scale = 1;
     rotate = 0;
   } else if (abs === 1) {
-    x = offset * 132;
-    scale = 0.90;
-    rotate = offset < 0 ? 13 : -13;
+    x = offset * 98;
+    scale = 0.92;
+    rotate = offset < 0 ? 9 : -9;
   } else if (abs === 2) {
-    x = offset * 208;
-    scale = 0.78;
-    rotate = offset < 0 ? 18 : -18;
+    x = offset * 156;
+    scale = 0.84;
+    rotate = offset < 0 ? 12 : -12;
   } else {
-    x = offset * 250;
-    scale = 0.68;
-    rotate = offset < 0 ? 20 : -20;
+    x = offset * 210;
+    scale = 0.74;
+    rotate = offset < 0 ? 14 : -14;
   }
 
   return { x, scale, rotate, depth: computeDepth(offset) };
