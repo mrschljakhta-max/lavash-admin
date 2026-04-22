@@ -119,29 +119,37 @@ function computeDepth(offset) {
 function computeTransform(offset) {
   const abs = Math.abs(offset);
 
-  let x = offset * 120;
-  let scale = 0.84;
+  let x = offset * 150; // базовий розліт (трохи збільшений)
+  let scale = 0.82;
   let rotate = 0;
 
   if (offset === 0) {
     x = 0;
     scale = 1;
     rotate = 0;
-  } else if (abs === 1) {
-    x = offset * 118;             // видно ~80-90%
-    scale = 0.94;
-    rotate = offset < 0 ? 4 : -4;
-  } else if (abs === 2) {
-    x = offset * 228;             // видно ~50%
-    scale = 0.86;
+  } 
+  else if (abs === 1) {
+    x = offset * 170;   // 🔥 головне — відсунули сусідні
+    scale = 0.9;
     rotate = offset < 0 ? 6 : -6;
-  } else {
-    x = offset * 320;
-    scale = 0.76;
+  } 
+  else if (abs === 2) {
+    x = offset * 300;   // 🔥 ще далі — щоб не перекривались
+    scale = 0.82;
     rotate = offset < 0 ? 8 : -8;
+  } 
+  else {
+    x = offset * 420;   // крайні картки
+    scale = 0.75;
+    rotate = offset < 0 ? 10 : -10;
   }
 
-  return { x, scale, rotate, depth: computeDepth(offset) };
+  return {
+    x,
+    scale,
+    rotate,
+    depth: computeDepth(offset)
+  };
 }
 
 function getCardClass(offset, item) {
