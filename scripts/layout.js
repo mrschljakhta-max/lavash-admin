@@ -397,18 +397,35 @@
     const modeButtons = popover.querySelectorAll('[data-dicts-mode]');
     const addBtn = document.getElementById('dictsAddDictionaryBtn');
 
+    if (!document.body.contains(popover) || popover.parentElement !== document.body) {
+      document.body.appendChild(popover);
+    }
+
+    function positionPopover() {
+      const rect = trigger.getBoundingClientRect();
+      const popoverWidth = 220;
+      const popoverHeight = 220;
+
+      const left = rect.left - popoverWidth + 36;
+      const top = rect.top + rect.height / 2 - popoverHeight / 2;
+
+      popover.style.left = `${left}px`;
+      popover.style.top = `${top}px`;
+    }
+
     function openPopover() {
-      switcher.classList.add('is-open');
+      positionPopover();
+      popover.classList.add('is-open');
       trigger.setAttribute('aria-expanded', 'true');
     }
 
     function closePopover() {
-      switcher.classList.remove('is-open');
+      popover.classList.remove('is-open');
       trigger.setAttribute('aria-expanded', 'false');
     }
 
     function togglePopover() {
-      if (switcher.classList.contains('is-open')) {
+      if (popover.classList.contains('is-open')) {
         closePopover();
       } else {
         openPopover();
@@ -462,8 +479,12 @@
     }
 
     document.addEventListener('click', (event) => {
-      if (!switcher.classList.contains('is-open')) return;
-      if (!switcher.contains(event.target)) {
+      if (!popover.classList.contains('is-open')) return;
+
+      const clickedTrigger = trigger.contains(event.target);
+      const clickedPopover = popover.contains(event.target);
+
+      if (!clickedTrigger && !clickedPopover) {
         closePopover();
       }
     });
@@ -473,6 +494,18 @@
         closePopover();
       }
     });
+
+    window.addEventListener('resize', () => {
+      if (popover.classList.contains('is-open')) {
+        positionPopover();
+      }
+    });
+
+    window.addEventListener('scroll', () => {
+      if (popover.classList.contains('is-open')) {
+        positionPopover();
+      }
+    }, true);
   }
 
   async function hydrateLavashUser() {
