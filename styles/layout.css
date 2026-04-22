@@ -24,6 +24,10 @@ body {
   color: var(--text-main);
 }
 
+body.lavash-modal-open {
+  overflow: hidden;
+}
+
 .app-shell,
 .app-layout {
   display: flex;
@@ -296,7 +300,6 @@ body {
 .tool-item__icon-wrap--svg svg {
   width: 20px;
   height: 20px;
-  transition: transform 0.28s ease;
 }
 
 .tool-item__icon {
@@ -378,161 +381,6 @@ body {
   transform: translateY(-2px);
 }
 
-/* ===== DICTS RADIAL MENU ===== */
-
-.dicts-mode-switcher {
-  position: relative;
-}
-
-.tool-item--dicts-mode[aria-expanded="true"] .tool-item__icon-wrap--svg svg {
-  transform: rotate(45deg);
-}
-
-.dicts-mode-switcher__popover {
-  position: fixed;
-  width: 220px;
-  height: 220px;
-  background: transparent;
-  border: none;
-  box-shadow: none;
-  padding: 0;
-  z-index: 2147483647;
-  overflow: visible;
-  pointer-events: none;
-  opacity: 0;
-  visibility: hidden;
-}
-
-.dicts-mode-switcher__popover.is-open {
-  pointer-events: auto;
-  opacity: 1;
-  visibility: visible;
-}
-
-.dicts-radial-menu {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-}
-
-.dicts-radial-menu::before {
-  content: "";
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  width: 88px;
-  height: 88px;
-  transform: translateY(-50%) scale(0.78);
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(98, 132, 255, 0.26) 0%, rgba(98, 132, 255, 0.12) 42%, rgba(98, 132, 255, 0.04) 68%, transparent 78%);
-  filter: blur(14px);
-  opacity: 0;
-  transition: opacity 0.28s ease, transform 0.35s ease;
-}
-
-.dicts-mode-switcher__popover.is-open .dicts-radial-menu::before {
-  opacity: 1;
-  transform: translateY(-50%) scale(1);
-}
-
-.dicts-mode-action {
-  border: none;
-  cursor: pointer;
-}
-
-.dicts-mode-action--radial {
-  --x: 0px;
-  --y: 0px;
-  --delay: 0s;
-  position: absolute;
-  top: 50%;
-  right: 24px;
-  width: 168px;
-  min-height: 56px;
-  padding: 0 16px;
-  border-radius: 999px;
-  border: 1px solid rgba(118,150,236,0.18);
-  background: linear-gradient(180deg, rgba(12, 29, 82, 0.94), rgba(7, 19, 56, 0.98));
-  box-shadow: 0 18px 34px rgba(0,0,0,0.34), inset 0 0 0 1px rgba(255,255,255,0.03);
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  color: var(--text-main);
-  transform: translate(0, -50%) scale(0.72);
-  opacity: 0;
-  pointer-events: none;
-  transition:
-    transform 0.34s cubic-bezier(.16,1,.3,1),
-    opacity 0.22s ease,
-    border-color 0.22s ease,
-    box-shadow 0.22s ease,
-    background 0.22s ease;
-  transition-delay: var(--delay);
-}
-
-.dicts-mode-action--radial:nth-child(1) {
-  --x: -112px;
-  --y: -78px;
-  --delay: 0.02s;
-}
-
-.dicts-mode-action--radial:nth-child(2) {
-  --x: -146px;
-  --y: 0px;
-  --delay: 0.06s;
-}
-
-.dicts-mode-action--radial:nth-child(3) {
-  --x: -112px;
-  --y: 78px;
-  --delay: 0.10s;
-}
-
-.dicts-mode-switcher__popover.is-open .dicts-mode-action--radial {
-  opacity: 1;
-  pointer-events: auto;
-  transform: translate(var(--x), calc(var(--y) - 50%)) scale(1);
-}
-
-.dicts-mode-action--radial:hover {
-  transform: translate(calc(var(--x) - 4px), calc(var(--y) - 50%)) scale(1.03);
-  border-color: rgba(124,108,255,0.38);
-  box-shadow: 0 22px 38px rgba(0,0,0,0.42), 0 0 0 1px rgba(124,108,255,0.16);
-}
-
-.dicts-mode-action--radial.is-active {
-  background: linear-gradient(90deg, rgba(79,124,255,0.34), rgba(124,108,255,0.30));
-  border-color: rgba(132,116,255,0.44);
-}
-
-.dicts-mode-action--accent {
-  background: linear-gradient(90deg, rgba(79,124,255,0.34), rgba(168,108,255,0.34));
-}
-
-.dicts-mode-action__icon {
-  width: 38px;
-  height: 38px;
-  min-width: 38px;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  background: rgba(255,255,255,0.07);
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04);
-}
-
-.dicts-mode-action__icon svg {
-  width: 20px;
-  height: 20px;
-}
-
-.dicts-mode-action__label {
-  font-size: 13px;
-  font-weight: 800;
-  line-height: 1.15;
-  color: var(--text-main);
-}
-
 .tool-input {
   width: 100%;
   height: 46px;
@@ -548,28 +396,185 @@ body {
   border-color: rgba(124,108,255,0.4);
 }
 
-@media (max-width: 1200px) {
-  .dicts-mode-switcher__popover {
-    width: 200px;
-    height: 200px;
+/* ===== MODAL ===== */
+
+.lavash-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.lavash-modal.hidden {
+  display: none;
+}
+
+.lavash-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(2, 8, 28, 0.68);
+  backdrop-filter: blur(8px);
+}
+
+.lavash-modal__card {
+  position: relative;
+  z-index: 2;
+  width: min(680px, calc(100vw - 32px));
+  border-radius: 28px;
+  border: 1px solid rgba(118,150,236,0.18);
+  background: linear-gradient(180deg, rgba(8, 21, 64, 0.96), rgba(5, 14, 44, 0.98));
+  box-shadow: 0 40px 80px rgba(0,0,0,0.42);
+  padding: 24px;
+}
+
+.lavash-modal__card--dicts-modes {
+  max-width: 720px;
+}
+
+.lavash-modal__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.lavash-modal__title {
+  margin: 0 0 6px;
+  font-size: 28px;
+  font-weight: 900;
+  color: #f4f7ff;
+}
+
+.lavash-modal__subtitle {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.45;
+  color: rgba(230,236,255,0.72);
+}
+
+.lavash-modal__close {
+  width: 42px;
+  height: 42px;
+  min-width: 42px;
+  border-radius: 14px;
+  border: 1px solid rgba(118,150,236,0.14);
+  background: rgba(255,255,255,0.04);
+  color: #fff;
+  cursor: pointer;
+  font-size: 18px;
+  display: grid;
+  place-items: center;
+}
+
+.lavash-modal__close:hover {
+  background: rgba(255,255,255,0.08);
+}
+
+/* ===== DICTS MODE DIALOG ===== */
+
+.dicts-mode-dialog__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+
+.dicts-mode-dialog__action {
+  width: 100%;
+  min-height: 88px;
+  border-radius: 22px;
+  border: 1px solid rgba(118,150,236,0.16);
+  background: rgba(255,255,255,0.03);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 18px;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+}
+
+.dicts-mode-dialog__action:hover {
+  transform: translateY(-2px);
+  border-color: rgba(124,108,255,0.28);
+  background: rgba(255,255,255,0.05);
+  box-shadow: 0 16px 28px rgba(0,0,0,0.22);
+}
+
+.dicts-mode-dialog__action.is-active {
+  background: linear-gradient(90deg, rgba(79,124,255,0.20), rgba(124,108,255,0.18));
+  border-color: rgba(124,108,255,0.34);
+}
+
+.dicts-mode-dialog__action--accent {
+  background: linear-gradient(90deg, rgba(79,124,255,0.22), rgba(168,108,255,0.22));
+  border-color: rgba(168,108,255,0.28);
+}
+
+.dicts-mode-dialog__icon {
+  width: 52px;
+  min-width: 52px;
+  height: 52px;
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+  background: rgba(255,255,255,0.06);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04);
+}
+
+.dicts-mode-dialog__icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.dicts-mode-dialog__text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dicts-mode-dialog__text strong {
+  font-size: 18px;
+  font-weight: 900;
+  color: #f4f7ff;
+}
+
+.dicts-mode-dialog__text small {
+  font-size: 13px;
+  line-height: 1.45;
+  color: rgba(230,236,255,0.72);
+}
+
+@media (max-width: 720px) {
+  .lavash-modal {
+    padding: 16px;
   }
 
-  .dicts-mode-action--radial {
-    width: 154px;
+  .lavash-modal__card {
+    padding: 18px;
+    border-radius: 22px;
   }
 
-  .dicts-mode-action--radial:nth-child(1) {
-    --x: -98px;
-    --y: -68px;
+  .lavash-modal__title {
+    font-size: 22px;
   }
 
-  .dicts-mode-action--radial:nth-child(2) {
-    --x: -128px;
-    --y: 0px;
+  .dicts-mode-dialog__action {
+    min-height: 78px;
+    padding: 14px;
   }
 
-  .dicts-mode-action--radial:nth-child(3) {
-    --x: -98px;
-    --y: 68px;
+  .dicts-mode-dialog__icon {
+    width: 46px;
+    min-width: 46px;
+    height: 46px;
+  }
+
+  .dicts-mode-dialog__text strong {
+    font-size: 16px;
   }
 }
