@@ -1,13 +1,20 @@
-/* ===== PAGE ===== */
-.logs-page {
-  width: 100%;
+body {
+  margin: 0;
+  font-family: sans-serif;
+  background: #020814;
+  color: white;
 }
 
-/* ===== INTRO ===== */
+body.lock-scroll {
+  overflow: hidden;
+}
+
+/* INTRO */
 .logs-intro {
   position: relative;
   height: 100vh;
   overflow: hidden;
+  background: radial-gradient(circle at center, #0b1f4a, #020814);
 }
 
 #vortexCanvas {
@@ -17,17 +24,15 @@
   height: 100%;
 }
 
-/* центр */
-.logs-intro-center {
+/* UI */
+.intro-ui {
   position: absolute;
   bottom: 80px;
   width: 100%;
   text-align: center;
-  color: #9ecfff;
-  z-index: 2;
+  color: #7fdfff;
 }
 
-/* mouse */
 .mouse {
   width: 26px;
   height: 40px;
@@ -56,18 +61,13 @@
   100% { opacity: 0; transform: translate(-50%, 16px); }
 }
 
-/* ===== LOCK ===== */
-body.lock-scroll {
-  overflow: hidden;
-}
-
-/* ===== CONTENT ===== */
+/* CONTENT */
 .logs-content {
   min-height: 100vh;
   padding: 40px;
   opacity: 0;
   transform: translateY(40px);
-  transition: all 0.6s ease;
+  transition: 0.6s;
 }
 
 .logs-content.visible {
@@ -75,11 +75,10 @@ body.lock-scroll {
   transform: translateY(0);
 }
 
-/* ===== TABLE ===== */
 .logs-card {
   background: rgba(10, 25, 60, 0.8);
-  border-radius: 16px;
   padding: 20px;
+  border-radius: 16px;
 }
 
 .logs-table {
@@ -89,20 +88,15 @@ body.lock-scroll {
 
 .logs-row {
   display: grid;
-  grid-template-columns: 160px 140px 120px 1fr 100px 120px;
+  grid-template-columns: 160px 120px 120px 1fr 100px 120px;
   padding: 10px;
   border-bottom: 1px solid rgba(255,255,255,0.05);
 }
 
 .logs-row.header {
   font-weight: bold;
-  color: #9ecfff;
+  color: #7fdfff;
 }
 
-.logs-row .ok {
-  color: #00ff9c;
-}
-
-.logs-row .error {
-  color: #ff4d6d;
-}
+.ok { color: #00ff9c; }
+.error { color: #ff4d6d; }
