@@ -1,67 +1,14 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8" />
-  <title>Логування</title>
-  <link rel="stylesheet" href="../styles/logs.css" />
+  <meta charset="UTF-8">
+  <title>Test Vortex</title>
+  <link rel="stylesheet" href="logs.css">
 </head>
+<body>
 
-<body class="lock-scroll">
+<canvas id="vortexCanvas"></canvas>
 
-<div class="logs-page">
-
-  <!-- INTRO -->
-  <section class="logs-intro">
-    <canvas id="vortexCanvas"></canvas>
-
-    <div class="intro-ui">
-      <div class="mouse"></div>
-      <p>Прокрутіть вниз, щоб сформувати журнал</p>
-    </div>
-  </section>
-
-  <!-- CONTENT -->
-  <section class="logs-content" id="logsContent">
-
-    <div class="logs-card">
-      <h2>Журнал подій</h2>
-
-      <div class="logs-table">
-
-        <div class="logs-row header">
-          <div>Час</div>
-          <div>Тип</div>
-          <div>Користувач</div>
-          <div>Повідомлення</div>
-          <div>Статус</div>
-          <div>IP</div>
-        </div>
-
-        <div class="logs-row">
-          <div>24.05.2024 14:32</div>
-          <div>Вхід</div>
-          <div>admin</div>
-          <div>Успішний вхід</div>
-          <div class="ok">OK</div>
-          <div>192.168.1.10</div>
-        </div>
-
-        <div class="logs-row">
-          <div>24.05.2024 14:30</div>
-          <div>Помилка</div>
-          <div>system</div>
-          <div>Файл не знайдено</div>
-          <div class="error">ERROR</div>
-          <div>192.168.1.11</div>
-        </div>
-
-      </div>
-    </div>
-
-  </section>
-
-</div>
-
-<script src="../scripts/logs.js"></script>
+<script src="logs.js"></script>
 </body>
 </html>
