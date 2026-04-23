@@ -1,16 +1,15 @@
-// ====== SETTINGS ======
-const LETTER_COUNT = 120; // було більше → лагало
-const MAX_DPR = 1.5; // обмеження DPI
+// ===== SETTINGS =====
+const LETTER_COUNT = 100;
+const MAX_DPR = 1.5;
 
-// ====== STATE ======
+// ===== STATE =====
 let canvas, ctx;
 let letters = [];
 let progress = 0;
 let isUnlocked = false;
-let animationId;
 let lastTime = 0;
 
-// ====== INIT ======
+// ===== INIT =====
 function initLogsVortex() {
   canvas = document.getElementById("vortexCanvas");
   if (!canvas) return;
@@ -23,12 +22,12 @@ function initLogsVortex() {
   document.body.classList.add("lock-scroll");
 
   window.addEventListener("wheel", handleWheel, { passive: false });
-  window.addEventListener("resize", debounce(resizeCanvas, 200));
+  window.addEventListener("resize", resizeCanvas);
 
   animate(0);
 }
 
-// ====== CANVAS ======
+// ===== CANVAS =====
 function resizeCanvas() {
   const dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR);
 
@@ -41,24 +40,22 @@ function resizeCanvas() {
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 }
 
-// ====== LETTERS ======
+// ===== LETTERS =====
 function createLetters() {
-  const chars = "ЛОГУВАННЯABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-
+  const chars = "ЛОГУВАННЯABCDEFGHIJKLMNOPQRSTUVWXYZ";
   letters = [];
 
   for (let i = 0; i < LETTER_COUNT; i++) {
     letters.push({
       char: chars[Math.floor(Math.random() * chars.length)],
       angle: Math.random() * Math.PI * 2,
-      radius: 200 + Math.random() * 200,
-      speed: 0.002 + Math.random() * 0.003,
-      size: 12 + Math.random() * 10
+      radius: 150 + Math.random() * 200,
+      speed: 0.002 + Math.random() * 0.003
     });
   }
 }
 
-// ====== SCROLL ======
+// ===== SCROLL =====
 function handleWheel(e) {
   if (isUnlocked) return;
 
@@ -70,23 +67,21 @@ function handleWheel(e) {
   if (progress >= 1) unlockScroll();
 }
 
-// ====== ANIMATION ======
+// ===== ANIMATION =====
 function animate(time) {
-  animationId = requestAnimationFrame(animate);
+  requestAnimationFrame(animate);
 
-  // FPS LIMIT (60 → ~45)
-  if (time - lastTime < 22) return;
+  if (time - lastTime < 20) return;
   lastTime = time;
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-
   drawVortex();
 }
 
-// ====== DRAW ======
+// ===== DRAW =====
 function drawVortex() {
-  const cx = canvas.width / 2;
-  const cy = canvas.height / 2;
+  const cx = canvas.clientWidth / 2;
+  const cy = canvas.clientHeight / 2;
 
   ctx.font = "14px monospace";
   ctx.textAlign = "center";
@@ -102,37 +97,34 @@ function drawVortex() {
     let x = cx + Math.cos(l.angle) * radius;
     let y = cy + Math.sin(l.angle) * radius;
 
-    // фінальне збирання
+    // фінал — збір у слово
     if (progress > 0.7) {
       const t = (progress - 0.7) / 0.3;
 
-      const targetX = cx + (i - LETTER_COUNT / 2) * 6;
+      const text = "ЛОГУВАННЯ";
+      const spacing = 18;
+
+      const targetX =
+        cx - (text.length * spacing) / 2 + (i % text.length) * spacing;
       const targetY = cy;
 
       x = lerp(x, targetX, t);
       y = lerp(y, targetY, t);
+
+      l.char = text[i % text.length];
     }
 
-    // легкий glow (без лагів)
-    ctx.fillStyle = "rgba(0,200,255,0.8)";
+    ctx.fillStyle = "#4cc9ff";
     ctx.fillText(l.char, x, y);
   }
 }
 
-// ====== UTILS ======
+// ===== UTILS =====
 function lerp(a, b, t) {
   return a + (b - a) * t;
 }
 
-function debounce(fn, delay) {
-  let t;
-  return () => {
-    clearTimeout(t);
-    t = setTimeout(fn, delay);
-  };
-}
-
-// ====== UNLOCK ======
+// ===== UNLOCK =====
 function unlockScroll() {
   isUnlocked = true;
 
@@ -144,5 +136,5 @@ function unlockScroll() {
   content.scrollIntoView({ behavior: "smooth" });
 }
 
-// ====== START ======
+// ===== START =====
 document.addEventListener("DOMContentLoaded", initLogsVortex);
