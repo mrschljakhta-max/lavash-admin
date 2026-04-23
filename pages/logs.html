@@ -1,122 +1,53 @@
-<div class="logs-page" id="logsPage">
-  <section class="logs-intro is-locked" id="logsIntro" aria-label="Інтро логування">
-    <canvas class="logs-vortex-canvas" id="logsVortexCanvas"></canvas>
+<div class="logs-page">
 
-    <div class="logs-intro__overlay"></div>
+  <!-- INTRO (вихор) -->
+  <section class="logs-intro" id="logsIntro">
+    <canvas id="vortexCanvas"></canvas>
 
-    <div class="logs-intro__center">
-      <div class="logs-intro__meta" id="logsIntroMeta">
-        <span class="logs-intro__eyebrow">Lavash Admin • журнал системних подій</span>
-        <h2 class="logs-intro__title" id="logsIntroTitle">Логування</h2>
-        <p class="logs-intro__subtitle" id="logsIntroSubtitle">
-          Контроль системних подій, дій операторів та результатів обробки
-          в єдиному журналі подій.
-        </p>
-      </div>
-
-      <div class="logs-intro__hint" id="logsIntroHint">
-        <span class="logs-intro__mouse"></span>
-        <span class="logs-intro__hint-text">Прокрутіть вниз, щоб завершити формування журналу</span>
-      </div>
-
-      <div class="logs-intro__progress">
-        <span class="logs-intro__progress-label">Синхронізація сцени</span>
-        <div class="logs-intro__progress-track">
-          <span class="logs-intro__progress-bar" id="logsProgressBar"></span>
-        </div>
-      </div>
+    <div class="logs-intro-center">
+      <div class="mouse"></div>
+      <p class="hint">
+        Прокрутіть вниз, щоб сформувати журнал
+      </p>
     </div>
   </section>
 
-  <section class="logs-content" id="logsContent" aria-label="Журнал подій">
-    <div class="logs-panel">
-      <div class="logs-panel__header">
-        <div>
-          <div class="logs-panel__eyebrow">Журнал подій</div>
-          <h3 class="logs-panel__title">Останні записи</h3>
+  <!-- КОНТЕНТ (твій блок логів) -->
+  <section class="logs-content" id="logsContent">
+
+    <div class="logs-card">
+      <div class="logs-table">
+
+        <div class="logs-row header">
+          <div>Час</div>
+          <div>Тип події</div>
+          <div>Користувач</div>
+          <div>Повідомлення</div>
+          <div>Статус</div>
+          <div>IP</div>
         </div>
 
-        <div class="logs-panel__actions">
-          <button class="logs-chip" id="refreshBtn" type="button">Оновити</button>
+        <div class="logs-row">
+          <div>24.05.2024 14:32</div>
+          <div>Вхід</div>
+          <div>admin</div>
+          <div>Успішний вхід</div>
+          <div class="ok">OK</div>
+          <div>192.168.1.10</div>
         </div>
-      </div>
 
-      <div class="logs-table-wrap">
-        <table class="logs-table">
-          <thead>
-            <tr>
-              <th>Час</th>
-              <th>Тип події</th>
-              <th>Користувач</th>
-              <th>Повідомлення</th>
-              <th>Статус</th>
-              <th>IP-адреса</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>24.05.2024 14:32:11</td>
-              <td><span class="logs-event logs-event--success">Вхід у систему</span></td>
-              <td>admin</td>
-              <td>Користувач успішно увійшов у систему</td>
-              <td><span class="logs-status logs-status--success">Успіх</span></td>
-              <td>192.168.1.10</td>
-              <td>⋮</td>
-            </tr>
-            <tr>
-              <td>24.05.2024 14:25:07</td>
-              <td><span class="logs-event logs-event--info">Завантаження файлу</span></td>
-              <td>admin</td>
-              <td>Завантажено файл: data.csv</td>
-              <td><span class="logs-status logs-status--success">Успіх</span></td>
-              <td>192.168.1.10</td>
-              <td>⋮</td>
-            </tr>
-            <tr>
-              <td>24.05.2024 14:20:45</td>
-              <td><span class="logs-event logs-event--warning">Помилка парсингу</span></td>
-              <td>system</td>
-              <td>Не вдалося обробити рядок 142 у файлі data.csv</td>
-              <td><span class="logs-status logs-status--error">Помилка</span></td>
-              <td>—</td>
-              <td>⋮</td>
-            </tr>
-            <tr>
-              <td>24.05.2024 14:18:33</td>
-              <td><span class="logs-event logs-event--accent">Зміна в довіднику</span></td>
-              <td>admin</td>
-              <td>Оновлено запис у довіднику “Клієнти” (ID: 563)</td>
-              <td><span class="logs-status logs-status--success">Успіх</span></td>
-              <td>192.168.1.10</td>
-              <td>⋮</td>
-            </tr>
-            <tr>
-              <td>24.05.2024 14:15:10</td>
-              <td><span class="logs-event logs-event--pending">Pending-запис</span></td>
-              <td>system</td>
-              <td>Pending-запис ID: 789 оброблено успішно</td>
-              <td><span class="logs-status logs-status--success">Успіх</span></td>
-              <td>—</td>
-              <td>⋮</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div class="logs-footer">
-        <div class="logs-footer__meta">Показано 1–5 з 125 записів</div>
-        <div class="logs-pagination" aria-label="Навігація сторінками">
-          <button class="logs-page-btn" type="button">‹</button>
-          <button class="logs-page-btn is-active" type="button">1</button>
-          <button class="logs-page-btn" type="button">2</button>
-          <button class="logs-page-btn" type="button">3</button>
-          <span class="logs-page-gap">…</span>
-          <button class="logs-page-btn" type="button">25</button>
-          <button class="logs-page-btn" type="button">›</button>
+        <div class="logs-row">
+          <div>24.05.2024 14:30</div>
+          <div>Помилка</div>
+          <div>system</div>
+          <div>Не знайдено файл</div>
+          <div class="error">ERROR</div>
+          <div>192.168.1.10</div>
         </div>
-        <button class="logs-chip" type="button">5 на сторінці</button>
+
       </div>
     </div>
+
   </section>
+
 </div>
