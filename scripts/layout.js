@@ -23,13 +23,15 @@
               <span class="brand-mini__title">Lavash Admin</span>
             </div>
 
-            <div class="user-box-mini" aria-hidden="true">
-              <span class="user-box-mini__dot"></span>
-            </div>
+            <div class="user-stack">
+              <div class="user-box-mini" aria-hidden="true">
+                <span class="user-box-mini__dot"></span>
+              </div>
 
-            <div class="user-box">
-              <div class="user-box__email" id="userEmail">user@email.com</div>
-              <button class="user-box__logout" id="logoutBtn" type="button">Вихід</button>
+              <div class="user-box">
+                <div class="user-box__email" id="userEmail">user@email.com</div>
+                <button class="user-box__logout" id="logoutBtn" type="button">Вихід</button>
+              </div>
             </div>
           </div>
 
@@ -447,14 +449,6 @@
 
     closeBtn?.addEventListener('click', closeDialog);
     backdrop?.addEventListener('click', closeDialog);
-
-    dialog.addEventListener('click', (event) => {
-      const card = dialog.querySelector('.lavash-modal__card');
-      if (!card) return;
-      if (!card.contains(event.target) && event.target === dialog) {
-        closeDialog();
-      }
-    });
 
     document.addEventListener('keydown', (event) => {
       if (event.key === 'Escape' && !dialog.classList.contains('hidden')) {
