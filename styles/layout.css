@@ -85,16 +85,56 @@ body.lavash-modal-open {
 /* BRAND */
 
 .brand-mini {
-  display: flex;
+  display: grid;
+  grid-template-columns: 34px 1fr;
   align-items: center;
   justify-content: center;
-  gap: 14px;
   min-height: 46px;
-  padding: 0 8px;
+  width: 100%;
+  padding: 0;
+}
+
+.brand-mini__logo {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+  justify-self: center;
+}
+
+.brand-mini__title {
+  font-size: 15px;
+  font-weight: 900;
+  color: var(--text-main);
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateX(-8px);
+  pointer-events: none;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.left-nav:not(:hover) .brand-mini {
+  grid-template-columns: 1fr;
+  justify-items: center;
+}
+
+.left-nav:not(:hover) .brand-mini__title {
+  display: none;
 }
 
 .left-nav:hover .brand-mini {
-  justify-content: flex-start;
+  grid-template-columns: 34px 1fr;
+  justify-items: stretch;
+}
+
+.left-nav:hover .brand-mini__logo {
+  justify-self: center;
+}
+
+.left-nav:hover .brand-mini__title {
+  display: block;
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto;
 }
 
 .brand-mini__logo {
