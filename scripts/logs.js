@@ -1,5 +1,5 @@
 // ===== SETTINGS =====
-const LETTER_COUNT = 100;
+const LETTER_COUNT = 140; // баланс між красою і перфомансом
 const MAX_DPR = 1.5;
 
 // ===== STATE =====
@@ -12,7 +12,10 @@ let lastTime = 0;
 // ===== INIT =====
 function initLogsVortex() {
   canvas = document.getElementById("vortexCanvas");
-  if (!canvas) return;
+  if (!canvas) {
+    console.error("Canvas not found");
+    return;
+  }
 
   ctx = canvas.getContext("2d");
 
@@ -43,14 +46,16 @@ function resizeCanvas() {
 // ===== LETTERS =====
 function createLetters() {
   const chars = "ЛОГУВАННЯABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
   letters = [];
 
   for (let i = 0; i < LETTER_COUNT; i++) {
     letters.push({
       char: chars[Math.floor(Math.random() * chars.length)],
       angle: Math.random() * Math.PI * 2,
-      radius: 150 + Math.random() * 200,
-      speed: 0.002 + Math.random() * 0.003
+      radius: 120 + Math.random() * 260,
+      speed: 0.003 + Math.random() * 0.004,
+      offset: Math.random() * 100
     });
   }
 }
@@ -71,50 +76,60 @@ function handleWheel(e) {
 function animate(time) {
   requestAnimationFrame(animate);
 
+  // FPS LIMIT (~50fps)
   if (time - lastTime < 20) return;
   lastTime = time;
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  drawVortex();
+
+  drawVortex(time);
 }
 
 // ===== DRAW =====
-function drawVortex() {
+function drawVortex(time) {
   const cx = canvas.clientWidth / 2;
   const cy = canvas.clientHeight / 2;
 
-  ctx.font = "14px monospace";
+  ctx.font = "16px monospace";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
 
   for (let i = 0; i < letters.length; i++) {
     const l = letters[i];
 
+    // рух
     l.angle += l.speed;
 
-    let radius = l.radius * (1 - progress * 0.7);
+    // легке "дихання"
+    const wave = Math.sin(time * 0.001 + l.offset) * 10;
+
+    let radius = l.radius + wave;
+
+    // стискання при скролі
+    radius *= (1 - progress * 0.75);
 
     let x = cx + Math.cos(l.angle) * radius;
     let y = cy + Math.sin(l.angle) * radius;
 
-    // фінал — збір у слово
+    // фінальне складання слова
     if (progress > 0.7) {
       const t = (progress - 0.7) / 0.3;
 
-      const text = "ЛОГУВАННЯ";
-      const spacing = 18;
+      const word = "ЛОГУВАННЯ";
+      const spacing = 22;
 
       const targetX =
-        cx - (text.length * spacing) / 2 + (i % text.length) * spacing;
+        cx - (word.length * spacing) / 2 + (i % word.length) * spacing;
       const targetY = cy;
 
       x = lerp(x, targetX, t);
       y = lerp(y, targetY, t);
 
-      l.char = text[i % text.length];
+      l.char = word[i % word.length];
     }
 
-    ctx.fillStyle = "#4cc9ff";
+    // glow (легкий, не вбиває FPS)
+    ctx.fillStyle = "rgba(80,200,255,0.9)";
     ctx.fillText(l.char, x, y);
   }
 }
@@ -131,9 +146,10 @@ function unlockScroll() {
   document.body.classList.remove("lock-scroll");
 
   const content = document.getElementById("logsContent");
-  content.classList.add("visible");
-
-  content.scrollIntoView({ behavior: "smooth" });
+  if (content) {
+    content.classList.add("visible");
+    content.scrollIntoView({ behavior: "smooth" });
+  }
 }
 
 // ===== START =====
