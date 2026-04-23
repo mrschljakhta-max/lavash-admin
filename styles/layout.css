@@ -66,12 +66,13 @@ body.lavash-modal-open {
   flex-direction: column;
   gap: 14px;
   overflow: hidden;
-  transition: width 0.24s ease;
+  transition: width 0.24s ease, padding 0.24s ease;
   box-shadow: none;
 }
 
 .left-nav:hover .left-nav__inner {
   width: var(--left-nav-expanded);
+  padding-inline: 18px;
   box-shadow: 22px 0 44px rgba(0, 0, 0, 0.22);
 }
 
@@ -79,16 +80,12 @@ body.lavash-modal-open {
   display: flex;
   flex-direction: column;
   gap: 14px;
-  position: relative;
 }
-
-/* BRAND */
 
 .brand-mini {
   display: grid;
   grid-template-columns: 34px 1fr;
   align-items: center;
-  justify-content: center;
   min-height: 46px;
   width: 100%;
   padding: 0;
@@ -137,31 +134,7 @@ body.lavash-modal-open {
   pointer-events: auto;
 }
 
-.brand-mini__logo {
-  width: 34px;
-  height: 34px;
-  object-fit: contain;
-  flex: 0 0 34px;
-}
-
-.brand-mini__title {
-  font-size: 15px;
-  font-weight: 900;
-  color: var(--text-main);
-  white-space: nowrap;
-  opacity: 0;
-  transform: translateX(-8px);
-  pointer-events: none;
-  transition: opacity 0.18s ease, transform 0.18s ease;
-}
-
-.left-nav:hover .brand-mini__title {
-  opacity: 1;
-  transform: translateX(0);
-  pointer-events: auto;
-}
-
-/* USER AREA - fixed height in both states */
+/* USER */
 
 .user-stack {
   position: relative;
@@ -279,6 +252,7 @@ body.lavash-modal-open {
   height: 28px;
   display: grid;
   place-items: center;
+  flex: 0 0 28px;
 }
 
 .nav-item__icon {
@@ -369,20 +343,26 @@ body.lavash-modal-open {
   flex-direction: column;
   gap: 14px;
   overflow: hidden;
-  transition: width 0.24s ease;
+  transition: width 0.24s ease, padding 0.24s ease;
   box-shadow: none;
 }
 
 .right-tools:hover .right-tools__inner {
   width: var(--right-nav-expanded);
+  padding-inline: 18px;
   box-shadow: -22px 0 44px rgba(0, 0, 0, 0.22);
 }
 
 .right-tools__top {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: flex-end;
   min-height: 42px;
+  padding: 0;
+}
+
+.right-tools:hover .right-tools__top {
+  justify-content: flex-start;
   padding: 0 8px;
 }
 
@@ -392,19 +372,20 @@ body.lavash-modal-open {
   color: var(--text-main);
   white-space: nowrap;
   opacity: 0;
-  transform: translateX(8px);
+  transform: translateX(18px);
   transition: opacity 0.18s ease, transform 0.18s ease;
 }
 
 .right-tools:hover .right-tools__title {
   opacity: 1;
-  transform: translateX(0);
+  transform: translateX(12px);
 }
 
 .right-tools__menu {
   display: flex;
   flex-direction: column;
   gap: 14px;
+  align-items: stretch;
 }
 
 .right-tools__panel {
@@ -442,6 +423,12 @@ body.lavash-modal-open {
   overflow: hidden;
 }
 
+.right-tools:not(:hover) .tool-item {
+  justify-content: flex-end;
+  padding-right: 10px;
+  gap: 0;
+}
+
 .tool-item:hover {
   transform: translateY(-1px);
   border-color: rgba(118,150,236,0.18);
@@ -454,6 +441,7 @@ body.lavash-modal-open {
   height: 28px;
   display: grid;
   place-items: center;
+  flex: 0 0 28px;
 }
 
 .tool-item__icon-wrap--svg svg {
@@ -472,14 +460,14 @@ body.lavash-modal-open {
   color: var(--text-main);
   white-space: nowrap;
   opacity: 0;
-  transform: translateX(8px);
+  transform: translateX(18px);
   pointer-events: none;
   transition: opacity 0.18s ease, transform 0.18s ease;
 }
 
 .right-tools:hover .tool-item__label {
   opacity: 1;
-  transform: translateX(0);
+  transform: translateX(12px);
   pointer-events: auto;
 }
 
