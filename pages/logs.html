@@ -1,26 +1,36 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <title>Логування</title>
+  <link rel="stylesheet" href="../styles/logs.css" />
+</head>
+
+<body class="lock-scroll">
+
 <div class="logs-page">
 
-  <!-- INTRO (вихор) -->
-  <section class="logs-intro" id="logsIntro">
+  <!-- INTRO -->
+  <section class="logs-intro">
     <canvas id="vortexCanvas"></canvas>
 
-    <div class="logs-intro-center">
+    <div class="intro-ui">
       <div class="mouse"></div>
-      <p class="hint">
-        Прокрутіть вниз, щоб сформувати журнал
-      </p>
+      <p>Прокрутіть вниз, щоб сформувати журнал</p>
     </div>
   </section>
 
-  <!-- КОНТЕНТ (твій блок логів) -->
+  <!-- CONTENT -->
   <section class="logs-content" id="logsContent">
 
     <div class="logs-card">
+      <h2>Журнал подій</h2>
+
       <div class="logs-table">
 
         <div class="logs-row header">
           <div>Час</div>
-          <div>Тип події</div>
+          <div>Тип</div>
           <div>Користувач</div>
           <div>Повідомлення</div>
           <div>Статус</div>
@@ -40,9 +50,9 @@
           <div>24.05.2024 14:30</div>
           <div>Помилка</div>
           <div>system</div>
-          <div>Не знайдено файл</div>
+          <div>Файл не знайдено</div>
           <div class="error">ERROR</div>
-          <div>192.168.1.10</div>
+          <div>192.168.1.11</div>
         </div>
 
       </div>
@@ -51,3 +61,7 @@
   </section>
 
 </div>
+
+<script src="../scripts/logs.js"></script>
+</body>
+</html>
