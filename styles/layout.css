@@ -372,19 +372,25 @@ body.lavash-modal-open {
   color: var(--text-main);
   white-space: nowrap;
   opacity: 0;
-  transform: translateX(18px);
+  transform: translateX(10px);
+  pointer-events: none;
   transition: opacity 0.18s ease, transform 0.18s ease;
 }
 
 .right-tools:hover .right-tools__title {
   opacity: 1;
-  transform: translateX(12px);
+  transform: translateX(0);
+  pointer-events: auto;
 }
 
 .right-tools__menu {
   display: flex;
   flex-direction: column;
   gap: 14px;
+  align-items: flex-end;
+}
+
+.right-tools:hover .right-tools__menu {
   align-items: stretch;
 }
 
@@ -419,14 +425,25 @@ body.lavash-modal-open {
   gap: 16px;
   padding: 0 18px;
   cursor: pointer;
-  transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+  transition:
+    width 0.24s ease,
+    min-height 0.24s ease,
+    transform 0.18s ease,
+    border-color 0.18s ease,
+    background 0.18s ease,
+    padding 0.24s ease;
   overflow: hidden;
 }
 
 .right-tools:not(:hover) .tool-item {
-  justify-content: flex-end;
-  padding-right: 10px;
+  width: 64px;
+  min-width: 64px;
+  min-height: 64px;
+  align-self: flex-end;
+  justify-content: center;
+  padding: 0;
   gap: 0;
+  border-radius: 20px;
 }
 
 .tool-item:hover {
@@ -460,14 +477,19 @@ body.lavash-modal-open {
   color: var(--text-main);
   white-space: nowrap;
   opacity: 0;
-  transform: translateX(18px);
+  transform: translateX(10px);
   pointer-events: none;
   transition: opacity 0.18s ease, transform 0.18s ease;
 }
 
+.right-tools:not(:hover) .tool-item__label {
+  display: none;
+}
+
 .right-tools:hover .tool-item__label {
+  display: block;
   opacity: 1;
-  transform: translateX(12px);
+  transform: translateX(0);
   pointer-events: auto;
 }
 
