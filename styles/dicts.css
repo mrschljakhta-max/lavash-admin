@@ -1138,3 +1138,62 @@
   opacity: 0.85;
   filter: brightness(0.82);
 }
+/* =========================================================
+   ACTIVE CARD — HUNGRY RATTLESNAKE INSPIRED ENERGY BORDER
+========================================================= */
+
+.dict-card.is-active .dict-card__magic-border {
+  opacity: 1 !important;
+  padding: 2px !important;
+
+  background:
+    conic-gradient(
+      from var(--dict-active-angle, 0deg),
+      transparent 0deg,
+      rgba(102, 217, 255, 0.05) 30deg,
+      rgba(102, 217, 255, 0.95) 70deg,
+      rgba(143, 124, 255, 0.95) 115deg,
+      rgba(166, 108, 255, 0.85) 155deg,
+      transparent 220deg,
+      transparent 360deg
+    ) !important;
+
+  box-shadow:
+    0 0 16px rgba(102, 217, 255, 0.26),
+    0 0 32px rgba(143, 124, 255, 0.22),
+    0 0 52px rgba(166, 108, 255, 0.14) !important;
+
+  animation: dictActiveEnergyBorder 3.6s linear infinite !important;
+}
+
+.dict-card.is-active .dict-card__magic-border::before {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+
+  background:
+    conic-gradient(
+      from calc(var(--dict-active-angle, 0deg) + 90deg),
+      transparent 0deg,
+      rgba(255,255,255,0.0) 36deg,
+      rgba(255,255,255,0.55) 70deg,
+      rgba(102,217,255,0.40) 110deg,
+      transparent 170deg,
+      transparent 360deg
+    );
+
+  filter: blur(7px);
+  opacity: 0.65;
+  pointer-events: none;
+}
+
+@keyframes dictActiveEnergyBorder {
+  from {
+    --dict-active-angle: 0deg;
+  }
+
+  to {
+    --dict-active-angle: 360deg;
+  }
+}
