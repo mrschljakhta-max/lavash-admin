@@ -1,5 +1,8 @@
-const canvas = document.getElementById("vortexCanvas");
-const ctx = canvas.getContext("2d");
+const canvas = document.getElementById('logsChart');
+
+if (!canvas) return; // 🔥 ФІКС
+
+const ctx = canvas.getContext('2d');
 
 let W = window.innerWidth;
 let H = window.innerHeight;
