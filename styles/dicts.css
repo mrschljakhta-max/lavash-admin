@@ -1242,3 +1242,138 @@
     box-shadow 0.42s cubic-bezier(.2,.9,.2,1),
     filter 0.3s ease !important;
 }
+/* =========================================================
+   APPLE VISION UI — ACTIVE DICT CARD PREMIUM EDGE
+========================================================= */
+
+.dict-card.is-active {
+  overflow: visible !important;
+}
+
+/* м’яке зовнішнє світіння */
+.dict-card.is-active::before {
+  content: "";
+  position: absolute;
+  inset: -18px;
+  border-radius: 40px;
+  background:
+    radial-gradient(circle at 50% 30%, rgba(120, 150, 255, 0.34), transparent 56%),
+    radial-gradient(circle at 50% 80%, rgba(166, 108, 255, 0.26), transparent 62%);
+  filter: blur(26px);
+  opacity: 0.9;
+  z-index: 0;
+  pointer-events: none;
+  animation: dictVisionGlowPulse 3.2s ease-in-out infinite;
+}
+
+/* чистий внутрішній rim */
+.dict-card.is-active::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 30px;
+  border: 1px solid rgba(164, 140, 255, 0.42);
+  box-shadow:
+    inset 0 0 18px rgba(120, 150, 255, 0.12),
+    0 0 18px rgba(120, 150, 255, 0.16);
+  z-index: 4;
+  pointer-events: none;
+}
+
+/* жива лінія по краю */
+.dict-card.is-active .dict-card__magic-border {
+  opacity: 1 !important;
+  padding: 2px !important;
+  background:
+    conic-gradient(
+      from var(--dict-vision-angle, 0deg),
+      transparent 0deg,
+      transparent 35deg,
+      rgba(102, 217, 255, 0.85) 62deg,
+      rgba(143, 124, 255, 1) 92deg,
+      rgba(190, 132, 255, 0.95) 130deg,
+      transparent 180deg,
+      transparent 360deg
+    ) !important;
+  box-shadow:
+    0 0 18px rgba(102, 217, 255, 0.26),
+    0 0 34px rgba(143, 124, 255, 0.22),
+    0 0 58px rgba(166, 108, 255, 0.14) !important;
+  animation: dictVisionBorderSpin 4.2s linear infinite !important;
+}
+
+/* світловий sweep */
+.dict-card.is-active .dict-card__surface::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 30px;
+  background:
+    linear-gradient(
+      115deg,
+      transparent 0%,
+      transparent 34%,
+      rgba(255,255,255,0.16) 46%,
+      rgba(150,180,255,0.22) 50%,
+      transparent 62%,
+      transparent 100%
+    );
+  transform: translateX(-140%);
+  opacity: 0;
+  pointer-events: none;
+  animation: dictVisionLightSweep 4.8s ease-in-out infinite;
+}
+
+/* hover — трохи більше depth */
+.dict-card.is-active:hover .dict-card__surface {
+  transform: translateZ(10px) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.06),
+    inset 0 -24px 70px rgba(4, 13, 49, 0.24),
+    0 34px 78px rgba(0,0,0,0.34),
+    0 0 46px rgba(120, 130, 255, 0.18) !important;
+}
+
+.dict-card.is-active:hover .dict-card__content {
+  transform: translate3d(var(--mx), var(--my), 68px) !important;
+}
+
+/* animations */
+
+@keyframes dictVisionBorderSpin {
+  from {
+    --dict-vision-angle: 0deg;
+  }
+  to {
+    --dict-vision-angle: 360deg;
+  }
+}
+
+@keyframes dictVisionGlowPulse {
+  0%, 100% {
+    opacity: 0.72;
+    transform: scale(0.98);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.03);
+  }
+}
+
+@keyframes dictVisionLightSweep {
+  0% {
+    transform: translateX(-140%);
+    opacity: 0;
+  }
+  18% {
+    opacity: 0.55;
+  }
+  38% {
+    transform: translateX(140%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(140%);
+    opacity: 0;
+  }
+}
