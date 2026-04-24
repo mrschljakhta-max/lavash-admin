@@ -90,22 +90,26 @@ body.lavash-modal-open {
   justify-content: center;
   min-height: 46px;
   width: 100%;
-  position: relative;
   padding: 0;
+  gap: 14px;
 }
 
 .brand-mini__logo {
   width: 34px;
   height: 34px;
   object-fit: contain;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  filter: drop-shadow(0 0 0 rgba(90, 150, 255, 0));
-  transition:
-    left 0.22s ease,
-    transform 0.22s ease,
-    filter 0.22s ease;
+  flex: 0 0 34px;
+  display: block;
+  border: none;
+  outline: none;
+  background: transparent;
+  box-shadow: none;
+  filter: none;
+  transition: transform 0.22s ease, filter 0.22s ease;
+}
+
+.left-nav:not(:hover) .brand-mini {
+  justify-content: center;
 }
 
 .left-nav:not(:hover) .brand-mini__logo {
@@ -114,17 +118,14 @@ body.lavash-modal-open {
 
 .left-nav:hover .brand-mini {
   justify-content: flex-start;
-  padding-left: 2px;
 }
 
 .left-nav:hover .brand-mini__logo {
-  position: relative;
-  left: 0;
-  transform: none;
   animation: none;
+  transform: translateY(-1px) scale(1.03);
   filter:
-    drop-shadow(0 0 10px rgba(90, 160, 255, 0.65))
-    drop-shadow(0 0 18px rgba(139, 92, 246, 0.32));
+    drop-shadow(0 0 8px rgba(90, 160, 255, 0.42))
+    drop-shadow(0 0 14px rgba(139, 92, 246, 0.22));
 }
 
 .brand-mini__title {
@@ -136,7 +137,6 @@ body.lavash-modal-open {
   transform: translateX(-8px);
   pointer-events: none;
   transition: opacity 0.18s ease, transform 0.18s ease;
-  margin-left: 14px;
 }
 
 .left-nav:not(:hover) .brand-mini__title {
@@ -152,24 +152,18 @@ body.lavash-modal-open {
 
 @keyframes lavashLogoFloat {
   0% {
-    transform: translateX(-50%) translateY(0) scale(1);
-    filter:
-      drop-shadow(0 0 6px rgba(90, 160, 255, 0.25))
-      drop-shadow(0 0 14px rgba(139, 92, 246, 0.12));
+    transform: translateY(0) scale(1);
+    filter: drop-shadow(0 0 6px rgba(90, 160, 255, 0.18));
   }
 
   50% {
-    transform: translateX(-50%) translateY(-3px) scale(1.04);
-    filter:
-      drop-shadow(0 0 12px rgba(90, 160, 255, 0.65))
-      drop-shadow(0 0 22px rgba(139, 92, 246, 0.28));
+    transform: translateY(-3px) scale(1.04);
+    filter: drop-shadow(0 0 10px rgba(90, 160, 255, 0.42));
   }
 
   100% {
-    transform: translateX(-50%) translateY(0) scale(1);
-    filter:
-      drop-shadow(0 0 6px rgba(90, 160, 255, 0.25))
-      drop-shadow(0 0 14px rgba(139, 92, 246, 0.12));
+    transform: translateY(0) scale(1);
+    filter: drop-shadow(0 0 6px rgba(90, 160, 255, 0.18));
   }
 }
 
