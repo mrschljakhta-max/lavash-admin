@@ -187,26 +187,26 @@
   function computeTransform(offset, dragOffset = 0) {
   const abs = Math.abs(offset);
 
-  let x = offset * 150;
+  let x = offset * 120;     // база ще ближче
   let scale = 0.72;
-  let rotate = offset < 0 ? 8 : -8;
+  let rotate = offset < 0 ? 6 : -6;
 
   if (offset === 0) {
     x = 0;
     scale = 1;
     rotate = 0;
   } else if (abs === 1) {
-    x = offset * 205;
+    x = offset * 180;       // було 205 → зменшили
     scale = 0.88;
-    rotate = offset < 0 ? 6 : -6;
+    rotate = offset < 0 ? 5 : -5;
   } else if (abs === 2) {
-    x = offset * 390;
-    scale = 0.74;
-    rotate = offset < 0 ? 9 : -9;
+    x = offset * 290;       // було 390 → критично зменшили
+    scale = 0.78;
+    rotate = offset < 0 ? 7 : -7;
   } else {
-    x = offset * 520;
-    scale = 0.62;
-    rotate = offset < 0 ? 12 : -12;
+    x = offset * 360;       // щоб не “вилітали”
+    scale = 0.65;
+    rotate = offset < 0 ? 10 : -10;
   }
 
   x += dragOffset;
