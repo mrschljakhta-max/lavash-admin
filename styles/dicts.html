@@ -1,0 +1,85 @@
+<div class="dicts-page dicts-view--carousel" id="dictsPage" data-dicts-view-mode="carousel">
+  <section class="dicts-hero" id="dictsCarouselView" aria-label="Довідники">
+    <div class="dicts-carousel-wrap">
+      <button class="dicts-carousel__nav dicts-carousel__nav--left" id="dictsPrevBtn" type="button" aria-label="Назад">‹</button>
+
+      <div class="dicts-carousel-stage">
+        <div class="dicts-carousel" id="dictsCarousel" aria-live="polite"></div>
+      </div>
+
+      <button class="dicts-carousel__nav dicts-carousel__nav--right" id="dictsNextBtn" type="button" aria-label="Вперед">›</button>
+    </div>
+
+    <div class="dicts-carousel__dots" id="dictsDots" aria-label="Навігація каруселі"></div>
+  </section>
+
+  <section class="dicts-schema-view hidden" id="dictsSchemaView" hidden aria-hidden="true">
+    <div class="dicts-schema-card">
+      <div class="dicts-schema-card__eyebrow">Schema mode</div>
+      <h2 class="dicts-schema-card__title">Схема довідників</h2>
+      <p class="dicts-schema-card__text">
+        Тут буде схема зв’язків між довідниками, таблицями Supabase та полями синхронізації.
+      </p>
+    </div>
+  </section>
+
+  <div id="dictCreateModal" class="dict-modal hidden" aria-hidden="true">
+    <div class="dict-modal__backdrop" id="dictCreateBackdrop"></div>
+
+    <div class="dict-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="dictCreateTitle">
+      <div class="dict-modal__head">
+        <div>
+          <div class="dict-modal__eyebrow">Новий довідник</div>
+          <h3 class="dict-modal__title" id="dictCreateTitle">Створення довідника</h3>
+        </div>
+
+        <button class="dict-modal__close" id="dictCreateClose" type="button" aria-label="Закрити">✕</button>
+      </div>
+
+      <div class="dict-modal__body">
+        <div class="dict-form-grid">
+          <label class="dict-field">
+            <span class="dict-field__label">Назва</span>
+            <input class="dict-field__input" id="newDictTitle" type="text" placeholder="Наприклад: Станції" />
+          </label>
+
+          <label class="dict-field">
+            <span class="dict-field__label">Slug</span>
+            <input class="dict-field__input" id="newDictSlug" type="text" placeholder="dict_stations" />
+          </label>
+
+          <label class="dict-field">
+            <span class="dict-field__label">Тип</span>
+            <select class="dict-field__input" id="newDictType">
+              <option value="dictionary">dictionary</option>
+              <option value="alias">alias</option>
+              <option value="service">service</option>
+            </select>
+          </label>
+
+          <label class="dict-field">
+            <span class="dict-field__label">Іконка</span>
+            <select class="dict-field__input" id="newDictIcon">
+              <option value="uav">БпЛА</option>
+              <option value="settlement">Населені пункти</option>
+              <option value="station">Станції</option>
+              <option value="unit">Підрозділи</option>
+              <option value="stack">Стек</option>
+              <option value="pending">Pending</option>
+            </select>
+          </label>
+
+          <label class="dict-field dict-field--full">
+            <span class="dict-field__label">Опис</span>
+            <textarea class="dict-field__input dict-field__textarea" id="newDictDescription" placeholder="Короткий опис призначення довідника"></textarea>
+          </label>
+        </div>
+      </div>
+
+      <div class="dict-modal__footer">
+        <button class="dict-action-btn" id="dictCreateCancel" type="button">Скасувати</button>
+        <button class="dict-action-btn dict-action-btn--primary" id="dictCreateSubmit" type="button">Створити</button>
+      </div>
+    </div>
+  </div>
+</div>
