@@ -24,15 +24,18 @@
             </div>
 
             <div class="user-stack">
-              <div class="user-box-mini" aria-hidden="true">
-                <span class="user-box-mini__dot"></span>
-              </div>
+  <button class="user-mini-btn" type="button" aria-label="Користувач">
+    <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="8" r="4"></circle>
+      <path d="M6 20c0-4 12-4 12 0"></path>
+    </svg>
+  </button>
 
-              <div class="user-box">
-                <div class="user-box__email" id="userEmail">user@email.com</div>
-                <button class="user-box__logout" id="logoutBtn" type="button">Вихід</button>
-              </div>
-            </div>
+  <div class="user-box">
+    <div class="user-box__email" id="userEmail">user@email.com</div>
+    <button class="user-box__logout" id="logoutBtn" type="button">Вихід</button>
+  </div>
+</div>
           </div>
 
           <nav class="left-nav__menu" aria-label="Основна навігація">
