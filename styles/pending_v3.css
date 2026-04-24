@@ -2030,3 +2030,83 @@ select {
   border-color: rgba(255, 88, 136, 0.30);
   color: #ffd7e3;
 }
+
+
+/* =========================================================
+   LAVASH LAYOUT OVERRIDES
+   This block intentionally overrides old duplicated sidebar
+   styles inside pending_v3.css.
+========================================================= */
+
+.left-nav {
+  width: var(--left-nav-collapsed) !important;
+  min-width: var(--left-nav-collapsed) !important;
+}
+
+.left-nav:hover {
+  width: var(--left-nav-expanded) !important;
+}
+
+.left-nav__inner {
+  width: var(--left-nav-collapsed) !important;
+  padding: 16px 10px !important;
+}
+
+.left-nav:hover .left-nav__inner {
+  width: var(--left-nav-expanded) !important;
+  padding-inline: 18px !important;
+}
+
+.brand-mini {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 46px !important;
+  width: 100% !important;
+  gap: 14px !important;
+  overflow: visible !important;
+}
+
+.brand-mini__logo {
+  width: 34px !important;
+  height: 34px !important;
+  min-width: 34px !important;
+  flex: 0 0 34px !important;
+  object-fit: contain !important;
+  border: none !important;
+  outline: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  filter: none !important;
+  transform: none !important;
+}
+
+.left-nav:not(:hover) .brand-mini {
+  justify-content: center !important;
+}
+
+.left-nav:not(:hover) .brand-mini__title {
+  display: none !important;
+}
+
+.left-nav:hover .brand-mini {
+  justify-content: flex-start !important;
+}
+
+.left-nav:hover .brand-mini__title {
+  display: block !important;
+  opacity: 1 !important;
+  transform: translateX(0) !important;
+}
+
+.user-box__email,
+.user-box__logout {
+  opacity: 0 !important;
+  transform: translateX(-10px) !important;
+}
+
+.left-nav:hover .user-box__email,
+.left-nav:hover .user-box__logout {
+  opacity: 1 !important;
+  transform: translateX(0) !important;
+}
