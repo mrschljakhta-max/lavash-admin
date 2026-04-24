@@ -184,34 +184,34 @@
     return -240;
   }
 
-  function computeTransform(offset, dragOffset = 0) {
-  const abs = Math.abs(offset);
-
+function computeTransform(offset, dragOffset = 0) {
   const positions = {
-    "-2": { x: -315, scale: 0.78, rotate: 7 },
-    "-1": { x: -185, scale: 0.88, rotate: 5 },
-    "0": { x: 0, scale: 1, rotate: 0 },
-    "1": { x: 185, scale: 0.88, rotate: -5 },
-    "2": { x: 315, scale: 0.78, rotate: -7 }
+    "-2": { x: -360, scale: 0.74, rotate: 7, depth: -120 },
+    "-1": { x: -210, scale: 0.88, rotate: 5, depth: -20 },
+    "0":  { x: 0,    scale: 1,    rotate: 0, depth: 130 },
+    "1":  { x: 210,  scale: 0.88, rotate: -5, depth: -20 },
+    "2":  { x: 360,  scale: 0.74, rotate: -7, depth: -120 }
   };
 
-  const fallback = {
-    x: offset < 0 ? -430 : 430,
-    scale: 0.62,
-    rotate: offset < 0 ? 10 : -10
-  };
+  const preset = positions[String(offset)];
 
-  const preset = positions[String(offset)] || fallback;
-
-  const x = preset.x + dragOffset;
+  if (!preset) {
+    return {
+      x: (offset < 0 ? -520 : 520) + dragOffset,
+      scale: 0.6,
+      rotate: offset < 0 ? 12 : -12,
+      depth: -240
+    };
+  }
 
   return {
-    x,
+    x: preset.x + dragOffset,
     scale: preset.scale,
     rotate: preset.rotate,
-    depth: computeDepth(offset)
+    depth: preset.depth
   };
 }
+  
   function getCardClass(offset, item) {
     const abs = Math.abs(offset);
     let cls = 'dict-card';
