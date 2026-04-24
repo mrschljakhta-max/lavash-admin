@@ -2155,3 +2155,103 @@ select {
   justify-content: flex-start !important;
   padding: 0 18px !important;
 }
+
+/* =========================================================
+   FINAL RIGHT SIDEBAR FIX
+========================================================= */
+
+.right-tools {
+  position: fixed !important;
+  top: 0 !important;
+  right: 0 !important;
+  width: var(--left-nav-collapsed) !important;
+  height: 100vh !important;
+  z-index: 9999 !important;
+  background: linear-gradient(180deg, #07173d, #040f2a) !important;
+  border-left: 1px solid var(--line-soft) !important;
+  overflow: visible !important;
+  pointer-events: none !important;
+}
+
+.right-tools__inner {
+  position: absolute !important;
+  inset: 0 0 0 auto !important;
+  width: var(--left-nav-collapsed) !important;
+  min-height: 100vh !important;
+  padding: 16px 10px !important;
+  background: linear-gradient(180deg, #07173d, #040f2a) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 14px !important;
+  overflow: hidden !important;
+  pointer-events: auto !important;
+  transition: width 0.24s ease, padding 0.24s ease, box-shadow 0.24s ease !important;
+}
+
+.right-tools:hover .right-tools__inner {
+  width: var(--left-nav-expanded) !important;
+  padding-inline: 18px !important;
+  box-shadow: -22px 0 44px rgba(0, 0, 0, 0.22) !important;
+}
+
+.right-tools__top {
+  min-height: 46px !important;
+  width: 100% !important;
+  display: flex !important;
+  justify-content: flex-end !important;
+  align-items: center !important;
+}
+
+.right-tools__title {
+  display: none !important;
+  opacity: 0 !important;
+}
+
+.right-tools:hover .right-tools__title {
+  display: block !important;
+  opacity: 1 !important;
+  text-align: right !important;
+}
+
+.right-tools__menu,
+.right-tools__panel {
+  width: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 14px !important;
+  align-items: center !important;
+}
+
+.right-tools:hover .right-tools__menu,
+.right-tools:hover .right-tools__panel {
+  align-items: stretch !important;
+}
+
+.right-tools:not(:hover) .tool-item {
+  width: 74px !important;
+  height: 96px !important;
+  min-width: 74px !important;
+  max-width: 74px !important;
+  border-radius: 24px !important;
+  padding: 0 !important;
+  justify-content: center !important;
+  align-items: center !important;
+  align-self: center !important;
+}
+
+.right-tools:hover .tool-item {
+  width: 100% !important;
+  height: 78px !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  padding: 0 18px !important;
+  justify-content: flex-start !important;
+}
+
+.right-tools:not(:hover) .tool-item__label {
+  display: none !important;
+}
+
+.right-tools:not(:hover) .tool-item__icon-wrap {
+  margin: 0 !important;
+}
