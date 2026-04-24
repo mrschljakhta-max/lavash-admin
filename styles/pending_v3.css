@@ -2410,3 +2410,26 @@ select {
     linear-gradient(135deg, rgba(255,255,255,0.018), transparent 38%),
     radial-gradient(circle at 30% 20%, rgba(80, 130, 255, 0.06), transparent 28%) !important;
 }
+
+
+/* =========================================================
+   UNIFIED CENTER BACKGROUND
+========================================================= */
+
+.main-workspace {
+  background:
+    radial-gradient(circle at 18% 8%, rgba(79, 124, 255, 0.13), transparent 32%),
+    radial-gradient(circle at 78% 10%, rgba(124, 108, 255, 0.10), transparent 34%),
+    radial-gradient(circle at 48% 80%, rgba(0, 210, 190, 0.055), transparent 38%),
+    linear-gradient(180deg, #071534 0%, #041026 42%, #020817 100%) !important;
+}
+
+.workspace-header {
+  background: transparent !important;
+  backdrop-filter: none !important;
+  border-bottom: 1px solid rgba(118,150,236,0.10) !important;
+}
+
+.workspace-body {
+  background: transparent !important;
+}
