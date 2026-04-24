@@ -253,28 +253,35 @@
   }
 
   function lavashBuildHeader(title = 'Lavash Admin') {
-    return `
-      <header class="workspace-header">
-        <div class="workspace-header__left">
-          <h1 class="workspace-title">${title}</h1>
-        </div>
+  return `
+    <header class="workspace-header">
+      <div class="workspace-header__left">
+        <h1 class="workspace-title">${title}</h1>
+      </div>
 
-        <div class="workspace-header__right">
-          <button class="status-badge" id="connectionStatus" type="button" data-status="online" aria-label="Підключено">
-            <span class="status-badge__icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none">
-                <path class="status-badge__wave status-badge__wave--outer" d="M5 12a7 7 0 0 1 14 0"></path>
-                <path class="status-badge__wave status-badge__wave--inner" d="M8 12a4 4 0 0 1 8 0"></path>
-                <circle class="status-badge__dot" cx="12" cy="12" r="2.4"></circle>
-              </svg>
-            </span>
-            <span class="status-badge__text">Підключено</span>
-          </button>
-        </div>
-      </header>
-    `;
-  }
+      <div class="workspace-header__right">
+        <button
+          class="status-badge"
+          id="connectionStatus"
+          type="button"
+          data-status="online"
+          aria-label="Підключено"
+          title="Підключено"
+        >
+          <span class="status-badge__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path class="status-badge__wave status-badge__wave--outer" d="M5.25 12a6.75 6.75 0 0 1 13.5 0"></path>
+              <path class="status-badge__wave status-badge__wave--inner" d="M8.4 12a3.6 3.6 0 0 1 7.2 0"></path>
+              <circle class="status-badge__dot" cx="12" cy="12" r="2.15"></circle>
+            </svg>
+          </span>
 
+          <span class="status-badge__text">Підключено</span>
+        </button>
+      </div>
+    </header>
+  `;
+}
   function setConnectionStatus(status) {
     const badge = document.getElementById('connectionStatus');
     if (!badge) return;
@@ -288,7 +295,8 @@
     const normalized = map[status] ? status : 'online';
 
     badge.dataset.status = normalized;
-    badge.setAttribute('aria-label', map[normalized]);
+badge.setAttribute('aria-label', map[normalized]);
+badge.setAttribute('title', map[normalized]);
 
     const text = badge.querySelector('.status-badge__text');
     if (text) text.textContent = map[normalized];
