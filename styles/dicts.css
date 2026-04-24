@@ -1065,3 +1065,7 @@
 .dict-card.is-far {
   margin-inline: -20px;
 }
+.dict-card.is-far {
+  opacity: 0.68 !important;
+  filter: saturate(0.78) brightness(0.66) blur(1.2px) !important;
+}
