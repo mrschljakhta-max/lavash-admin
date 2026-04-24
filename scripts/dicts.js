@@ -114,7 +114,8 @@
       diffX: 0,
       lastX: 0,
       lastT: 0,
-      velocity: 0
+      velocity: 0,
+      rafId: null
     },
     animating: false,
     isInitialized: false
@@ -146,53 +147,69 @@
   }
 
   function getRenderItems() {
+    const visible = getVisibleDicts();
     return [
-      ...getVisibleDicts(),
+      ...visible,
       {
-        __create: true,
-        id: '__create__',
-        icon: 'plus',
+        id: 'create',
         title: 'Новий довідник',
-        description: 'Створити новий довідник системи',
+        slug: 'new_dictionary',
+        description: 'Створити новий довідник системи.',
         type: 'service',
+        icon: 'plus',
         total: 0,
-        status: 'draft'
+        status: 'new',
+        __create: true
       }
     ];
   }
 
-  function computeDepth(offset) {
-    const abs = Math.abs(offset);
-    if (offset === 0) return 220;
-    if (abs === 1) return 135;
-    if (abs === 2) return 80;
-    return 20;
+  function normalizeOffset(offset, total) {
+    if (!total) return 0;
+
+    const half = Math.floor(total / 2);
+    let normalized = offset;
+
+    if (offset > half) normalized = offset - total;
+    if (offset < -half) normalized = offset + total;
+
+    return normalized;
   }
 
-  function computeTransform(offset) {
+  function computeDepth(offset) {
+    const abs = Math.abs(offset);
+    if (abs === 0) return 130;
+    if (abs === 1) return -20;
+    if (abs === 2) return -120;
+    return -240;
+  }
+
+  function computeTransform(offset, dragOffset = 0) {
     const abs = Math.abs(offset);
 
-    let x = offset * 120;
-    let scale = 0.84;
-    let rotate = 0;
+    let x = offset * 250;
+    let scale = 0.78;
+    let rotate = offset < 0 ? 12 : -12;
 
     if (offset === 0) {
       x = 0;
       scale = 1;
       rotate = 0;
     } else if (abs === 1) {
-      x = offset * 160;
-      scale = 0.92;
-      rotate = offset < 0 ? 5 : -5;
+      x = offset * 250;
+      scale = 0.9;
+      rotate = offset < 0 ? 8 : -8;
     } else if (abs === 2) {
-      x = offset * 210;
-      scale = 0.84;
-      rotate = offset < 0 ? 7 : -7;
+      x = offset * 430;
+      scale = 0.8;
+      rotate = offset < 0 ? 12 : -12;
     } else {
-      x = offset * 280;
-      scale = 0.78;
-      rotate = offset < 0 ? 9 : -9;
+      x = offset * 520;
+      scale = 0.72;
+      rotate = offset < 0 ? 16 : -16;
     }
+
+    x += dragOffset;
 
     return { x, scale, rotate, depth: computeDepth(offset) };
   }
@@ -203,14 +220,17 @@
 
     if (offset === 0) cls += ' is-active';
     else if (abs === 1) cls += ' is-near';
-    else cls += ' is-far';
+    else if (abs === 2) cls += ' is-far';
+    else cls += ' is-hidden';
 
     if (item.__create) cls += ' dict-card--create';
     return cls;
   }
 
   function renderCenteredDictCard(item, index) {
-    const offset = index - dictsState.activeIndex;
+    const visible = getRenderItems();
+    const rawOffset = index - dictsState.activeIndex;
+    const offset = normalizeOffset(rawOffset, visible.length);
     const abs = Math.abs(offset);
     const { x, scale, rotate, depth } = computeTransform(offset);
     const cls = getCardClass(offset, item);
@@ -222,6 +242,7 @@
           class="${cls}"
           type="button"
           data-index="${index}"
+          data-offset="${offset}"
           style="transform: translate3d(${x}px, 0, ${depth}px) scale(${scale}) rotateY(${rotate}deg); opacity:${opacity};"
         >
           <span class="dict-card__magic-glow"></span>
@@ -251,6 +272,7 @@
         class="${cls}"
         type="button"
         data-index="${index}"
+        data-offset="${offset}"
         style="transform: translate3d(${x}px, 0, ${depth}px) scale(${scale}) rotateY(${rotate}deg); opacity:${opacity};"
       >
         <span class="dict-card__magic-glow"></span>
@@ -333,6 +355,8 @@
 
     wrap.querySelectorAll('.dict-card').forEach((card) => {
       card.addEventListener('click', () => {
+        if (dictsState.drag.isDown || Math.abs(dictsState.drag.diffX) > 8) return;
+
         const idx = Number(card.dataset.index);
         const picked = visible[idx];
 
@@ -547,27 +571,28 @@
       activeCard.style.setProperty('--glare-x', '50%');
       activeCard.style.setProperty('--glare-y', '50%');
 
-      const index = Number(activeCard.dataset.index);
-      const { x, scale, rotate, depth } = computeTransform(index - dictsState.activeIndex);
+      const offset = Number(activeCard.dataset.offset || 0);
+      const { x, scale, rotate, depth } = computeTransform(offset);
 
       activeCard.style.transform =
         `translate3d(${x}px, 0, ${depth}px) scale(${scale}) rotateX(0deg) rotateY(${rotate}deg)`;
     };
 
     activeCard.addEventListener('mousemove', (e) => {
+      if (dictsState.drag.isDown) return;
+
       const rect = activeCard.getBoundingClientRect();
       const px = (e.clientX - rect.left) / rect.width;
       const py = (e.clientY - rect.top) / rect.height;
 
-      const rotateYExtra = (px - 0.5) * 10;
-      const rotateXExtra = (0.5 - py) * 8;
+      const rotateYExtra = (px - 0.5) * 12;
+      const rotateXExtra = (0.5 - py) * 9;
 
-      const moveX = (px - 0.5) * 12;
-      const moveY = (py - 0.5) * 10;
+      const moveX = (px - 0.5) * 14;
+      const moveY = (py - 0.5) * 12;
 
-      const index = Number(activeCard.dataset.index);
-      const itemOffset = index - dictsState.activeIndex;
-      const { x, scale, rotate, depth } = computeTransform(itemOffset);
+      const offset = Number(activeCard.dataset.offset || 0);
+      const { x, scale, rotate, depth } = computeTransform(offset);
 
       activeCard.classList.add('is-hovering');
       activeCard.style.setProperty('--mx', `${moveX}px`);
@@ -582,17 +607,55 @@
     activeCard.addEventListener('mouseleave', reset);
   }
 
+  function updateDragVisual(diffX) {
+    const carousel = document.getElementById('dictsCarousel');
+    if (!carousel) return;
+
+    const limited = Math.max(-120, Math.min(120, diffX));
+    carousel.style.setProperty('--dicts-drag-x', `${limited}px`);
+
+    carousel.querySelectorAll('.dict-card').forEach((card) => {
+      const offset = Number(card.dataset.offset || 0);
+      const dragWeight = Math.max(0.18, 1 - Math.abs(offset) * 0.18);
+      const dragOffset = limited * dragWeight;
+      const { x, scale, rotate, depth } = computeTransform(offset, dragOffset);
+
+      card.style.transform =
+        `translate3d(${x}px, 0, ${depth}px) scale(${scale}) rotateY(${rotate}deg)`;
+    });
+  }
+
+  function resetDragVisual() {
+    const carousel = document.getElementById('dictsCarousel');
+    if (!carousel) return;
+
+    carousel.classList.remove('is-dragging');
+    carousel.style.setProperty('--dicts-drag-x', '0px');
+
+    carousel.querySelectorAll('.dict-card').forEach((card) => {
+      const offset = Number(card.dataset.offset || 0);
+      const { x, scale, rotate, depth } = computeTransform(offset);
+
+      card.style.transform =
+        `translate3d(${x}px, 0, ${depth}px) scale(${scale}) rotateY(${rotate}deg)`;
+    });
+  }
+
   function bindDragCarousel() {
     const carousel = document.getElementById('dictsCarousel');
     if (!carousel) return;
 
     carousel.addEventListener('pointerdown', (e) => {
+      if (e.button !== undefined && e.button !== 0) return;
+
       dictsState.drag.isDown = true;
       dictsState.drag.startX = e.clientX;
       dictsState.drag.diffX = 0;
       dictsState.drag.lastX = e.clientX;
       dictsState.drag.lastT = performance.now();
       dictsState.drag.velocity = 0;
+
+      carousel.classList.add('is-dragging');
       carousel.setPointerCapture?.(e.pointerId);
     });
 
@@ -608,6 +671,11 @@
 
       dictsState.drag.lastX = e.clientX;
       dictsState.drag.lastT = now;
+
+      if (dictsState.drag.rafId) cancelAnimationFrame(dictsState.drag.rafId);
+      dictsState.drag.rafId = requestAnimationFrame(() => {
+        updateDragVisual(dictsState.drag.diffX);
+      });
     });
 
     window.addEventListener('pointerup', () => {
@@ -619,8 +687,10 @@
       dictsState.drag.isDown = false;
       dictsState.drag.diffX = 0;
 
-      if (Math.abs(diff) > 36 || Math.abs(velocity) > 0.35) {
-        if (diff < 0 || velocity < -0.35) shiftDicts(1);
+      resetDragVisual();
+
+      if (Math.abs(diff) > 44 || Math.abs(velocity) > 0.32) {
+        if (diff < 0 || velocity < -0.32) shiftDicts(1);
         else shiftDicts(-1);
       }
     });
@@ -675,24 +745,10 @@
     dictsState.isInitialized = true;
   }
 
-  window.setDictsViewMode = function setDictsViewModeGlobal(mode) {
-    setDictsViewMode(mode);
-  };
-
-  window.openAddDictionaryModal = function openAddDictionaryModalGlobal() {
-    openAddDictionaryModal();
-  };
-
-  window.initDictsPage = initDictsPage;
-
   window.LAVASH_DICTS = {
     initDictsPage,
     setDictsViewMode,
-    openAddDictionaryModal
+    openAddDictionaryModal,
+    renderDictsCarousel
   };
-
-  document.addEventListener('lavash:dicts-mode-change', (event) => {
-    const mode = event?.detail?.mode || 'carousel';
-    setDictsViewMode(mode);
-  });
 })();
