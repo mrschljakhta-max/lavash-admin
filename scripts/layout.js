@@ -24,18 +24,18 @@
             </div>
 
             <div class="user-stack">
-  <button class="user-mini-btn" type="button" aria-label="Користувач">
-    <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="12" cy="8" r="4"></circle>
-      <path d="M6 20c0-4 12-4 12 0"></path>
-    </svg>
-  </button>
+              <button class="user-mini-btn" type="button" aria-label="Користувач">
+                <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="8" r="4"></circle>
+                  <path d="M6 20c0-4 12-4 12 0"></path>
+                </svg>
+              </button>
 
-  <div class="user-box">
-    <div class="user-box__email" id="userEmail">user@email.com</div>
-    <button class="user-box__logout" id="logoutBtn" type="button">Вихід</button>
-  </div>
-</div>
+              <div class="user-box">
+                <div class="user-box__email" id="userEmail">user@email.com</div>
+                <button class="user-box__logout" id="logoutBtn" type="button">Вихід</button>
+              </div>
+            </div>
           </div>
 
           <nav class="left-nav__menu" aria-label="Основна навігація">
@@ -198,46 +198,6 @@
               </div>
             </div>
 
-            <div class="tool-block tool-block--upload-stage" id="uploadStageValidateBlock">
-              <div class="upload-stage-line">
-                <img src="/lavash-admin/assets/icons/upload/shield.svg?v=12" class="icon-sm" alt="">
-                <div>
-                  <div class="upload-stage-line__title">Перевірка</div>
-                  <div class="upload-stage-line__text">Формат, назва, цілісність</div>
-                </div>
-              </div>
-            </div>
-
-            <div class="tool-block tool-block--upload-stage" id="uploadStageParseBlock">
-              <div class="upload-stage-line">
-                <img src="/lavash-admin/assets/icons/upload/settings.svg?v=12" class="icon-sm" alt="">
-                <div>
-                  <div class="upload-stage-line__title">Парсинг</div>
-                  <div class="upload-stage-line__text">Розбір структури документа</div>
-                </div>
-              </div>
-            </div>
-
-            <div class="tool-block tool-block--upload-stage" id="uploadStageExtractBlock">
-              <div class="upload-stage-line">
-                <img src="/lavash-admin/assets/icons/upload/target.svg?v=12" class="icon-sm" alt="">
-                <div>
-                  <div class="upload-stage-line__title">Виділення подій</div>
-                  <div class="upload-stage-line__text">Формування записів і сутностей</div>
-                </div>
-              </div>
-            </div>
-
-            <div class="tool-block tool-block--upload-stage" id="uploadStageDbBlock">
-              <div class="upload-stage-line">
-                <img src="/lavash-admin/assets/icons/upload/database.svg?v=12" class="icon-sm" alt="">
-                <div>
-                  <div class="upload-stage-line__title">Запис у Supabase</div>
-                  <div class="upload-stage-line__text">Збереження даних і логів</div>
-                </div>
-              </div>
-            </div>
-
             <button id="uploadStartPanelBtn" class="tool-refresh-btn tool-refresh-btn--upload" type="button">
               <img src="/lavash-admin/assets/icons/upload/bolt.svg?v=12" class="icon-sm" alt="">
               Завантажити і обробити
@@ -267,13 +227,6 @@
 
           <div class="dicts-mode-dialog__grid">
             <button type="button" class="dicts-mode-dialog__action is-active" data-dicts-mode="carousel">
-              <span class="dicts-mode-dialog__icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="3" y="6" width="5" height="12" rx="1.5"></rect>
-                  <rect x="9.5" y="4" width="5" height="16" rx="1.5"></rect>
-                  <rect x="16" y="6" width="5" height="12" rx="1.5"></rect>
-                </svg>
-              </span>
               <span class="dicts-mode-dialog__text">
                 <strong>Карусель</strong>
                 <small>Картки довідників у форматі слайдера</small>
@@ -281,17 +234,6 @@
             </button>
 
             <button type="button" class="dicts-mode-dialog__action" data-dicts-mode="schema">
-              <span class="dicts-mode-dialog__icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="3" y="4" width="6" height="5" rx="1.2"></rect>
-                  <rect x="15" y="4" width="6" height="5" rx="1.2"></rect>
-                  <rect x="9" y="15" width="6" height="5" rx="1.2"></rect>
-                  <path d="M6 9v3"></path>
-                  <path d="M18 9v3"></path>
-                  <path d="M6 12h12"></path>
-                  <path d="M12 12v3"></path>
-                </svg>
-              </span>
               <span class="dicts-mode-dialog__text">
                 <strong>Схема</strong>
                 <small>Структурне відображення довідників</small>
@@ -299,12 +241,6 @@
             </button>
 
             <button type="button" class="dicts-mode-dialog__action dicts-mode-dialog__action--accent" id="dictsAddDictionaryBtn">
-              <span class="dicts-mode-dialog__icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-                  <path d="M12 5v14"></path>
-                  <path d="M5 12h14"></path>
-                </svg>
-              </span>
               <span class="dicts-mode-dialog__text">
                 <strong>Додати довідник</strong>
                 <small>Відкрити форму створення нового довідника</small>
@@ -316,7 +252,7 @@
     `;
   }
 
-  function lavashBuildHeader(title = 'Lavash Admin', statusText = 'Підключено') {
+  function lavashBuildHeader(title = 'Lavash Admin') {
     return `
       <header class="workspace-header">
         <div class="workspace-header__left">
@@ -324,17 +260,55 @@
         </div>
 
         <div class="workspace-header__right">
-          <div class="status-badge" id="statusBadge">${statusText}</div>
+          <button class="status-badge" id="connectionStatus" type="button" data-status="online" aria-label="Підключено">
+            <span class="status-badge__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path class="status-badge__wave status-badge__wave--outer" d="M5 12a7 7 0 0 1 14 0"></path>
+                <path class="status-badge__wave status-badge__wave--inner" d="M8 12a4 4 0 0 1 8 0"></path>
+                <circle class="status-badge__dot" cx="12" cy="12" r="2.4"></circle>
+              </svg>
+            </span>
+            <span class="status-badge__text">Підключено</span>
+          </button>
         </div>
       </header>
     `;
   }
 
+  function setConnectionStatus(status) {
+    const badge = document.getElementById('connectionStatus');
+    if (!badge) return;
+
+    const map = {
+      online: 'Підключено',
+      reconnecting: 'Відновлення',
+      offline: 'Немає звʼязку'
+    };
+
+    const normalized = map[status] ? status : 'online';
+
+    badge.dataset.status = normalized;
+    badge.setAttribute('aria-label', map[normalized]);
+
+    const text = badge.querySelector('.status-badge__text');
+    if (text) text.textContent = map[normalized];
+  }
+
+  function initConnectionStatus() {
+    setConnectionStatus(navigator.onLine ? 'online' : 'offline');
+  }
+
+  window.LAVASH_CONNECTION = {
+    set: setConnectionStatus
+  };
+
+  window.addEventListener('online', () => setConnectionStatus('online'));
+  window.addEventListener('offline', () => setConnectionStatus('offline'));
+
   function initLavashLayout(options = {}) {
     const {
       pageKey = lavashCurrentPageKey(),
       title = 'Lavash Admin',
-      statusText = 'Підключено',
       content = '',
       useRightTools = true,
       contentClass = 'workspace-body--page',
@@ -357,7 +331,7 @@
         ${lavashBuildLeftNav(pageKey)}
 
         <main class="main-workspace">
-          ${lavashBuildHeader(title, statusText)}
+          ${lavashBuildHeader(title)}
           <section class="workspace-body ${contentClass}" id="workspaceBody">
             ${content}
           </section>
@@ -370,6 +344,7 @@
     `;
 
     bindLavashLayoutEvents();
+    initConnectionStatus();
   }
 
   function bindLavashLayoutEvents() {
@@ -395,29 +370,6 @@
         }
       });
     }
-
-    document.querySelectorAll('.tool-item[data-tool]').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const tool = btn.dataset.tool;
-
-        if (tool === 'search') {
-          const input = document.getElementById('dictSearchInput') || document.getElementById('searchInput');
-          input?.focus();
-          return;
-        }
-
-        if (tool === 'filters') {
-          const select = document.getElementById('dictTypeFilter') || document.getElementById('statusFilter');
-          select?.focus();
-          return;
-        }
-
-        if (tool === 'refresh') {
-          const refresh = document.getElementById('refreshBtn');
-          refresh?.click();
-        }
-      });
-    });
 
     bindDictsModeDialog();
   }
@@ -481,13 +433,6 @@
     addBtn?.addEventListener('click', () => {
       if (typeof window.openAddDictionaryModal === 'function') {
         window.openAddDictionaryModal();
-      } else {
-        const fallbackBtn =
-          document.getElementById('addDictionaryBtn') ||
-          document.getElementById('openAddDictionaryModalBtn') ||
-          document.querySelector('[data-action="add-dictionary"]');
-
-        fallbackBtn?.click();
       }
 
       closeDialog();
