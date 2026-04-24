@@ -2289,3 +2289,47 @@ select {
   padding: 0 18px !important;
   justify-content: flex-start !important;
 }
+
+
+/* ховаємо user box коли sidebar згорнутий */
+.left-nav:not(:hover) .user-box {
+  display: none !important;
+}
+
+
+/* міні кнопка користувача */
+.user-mini-btn {
+  width: 74px;
+  height: 74px;
+  border-radius: 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin: 0 auto;
+
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(118,150,236,0.10);
+
+  transition: 0.2s ease;
+}
+
+/* hover ефект */
+.user-mini-btn:hover {
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(118,150,236,0.18);
+  transform: translateY(-1px);
+}
+
+/* іконка */
+.user-mini-btn svg {
+  width: 26px;
+  height: 26px;
+  opacity: 0.9;
+}
+
+/* показ тільки коли sidebar згорнутий */
+.left-nav:hover .user-mini-btn {
+  display: none;
+}
