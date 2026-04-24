@@ -230,7 +230,11 @@ body.lavash-modal-open {
   gap: 16px;
   padding: 0 18px;
   cursor: pointer;
-  transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+  transition:
+    transform 0.18s ease,
+    background 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
   overflow: hidden;
 }
 
@@ -238,6 +242,9 @@ body.lavash-modal-open {
   background: rgba(255,255,255,0.055);
   border-color: rgba(118,150,236,0.18);
   transform: translateY(-1px);
+  box-shadow:
+    0 12px 28px rgba(79, 124, 255, 0.10),
+    inset 0 0 0 1px rgba(255,255,255,0.025);
 }
 
 .nav-item.is-active {
@@ -253,6 +260,12 @@ body.lavash-modal-open {
   display: grid;
   place-items: center;
   flex: 0 0 28px;
+  transition: transform 0.18s ease, filter 0.18s ease;
+}
+
+.nav-item:hover .nav-item__icon-wrap {
+  transform: scale(1.08);
+  filter: drop-shadow(0 0 10px rgba(100, 160, 255, 0.55));
 }
 
 .nav-item__icon {
@@ -267,9 +280,9 @@ body.lavash-modal-open {
   color: var(--text-main);
   white-space: nowrap;
   opacity: 0;
-  transform: translateX(-8px);
+  transform: translateX(-12px);
   pointer-events: none;
-  transition: opacity 0.18s ease, transform 0.18s ease;
+  transition: opacity 0.2s ease, transform 0.22s ease;
 }
 
 .left-nav:hover .nav-item__label {
@@ -330,10 +343,8 @@ body.lavash-modal-open {
   width: var(--right-nav-collapsed);
   height: 100vh;
   z-index: 120;
-
   border-left: 1px solid var(--line-soft);
   background: linear-gradient(180deg, #07173d, #040f2a);
-
   pointer-events: none;
   overflow: visible;
 }
@@ -341,22 +352,17 @@ body.lavash-modal-open {
 .right-tools__inner {
   position: absolute;
   inset: 0 0 0 auto;
-
   pointer-events: auto;
   width: var(--right-nav-collapsed);
   min-height: 100vh;
-
   background: linear-gradient(180deg, #07173d, #040f2a);
-
   padding: 16px 10px;
-
   display: flex;
   flex-direction: column;
   gap: 14px;
-
   overflow: hidden;
-
   transition: width 0.24s ease, padding 0.24s ease, box-shadow 0.24s ease;
+  box-shadow: none;
 }
 
 .right-tools:hover .right-tools__inner {
@@ -364,8 +370,6 @@ body.lavash-modal-open {
   padding-inline: 18px;
   box-shadow: -22px 0 44px rgba(0, 0, 0, 0.22);
 }
-
-/* HEADER */
 
 .right-tools__top {
   display: flex;
@@ -378,18 +382,14 @@ body.lavash-modal-open {
 .right-tools__title {
   width: 100%;
   text-align: right;
-
   font-size: 15px;
   font-weight: 900;
   color: var(--text-main);
-
   white-space: nowrap;
-
   opacity: 0;
-  transform: translateX(8px);
+  transform: translateX(16px);
   pointer-events: none;
-
-  transition: opacity 0.18s ease, transform 0.18s ease;
+  transition: opacity 0.2s ease, transform 0.24s ease;
 }
 
 .right-tools:not(:hover) .right-tools__title {
@@ -403,8 +403,6 @@ body.lavash-modal-open {
   pointer-events: auto;
 }
 
-/* MENU */
-
 .right-tools__menu,
 .right-tools__panel {
   display: flex;
@@ -417,54 +415,72 @@ body.lavash-modal-open {
   transform: none;
 }
 
-/* ITEMS */
+/* RIGHT ITEMS */
 
 .tool-item {
   width: 100%;
   height: 78px;
-
   border-radius: 24px;
   border: 1px solid rgba(118,150,236,0.10);
   background: rgba(255,255,255,0.03);
-
   display: flex;
   align-items: center;
   gap: 16px;
-
   padding: 0 18px;
-
   cursor: pointer;
-
-  transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease;
-
+  transition:
+    transform 0.18s ease,
+    background 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
   overflow: hidden;
+  position: relative;
+}
+
+.tool-item::before {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border-radius: 18px;
+  background: radial-gradient(circle at 50% 50%, rgba(93, 151, 255, 0.18), transparent 62%);
+  opacity: 0;
+  transform: scale(0.88);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  pointer-events: none;
 }
 
 .tool-item:hover {
   background: rgba(255,255,255,0.055);
   border-color: rgba(118,150,236,0.18);
   transform: translateY(-1px);
+  box-shadow:
+    0 12px 28px rgba(79, 124, 255, 0.10),
+    inset 0 0 0 1px rgba(255,255,255,0.025);
 }
 
-/* 🔥 ГОЛОВНЕ — ПРАВИЛЬНЕ ВИРІВНЮВАННЯ В ЗГОРНУТОМУ СТАНІ */
+.tool-item:hover::before {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* collapsed: icons visible on the RIGHT side */
 
 .right-tools:not(:hover) .tool-item {
-  justify-content: flex-end;   /* ⬅️ ключ */
-  padding-right: 18px;         /* ⬅️ відступ від правого краю */
+  justify-content: flex-end;
+  padding-right: 18px;
   padding-left: 0;
 }
-
-/* ICON */
 
 .tool-item__icon-wrap {
   width: 28px;
   min-width: 28px;
   height: 28px;
-
   display: grid;
   place-items: center;
-
   flex: 0 0 28px;
+  position: relative;
+  z-index: 2;
+  transition: transform 0.2s ease, filter 0.2s ease;
 }
 
 .tool-item__icon-wrap svg {
@@ -472,25 +488,26 @@ body.lavash-modal-open {
   height: 24px;
 }
 
-/* трохи баланс праворуч */
 .right-tools:not(:hover) .tool-item__icon-wrap {
   margin-right: 4px;
 }
 
-/* LABEL */
+.tool-item:hover .tool-item__icon-wrap {
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 12px rgba(120, 170, 255, 0.65));
+}
 
 .tool-item__label {
   font-size: 15px;
   font-weight: 900;
   color: var(--text-main);
-
   white-space: nowrap;
-
   opacity: 0;
-  transform: translateX(8px);
+  transform: translateX(18px);
   pointer-events: none;
-
-  transition: opacity 0.18s ease, transform 0.18s ease;
+  transition: opacity 0.2s ease, transform 0.24s ease;
+  position: relative;
+  z-index: 2;
 }
 
 .right-tools:not(:hover) .tool-item__label {
@@ -601,7 +618,11 @@ body.lavash-modal-open {
   padding: 18px 18px;
   text-align: left;
   cursor: pointer;
-  transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease,
+    background 0.18s ease,
+    box-shadow 0.18s ease;
 }
 
 .dicts-mode-dialog__action:hover {
