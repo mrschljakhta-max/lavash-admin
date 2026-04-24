@@ -228,6 +228,7 @@ function computeTransform(offset, dragOffset = 0) {
   if (offset > 0) cls += ' is-right';
 
   if (item.__create) cls += ' dict-card--create';
+
   return cls;
 }
 
