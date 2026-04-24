@@ -1004,3 +1004,41 @@
     grid-template-columns: 1fr;
   }
 }
+/* =========================================================
+   DICTS FULL HEIGHT + NO INTERNAL SCROLLBAR
+========================================================= */
+
+#dictsPage,
+.dicts-page {
+  height: calc(100vh - 126px) !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+
+#dictsCarouselView,
+.dicts-hero {
+  height: 100% !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow: hidden !important;
+}
+
+.dicts-carousel {
+  height: 100% !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+
+.workspace-body:has(#dictsPage) {
+  overflow: hidden !important;
+}
+
+#dictsPage,
+#dictsPage * {
+  scrollbar-width: none !important;
+}
+
+#dictsPage::-webkit-scrollbar,
+#dictsPage *::-webkit-scrollbar {
+  display: none !important;
+}
