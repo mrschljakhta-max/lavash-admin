@@ -1042,3 +1042,23 @@
 #dictsPage *::-webkit-scrollbar {
   display: none !important;
 }
+/* =========================================================
+   MAKE 5 DICTS CAROUSEL CARDS VISIBLE
+========================================================= */
+
+.dict-card.is-far {
+  opacity: 0.62 !important;
+  filter: saturate(0.72) brightness(0.62) blur(1.4px) !important;
+}
+
+.dict-card.is-far .dict-card__surface,
+.dict-card.is-far .dict-card__magic-border,
+.dict-card.is-far .dict-card__magic-glow,
+.dict-card.is-far .dict-card__content {
+  opacity: 0.72 !important;
+}
+
+.dict-card.is-near {
+  opacity: 0.78 !important;
+  filter: saturate(0.78) brightness(0.66) blur(1px) !important;
+}
