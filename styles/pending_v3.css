@@ -2923,3 +2923,239 @@ select {
     transform: rotate(360deg);
   }
 }
+/* =========================================================
+   FINAL PRESSED CONNECTION STATUS BADGE
+   Palette matches active nav buttons
+========================================================= */
+
+.status-badge {
+  --status-main: #5a86ff;
+  --status-mid: #735cff;
+  --status-dark: #4b46d9;
+  --status-glow: rgba(112, 104, 255, 0.42);
+  --status-ring: rgba(150, 170, 255, 0.28);
+  --status-icon: #ffffff;
+  --status-text: #ffffff;
+
+  width: 52px !important;
+  min-width: 52px !important;
+  height: 52px !important;
+
+  padding: 0 !important;
+  border-radius: 999px !important;
+  border: 1px solid rgba(255,255,255,0.14) !important;
+
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 11px !important;
+
+  overflow: hidden !important;
+  position: relative !important;
+
+  color: var(--status-text) !important;
+
+  background:
+    radial-gradient(circle at 34% 28%, rgba(255,255,255,0.24), transparent 24%),
+    linear-gradient(145deg, var(--status-main) 0%, var(--status-mid) 56%, var(--status-dark) 100%) !important;
+
+  box-shadow:
+    inset 7px 7px 14px rgba(13, 21, 65, 0.38),
+    inset -6px -6px 14px rgba(255,255,255,0.16),
+    0 10px 26px rgba(0,0,0,0.34),
+    0 0 22px var(--status-glow) !important;
+
+  cursor: default !important;
+  transform: translateZ(0) !important;
+
+  transition:
+    width 0.32s cubic-bezier(.2,.9,.2,1),
+    min-width 0.32s cubic-bezier(.2,.9,.2,1),
+    padding 0.32s cubic-bezier(.2,.9,.2,1),
+    transform 0.22s ease,
+    box-shadow 0.28s ease,
+    background 0.28s ease !important;
+}
+
+.status-badge:hover {
+  width: 168px !important;
+  min-width: 168px !important;
+  padding: 0 18px !important;
+  justify-content: flex-start !important;
+  transform: translateY(-1px) scale(1.015) !important;
+
+  box-shadow:
+    inset 8px 8px 16px rgba(13, 21, 65, 0.42),
+    inset -7px -7px 16px rgba(255,255,255,0.18),
+    0 12px 30px rgba(0,0,0,0.42),
+    0 0 30px var(--status-glow) !important;
+}
+
+.status-badge::before {
+  content: "";
+  position: absolute;
+  inset: 7px;
+  border-radius: inherit;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(255,255,255,0.18), transparent 44%),
+    linear-gradient(145deg, rgba(255,255,255,0.08), rgba(0,0,0,0.10));
+  box-shadow:
+    inset 4px 4px 9px rgba(0,0,0,0.22),
+    inset -4px -4px 9px rgba(255,255,255,0.10);
+  opacity: 0.95;
+  pointer-events: none;
+}
+
+.status-badge::after {
+  content: "";
+  position: absolute;
+  inset: -9px;
+  border-radius: inherit;
+  border: 1px solid var(--status-ring);
+  opacity: 0.32;
+  pointer-events: none;
+}
+
+.status-badge__icon {
+  width: 24px !important;
+  height: 24px !important;
+  min-width: 24px !important;
+
+  display: grid !important;
+  place-items: center !important;
+
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+.status-badge__icon svg {
+  width: 24px !important;
+  height: 24px !important;
+  overflow: visible !important;
+}
+
+.status-badge__wave {
+  stroke: var(--status-icon) !important;
+  stroke-width: 2.25 !important;
+  stroke-linecap: round !important;
+  opacity: 0.75 !important;
+}
+
+.status-badge__wave--inner {
+  opacity: 0.95 !important;
+}
+
+.status-badge__dot {
+  fill: var(--status-icon) !important;
+  filter:
+    drop-shadow(0 0 7px rgba(255,255,255,0.75))
+    drop-shadow(0 0 12px var(--status-glow)) !important;
+}
+
+.status-badge__text {
+  max-width: 0 !important;
+  opacity: 0 !important;
+
+  white-space: nowrap !important;
+  overflow: hidden !important;
+
+  font-size: 14px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  letter-spacing: 0.01em !important;
+
+  transform: translateX(8px) !important;
+
+  position: relative !important;
+  z-index: 2 !important;
+
+  transition:
+    max-width 0.32s cubic-bezier(.2,.9,.2,1),
+    opacity 0.22s ease,
+    transform 0.32s cubic-bezier(.2,.9,.2,1) !important;
+}
+
+.status-badge:hover .status-badge__text {
+  max-width: 118px !important;
+  opacity: 1 !important;
+  transform: translateX(0) !important;
+}
+
+/* ONLINE — same palette as active nav */
+.status-badge[data-status="online"] {
+  --status-main: #5a86ff;
+  --status-mid: #725cff;
+  --status-dark: #8a5cf6;
+  --status-glow: rgba(110, 112, 255, 0.46);
+  --status-ring: rgba(140, 120, 255, 0.34);
+  --status-icon: #ffffff;
+
+  animation: statusPressedOnline 2.8s ease-in-out infinite !important;
+}
+
+/* RECONNECTING — amber */
+.status-badge[data-status="reconnecting"] {
+  --status-main: #ffcb61;
+  --status-mid: #f5a72d;
+  --status-dark: #c76b08;
+  --status-glow: rgba(255, 191, 80, 0.46);
+  --status-ring: rgba(255, 202, 95, 0.30);
+  --status-icon: #ffffff;
+
+  animation: statusReconnectPulse 1.2s ease-in-out infinite !important;
+}
+
+.status-badge[data-status="reconnecting"] .status-badge__icon {
+  animation: statusReconnectSpin 1.15s linear infinite !important;
+}
+
+/* OFFLINE — white/gray pressed */
+.status-badge[data-status="offline"] {
+  --status-main: #f2f4f8;
+  --status-mid: #d9dde7;
+  --status-dark: #aeb6c8;
+  --status-glow: rgba(230, 236, 255, 0.32);
+  --status-ring: rgba(255, 255, 255, 0.22);
+  --status-icon: #5a6278;
+  --status-text: #34405a;
+
+  animation: none !important;
+}
+
+.status-badge[data-status="offline"] .status-badge__wave {
+  opacity: 0.28 !important;
+}
+
+.status-badge[data-status="offline"] .status-badge__dot {
+  opacity: 0.82 !important;
+}
+
+@keyframes statusPressedOnline {
+  0%, 100% {
+    filter: brightness(1);
+  }
+
+  50% {
+    filter: brightness(1.08);
+  }
+}
+
+@keyframes statusReconnectPulse {
+  0%, 100% {
+    filter: brightness(1);
+  }
+
+  50% {
+    filter: brightness(1.16);
+  }
+}
+
+@keyframes statusReconnectSpin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
