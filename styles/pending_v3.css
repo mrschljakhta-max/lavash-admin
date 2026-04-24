@@ -3205,3 +3205,20 @@ select {
   min-width: 24px !important;
   height: 24px !important;
 }
+/* FIX TEXT CUT (Підключено) */
+
+.status-badge:hover {
+  width: 180px !important;
+  min-width: 180px !important;
+  padding: 0 16px !important;
+}
+
+/* даємо тексту більше простору */
+.status-badge__text {
+  max-width: 0 !important;
+}
+
+.status-badge:hover .status-badge__text {
+  max-width: 140px !important;
+  white-space: nowrap !important;
+}
