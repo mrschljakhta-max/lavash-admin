@@ -326,7 +326,7 @@ body.lavash-modal-open {
 ========================= */
 
 :root {
-  --right-nav-collapsed: 72px;
+  --right-nav-collapsed: 88px;
   --right-nav-expanded: 240px;
 }
 
@@ -355,7 +355,7 @@ body.lavash-modal-open {
 
   margin: 16px;
 
-  padding: 16px 10px;
+  padding: 16px;
 
   display: flex;
   flex-direction: column;
@@ -478,9 +478,10 @@ body.lavash-modal-open {
   height: 56px;
 
   justify-content: center;
+  align-self: center;
   padding: 0;
 
-  border-radius: 14px;
+  border-radius: 16px;
 }
 
 /* ICON */
