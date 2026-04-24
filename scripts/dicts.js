@@ -187,29 +187,31 @@
   function computeTransform(offset, dragOffset = 0) {
   const abs = Math.abs(offset);
 
-  let x = offset < 0 ? -430 : 430;
-  let scale = 0.62;
-  let rotate = offset < 0 ? 10 : -10;
+  const positions = {
+    "-2": { x: -315, scale: 0.78, rotate: 7 },
+    "-1": { x: -185, scale: 0.88, rotate: 5 },
+    "0": { x: 0, scale: 1, rotate: 0 },
+    "1": { x: 185, scale: 0.88, rotate: -5 },
+    "2": { x: 315, scale: 0.78, rotate: -7 }
+  };
 
-  if (offset === 0) {
-    x = 0;
-    scale = 1;
-    rotate = 0;
-  } else if (abs === 1) {
-    x = offset < 0 ? -180 : 180;
-    scale = 0.88;
-    rotate = offset < 0 ? 5 : -5;
-  } else if (abs === 2) {
-    x = offset < 0 ? -315 : 315;
-    scale = 0.78;
-    rotate = offset < 0 ? 7 : -7;
-  }
+  const fallback = {
+    x: offset < 0 ? -430 : 430,
+    scale: 0.62,
+    rotate: offset < 0 ? 10 : -10
+  };
 
-  x += dragOffset;
+  const preset = positions[String(offset)] || fallback;
 
-  return { x, scale, rotate, depth: computeDepth(offset) };
+  const x = preset.x + dragOffset;
+
+  return {
+    x,
+    scale: preset.scale,
+    rotate: preset.rotate,
+    depth: computeDepth(offset)
+  };
 }
-
   function getCardClass(offset, item) {
     const abs = Math.abs(offset);
     let cls = 'dict-card';
