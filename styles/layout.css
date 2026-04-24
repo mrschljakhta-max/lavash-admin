@@ -2,8 +2,8 @@
   --left-nav-collapsed: 94px;
   --left-nav-expanded: 310px;
 
-  --right-nav-collapsed: 96px;
-  --right-nav-expanded: 320px;
+  --right-nav-collapsed: 88px;
+  --right-nav-expanded: 240px;
 
   --text-main: #eaf0ff;
   --text-soft: rgba(230, 236, 255, 0.72);
@@ -321,68 +321,45 @@ body.lavash-modal-open {
   overflow: auto;
 }
 
-/* =========================
-   RIGHT NAV — iOS FLOATING GLASS
-========================= */
+/* RIGHT NAV */
 
-:root {
-  --right-nav-collapsed: 88px;
-  --right-nav-expanded: 240px;
-}
-
-/* контейнер */
 .right-tools {
   position: fixed;
   top: 0;
   right: 0;
   height: 100vh;
-
   width: var(--right-nav-collapsed);
   z-index: 100;
-
   display: flex;
   justify-content: flex-end;
-
   pointer-events: none;
 }
 
-/* сама панель */
 .right-tools__inner {
   pointer-events: auto;
-
   width: var(--right-nav-collapsed);
   height: calc(100vh - 32px);
-
   margin: 16px;
-
   padding: 16px;
-
   display: flex;
   flex-direction: column;
   gap: 12px;
-
   border-radius: 22px;
-
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
-
   background: rgba(10, 20, 60, 0.55);
   border: 1px solid rgba(255,255,255,0.08);
-
   box-shadow:
     0 10px 40px rgba(0,0,0,0.35),
     inset 0 1px 0 rgba(255,255,255,0.05);
-
   transition: all 0.25s ease;
 }
 
-/* hover розкриття */
 .right-tools:hover .right-tools__inner {
   width: var(--right-nav-expanded);
   padding-inline: 16px;
 }
 
-/* HEADER */
 .right-tools__top {
   display: flex;
   justify-content: flex-end;
@@ -393,16 +370,12 @@ body.lavash-modal-open {
 .right-tools__title {
   width: 100%;
   text-align: right;
-
   font-size: 14px;
   font-weight: 800;
   letter-spacing: 0.3px;
-
   color: rgba(255,255,255,0.85);
-
   opacity: 0;
   transform: translateX(8px);
-
   transition: 0.2s ease;
 }
 
@@ -411,27 +384,23 @@ body.lavash-modal-open {
   transform: translateX(0);
 }
 
-/* MENU */
 .right-tools__menu {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  align-items: flex-end;
+  align-items: center;
 }
 
 .right-tools:hover .right-tools__menu {
   align-items: stretch;
 }
 
-/* PANEL */
 .right-tools__panel {
   display: flex;
   flex-direction: column;
   gap: 10px;
-
   opacity: 0;
   transform: translateY(-6px);
-
   transition: 0.2s ease;
 }
 
@@ -440,58 +409,41 @@ body.lavash-modal-open {
   transform: translateY(0);
 }
 
-/* =========================
-   BUTTONS — iOS STYLE
-========================= */
-
 .tool-item {
   width: 100%;
   max-width: 200px;
   height: 56px;
-
   border-radius: 16px;
-
   display: flex;
   align-items: center;
   gap: 12px;
-
   padding: 0 14px;
-
   background: rgba(255,255,255,0.04);
   border: 1px solid rgba(255,255,255,0.06);
-
   backdrop-filter: blur(6px);
-
   transition: all 0.2s ease;
 }
 
-/* hover */
 .tool-item:hover {
   background: rgba(255,255,255,0.08);
   border-color: rgba(118,150,236,0.25);
   transform: translateY(-1px);
 }
 
-/* collapsed */
 .right-tools:not(:hover) .tool-item {
   width: 56px;
   height: 56px;
-
   justify-content: center;
   align-self: center;
   padding: 0;
-
   border-radius: 16px;
 }
 
-/* ICON */
 .tool-item__icon-wrap {
   width: 24px;
   height: 24px;
-
   display: grid;
   place-items: center;
-
   flex: 0 0 24px;
 }
 
@@ -500,25 +452,19 @@ body.lavash-modal-open {
   height: 22px;
 }
 
-/* TEXT */
 .tool-item__label {
   font-size: 14px;
   font-weight: 700;
-
   white-space: nowrap;
-
   opacity: 0;
   transform: translateX(8px);
-
   transition: 0.2s ease;
 }
 
-/* hide text when collapsed */
 .right-tools:not(:hover) .tool-item__label {
   display: none;
 }
 
-/* show text */
 .right-tools:hover .tool-item__label {
   display: block;
   opacity: 1;
