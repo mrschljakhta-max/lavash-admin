@@ -185,34 +185,34 @@
   }
 
   function computeTransform(offset, dragOffset = 0) {
-    const abs = Math.abs(offset);
+  const abs = Math.abs(offset);
 
-    let x = offset * 250;
-    let scale = 0.78;
-    let rotate = offset < 0 ? 12 : -12;
+  let x = offset * 150;
+  let scale = 0.72;
+  let rotate = offset < 0 ? 8 : -8;
 
-    if (offset === 0) {
-      x = 0;
-      scale = 1;
-      rotate = 0;
-    } else if (abs === 1) {
-      x = offset * 250;
-      scale = 0.9;
-      rotate = offset < 0 ? 8 : -8;
-    } else if (abs === 2) {
-      x = offset * 430;
-      scale = 0.8;
-      rotate = offset < 0 ? 12 : -12;
-    } else {
-      x = offset * 520;
-      scale = 0.72;
-      rotate = offset < 0 ? 16 : -16;
-    }
-
-    x += dragOffset;
-
-    return { x, scale, rotate, depth: computeDepth(offset) };
+  if (offset === 0) {
+    x = 0;
+    scale = 1;
+    rotate = 0;
+  } else if (abs === 1) {
+    x = offset * 205;
+    scale = 0.88;
+    rotate = offset < 0 ? 6 : -6;
+  } else if (abs === 2) {
+    x = offset * 390;
+    scale = 0.74;
+    rotate = offset < 0 ? 9 : -9;
+  } else {
+    x = offset * 520;
+    scale = 0.62;
+    rotate = offset < 0 ? 12 : -12;
   }
+
+  x += dragOffset;
+
+  return { x, scale, rotate, depth: computeDepth(offset) };
+}
 
   function getCardClass(offset, item) {
     const abs = Math.abs(offset);
