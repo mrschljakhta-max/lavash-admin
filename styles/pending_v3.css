@@ -2255,3 +2255,37 @@ select {
 .right-tools:not(:hover) .tool-item__icon-wrap {
   margin: 0 !important;
 }
+/* =========================================================
+   RIGHT BUTTONS — PERFECT SQUARE (як зліва)
+========================================================= */
+
+.right-tools:not(:hover) .tool-item {
+  width: 74px !important;
+  height: 74px !important;       /* ключове */
+  min-width: 74px !important;
+  max-width: 74px !important;
+
+  border-radius: 20px !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  padding: 0 !important;
+  margin: 0 auto !important;
+}
+
+/* іконка по центру */
+.right-tools:not(:hover) .tool-item__icon-wrap {
+  width: 28px !important;
+  height: 28px !important;
+  margin: 0 !important;
+}
+
+/* при розкритті — нормальний режим */
+.right-tools:hover .tool-item {
+  height: 78px !important;
+  width: 100% !important;
+  padding: 0 18px !important;
+  justify-content: flex-start !important;
+}
