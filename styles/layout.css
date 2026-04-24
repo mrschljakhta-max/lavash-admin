@@ -82,12 +82,15 @@ body.lavash-modal-open {
   gap: 14px;
 }
 
+/* LOGO / BRAND */
+
 .brand-mini {
-  display: grid;
-  grid-template-columns: 34px 1fr;
+  display: flex;
   align-items: center;
+  justify-content: center;
   min-height: 46px;
   width: 100%;
+  position: relative;
   padding: 0;
 }
 
@@ -95,7 +98,33 @@ body.lavash-modal-open {
   width: 34px;
   height: 34px;
   object-fit: contain;
-  justify-self: center;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  filter: drop-shadow(0 0 0 rgba(90, 150, 255, 0));
+  transition:
+    left 0.22s ease,
+    transform 0.22s ease,
+    filter 0.22s ease;
+}
+
+.left-nav:not(:hover) .brand-mini__logo {
+  animation: lavashLogoFloat 3.2s ease-in-out infinite;
+}
+
+.left-nav:hover .brand-mini {
+  justify-content: flex-start;
+  padding-left: 2px;
+}
+
+.left-nav:hover .brand-mini__logo {
+  position: relative;
+  left: 0;
+  transform: none;
+  animation: none;
+  filter:
+    drop-shadow(0 0 10px rgba(90, 160, 255, 0.65))
+    drop-shadow(0 0 18px rgba(139, 92, 246, 0.32));
 }
 
 .brand-mini__title {
@@ -107,24 +136,11 @@ body.lavash-modal-open {
   transform: translateX(-8px);
   pointer-events: none;
   transition: opacity 0.18s ease, transform 0.18s ease;
-}
-
-.left-nav:not(:hover) .brand-mini {
-  grid-template-columns: 1fr;
-  justify-items: center;
+  margin-left: 14px;
 }
 
 .left-nav:not(:hover) .brand-mini__title {
   display: none;
-}
-
-.left-nav:hover .brand-mini {
-  grid-template-columns: 34px 1fr;
-  justify-items: stretch;
-}
-
-.left-nav:hover .brand-mini__logo {
-  justify-self: center;
 }
 
 .left-nav:hover .brand-mini__title {
@@ -132,6 +148,29 @@ body.lavash-modal-open {
   opacity: 1;
   transform: translateX(0);
   pointer-events: auto;
+}
+
+@keyframes lavashLogoFloat {
+  0% {
+    transform: translateX(-50%) translateY(0) scale(1);
+    filter:
+      drop-shadow(0 0 6px rgba(90, 160, 255, 0.25))
+      drop-shadow(0 0 14px rgba(139, 92, 246, 0.12));
+  }
+
+  50% {
+    transform: translateX(-50%) translateY(-3px) scale(1.04);
+    filter:
+      drop-shadow(0 0 12px rgba(90, 160, 255, 0.65))
+      drop-shadow(0 0 22px rgba(139, 92, 246, 0.28));
+  }
+
+  100% {
+    transform: translateX(-50%) translateY(0) scale(1);
+    filter:
+      drop-shadow(0 0 6px rgba(90, 160, 255, 0.25))
+      drop-shadow(0 0 14px rgba(139, 92, 246, 0.12));
+  }
 }
 
 /* USER */
@@ -462,8 +501,6 @@ body.lavash-modal-open {
   opacity: 1;
   transform: scale(1);
 }
-
-/* collapsed: icons visible on the RIGHT side */
 
 .right-tools:not(:hover) .tool-item {
   justify-content: flex-end;
