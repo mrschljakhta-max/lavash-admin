@@ -1096,3 +1096,45 @@
 .dict-card.is-hidden {
   z-index: 1 !important;
 }
+/* =========================================
+   CAROUSEL GEOMETRY FIX
+========================================= */
+
+/* 🔥 розміри карток */
+.dict-card.is-active {
+  z-index: 50 !important;
+  transform-origin: center;
+}
+
+.dict-card.is-near {
+  z-index: 40 !important;
+}
+
+.dict-card.is-far {
+  z-index: 30 !important;
+}
+
+/* 🔥 КРИТИЧНО — зменшуємо крайні */
+.dict-card.is-far .dict-card__surface {
+  transform: scale(0.92);
+}
+
+/* 🔥 прибираємо "наїзд" */
+.dict-card.is-left {
+  transform-origin: right center;
+}
+
+.dict-card.is-right {
+  transform-origin: left center;
+}
+
+/* 🔥 легке розділення шарів */
+.dict-card.is-far {
+  opacity: 0.72;
+  filter: brightness(0.72) blur(1px);
+}
+
+.dict-card.is-near {
+  opacity: 0.85;
+  filter: brightness(0.82);
+}
