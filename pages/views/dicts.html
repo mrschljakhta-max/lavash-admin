@@ -1,33 +1,39 @@
-<div class="dicts-page" id="dictsPage">
-  <section class="dicts-hero">
+<div class="dicts-page dicts-view--carousel" id="dictsPage" data-dicts-view-mode="carousel">
+  <section class="dicts-hero" id="dictsCarouselView" aria-label="Довідники">
     <div class="dicts-carousel-wrap">
-      <button class="dicts-carousel__nav dicts-carousel__nav--left" id="dictsPrevBtn" type="button" aria-label="Назад">
-        ‹
-      </button>
+      <button class="dicts-carousel__nav dicts-carousel__nav--left" id="dictsPrevBtn" type="button" aria-label="Назад">‹</button>
 
       <div class="dicts-carousel-stage">
-        <div class="dicts-carousel" id="dictsCarousel"></div>
+        <div class="dicts-carousel" id="dictsCarousel" aria-live="polite"></div>
       </div>
 
-      <button class="dicts-carousel__nav dicts-carousel__nav--right" id="dictsNextBtn" type="button" aria-label="Вперед">
-        ›
-      </button>
+      <button class="dicts-carousel__nav dicts-carousel__nav--right" id="dictsNextBtn" type="button" aria-label="Вперед">›</button>
     </div>
 
-    <div class="dicts-carousel__dots" id="dictsDots"></div>
+    <div class="dicts-carousel__dots" id="dictsDots" aria-label="Навігація каруселі"></div>
   </section>
 
-  <div id="dictCreateModal" class="dict-modal hidden">
+  <section class="dicts-schema-view hidden" id="dictsSchemaView" hidden aria-hidden="true">
+    <div class="dicts-schema-card">
+      <div class="dicts-schema-card__eyebrow">Schema mode</div>
+      <h2 class="dicts-schema-card__title">Схема довідників</h2>
+      <p class="dicts-schema-card__text">
+        Тут буде схема зв’язків між довідниками, таблицями Supabase та полями синхронізації.
+      </p>
+    </div>
+  </section>
+
+  <div id="dictCreateModal" class="dict-modal hidden" aria-hidden="true">
     <div class="dict-modal__backdrop" id="dictCreateBackdrop"></div>
 
-    <div class="dict-modal__dialog">
+    <div class="dict-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="dictCreateTitle">
       <div class="dict-modal__head">
         <div>
           <div class="dict-modal__eyebrow">Новий довідник</div>
-          <h3 class="dict-modal__title">Створення довідника</h3>
+          <h3 class="dict-modal__title" id="dictCreateTitle">Створення довідника</h3>
         </div>
 
-        <button class="dict-modal__close" id="dictCreateClose" type="button">✕</button>
+        <button class="dict-modal__close" id="dictCreateClose" type="button" aria-label="Закрити">✕</button>
       </div>
 
       <div class="dict-modal__body">
