@@ -213,17 +213,20 @@ function computeTransform(offset, dragOffset = 0) {
 }
   
   function getCardClass(offset, item) {
-    const abs = Math.abs(offset);
-    let cls = 'dict-card';
+  const abs = Math.abs(offset);
+  let cls = 'dict-card';
 
-    if (offset === 0) cls += ' is-active';
-    else if (abs === 1) cls += ' is-near';
-    else if (abs === 2) cls += ' is-far';
-    else cls += ' is-hidden';
+  if (offset === 0) cls += ' is-active';
+  else if (abs === 1) cls += ' is-near';
+  else if (abs === 2) cls += ' is-far';
+  else cls += ' is-hidden';
 
-    if (item.__create) cls += ' dict-card--create';
-    return cls;
-  }
+  if (offset < 0) cls += ' is-left';
+  if (offset > 0) cls += ' is-right';
+
+  if (item.__create) cls += ' dict-card--create';
+  return cls;
+}
 
   function renderCenteredDictCard(item, index) {
     const visible = getRenderItems();
