@@ -187,13 +187,13 @@
 function computeTransform(offset, dragOffset = 0) {
   // 🔥 СИМЕТРИЧНА 5-рівнева модель (як iOS)
 
-  const map = {
-    "-2": { x: -390, scale: 0.68, rotate: 8, depth: -120 },
-    "-1": { x: -205, scale: 0.86, rotate: 5, depth: -20 },
-    "0":  { x: 0,    scale: 1,    rotate: 0, depth: 130 },
-    "1":  { x: 205,  scale: 0.86, rotate: -5, depth: -20 },
-    "2":  { x: 390,  scale: 0.68, rotate: -8, depth: -120 }
-  };
+ const map = {
+  "-2": { x: -430, scale: 0.62, rotate: 8, depth: -150 },
+  "-1": { x: -220, scale: 0.84, rotate: 5, depth: -35 },
+  "0":  { x: 0,    scale: 1,    rotate: 0, depth: 130 },
+  "1":  { x: 220,  scale: 0.84, rotate: -5, depth: -35 },
+  "2":  { x: 430,  scale: 0.62, rotate: -8, depth: -150 }
+};
 
   const preset = map[String(offset)];
 
