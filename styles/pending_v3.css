@@ -3159,3 +3159,49 @@ select {
     transform: rotate(360deg);
   }
 }
+/* FINAL STATUS BADGE SIZE + ICON CENTER FIX */
+
+.status-badge {
+  width: 42px !important;
+  min-width: 42px !important;
+  height: 42px !important;
+  padding: 0 !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+.status-badge:hover {
+  width: 148px !important;
+  min-width: 148px !important;
+  padding: 0 14px !important;
+  justify-content: flex-start !important;
+}
+
+.status-badge__icon {
+  width: 42px !important;
+  min-width: 42px !important;
+  height: 42px !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.status-badge__icon svg {
+  width: 20px !important;
+  height: 20px !important;
+  display: block !important;
+}
+
+.status-badge:not(:hover) .status-badge__text {
+  display: none !important;
+}
+
+.status-badge:hover .status-badge__icon {
+  width: 24px !important;
+  min-width: 24px !important;
+  height: 24px !important;
+}
