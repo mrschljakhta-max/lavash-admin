@@ -1069,3 +1069,30 @@
   opacity: 0.68 !important;
   filter: saturate(0.78) brightness(0.66) blur(1.2px) !important;
 }
+/* =========================================================
+   DICTS CAROUSEL LEFT/RIGHT LAYER FIX
+========================================================= */
+
+.dict-card.is-active {
+  z-index: 50 !important;
+}
+
+.dict-card.is-near.is-left {
+  z-index: 30 !important;
+}
+
+.dict-card.is-far.is-left {
+  z-index: 20 !important;
+}
+
+.dict-card.is-near.is-right {
+  z-index: 30 !important;
+}
+
+.dict-card.is-far.is-right {
+  z-index: 20 !important;
+}
+
+.dict-card.is-hidden {
+  z-index: 1 !important;
+}
