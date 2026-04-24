@@ -185,16 +185,19 @@
   }
 
 function computeTransform(offset, dragOffset = 0) {
-  const positions = {
-    "-2": { x: -360, scale: 0.74, rotate: 7, depth: -120 },
-    "-1": { x: -210, scale: 0.88, rotate: 5, depth: -20 },
+  // 🔥 СИМЕТРИЧНА 5-рівнева модель (як iOS)
+
+  const map = {
+    "-2": { x: -390, scale: 0.68, rotate: 8, depth: -120 },
+    "-1": { x: -205, scale: 0.86, rotate: 5, depth: -20 },
     "0":  { x: 0,    scale: 1,    rotate: 0, depth: 130 },
-    "1":  { x: 210,  scale: 0.88, rotate: -5, depth: -20 },
-    "2":  { x: 360,  scale: 0.74, rotate: -7, depth: -120 }
+    "1":  { x: 205,  scale: 0.86, rotate: -5, depth: -20 },
+    "2":  { x: 390,  scale: 0.68, rotate: -8, depth: -120 }
   };
 
-  const preset = positions[String(offset)];
+  const preset = map[String(offset)];
 
+  // fallback (далекі елементи)
   if (!preset) {
     return {
       x: (offset < 0 ? -520 : 520) + dragOffset,
