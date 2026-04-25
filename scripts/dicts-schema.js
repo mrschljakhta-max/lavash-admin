@@ -1,27 +1,26 @@
 (() => {
-
   const ICON_PATH = "../assets/icons/schema/";
 
   const schemaLeft = [
-    { id: 'units', label: 'ПІДРОЗДІЛИ', icon: 'units.svg', x: 36, y: 18 },
-    { id: 'personnel', label: 'ПЕРСОНАЛ', icon: 'personnel.svg', x: 32, y: 27 },
-    { id: 'vehicles', label: 'ТЕХНІКА', icon: 'vehicles.svg', x: 29, y: 36 },
-    { id: 'positions', label: 'ПОЗИЦІЇ', icon: 'positions.svg', x: 27, y: 45 },
-    { id: 'tasks', label: 'ЗАВДАННЯ', icon: 'tasks.svg', x: 27, y: 54 },
-    { id: 'events', label: 'ПОДІЇ', icon: 'events.svg', x: 29, y: 63 },
-    { id: 'stations', label: 'СТАНЦІЇ РЕБ', icon: 'stations.svg', x: 32, y: 72 },
-    { id: 'uav', label: 'БПЛА', icon: 'uav.svg', x: 36, y: 81 }
+    { id: 'units', label: 'ПІДРОЗДІЛИ', icon: 'units.svg', x: 26, y: 18 },
+    { id: 'personnel', label: 'ПЕРСОНАЛ', icon: 'personnel.svg', x: 22, y: 27 },
+    { id: 'vehicles', label: 'ТЕХНІКА', icon: 'vehicles.svg', x: 19, y: 36 },
+    { id: 'positions', label: 'ПОЗИЦІЇ', icon: 'positions.svg', x: 17, y: 45 },
+    { id: 'tasks', label: 'ЗАВДАННЯ', icon: 'tasks.svg', x: 17, y: 54 },
+    { id: 'events', label: 'ПОДІЇ', icon: 'events.svg', x: 19, y: 63 },
+    { id: 'stations', label: 'СТАНЦІЇ РЕБ', icon: 'stations.svg', x: 22, y: 72 },
+    { id: 'uav', label: 'БПЛА', icon: 'uav.svg', x: 26, y: 81 }
   ];
 
   const schemaRight = [
-    { id: 'countries', label: 'КРАЇНИ', icon: 'countries.svg', x: 64, y: 18 },
-    { id: 'regions', label: 'РЕГІОНИ', icon: 'regions.svg', x: 68, y: 27 },
-    { id: 'settlements', label: 'НАСЕЛЕНІ ПУНКТИ', icon: 'settlements.svg', x: 71, y: 36 },
-    { id: 'terrain', label: 'ТИПИ МІСЦЕВОСТІ', icon: 'terrain.svg', x: 73, y: 45 },
-    { id: 'objectTypes', label: 'ТИПИ ОБʼЄКТІВ', icon: 'object-types.svg', x: 73, y: 54 },
-    { id: 'sources', label: 'ДЖЕРЕЛА ІНФОРМАЦІЇ', icon: 'sources.svg', x: 71, y: 63 },
-    { id: 'statuses', label: 'СТАТУСИ', icon: 'statuses.svg', x: 68, y: 72 },
-    { id: 'roles', label: 'РОЛІ КОРИСТУВАЧІВ', icon: 'roles.svg', x: 64, y: 81 }
+    { id: 'countries', label: 'КРАЇНИ', icon: 'countries.svg', x: 74, y: 18 },
+    { id: 'regions', label: 'РЕГІОНИ', icon: 'regions.svg', x: 78, y: 27 },
+    { id: 'settlements', label: 'НАСЕЛЕНІ ПУНКТИ', icon: 'settlements.svg', x: 81, y: 36 },
+    { id: 'terrain', label: 'ТИПИ МІСЦЕВОСТІ', icon: 'terrain.svg', x: 83, y: 45 },
+    { id: 'objectTypes', label: 'ТИПИ ОБʼЄКТІВ', icon: 'object-types.svg', x: 83, y: 54 },
+    { id: 'sources', label: 'ДЖЕРЕЛА ІНФОРМАЦІЇ', icon: 'sources.svg', x: 81, y: 63 },
+    { id: 'statuses', label: 'СТАТУСИ', icon: 'statuses.svg', x: 78, y: 72 },
+    { id: 'roles', label: 'РОЛІ КОРИСТУВАЧІВ', icon: 'roles.svg', x: 74, y: 81 }
   ];
 
   const schemaRelations = [
@@ -39,26 +38,38 @@
     ['uav','sources']
   ];
 
-  function getPoint(node) {
-    const isLeft = schemaLeft.some(n => n.id === node.id);
+  const allNodes = () => [...schemaLeft, ...schemaRight];
+  const getNode = (id) => allNodes().find((n) => n.id === id);
+
+  function getPoint(id) {
+    const n = getNode(id);
+    if (!n) return { x: 500, y: 340 };
+
+    const isLeft = schemaLeft.some((item) => item.id === id);
+
     return {
-      x: node.x * 10 + (isLeft ? 110 : -110),
-      y: node.y * 5.2
+      x: n.x * 10 + (isLeft ? 115 : -115),
+      y: n.y * 6.2
     };
   }
 
   function renderLine([from, to], i) {
-    const a = getPoint([...schemaLeft, ...schemaRight].find(n => n.id === from));
-    const b = getPoint([...schemaLeft, ...schemaRight].find(n => n.id === to));
+    const a = getPoint(from);
+    const b = getPoint(to);
 
-    const curve = i % 2 ? 40 : -40;
+    const centerX = 500;
+    const centerY = 340 + ((i % 6) - 3) * 18;
 
     return `
       <path
         class="schema-link"
         data-from="${from}"
         data-to="${to}"
-        d="M ${a.x} ${a.y} C ${a.x + 160} ${a.y + curve}, ${b.x - 160} ${b.y - curve}, ${b.x} ${b.y}"
+        d="
+          M ${a.x} ${a.y}
+          C ${a.x + 120} ${a.y}, ${centerX - 80} ${centerY}, ${centerX} ${centerY}
+          C ${centerX + 80} ${centerY}, ${b.x - 120} ${b.y}, ${b.x} ${b.y}
+        "
       />
     `;
   }
@@ -69,14 +80,45 @@
         class="schema-orbit-card schema-orbit-card--${side}"
         style="left:${item.x}%; top:${item.y}%"
         data-id="${item.id}"
+        type="button"
       >
         <span class="schema-orbit-card__icon">
-          <img src="${ICON_PATH + item.icon}" />
+          <img src="${ICON_PATH + item.icon}" alt="" draggable="false" />
         </span>
         <span class="schema-orbit-card__label">${item.label}</span>
         <span class="schema-orbit-card__dot"></span>
       </button>
     `;
+  }
+
+  function setActiveNode(id) {
+    document.querySelectorAll('.schema-orbit-card').forEach((card) => {
+      const cardId = card.dataset.id;
+
+      const related = schemaRelations.some(([from, to]) =>
+        (from === id && to === cardId) || (to === id && from === cardId)
+      );
+
+      card.classList.toggle('is-focused', cardId === id);
+      card.classList.toggle('is-related', related);
+      card.classList.toggle('is-dimmed', Boolean(id) && cardId !== id && !related);
+    });
+
+    document.querySelectorAll('.schema-link').forEach((line) => {
+      const active = line.dataset.from === id || line.dataset.to === id;
+      line.classList.toggle('is-active', active);
+      line.classList.toggle('is-muted', Boolean(id) && !active);
+    });
+  }
+
+  function bindSchemaEvents() {
+    document.querySelectorAll('.schema-orbit-card').forEach((card) => {
+      card.addEventListener('mouseenter', () => setActiveNode(card.dataset.id));
+      card.addEventListener('mouseleave', () => setActiveNode(null));
+      card.addEventListener('click', () => {
+        console.log('open dictionary:', card.dataset.id);
+      });
+    });
   }
 
   function renderSchema() {
@@ -85,14 +127,19 @@
 
     root.innerHTML = `
       <div class="dict-schema-orbit">
-
         <div class="dict-schema-orbit__grid"></div>
-        <div class="dict-schema-orbit__axis"></div>
 
-        <svg class="dict-schema-orbit__links" viewBox="0 0 1000 520">
+        <div class="dict-schema-orbit__arc dict-schema-orbit__arc--left"></div>
+        <div class="dict-schema-orbit__arc dict-schema-orbit__arc--right"></div>
+
+        <div class="dict-schema-orbit__axis"></div>
+        <div class="dict-schema-orbit__core"></div>
+
+        <svg class="dict-schema-orbit__links" viewBox="0 0 1000 680" preserveAspectRatio="none" aria-hidden="true">
           <defs>
-            <linearGradient id="g" x1="0%" y1="0%" x2="100%">
+            <linearGradient id="schemaGradient" x1="0%" y1="0%" x2="100%" y2="0%">
               <stop offset="0%" stop-color="#14f7ee"/>
+              <stop offset="50%" stop-color="#4fa8ff"/>
               <stop offset="100%" stop-color="#9558ff"/>
             </linearGradient>
           </defs>
@@ -100,12 +147,13 @@
         </svg>
 
         <div class="dict-schema-orbit__cards">
-          ${schemaLeft.map(i => renderCard(i, 'left')).join("")}
-          ${schemaRight.map(i => renderCard(i, 'right')).join("")}
+          ${schemaLeft.map((i) => renderCard(i, 'left')).join("")}
+          ${schemaRight.map((i) => renderCard(i, 'right')).join("")}
         </div>
-
       </div>
     `;
+
+    bindSchemaEvents();
   }
 
   function initSchemaView() {
@@ -113,5 +161,4 @@
   }
 
   window.LAVASH_DICTS_SCHEMA = { initSchemaView };
-
 })();
