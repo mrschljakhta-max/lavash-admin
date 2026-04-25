@@ -1,12 +1,14 @@
 (() => {
+  const DICT_ICON_PATH = '../assets/icons/dicts/';
+
   const DICT_ICONS = {
-    uav: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 11v5"/></svg>`,
-    settlement: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="4"/></svg>`,
-    station: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 20V14"/></svg>`,
-    unit: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3l7 3"/></svg>`,
-    stack: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 4l8 4-8 4"/></svg>`,
-    pending: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="9"/></svg>`,
-    plus: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14"/></svg>`
+    uav: 'uav.svg',
+    settlement: 'settlement.svg',
+    station: 'station.svg',
+    unit: 'unit.svg',
+    stack: 'stack.svg',
+    pending: 'pending.svg',
+    plus: 'plus.svg'
   };
 
   const dictsState = {
@@ -24,6 +26,21 @@
 
   function formatNumber(value) {
     return new Intl.NumberFormat('uk-UA').format(value || 0);
+  }
+
+  function renderDictIcon(iconName) {
+    const fileName = DICT_ICONS[iconName] || DICT_ICONS.stack;
+
+    return `
+      <img
+        class="dict-card__icon-img"
+        src="${DICT_ICON_PATH}${fileName}"
+        alt=""
+        aria-hidden="true"
+        loading="lazy"
+        draggable="false"
+      />
+    `;
   }
 
   function getRenderItems() {
@@ -50,6 +67,7 @@
 
     return [-2, -1, 0, 1, 2].map((offset) => {
       const index = normalizeIndex(dictsState.activeIndex + offset, total);
+
       return {
         item: items[index],
         index,
@@ -141,7 +159,7 @@
 
         <div class="dict-card__content">
           <div class="dict-card__icon">
-            ${DICT_ICONS[item.icon] || DICT_ICONS.stack}
+            ${renderDictIcon(item.icon)}
           </div>
 
           <div class="dict-card__title">${item.title}</div>
