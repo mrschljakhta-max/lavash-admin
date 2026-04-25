@@ -37,8 +37,13 @@
   overflow: visible;
 }
 
+/* =========================
+   BACKGROUND
+========================= */
+
 .schema-bg-grid,
-.schema-bg-noise {
+.schema-bg-stars,
+.schema-bg-glow {
   position: absolute;
   inset: 0;
   border-radius: 34px;
@@ -46,28 +51,46 @@
 }
 
 .schema-bg-grid {
-  opacity: .15;
+  opacity: .14;
   background-image:
     radial-gradient(circle, rgba(140, 174, 255, .36) 1px, transparent 1px);
   background-size: 22px 22px;
 }
 
-.schema-bg-noise {
-  opacity: .42;
-  background:
-    radial-gradient(circle at 18% 35%, rgba(20, 247, 238, .22) 0 1px, transparent 2px),
-    radial-gradient(circle at 38% 64%, rgba(20, 247, 238, .16) 0 1px, transparent 2px),
-    radial-gradient(circle at 64% 28%, rgba(149, 88, 255, .18) 0 1px, transparent 2px),
-    radial-gradient(circle at 78% 66%, rgba(149, 88, 255, .18) 0 1px, transparent 2px);
-  background-size: 90px 90px, 120px 120px, 100px 100px, 130px 130px;
-  animation: schemaStarsDrift 20s linear infinite;
+.schema-bg-stars {
+  opacity: .62;
+  background-image:
+    radial-gradient(circle at 12% 20%, rgba(255,255,255,.45) 0 1px, transparent 2px),
+    radial-gradient(circle at 28% 70%, rgba(20,247,238,.38) 0 1px, transparent 2px),
+    radial-gradient(circle at 48% 35%, rgba(255,255,255,.32) 0 1px, transparent 2px),
+    radial-gradient(circle at 66% 76%, rgba(149,88,255,.42) 0 1px, transparent 2px),
+    radial-gradient(circle at 84% 24%, rgba(255,255,255,.36) 0 1px, transparent 2px);
+  background-size:
+    110px 110px,
+    150px 150px,
+    180px 180px,
+    140px 140px,
+    210px 210px;
+  animation: schemaStarsDrift 70s linear infinite;
 }
+
+.schema-bg-glow {
+  background:
+    radial-gradient(circle at 30% 50%, rgba(20,247,238,.16), transparent 38%),
+    radial-gradient(circle at 70% 50%, rgba(149,88,255,.17), transparent 38%),
+    radial-gradient(circle at 50% 50%, rgba(79,168,255,.13), transparent 24%);
+  opacity: .9;
+}
+
+/* =========================
+   OUTER ARCS / SEGMENTS
+========================= */
 
 .schema-shell {
   position: absolute;
-  top: 58px;
-  width: 410px;
-  height: 564px;
+  top: 56px;
+  width: 360px;
+  height: 568px;
   border-radius: 999px;
   pointer-events: none;
   z-index: 1;
@@ -75,73 +98,75 @@
 }
 
 .schema-shell--left {
-  left: 40px;
-  border-left: 2px solid rgba(20, 247, 238, .32);
+  left: 76px;
+  border-left: 2px solid rgba(20, 247, 238, .26);
   box-shadow:
-    -22px 0 48px rgba(20, 247, 238, .16),
-    inset 30px 0 58px rgba(20, 247, 238, .045);
-  animation: schemaArcLeftBreath 4.5s ease-in-out infinite;
+    -18px 0 42px rgba(20, 247, 238, .14),
+    inset 22px 0 44px rgba(20, 247, 238, .035);
+  animation: schemaArcLeftBreath 4.8s ease-in-out infinite;
 }
 
 .schema-shell--right {
-  right: 40px;
-  border-right: 2px solid rgba(149, 88, 255, .36);
+  right: 76px;
+  border-right: 2px solid rgba(149, 88, 255, .3);
   box-shadow:
-    22px 0 48px rgba(149, 88, 255, .18),
-    inset -30px 0 58px rgba(149, 88, 255, .05);
-  animation: schemaArcRightBreath 4.5s ease-in-out infinite;
+    18px 0 42px rgba(149, 88, 255, .16),
+    inset -22px 0 44px rgba(149, 88, 255, .04);
+  animation: schemaArcRightBreath 4.8s ease-in-out infinite;
 }
 
-.schema-shell span {
+.schema-shell__segment {
   position: absolute;
-  width: 112px;
+  width: 32px;
   height: 4px;
   border-radius: 999px;
-  opacity: .95;
+  opacity: .92;
 }
 
-.schema-shell--left span {
-  left: -13px;
+.schema-shell--left .schema-shell__segment {
+  left: -16px;
   background: linear-gradient(90deg, transparent, var(--schema-cyan));
-  box-shadow: 0 0 18px rgba(20, 247, 238, .85);
+  box-shadow:
+    0 0 12px rgba(20, 247, 238, .78),
+    0 0 24px rgba(20, 247, 238, .26);
 }
 
-.schema-shell--right span {
-  right: -13px;
+.schema-shell--right .schema-shell__segment {
+  right: -16px;
   background: linear-gradient(90deg, var(--schema-violet), transparent);
-  box-shadow: 0 0 18px rgba(149, 88, 255, .85);
+  box-shadow:
+    0 0 12px rgba(149, 88, 255, .82),
+    0 0 24px rgba(149, 88, 255, .3);
 }
-
-.schema-shell span:nth-child(1) { top: 34px; transform: rotate(-34deg); }
-.schema-shell span:nth-child(2) { top: 122px; transform: rotate(-18deg); }
-.schema-shell span:nth-child(3) { top: 280px; transform: rotate(0deg); }
-.schema-shell span:nth-child(4) { bottom: 122px; transform: rotate(18deg); }
-.schema-shell span:nth-child(5) { bottom: 34px; transform: rotate(34deg); }
 
 .schema-arc-label {
   position: absolute;
   top: 50%;
   z-index: 2;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 900;
   letter-spacing: .22em;
-  opacity: .82;
+  opacity: .78;
   pointer-events: none;
 }
 
 .schema-arc-label--left {
-  left: 28px;
+  left: 72px;
   color: var(--schema-cyan);
   transform: translateY(-50%) rotate(-90deg);
   text-shadow: 0 0 12px rgba(20, 247, 238, .72);
 }
 
 .schema-arc-label--right {
-  right: 16px;
+  right: 60px;
   color: var(--schema-violet);
   transform: translateY(-50%) rotate(90deg);
   text-shadow: 0 0 12px rgba(149, 88, 255, .76);
 }
+
+/* =========================
+   AXIS + HUB
+========================= */
 
 .schema-axis {
   position: absolute;
@@ -164,6 +189,92 @@
   z-index: 3;
   animation: schemaAxisBreath 3.8s ease-in-out infinite;
 }
+
+.schema-hub {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 170px;
+  height: 170px;
+  transform: translate(-50%, -50%);
+  z-index: 6;
+  pointer-events: none;
+  animation: schemaHubFloat 4s ease-in-out infinite;
+}
+
+.schema-hub__halo,
+.schema-hub__ring,
+.schema-hub__diamond,
+.schema-hub__core {
+  position: absolute;
+  border-radius: 999px;
+}
+
+.schema-hub__halo {
+  inset: -26px;
+  background:
+    radial-gradient(circle, rgba(20, 247, 238, .24), rgba(79, 168, 255, .18) 36%, rgba(149, 88, 255, .16) 58%, transparent 72%);
+  filter: blur(13px);
+  opacity: .86;
+}
+
+.schema-hub__core {
+  inset: 64px;
+  background:
+    radial-gradient(circle, #fff 0 11%, #14f7ee 24%, #4fa8ff 48%, #9558ff 78%);
+  box-shadow:
+    0 0 18px rgba(255, 255, 255, .92),
+    0 0 42px rgba(20, 247, 238, .8),
+    0 0 82px rgba(149, 88, 255, .65);
+  animation: schemaHubPulse 2.4s ease-in-out infinite;
+}
+
+.schema-hub__diamond {
+  left: 50%;
+  top: 50%;
+  width: 42px;
+  height: 42px;
+  transform: translate(-50%, -50%) rotate(45deg);
+  border-radius: 9px;
+  border: 2px solid rgba(255, 255, 255, .84);
+  box-shadow:
+    inset 0 0 13px rgba(20, 247, 238, .42),
+    0 0 24px rgba(149, 88, 255, .56);
+  animation: schemaDiamondSpin 8s linear infinite;
+}
+
+.schema-hub__ring {
+  border: 1px solid rgba(135, 180, 255, .3);
+  box-shadow:
+    inset 0 0 24px rgba(20, 247, 238, .15),
+    0 0 30px rgba(149, 88, 255, .18);
+}
+
+.schema-hub__ring--inner {
+  inset: 48px;
+  animation: schemaHubRing 3.2s ease-in-out infinite;
+}
+
+.schema-hub__ring--middle {
+  inset: 28px;
+  animation: schemaHubRing 4s ease-in-out infinite reverse;
+}
+
+.schema-hub__ring--outer {
+  inset: 4px;
+  opacity: .62;
+  border-style: dashed;
+  animation: schemaHubRotate 11s linear infinite;
+}
+
+.schema-hub.is-hot .schema-hub__halo {
+  opacity: 1;
+  filter: blur(8px);
+}
+
+/* =========================
+   LINKS
+========================= */
 
 .schema-links {
   position: absolute;
@@ -188,20 +299,20 @@
 }
 
 .schema-link--bg {
-  opacity: .08;
-  stroke-width: .8;
+  opacity: .07;
+  stroke-width: .75;
   stroke-dasharray: 3 16;
 }
 
 .schema-link--secondary {
-  opacity: .24;
-  stroke-width: 1.1;
+  opacity: .22;
+  stroke-width: 1.05;
   stroke-dasharray: 5 14;
 }
 
 .schema-link--primary {
-  opacity: .55;
-  stroke-width: 1.55;
+  opacity: .5;
+  stroke-width: 1.5;
   stroke-dasharray: 8 16;
 }
 
@@ -216,87 +327,9 @@
   opacity: .03;
 }
 
-.schema-hub {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 154px;
-  height: 154px;
-  transform: translate(-50%, -50%);
-  z-index: 6;
-  pointer-events: none;
-  animation: schemaHubFloat 4s ease-in-out infinite;
-}
-
-.schema-hub__halo,
-.schema-hub__ring,
-.schema-hub__diamond,
-.schema-hub__core {
-  position: absolute;
-  border-radius: 999px;
-}
-
-.schema-hub__halo {
-  inset: -24px;
-  background:
-    radial-gradient(circle, rgba(20, 247, 238, .22), rgba(79, 168, 255, .16) 36%, rgba(149, 88, 255, .14) 58%, transparent 72%);
-  filter: blur(12px);
-  opacity: .82;
-}
-
-.schema-hub__core {
-  inset: 58px;
-  background:
-    radial-gradient(circle, #fff 0 11%, #14f7ee 24%, #4fa8ff 48%, #9558ff 78%);
-  box-shadow:
-    0 0 18px rgba(255, 255, 255, .92),
-    0 0 42px rgba(20, 247, 238, .8),
-    0 0 76px rgba(149, 88, 255, .62);
-  animation: schemaHubPulse 2.4s ease-in-out infinite;
-}
-
-.schema-hub__diamond {
-  left: 50%;
-  top: 50%;
-  width: 38px;
-  height: 38px;
-  transform: translate(-50%, -50%) rotate(45deg);
-  border-radius: 8px;
-  border: 2px solid rgba(255, 255, 255, .82);
-  box-shadow:
-    inset 0 0 12px rgba(20, 247, 238, .38),
-    0 0 22px rgba(149, 88, 255, .52);
-  animation: schemaDiamondSpin 8s linear infinite;
-}
-
-.schema-hub__ring {
-  border: 1px solid rgba(135, 180, 255, .28);
-  box-shadow:
-    inset 0 0 24px rgba(20, 247, 238, .15),
-    0 0 30px rgba(149, 88, 255, .18);
-}
-
-.schema-hub__ring--inner {
-  inset: 42px;
-  animation: schemaHubRing 3.2s ease-in-out infinite;
-}
-
-.schema-hub__ring--middle {
-  inset: 24px;
-  animation: schemaHubRing 4s ease-in-out infinite reverse;
-}
-
-.schema-hub__ring--outer {
-  inset: 2px;
-  opacity: .58;
-  border-style: dashed;
-  animation: schemaHubRotate 11s linear infinite;
-}
-
-.schema-hub.is-hot .schema-hub__halo {
-  opacity: 1;
-  filter: blur(8px);
-}
+/* =========================
+   NODES
+========================= */
 
 .schema-nodes {
   position: absolute;
@@ -450,77 +483,122 @@
     0 0 50px rgba(149, 88, 255, .32);
 }
 
+/* =========================
+   ANIMATIONS
+========================= */
+
 @keyframes schemaLineFlow {
-  to { stroke-dashoffset: -220; }
+  to {
+    stroke-dashoffset: -220;
+  }
 }
 
 @keyframes schemaStarsDrift {
   to {
-    background-position: 90px 90px, -120px 120px, 100px -100px, -130px -130px;
+    background-position:
+      110px 110px,
+      -150px 150px,
+      180px -180px,
+      -140px -140px,
+      210px 210px;
   }
 }
 
 @keyframes schemaAxisBreath {
-  0%, 100% { opacity: .7; filter: blur(0); }
-  50% { opacity: 1; filter: blur(.45px); }
+  0%, 100% {
+    opacity: .7;
+    filter: blur(0);
+  }
+  50% {
+    opacity: 1;
+    filter: blur(.45px);
+  }
 }
 
 @keyframes schemaHubFloat {
-  0%, 100% { transform: translate(-50%, -50%) scale(.98); }
-  50% { transform: translate(-50%, -50%) scale(1.045); }
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(.98);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.045);
+  }
 }
 
 @keyframes schemaHubPulse {
-  0%, 100% { transform: scale(.9); opacity: .78; }
-  50% { transform: scale(1.2); opacity: 1; }
+  0%, 100% {
+    transform: scale(.9);
+    opacity: .78;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
 }
 
 @keyframes schemaHubRing {
-  0%, 100% { transform: scale(.82); opacity: .26; }
-  50% { transform: scale(1.16); opacity: .78; }
+  0%, 100% {
+    transform: scale(.82);
+    opacity: .26;
+  }
+  50% {
+    transform: scale(1.16);
+    opacity: .78;
+  }
 }
 
 @keyframes schemaHubRotate {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes schemaDiamondSpin {
-  from { transform: translate(-50%, -50%) rotate(45deg); }
-  to { transform: translate(-50%, -50%) rotate(405deg); }
+  from {
+    transform: translate(-50%, -50%) rotate(45deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(405deg);
+  }
 }
 
 @keyframes schemaDotPulse {
-  0%, 100% { transform: scale(.92); opacity: .72; }
-  50% { transform: scale(1.28); opacity: 1; }
+  0%, 100% {
+    transform: scale(.92);
+    opacity: .72;
+  }
+  50% {
+    transform: scale(1.28);
+    opacity: 1;
+  }
 }
 
 @keyframes schemaArcLeftBreath {
   0%, 100% {
-    opacity: .52;
+    opacity: .55;
     box-shadow:
-      -22px 0 48px rgba(20, 247, 238, .14),
-      inset 30px 0 58px rgba(20, 247, 238, .045);
+      -18px 0 42px rgba(20, 247, 238, .14),
+      inset 22px 0 44px rgba(20, 247, 238, .035);
   }
   50% {
     opacity: .98;
     box-shadow:
-      -26px 0 72px rgba(20, 247, 238, .3),
-      inset 34px 0 68px rgba(20, 247, 238, .1);
+      -24px 0 70px rgba(20, 247, 238, .3),
+      inset 28px 0 66px rgba(20, 247, 238, .09);
   }
 }
 
 @keyframes schemaArcRightBreath {
   0%, 100% {
-    opacity: .52;
+    opacity: .55;
     box-shadow:
-      22px 0 48px rgba(149, 88, 255, .16),
-      inset -30px 0 58px rgba(149, 88, 255, .05);
+      18px 0 42px rgba(149, 88, 255, .16),
+      inset -22px 0 44px rgba(149, 88, 255, .04);
   }
   50% {
     opacity: .98;
     box-shadow:
-      26px 0 72px rgba(149, 88, 255, .32),
-      inset -34px 0 68px rgba(149, 88, 255, .11);
+      24px 0 70px rgba(149, 88, 255, .32),
+      inset -28px 0 66px rgba(149, 88, 255, .1);
   }
 }
 
