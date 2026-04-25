@@ -921,3 +921,92 @@
     scroll-behavior: auto !important;
   }
 }
+/* --- ВСЕ ЗАЛИШАЄТЬСЯ ЯК У ТЕБЕ ДО ЦЬОГО МІСЦЯ --- */
+
+
+/* ============================= */
+/* 🔥 FIX 1 — ПРИБРАТИ ПРОПЕЛЕР */
+/* ============================= */
+
+.schema-crystal::after {
+  display: none !important;
+  content: none !important;
+}
+
+
+/* ============================= */
+/* 🔥 FIX 2 — СТАНИ ПЛАШОК */
+/* ============================= */
+
+.schema-node.is-related {
+  opacity: .82;
+  filter: blur(.12px) saturate(1.18) brightness(1.05);
+}
+
+.schema-node.is-dimmed {
+  opacity: .22;
+  filter: grayscale(1) blur(1.6px) brightness(.58);
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.04),
+    inset 0 -18px 34px rgba(0,0,0,.32),
+    0 10px 24px rgba(0,0,0,.18);
+}
+
+/* дочірні елементи приглушення */
+
+.schema-node.is-dimmed .schema-node__port {
+  opacity: .28;
+  box-shadow: none;
+}
+
+.schema-node.is-dimmed .schema-node__icon {
+  opacity: .48;
+  box-shadow: none;
+}
+
+.schema-node.is-dimmed .schema-node__label {
+  opacity: .62;
+  text-shadow: none;
+}
+
+/* активна */
+
+.schema-node.is-focused {
+  opacity: 1;
+  filter: none;
+  z-index: 30;
+}
+
+
+/* ============================= */
+/* 🔥 FIX 3 — ЛІНІЇ */
+/* ============================= */
+
+.schema-link.is-muted {
+  opacity: .025;
+  filter: blur(1.2px);
+}
+
+
+/* ============================= */
+/* 🔥 FIX 4 — ТОЧКИ */
+/* ============================= */
+
+.schema-flow-dot.is-muted {
+  opacity: .045;
+  filter: blur(1px) grayscale(1);
+}
+
+
+/* ============================= */
+/* 🔥 FIX 5 — СЕГМЕНТИ ОРБІТ */
+/* ============================= */
+
+.schema-orbit-segment.is-muted {
+  opacity: .045;
+  filter: blur(1px);
+}
+
+
+/* --- ВСЕ ІНШЕ В ФАЙЛІ НЕ ЧІПАЄМО --- */
