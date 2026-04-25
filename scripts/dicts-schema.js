@@ -2,25 +2,25 @@
   const ICON_PATH = "../assets/icons/schema/";
 
   const schemaLeft = [
-    { id: "units", label: "ПІДРОЗДІЛИ", icon: "units.svg", x: 26, y: 18 },
-    { id: "personnel", label: "ПЕРСОНАЛ", icon: "personnel.svg", x: 22, y: 27 },
-    { id: "vehicles", label: "ТЕХНІКА", icon: "vehicles.svg", x: 19, y: 36 },
-    { id: "positions", label: "ПОЗИЦІЇ", icon: "positions.svg", x: 17, y: 45 },
-    { id: "tasks", label: "ЗАВДАННЯ", icon: "tasks.svg", x: 17, y: 54 },
-    { id: "events", label: "ПОДІЇ", icon: "events.svg", x: 19, y: 63 },
-    { id: "stations", label: "СТАНЦІЇ РЕБ", icon: "stations.svg", x: 22, y: 72 },
-    { id: "uav", label: "БПЛА", icon: "uav.svg", x: 26, y: 81 }
+    { id: "units", label: "ПІДРОЗДІЛИ", icon: "units.svg", x: 23, y: 17 },
+    { id: "personnel", label: "ПЕРСОНАЛ", icon: "personnel.svg", x: 20, y: 26 },
+    { id: "vehicles", label: "ТЕХНІКА", icon: "vehicles.svg", x: 18, y: 35 },
+    { id: "positions", label: "ПОЗИЦІЇ", icon: "positions.svg", x: 16.8, y: 44 },
+    { id: "tasks", label: "ЗАВДАННЯ", icon: "tasks.svg", x: 16.8, y: 53 },
+    { id: "events", label: "ПОДІЇ", icon: "events.svg", x: 18, y: 62 },
+    { id: "stations", label: "СТАНЦІЇ РЕБ", icon: "stations.svg", x: 20, y: 71 },
+    { id: "uav", label: "БПЛА", icon: "uav.svg", x: 23, y: 80 }
   ];
 
   const schemaRight = [
-    { id: "countries", label: "КРАЇНИ", icon: "countries.svg", x: 74, y: 18 },
-    { id: "regions", label: "РЕГІОНИ", icon: "regions.svg", x: 78, y: 27 },
-    { id: "settlements", label: "НАСЕЛЕНІ ПУНКТИ", icon: "settlements.svg", x: 81, y: 36 },
-    { id: "terrain", label: "ТИПИ МІСЦЕВОСТІ", icon: "terrain.svg", x: 83, y: 45 },
-    { id: "objectTypes", label: "ТИПИ ОБʼЄКТІВ", icon: "object-types.svg", x: 83, y: 54 },
-    { id: "sources", label: "ДЖЕРЕЛА ІНФОРМАЦІЇ", icon: "sources.svg", x: 81, y: 63 },
-    { id: "statuses", label: "СТАТУСИ", icon: "statuses.svg", x: 78, y: 72 },
-    { id: "roles", label: "РОЛІ КОРИСТУВАЧІВ", icon: "roles.svg", x: 74, y: 81 }
+    { id: "countries", label: "КРАЇНИ", icon: "countries.svg", x: 77, y: 17 },
+    { id: "regions", label: "РЕГІОНИ", icon: "regions.svg", x: 80, y: 26 },
+    { id: "settlements", label: "НАСЕЛЕНІ ПУНКТИ", icon: "settlements.svg", x: 82, y: 35 },
+    { id: "terrain", label: "ТИПИ МІСЦЕВОСТІ", icon: "terrain.svg", x: 83.2, y: 44 },
+    { id: "objectTypes", label: "ТИПИ ОБʼЄКТІВ", icon: "object-types.svg", x: 83.2, y: 53 },
+    { id: "sources", label: "ДЖЕРЕЛА ІНФОРМАЦІЇ", icon: "sources.svg", x: 82, y: 62 },
+    { id: "statuses", label: "СТАТУСИ", icon: "statuses.svg", x: 80, y: 71 },
+    { id: "roles", label: "РОЛІ КОРИСТУВАЧІВ", icon: "roles.svg", x: 77, y: 80 }
   ];
 
   const schemaRelations = [
@@ -41,21 +41,21 @@
   const allNodes = () => [...schemaLeft, ...schemaRight];
 
   function getNode(id) {
-    return allNodes().find((n) => n.id === id);
+    return allNodes().find((node) => node.id === id);
   }
 
   function getPoint(id) {
-    const n = getNode(id);
+    const node = getNode(id);
 
-    if (!n) {
+    if (!node) {
       return { x: 500, y: 340 };
     }
 
     const isLeft = schemaLeft.some((item) => item.id === id);
 
     return {
-      x: n.x * 10 + (isLeft ? 115 : -115),
-      y: n.y * 6.2
+      x: node.x * 10 + (isLeft ? 132 : -132),
+      y: node.y * 6.8
     };
   }
 
@@ -64,7 +64,7 @@
     const b = getPoint(to);
 
     const centerX = 500;
-    const centerY = 340 + ((index % 6) - 3) * 18;
+    const centerY = 340 + ((index % 7) - 3) * 22;
 
     return `
       <path
@@ -73,8 +73,8 @@
         data-to="${to}"
         d="
           M ${a.x} ${a.y}
-          C ${a.x + 120} ${a.y}, ${centerX - 80} ${centerY}, ${centerX} ${centerY}
-          C ${centerX + 80} ${centerY}, ${b.x - 120} ${b.y}, ${b.x} ${b.y}
+          C ${a.x + 140} ${a.y}, ${centerX - 96} ${centerY}, ${centerX} ${centerY}
+          C ${centerX + 96} ${centerY}, ${b.x - 140} ${b.y}, ${b.x} ${b.y}
         "
       />
     `;
