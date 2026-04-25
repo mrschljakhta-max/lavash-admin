@@ -23,166 +23,96 @@
     { id: "roles", label: "РОЛІ КОРИСТУВАЧІВ", icon: "roles.svg" }
   ];
 
-  const schemaRelations = [
-    { from: "units", to: "regions", power: "primary" },
-    { from: "units", to: "settlements", power: "secondary" },
-    { from: "personnel", to: "roles", power: "secondary" },
-    { from: "vehicles", to: "objectTypes", power: "primary" },
-    { from: "positions", to: "settlements", power: "primary" },
-    { from: "tasks", to: "statuses", power: "primary" },
-    { from: "events", to: "sources", power: "secondary" },
-    { from: "events", to: "statuses", power: "secondary" },
-    { from: "stations", to: "settlements", power: "primary" },
-    { from: "stations", to: "terrain", power: "secondary" },
-    { from: "uav", to: "objectTypes", power: "primary" },
-    { from: "uav", to: "sources", power: "secondary" },
-
-    { from: "units", to: "roles", power: "bg" },
-    { from: "vehicles", to: "settlements", power: "bg" },
-    { from: "positions", to: "terrain", power: "bg" },
-    { from: "stations", to: "statuses", power: "bg" },
-    { from: "tasks", to: "sources", power: "bg" },
-    { from: "uav", to: "settlements", power: "bg" }
+  const relations = [
+    { from: "units", to: "regions", type: "primary" },
+    { from: "units", to: "settlements", type: "primary" },
+    { from: "personnel", to: "roles", type: "secondary" },
+    { from: "vehicles", to: "objectTypes", type: "primary" },
+    { from: "positions", to: "settlements", type: "primary" },
+    { from: "tasks", to: "statuses", type: "primary" },
+    { from: "events", to: "sources", type: "secondary" },
+    { from: "events", to: "statuses", type: "secondary" },
+    { from: "stations", to: "settlements", type: "primary" },
+    { from: "stations", to: "terrain", type: "secondary" },
+    { from: "uav", to: "objectTypes", type: "primary" },
+    { from: "uav", to: "sources", type: "secondary" }
   ];
 
   const state = {
-    positions: new Map()
+    nodes: []
   };
 
   function degToRad(deg) {
     return (deg * Math.PI) / 180;
   }
 
-  function buildPositions() {
-    state.positions.clear();
-
+  function buildNodes() {
     const centerX = 500;
     const centerY = 340;
 
-    const radiusX = 345;
-    const radiusY = 286;
+    const radiusX = 300;
+    const radiusY = 340;
 
-    const angleStart = -112;
-    const angleEnd = 112;
+    const angleStart = -110;
+    const angleEnd = 110;
 
-    function place(items, side) {
-      const count = items.length;
+    const visualCompressY = 0.78;
+    const cardOffsetX = 34;
 
-      items.forEach((item, index) => {
-        const t = count === 1 ? 0.5 : index / (count - 1);
+    const buildSide = (items, side) => {
+      return items.map((item, index) => {
+        const t = items.length === 1 ? 0.5 : index / (items.length - 1);
         const angle = angleStart + (angleEnd - angleStart) * t;
         const rad = degToRad(angle);
 
-        const arcX = Math.cos(rad);
-        const arcY = Math.sin(rad);
+        const rawX = radiusX * Math.cos(rad);
+        const rawY = radiusY * Math.sin(rad) * visualCompressY;
 
-        const x = side === "left"
-          ? centerX - Math.abs(radiusX * arcX)
-          : centerX + Math.abs(radiusX * arcX);
+        const x =
+          side === "left"
+            ? centerX - Math.abs(rawX) - cardOffsetX
+            : centerX + Math.abs(rawX) + cardOffsetX;
 
-        const y = centerY + radiusY * arcY;
+        const y = centerY + rawY;
 
-        state.positions.set(item.id, {
+        return {
           ...item,
           side,
           x,
           y,
           angle
-        });
+        };
       });
-    }
-
-    place(schemaLeft, "left");
-    place(schemaRight, "right");
-  }
-
-  function getNode(id) {
-    return state.positions.get(id);
-  }
-
-  function getAnchor(id) {
-    const node = getNode(id);
-
-    if (!node) {
-      return { x: 500, y: 340 };
-    }
-
-    return {
-      x: node.side === "left" ? node.x + 128 : node.x - 128,
-      y: node.y
     };
+
+    state.nodes = [
+      ...buildSide(schemaLeft, "left"),
+      ...buildSide(schemaRight, "right")
+    ];
   }
 
-  function renderLine(relation, index) {
-    const a = getAnchor(relation.from);
-    const b = getAnchor(relation.to);
-
-    const hubX = 500;
-    const hubY = 340 + ((index % 9) - 4) * 9;
-
-    return `
-      <path
-        class="schema-link schema-link--${relation.power || "secondary"}"
-        data-from="${relation.from}"
-        data-to="${relation.to}"
-        style="animation-delay:${index * -0.72}s"
-        d="
-          M ${a.x} ${a.y}
-          C ${a.x + 115} ${a.y}, ${hubX - 82} ${hubY}, ${hubX} ${hubY}
-          C ${hubX + 82} ${hubY}, ${b.x - 115} ${b.y}, ${b.x} ${b.y}
-        "
-      />
-    `;
-  }
-
-  function renderCard(node) {
+  function renderNode(node) {
     return `
       <button
-        class="schema-orbit-card schema-orbit-card--${node.side}"
-        style="left:${node.x}px; top:${node.y}px"
-        data-id="${node.id}"
+        class="schema-node schema-node--${node.side}"
         type="button"
+        data-id="${node.id}"
+        style="left:${node.x}px; top:${node.y}px;"
       >
-        <span class="schema-orbit-card__icon">
+        <span class="schema-node__icon">
           <img src="${ICON_PATH + node.icon}" alt="" draggable="false" />
         </span>
 
-        <span class="schema-orbit-card__label">${node.label}</span>
-        <span class="schema-orbit-card__dot"></span>
+        <span class="schema-node__label">${node.label}</span>
+        <span class="schema-node__port"></span>
       </button>
     `;
   }
 
-  function setActiveNode(id) {
-    document.querySelectorAll(".schema-orbit-card").forEach((card) => {
-      const cardId = card.dataset.id;
-
-      const related = schemaRelations.some(({ from, to }) => {
-        return (from === id && to === cardId) || (to === id && from === cardId);
-      });
-
-      card.classList.toggle("is-focused", cardId === id);
-      card.classList.toggle("is-related", related);
-      card.classList.toggle("is-dimmed", Boolean(id) && cardId !== id && !related);
-    });
-
-    document.querySelectorAll(".schema-link").forEach((line) => {
-      const active = line.dataset.from === id || line.dataset.to === id;
-
-      line.classList.toggle("is-active", active);
-      line.classList.toggle("is-muted", Boolean(id) && !active);
-    });
-
-    document.querySelector(".schema-hub")?.classList.toggle("is-hot", Boolean(id));
-  }
-
-  function bindSchemaEvents() {
-    document.querySelectorAll(".schema-orbit-card").forEach((card) => {
-      card.addEventListener("mouseenter", () => setActiveNode(card.dataset.id));
-      card.addEventListener("mouseleave", () => setActiveNode(null));
-
-      card.addEventListener("click", () => {
-        console.log("open dictionary:", card.dataset.id);
+  function bindEvents() {
+    document.querySelectorAll(".schema-node").forEach((node) => {
+      node.addEventListener("click", () => {
+        console.log("openDictionary:", node.dataset.id);
       });
     });
   }
@@ -195,81 +125,41 @@
       return;
     }
 
-    buildPositions();
-
-    const nodes = Array.from(state.positions.values());
+    buildNodes();
 
     root.classList.add("dicts-schema-root");
 
     root.innerHTML = `
-      <div class="dict-schema-orbit">
-        <div class="dict-schema-orbit__grid"></div>
-        <div class="schema-stars"></div>
+      <div class="dict-schema-v4">
+        <div class="schema-bg-grid"></div>
 
-        <div class="schema-shell schema-shell--left">
-          <span></span><span></span><span></span><span></span><span></span>
+        <div class="schema-arc schema-arc--left"></div>
+        <div class="schema-arc schema-arc--right"></div>
+
+        <div class="schema-axis"></div>
+
+        <div class="schema-center-marker">
+          <span></span>
         </div>
 
-        <div class="schema-shell schema-shell--right">
-          <span></span><span></span><span></span><span></span><span></span>
-        </div>
-
-        <div class="schema-orbit-ring schema-orbit-ring--left"></div>
-        <div class="schema-orbit-ring schema-orbit-ring--right"></div>
-
-        <div class="dict-schema-orbit__axis"></div>
-
-        <div class="schema-hub">
-          <span class="schema-hub__halo"></span>
-          <span class="schema-hub__ring schema-hub__ring--one"></span>
-          <span class="schema-hub__ring schema-hub__ring--two"></span>
-          <span class="schema-hub__ring schema-hub__ring--three"></span>
-          <span class="schema-hub__diamond"></span>
-          <span class="schema-hub__core"></span>
-        </div>
-
-        <svg
-          class="dict-schema-orbit__links"
-          viewBox="0 0 1000 680"
-          preserveAspectRatio="none"
-          aria-hidden="true"
-        >
-          <defs>
-            <linearGradient id="schemaGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stop-color="#14f7ee" />
-              <stop offset="48%" stop-color="#4fa8ff" />
-              <stop offset="100%" stop-color="#9558ff" />
-            </linearGradient>
-
-            <filter id="schemaGlow">
-              <feGaussianBlur stdDeviation="3.5" result="coloredBlur"/>
-              <feMerge>
-                <feMergeNode in="coloredBlur"/>
-                <feMergeNode in="SourceGraphic"/>
-              </feMerge>
-            </filter>
-          </defs>
-
-          ${schemaRelations.map(renderLine).join("")}
-        </svg>
-
-        <div class="dict-schema-orbit__cards">
-          ${nodes.map(renderCard).join("")}
+        <div class="schema-nodes">
+          ${state.nodes.map(renderNode).join("")}
         </div>
       </div>
     `;
 
-    bindSchemaEvents();
+    bindEvents();
   }
 
-  function initSchemaViewSafe() {
+  function initSchemaView() {
     requestAnimationFrame(renderSchema);
   }
 
-  window.renderDictsSchemaNow = initSchemaViewSafe;
+  window.renderDictsSchemaNow = initSchemaView;
 
   window.LAVASH_DICTS_SCHEMA = {
-    initSchemaView: initSchemaViewSafe,
-    renderSchema
+    initSchemaView,
+    renderSchema,
+    relations
   };
 })();
