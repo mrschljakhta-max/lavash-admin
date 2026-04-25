@@ -1,12 +1,20 @@
+:root {
+  --schema-cyan: #14f7ee;
+  --schema-cyan-soft: rgba(20, 247, 238, .3);
+  --schema-violet: #9558ff;
+  --schema-violet-soft: rgba(149, 88, 255, .3);
+  --schema-bg: #050a1a;
+}
+
 .dicts-schema-view {
   height: min(660px, calc(100vh - 210px));
   min-height: 600px;
   border-radius: 28px;
   overflow: hidden;
   background:
-    radial-gradient(circle at 27% 50%, rgba(20,247,238,.16), transparent 40%),
-    radial-gradient(circle at 73% 50%, rgba(149,88,255,.18), transparent 40%),
-    linear-gradient(180deg, rgba(3, 11, 31, .98), rgba(1, 5, 16, .99));
+    radial-gradient(circle at 28% 50%, rgba(20, 247, 238, .14), transparent 40%),
+    radial-gradient(circle at 72% 50%, rgba(149, 88, 255, .16), transparent 40%),
+    linear-gradient(180deg, rgba(5, 10, 26, .98), rgba(1, 5, 16, .99));
   border: 1px solid rgba(120, 150, 255, .14);
 }
 
@@ -20,379 +28,177 @@
   height: 100%;
 }
 
-.dict-schema-orbit {
-  --schema-scale: .86;
-
+.dict-schema-v4 {
   position: relative;
   width: 1000px;
   height: 680px;
   left: 50%;
   top: 50%;
-  transform: translate(-50%, -50%) scale(var(--schema-scale));
+  transform: translate(-50%, -50%) scale(var(--schema-scale, .86));
   transform-origin: center;
   overflow: visible;
 }
 
-.dict-schema-orbit__grid,
-.schema-stars {
+.schema-bg-grid {
   position: absolute;
   inset: 0;
+  opacity: .14;
   border-radius: 34px;
-  pointer-events: none;
-}
-
-.dict-schema-orbit__grid {
-  opacity: .15;
   background-image:
-    radial-gradient(circle, rgba(140,174,255,.32) 1px, transparent 1px);
+    radial-gradient(circle, rgba(140, 174, 255, .36) 1px, transparent 1px);
   background-size: 22px 22px;
-}
-
-.schema-stars {
-  opacity: .42;
-  background:
-    radial-gradient(circle at 18% 35%, rgba(20,247,238,.2) 0 1px, transparent 1.8px),
-    radial-gradient(circle at 38% 64%, rgba(20,247,238,.16) 0 1px, transparent 1.8px),
-    radial-gradient(circle at 64% 28%, rgba(149,88,255,.18) 0 1px, transparent 1.8px),
-    radial-gradient(circle at 78% 66%, rgba(149,88,255,.18) 0 1px, transparent 1.8px);
-  background-size: 90px 90px, 120px 120px, 100px 100px, 130px 130px;
-  animation: schemaStarsDrift 18s linear infinite;
-}
-
-/* =========================
-   OUTER SHELLS / ENERGY ARCS
-========================= */
-
-.schema-shell,
-.schema-orbit-ring {
-  position: absolute;
   pointer-events: none;
-  z-index: 1;
 }
 
-.schema-shell {
-  top: 50px;
-  width: 416px;
-  height: 580px;
-  border-radius: 999px;
-  opacity: .94;
-}
-
-.schema-shell--left {
-  left: 38px;
-  border-left: 2px solid rgba(20,247,238,.28);
-  box-shadow:
-    -20px 0 42px rgba(20,247,238,.15),
-    inset 28px 0 54px rgba(20,247,238,.045);
-  animation: schemaArcLeftBreath 4.2s ease-in-out infinite;
-}
-
-.schema-shell--right {
-  right: 38px;
-  border-right: 2px solid rgba(149,88,255,.33);
-  box-shadow:
-    20px 0 42px rgba(149,88,255,.16),
-    inset -28px 0 54px rgba(149,88,255,.05);
-  animation: schemaArcRightBreath 4.2s ease-in-out infinite;
-}
-
-.schema-shell span {
-  position: absolute;
-  width: 114px;
-  height: 4px;
-  border-radius: 999px;
-  opacity: .95;
-}
-
-.schema-shell--left span {
-  left: -12px;
-  background: linear-gradient(90deg, transparent, #14f7ee);
-  box-shadow: 0 0 18px rgba(20,247,238,.78);
-}
-
-.schema-shell--right span {
-  right: -12px;
-  background: linear-gradient(90deg, #9558ff, transparent);
-  box-shadow: 0 0 18px rgba(149,88,255,.78);
-}
-
-.schema-shell span:nth-child(1) { top: 36px; transform: rotate(-33deg); }
-.schema-shell span:nth-child(2) { top: 125px; transform: rotate(-18deg); }
-.schema-shell span:nth-child(3) { top: 288px; transform: rotate(0deg); }
-.schema-shell span:nth-child(4) { bottom: 125px; transform: rotate(18deg); }
-.schema-shell span:nth-child(5) { bottom: 36px; transform: rotate(33deg); }
-
-.schema-orbit-ring {
-  top: 84px;
-  width: 360px;
-  height: 512px;
-  border-radius: 999px;
-  opacity: .34;
-  border-style: dashed;
-  border-width: 1px;
-  animation: schemaRingSlow 16s linear infinite;
-}
-
-.schema-orbit-ring--left {
-  left: 82px;
-  border-color: rgba(20,247,238,.22);
-}
-
-.schema-orbit-ring--right {
-  right: 82px;
-  border-color: rgba(149,88,255,.24);
-  animation-direction: reverse;
-}
-
-/* =========================
-   CENTRAL AXIS + HUB
-========================= */
-
-.dict-schema-orbit__axis {
+.schema-axis {
   position: absolute;
   left: 50%;
-  top: 48px;
-  bottom: 48px;
+  top: 52px;
+  bottom: 52px;
   width: 2px;
   transform: translateX(-50%);
   background: linear-gradient(
     to bottom,
     transparent,
-    rgba(20,247,238,.72),
-    rgba(100,130,255,.98),
-    rgba(149,88,255,.85),
+    rgba(20, 247, 238, .55),
+    rgba(100, 130, 255, .82),
+    rgba(149, 88, 255, .62),
     transparent
   );
   box-shadow:
-    0 0 18px rgba(20,247,238,.54),
-    0 0 44px rgba(149,88,255,.56);
-  z-index: 3;
-  animation: schemaAxisBreath 3.8s ease-in-out infinite;
+    0 0 16px rgba(20, 247, 238, .35),
+    0 0 34px rgba(149, 88, 255, .36);
+  z-index: 2;
 }
 
-.schema-hub {
+.schema-center-marker {
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 154px;
-  height: 154px;
+  width: 74px;
+  height: 74px;
   transform: translate(-50%, -50%);
-  z-index: 5;
-  pointer-events: none;
-  animation: schemaHubFloat 4s ease-in-out infinite;
-}
-
-.schema-hub__halo,
-.schema-hub__ring,
-.schema-hub__diamond,
-.schema-hub__core {
-  position: absolute;
   border-radius: 999px;
-}
-
-.schema-hub__halo {
-  inset: -22px;
   background:
-    radial-gradient(circle, rgba(20,247,238,.2), rgba(79,168,255,.14) 36%, rgba(149,88,255,.12) 58%, transparent 72%);
-  filter: blur(12px);
-}
-
-.schema-hub__core {
-  inset: 59px;
-  background:
-    radial-gradient(circle, #fff 0 11%, #14f7ee 24%, #4fa8ff 48%, #9558ff 78%);
+    radial-gradient(circle, rgba(46, 240, 255, .58), rgba(139, 92, 246, .28) 42%, transparent 72%);
   box-shadow:
-    0 0 18px rgba(255,255,255,.92),
-    0 0 42px rgba(20,247,238,.8),
-    0 0 76px rgba(149,88,255,.62);
-  animation: schemaHubPulse 2.4s ease-in-out infinite;
-}
-
-.schema-hub__diamond {
-  left: 50%;
-  top: 50%;
-  width: 38px;
-  height: 38px;
-  transform: translate(-50%, -50%) rotate(45deg);
-  border-radius: 8px;
-  border: 2px solid rgba(255,255,255,.82);
-  box-shadow:
-    inset 0 0 12px rgba(20,247,238,.38),
-    0 0 22px rgba(149,88,255,.52);
-  animation: schemaDiamondSpin 7s linear infinite;
-}
-
-.schema-hub__ring {
-  border: 1px solid rgba(135, 180, 255, .28);
-  box-shadow:
-    inset 0 0 24px rgba(20,247,238,.15),
-    0 0 30px rgba(149,88,255,.18);
-}
-
-.schema-hub__ring--one {
-  inset: 42px;
-  animation: schemaHubRing 3.2s ease-in-out infinite;
-}
-
-.schema-hub__ring--two {
-  inset: 24px;
-  animation: schemaHubRing 4s ease-in-out infinite reverse;
-}
-
-.schema-hub__ring--three {
-  inset: 2px;
-  opacity: .58;
-  border-style: dashed;
-  animation: schemaHubRotate 10s linear infinite;
-}
-
-.schema-hub.is-hot .schema-hub__halo {
-  opacity: 1;
-  filter: blur(8px);
-}
-
-/* =========================
-   LINKS
-========================= */
-
-.dict-schema-orbit__links {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 4;
+    0 0 24px rgba(46, 240, 255, .35),
+    0 0 46px rgba(149, 88, 255, .3);
+  z-index: 3;
   pointer-events: none;
 }
 
-.schema-link {
-  fill: none;
-  stroke: url(#schemaGradient);
-  filter: url(#schemaGlow);
-  stroke-linecap: round;
-  stroke-dashoffset: 0;
-  animation: schemaLineFlow 18s linear infinite;
-  transition:
-    opacity .22s ease,
-    stroke-width .22s ease,
-    filter .22s ease;
+.schema-center-marker span {
+  position: absolute;
+  inset: 27px;
+  border-radius: 999px;
+  background: #2ef0ff;
+  box-shadow:
+    0 0 16px #2ef0ff,
+    0 0 30px rgba(149, 88, 255, .6);
 }
 
-.schema-link--bg {
-  opacity: .09;
-  stroke-width: .8;
-  stroke-dasharray: 3 15;
+.schema-arc {
+  position: absolute;
+  top: 54px;
+  width: 420px;
+  height: 572px;
+  border-radius: 999px;
+  pointer-events: none;
+  opacity: .5;
+  z-index: 1;
 }
 
-.schema-link--secondary {
-  opacity: .25;
-  stroke-width: 1.15;
-  stroke-dasharray: 5 14;
+.schema-arc--left {
+  left: 44px;
+  border-left: 2px solid rgba(20, 247, 238, .34);
+  box-shadow:
+    -18px 0 38px rgba(20, 247, 238, .12),
+    inset 26px 0 48px rgba(20, 247, 238, .035);
 }
 
-.schema-link--primary {
-  opacity: .58;
-  stroke-width: 1.65;
-  stroke-dasharray: 8 16;
+.schema-arc--right {
+  right: 44px;
+  border-right: 2px solid rgba(149, 88, 255, .38);
+  box-shadow:
+    18px 0 38px rgba(149, 88, 255, .13),
+    inset -26px 0 48px rgba(149, 88, 255, .04);
 }
 
-.schema-link.is-active {
-  opacity: 1;
-  stroke-width: 3;
-  stroke-dasharray: 10 12;
-  animation-duration: 3s;
-}
-
-.schema-link.is-muted {
-  opacity: .035;
-}
-
-/* =========================
-   CARDS
-========================= */
-
-.dict-schema-orbit__cards {
+.schema-nodes {
   position: absolute;
   inset: 0;
-  z-index: 6;
+  z-index: 5;
 }
 
-.schema-orbit-card {
+.schema-node {
   position: absolute;
-  width: 224px;
+  width: 226px;
   height: 46px;
   transform: translate(-50%, -50%);
+  border: 1px solid rgba(255, 255, 255, .12);
+  border-radius: 16px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, .08), rgba(255, 255, 255, .025)),
+    rgba(3, 13, 33, .78);
+  backdrop-filter: blur(18px);
+  color: #fff;
+  cursor: pointer;
+
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 0 13px;
-  border-radius: 16px;
-  border: 1px solid rgba(255,255,255,.12);
-  background:
-    linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.024)),
-    rgba(3, 13, 33, .78);
-  backdrop-filter: blur(18px);
-  cursor: pointer;
-  color: #fff;
+
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.09),
-    inset 0 -18px 34px rgba(0,0,0,.22),
-    0 18px 36px rgba(0,0,0,.22);
+    inset 0 1px 0 rgba(255, 255, 255, .09),
+    inset 0 -18px 34px rgba(0, 0, 0, .22),
+    0 18px 36px rgba(0, 0, 0, .22);
+
   transition:
     transform .22s ease,
-    opacity .22s ease,
-    filter .22s ease,
     border-color .22s ease,
-    box-shadow .22s ease;
+    box-shadow .22s ease,
+    opacity .22s ease;
 }
 
-.schema-orbit-card--left {
-  border-color: rgba(20,247,238,.24);
+.schema-node--left {
+  border-color: rgba(20, 247, 238, .24);
   background:
-    linear-gradient(90deg, rgba(20,247,238,.15), rgba(255,255,255,.026)),
+    linear-gradient(90deg, rgba(20, 247, 238, .15), rgba(255, 255, 255, .026)),
     rgba(2, 18, 35, .8);
 }
 
-.schema-orbit-card--right {
+.schema-node--right {
   flex-direction: row-reverse;
   text-align: right;
-  border-color: rgba(149,88,255,.28);
+  border-color: rgba(149, 88, 255, .28);
   background:
-    linear-gradient(90deg, rgba(255,255,255,.026), rgba(149,88,255,.16)),
+    linear-gradient(90deg, rgba(255, 255, 255, .026), rgba(149, 88, 255, .16)),
     rgba(16, 8, 40, .82);
 }
 
-.schema-orbit-card:hover,
-.schema-orbit-card.is-focused {
-  transform: translate(-50%, -50%) scale(1.08);
-  opacity: 1;
+.schema-node:hover {
+  transform: translate(-50%, -50%) scale(1.06);
 }
 
-.schema-orbit-card--left:hover,
-.schema-orbit-card--left.is-focused,
-.schema-orbit-card--left.is-related {
-  border-color: rgba(20,247,238,.98);
+.schema-node--left:hover {
+  border-color: rgba(20, 247, 238, .95);
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.13),
-    0 0 18px rgba(20,247,238,.55),
-    0 0 42px rgba(20,247,238,.22);
+    inset 0 1px 0 rgba(255, 255, 255, .13),
+    0 0 18px rgba(20, 247, 238, .5),
+    0 0 38px rgba(20, 247, 238, .2);
 }
 
-.schema-orbit-card--right:hover,
-.schema-orbit-card--right.is-focused,
-.schema-orbit-card--right.is-related {
-  border-color: rgba(149,88,255,1);
+.schema-node--right:hover {
+  border-color: rgba(149, 88, 255, .98);
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.13),
-    0 0 18px rgba(149,88,255,.56),
-    0 0 42px rgba(149,88,255,.26);
+    inset 0 1px 0 rgba(255, 255, 255, .13),
+    0 0 18px rgba(149, 88, 255, .52),
+    0 0 38px rgba(149, 88, 255, .24);
 }
 
-.schema-orbit-card.is-dimmed {
-  opacity: .1;
-  filter: grayscale(.8) blur(.35px);
-}
-
-.schema-orbit-card__icon {
+.schema-node__icon {
   width: 31px;
   height: 31px;
   border-radius: 10px;
@@ -400,14 +206,14 @@
   place-items: center;
   flex: 0 0 auto;
   background:
-    radial-gradient(circle at 30% 20%, rgba(255,255,255,.2), transparent 45%),
-    rgba(255,255,255,.085);
+    radial-gradient(circle at 30% 20%, rgba(255, 255, 255, .2), transparent 45%),
+    rgba(255, 255, 255, .085);
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.13),
-    0 0 18px rgba(120,140,255,.14);
+    inset 0 1px 0 rgba(255, 255, 255, .13),
+    0 0 18px rgba(120, 140, 255, .14);
 }
 
-.schema-orbit-card__icon img {
+.schema-node__icon img {
   width: 18px;
   height: 18px;
   object-fit: contain;
@@ -416,15 +222,15 @@
   filter: drop-shadow(0 0 8px currentColor);
 }
 
-.schema-orbit-card--left .schema-orbit-card__icon {
-  color: #14f7ee;
+.schema-node--left .schema-node__icon {
+  color: var(--schema-cyan);
 }
 
-.schema-orbit-card--right .schema-orbit-card__icon {
-  color: #9558ff;
+.schema-node--right .schema-node__icon {
+  color: var(--schema-violet);
 }
 
-.schema-orbit-card__label {
+.schema-node__label {
   flex: 1;
   font-size: 12px;
   font-weight: 900;
@@ -432,164 +238,43 @@
   text-transform: uppercase;
   white-space: nowrap;
   color: rgba(248, 251, 255, .96);
-  text-shadow: 0 1px 0 rgba(0,0,0,.46);
+  text-shadow: 0 1px 0 rgba(0, 0, 0, .46);
 }
 
-.schema-orbit-card__dot {
+.schema-node__port {
   position: absolute;
   width: 15px;
   height: 15px;
   border-radius: 999px;
   background: currentColor;
-  animation: schemaDotPulse 2.2s ease-in-out infinite;
 }
 
-.schema-orbit-card--left .schema-orbit-card__dot {
+.schema-node--left .schema-node__port {
   right: -7px;
-  color: #14f7ee;
+  color: var(--schema-cyan);
   box-shadow:
-    0 0 10px #14f7ee,
-    0 0 25px rgba(20,247,238,.78),
-    0 0 50px rgba(20,247,238,.28);
+    0 0 10px var(--schema-cyan),
+    0 0 25px rgba(20, 247, 238, .76),
+    0 0 46px rgba(20, 247, 238, .26);
 }
 
-.schema-orbit-card--right .schema-orbit-card__dot {
+.schema-node--right .schema-node__port {
   left: -7px;
-  color: #9558ff;
+  color: var(--schema-violet);
   box-shadow:
-    0 0 10px #9558ff,
-    0 0 25px rgba(149,88,255,.82),
-    0 0 50px rgba(149,88,255,.32);
-}
-
-/* =========================
-   ANIMATIONS
-========================= */
-
-@keyframes schemaLineFlow {
-  to {
-    stroke-dashoffset: -220;
-  }
-}
-
-@keyframes schemaStarsDrift {
-  to {
-    background-position: 90px 90px, -120px 120px, 100px -100px, -130px -130px;
-  }
-}
-
-@keyframes schemaAxisBreath {
-  0%, 100% {
-    opacity: .7;
-    filter: blur(0);
-  }
-  50% {
-    opacity: 1;
-    filter: blur(.45px);
-  }
-}
-
-@keyframes schemaHubFloat {
-  0%, 100% {
-    transform: translate(-50%, -50%) scale(.98);
-  }
-  50% {
-    transform: translate(-50%, -50%) scale(1.045);
-  }
-}
-
-@keyframes schemaHubPulse {
-  0%, 100% {
-    transform: scale(.9);
-    opacity: .78;
-  }
-  50% {
-    transform: scale(1.2);
-    opacity: 1;
-  }
-}
-
-@keyframes schemaHubRing {
-  0%, 100% {
-    transform: scale(.82);
-    opacity: .26;
-  }
-  50% {
-    transform: scale(1.16);
-    opacity: .78;
-  }
-}
-
-@keyframes schemaHubRotate {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes schemaDiamondSpin {
-  from {
-    transform: translate(-50%, -50%) rotate(45deg);
-  }
-  to {
-    transform: translate(-50%, -50%) rotate(405deg);
-  }
-}
-
-@keyframes schemaDotPulse {
-  0%, 100% {
-    transform: scale(.92);
-    opacity: .72;
-  }
-  50% {
-    transform: scale(1.28);
-    opacity: 1;
-  }
-}
-
-@keyframes schemaArcLeftBreath {
-  0%, 100% {
-    opacity: .48;
-    box-shadow:
-      -20px 0 42px rgba(20,247,238,.12),
-      inset 28px 0 54px rgba(20,247,238,.04);
-  }
-  50% {
-    opacity: .98;
-    box-shadow:
-      -24px 0 68px rgba(20,247,238,.28),
-      inset 30px 0 64px rgba(20,247,238,.09);
-  }
-}
-
-@keyframes schemaArcRightBreath {
-  0%, 100% {
-    opacity: .48;
-    box-shadow:
-      20px 0 42px rgba(149,88,255,.14),
-      inset -28px 0 54px rgba(149,88,255,.04);
-  }
-  50% {
-    opacity: .98;
-    box-shadow:
-      24px 0 68px rgba(149,88,255,.3),
-      inset -30px 0 64px rgba(149,88,255,.1);
-  }
-}
-
-@keyframes schemaRingSlow {
-  to {
-    transform: rotate(360deg);
-  }
+    0 0 10px var(--schema-violet),
+    0 0 25px rgba(149, 88, 255, .8),
+    0 0 46px rgba(149, 88, 255, .3);
 }
 
 @media (max-width: 1200px) {
-  .dict-schema-orbit {
+  .dict-schema-v4 {
     --schema-scale: .78;
   }
 }
 
 @media (max-width: 980px) {
-  .dict-schema-orbit {
+  .dict-schema-v4 {
     --schema-scale: .68;
   }
 }
