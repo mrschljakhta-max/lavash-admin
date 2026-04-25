@@ -1644,3 +1644,38 @@
 .dicts-dots {
   bottom: 22px !important;
 }
+/* STEP 2 — external SVG dict icons */
+
+.dict-card__icon {
+  display: grid !important;
+  place-items: center !important;
+  overflow: visible !important;
+}
+
+.dict-card__icon-img {
+  width: 58% !important;
+  height: 58% !important;
+  object-fit: contain !important;
+  display: block !important;
+  opacity: .92 !important;
+  filter:
+    drop-shadow(0 0 8px rgba(118, 150, 255, .42))
+    drop-shadow(0 0 18px rgba(125, 88, 255, .18)) !important;
+  pointer-events: none !important;
+  user-select: none !important;
+}
+
+.dict-card.is-center .dict-card__icon-img {
+  opacity: 1 !important;
+  filter:
+    drop-shadow(0 0 10px rgba(155, 190, 255, .72))
+    drop-shadow(0 0 24px rgba(125, 88, 255, .34)) !important;
+}
+
+.dict-card.is-level-1 .dict-card__icon-img {
+  opacity: .72 !important;
+}
+
+.dict-card.is-level-2 .dict-card__icon-img {
+  opacity: .48 !important;
+}
