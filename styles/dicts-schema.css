@@ -283,3 +283,137 @@
     0 0 25px rgba(149,88,255,.8),
     0 0 46px rgba(149,88,255,.3);
 }
+/* =========================================================
+   SCHEMA LIVE ANIMATION LAYER
+========================================================= */
+
+.dict-schema-orbit__axis {
+  animation: schemaAxisBreath 3.8s ease-in-out infinite;
+}
+
+.dict-schema-orbit__core {
+  animation: schemaCoreBreath 3.2s ease-in-out infinite;
+}
+
+.schema-link {
+  stroke-dasharray: 7 14;
+  stroke-dashoffset: 0;
+  animation: schemaLineFlow 7s linear infinite;
+}
+
+.schema-link.is-active {
+  stroke-dasharray: 12 14;
+  animation-duration: 2.4s;
+}
+
+.schema-orbit-card__dot {
+  animation: schemaDotPulse 2.2s ease-in-out infinite;
+}
+
+.schema-orbit-card.is-focused .schema-orbit-card__dot,
+.schema-orbit-card.is-related .schema-orbit-card__dot {
+  animation-duration: 1.1s;
+}
+
+.schema-hub {
+  animation:
+    schemaHubPulse 2.6s ease-in-out infinite,
+    schemaHubSpinGlow 8s linear infinite;
+}
+
+.schema-hub::before {
+  animation: schemaHubRing 3.4s ease-in-out infinite;
+}
+
+.schema-hub::after {
+  animation: schemaHubRing 4.4s ease-in-out infinite reverse;
+}
+
+.dict-schema-orbit__arc--left {
+  animation: schemaArcLeftBreath 4.2s ease-in-out infinite;
+}
+
+.dict-schema-orbit__arc--right {
+  animation: schemaArcRightBreath 4.2s ease-in-out infinite;
+}
+
+@keyframes schemaLineFlow {
+  from {
+    stroke-dashoffset: 0;
+  }
+  to {
+    stroke-dashoffset: -84;
+  }
+}
+
+@keyframes schemaAxisBreath {
+  0%, 100% {
+    opacity: .72;
+    filter: blur(0px);
+  }
+  50% {
+    opacity: 1;
+    filter: blur(.4px);
+  }
+}
+
+@keyframes schemaCoreBreath {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(.92);
+    opacity: .54;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.12);
+    opacity: .92;
+  }
+}
+
+@keyframes schemaDotPulse {
+  0%, 100% {
+    transform: scale(.92);
+    opacity: .72;
+  }
+  50% {
+    transform: scale(1.28);
+    opacity: 1;
+  }
+}
+
+@keyframes schemaArcLeftBreath {
+  0%, 100% {
+    opacity: .42;
+    box-shadow:
+      -18px 0 34px rgba(20, 247, 238, .12),
+      inset 22px 0 34px rgba(20, 247, 238, .035);
+  }
+  50% {
+    opacity: .86;
+    box-shadow:
+      -22px 0 52px rgba(20, 247, 238, .22),
+      inset 24px 0 44px rgba(20, 247, 238, .08);
+  }
+}
+
+@keyframes schemaArcRightBreath {
+  0%, 100% {
+    opacity: .42;
+    box-shadow:
+      18px 0 34px rgba(149, 88, 255, .12),
+      inset -22px 0 34px rgba(149, 88, 255, .035);
+  }
+  50% {
+    opacity: .86;
+    box-shadow:
+      22px 0 52px rgba(149, 88, 255, .25),
+      inset -24px 0 44px rgba(149, 88, 255, .08);
+  }
+}
+
+@keyframes schemaHubSpinGlow {
+  from {
+    filter: hue-rotate(0deg);
+  }
+  to {
+    filter: hue-rotate(360deg);
+  }
+}
