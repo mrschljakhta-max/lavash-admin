@@ -35,9 +35,9 @@ body {
   font-family: Inter, Arial, sans-serif;
   color: var(--text-main);
   background:
-    radial-gradient(circle at 50% 45%, rgba(75, 132, 255, 0.18), transparent 34%),
-    radial-gradient(circle at 42% 78%, rgba(85, 223, 255, 0.12), transparent 28%),
-    radial-gradient(circle at 62% 78%, rgba(180, 92, 255, 0.14), transparent 30%),
+    radial-gradient(circle at 50% 42%, rgba(75, 132, 255, 0.18), transparent 34%),
+    radial-gradient(circle at 42% 78%, rgba(85, 223, 255, 0.10), transparent 28%),
+    radial-gradient(circle at 62% 78%, rgba(180, 92, 255, 0.12), transparent 30%),
     linear-gradient(180deg, #03133f 0%, #021136 34%, #010a24 70%, #010818 100%);
   overflow-x: hidden;
 }
@@ -50,7 +50,7 @@ body {
   min-height: 100vh;
   display: grid;
   place-items: center;
-  padding: 28px;
+  padding: 26px;
   position: relative;
   overflow: hidden;
 }
@@ -59,17 +59,17 @@ body {
   content: "";
   position: absolute;
   left: 50%;
-  top: 52%;
-  width: 720px;
+  top: 51%;
+  width: 680px;
   height: 560px;
   transform: translate(-50%, -50%);
   pointer-events: none;
   background:
-    radial-gradient(circle at 50% 36%, rgba(80, 124, 255, .20), transparent 42%),
-    radial-gradient(circle at 22% 66%, rgba(85, 223, 255, .16), transparent 36%),
-    radial-gradient(circle at 78% 66%, rgba(180, 92, 255, .18), transparent 38%);
-  filter: blur(16px);
-  opacity: .9;
+    radial-gradient(circle at 50% 34%, rgba(80, 124, 255, .18), transparent 42%),
+    radial-gradient(circle at 18% 64%, rgba(85, 223, 255, .14), transparent 36%),
+    radial-gradient(circle at 82% 66%, rgba(180, 92, 255, .16), transparent 38%);
+  filter: blur(18px);
+  opacity: .86;
 }
 
 .auth-page::after {
@@ -77,32 +77,41 @@ body {
   position: absolute;
   left: 50%;
   bottom: 8%;
-  width: 540px;
-  height: 120px;
+  width: 500px;
+  height: 110px;
   transform: translateX(-50%);
   border-radius: 999px;
   pointer-events: none;
   background:
-    radial-gradient(ellipse at center,
-      rgba(85, 223, 255, .24) 0%,
-      rgba(109, 97, 255, .18) 42%,
-      rgba(180, 92, 255, .16) 58%,
-      transparent 76%);
+    radial-gradient(
+      ellipse at center,
+      rgba(85, 223, 255, .22) 0%,
+      rgba(109, 97, 255, .16) 42%,
+      rgba(180, 92, 255, .14) 58%,
+      transparent 76%
+    );
   filter: blur(24px);
-  opacity: .72;
+  opacity: .7;
   animation: authPlatformPulse 4.2s ease-in-out infinite;
 }
 
 .auth-shell {
   position: relative;
   z-index: 2;
-  width: min(100%, 680px);
+  width: min(100%, 500px);
+  animation: authShellFloat 7.5s ease-in-out infinite;
 }
 
 .auth-card {
+  --auth-tilt-x: 0deg;
+  --auth-tilt-y: 0deg;
+  --auth-mx: 50%;
+  --auth-my: 50%;
+
   position: relative;
-  padding: 34px 40px 30px;
-  border-radius: 36px;
+  min-height: 620px;
+  padding: 30px 28px 26px;
+  border-radius: 34px;
   background:
     linear-gradient(180deg, rgba(10, 30, 93, 0.90), rgba(5, 16, 56, 0.97));
   border: 1px solid rgba(133, 165, 255, .18);
@@ -111,15 +120,32 @@ body {
     inset 0 1px 0 rgba(255,255,255,.06),
     inset 0 -60px 100px rgba(0,0,0,.20);
   overflow: hidden;
-  animation:
-    cardIn 0.45s ease-out,
-    authSubtleFloat 8s ease-in-out infinite;
+  transform:
+    perspective(1100px)
+    rotateX(var(--auth-tilt-x))
+    rotateY(var(--auth-tilt-y));
+  transition:
+    transform .16s ease,
+    box-shadow .22s ease,
+    border-color .22s ease;
+  animation: cardIn 0.45s ease-out;
+}
+
+.auth-card.is-tilting {
+  border-color: rgba(120, 180, 255, .28);
+  box-shadow:
+    0 40px 120px rgba(0, 0, 0, .52),
+    0 0 48px rgba(85,223,255,.14),
+    0 0 72px rgba(180,92,255,.14),
+    inset 0 1px 0 rgba(255,255,255,.08),
+    inset 0 -60px 100px rgba(0,0,0,.22);
 }
 
 .auth-card::before {
   content: "";
   position: absolute;
   inset: -1px;
+  z-index: 3;
   border-radius: inherit;
   padding: 2px;
   background:
@@ -139,7 +165,7 @@ body {
   -webkit-mask-composite: xor;
           mask-composite: exclude;
   pointer-events: none;
-  opacity: .86;
+  opacity: .82;
   animation: authBorderSpin 5.8s linear infinite;
 }
 
@@ -147,12 +173,36 @@ body {
   content: "";
   position: absolute;
   inset: 0;
+  z-index: 1;
   pointer-events: none;
+  border-radius: inherit;
   background:
-    radial-gradient(circle at 50% 18%, rgba(255,255,255,.10), transparent 26%),
-    radial-gradient(circle at 18% 62%, rgba(85,223,255,.10), transparent 30%),
-    radial-gradient(circle at 84% 64%, rgba(180,92,255,.12), transparent 32%);
-  opacity: .78;
+    radial-gradient(
+      circle at var(--auth-mx) var(--auth-my),
+      rgba(255,255,255,.14),
+      rgba(85,223,255,.08) 16%,
+      transparent 34%
+    ),
+    linear-gradient(
+      115deg,
+      transparent 0%,
+      transparent 36%,
+      rgba(255,255,255,.16) 47%,
+      rgba(85,223,255,.10) 52%,
+      rgba(180,92,255,.10) 57%,
+      transparent 68%,
+      transparent 100%
+    );
+  opacity: .54;
+  transform: translateX(-130%);
+  animation: authModalLightSweep 3.8s ease-in-out infinite;
+}
+
+.auth-card.is-tilting::after {
+  opacity: .9;
+  animation:
+    authModalLightSweep 3.8s ease-in-out infinite,
+    authCursorGlow .9s ease-out infinite alternate;
 }
 
 .auth-card.enroll-mode {
@@ -162,27 +212,29 @@ body {
 .auth-card-glow {
   display: block;
   position: absolute;
-  inset: -32%;
+  inset: -28%;
+  z-index: 0;
   pointer-events: none;
   background:
     radial-gradient(circle at 42% 34%, rgba(85,223,255,.12), transparent 34%),
     radial-gradient(circle at 66% 68%, rgba(180,92,255,.14), transparent 42%);
   filter: blur(34px);
-  opacity: .82;
+  opacity: .8;
 }
 
 .auth-brand-zone,
 .auth-view,
 .auth-tabs,
 .auth-enroll-hero,
-.auth-signout {
+.auth-signout,
+.auth-status {
   position: relative;
-  z-index: 2;
+  z-index: 4;
 }
 
 .auth-brand-zone {
   padding-top: 0;
-  padding-bottom: 20px;
+  padding-bottom: 24px;
   text-align: center;
   animation: fadeUp 0.5s ease-out;
 }
@@ -193,8 +245,8 @@ body {
 
 .auth-logo-wrap {
   position: relative;
-  width: 66px;
-  height: 66px;
+  width: 78px;
+  height: 78px;
   margin: 0 auto 12px;
   display: grid;
   place-items: center;
@@ -203,30 +255,43 @@ body {
 .auth-logo-wrap::before {
   content: "";
   position: absolute;
-  inset: -16px;
+  inset: -18px;
   border-radius: 999px;
   background:
-    radial-gradient(circle, rgba(85,223,255,.18), rgba(109,97,255,.10) 44%, transparent 72%);
+    radial-gradient(circle, rgba(85,223,255,.20), rgba(109,97,255,.12) 44%, transparent 72%);
   filter: blur(8px);
   animation: authLogoAura 3.8s ease-in-out infinite;
+}
+
+.auth-logo-wrap::after {
+  content: "";
+  position: absolute;
+  inset: -8px;
+  border-radius: 999px;
+  border: 1px solid rgba(120, 160, 255, .10);
+  box-shadow:
+    0 0 18px rgba(85,223,255,.12),
+    inset 0 0 18px rgba(180,92,255,.08);
+  opacity: .8;
+  animation: authLogoRing 5.8s linear infinite;
 }
 
 .auth-logo {
   position: relative;
   z-index: 2;
-  width: 66px;
-  height: 66px;
+  width: 78px;
+  height: 78px;
   display: block;
   object-fit: contain;
   filter:
-    drop-shadow(0 0 12px rgba(85,223,255,.34))
-    drop-shadow(0 0 22px rgba(109,97,255,.24));
+    drop-shadow(0 0 14px rgba(85,223,255,.36))
+    drop-shadow(0 0 24px rgba(109,97,255,.26));
   animation: authLogoFloat 4s ease-in-out infinite;
 }
 
 .auth-brand {
   margin: 0;
-  font-size: clamp(54px, 5.6vw, 76px);
+  font-size: clamp(50px, 4.4vw, 66px);
   line-height: 0.95;
   font-weight: 900;
   letter-spacing: -0.05em;
@@ -253,7 +318,6 @@ body {
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
-  z-index: 4;
 }
 
 .auth-signout.hidden {
@@ -261,14 +325,14 @@ body {
 }
 
 .auth-tabs {
-  width: min(100%, 500px);
-  margin: 0 auto 18px;
+  width: min(100%, 420px);
+  margin: 0 auto 16px;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0;
   padding: 4px;
   border: 1px solid rgba(119, 147, 221, 0.16);
-  border-radius: 20px;
+  border-radius: 19px;
   background:
     linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.018));
   box-shadow:
@@ -283,10 +347,10 @@ body {
   border: 0;
   background: transparent;
   color: var(--text-soft);
-  padding: 13px 8px;
-  min-height: 50px;
-  border-radius: 16px;
-  font-size: 18px;
+  padding: 12px 8px;
+  min-height: 48px;
+  border-radius: 15px;
+  font-size: 17px;
   font-weight: 800;
   cursor: pointer;
   transition: color 0.2s ease, background .2s ease, box-shadow .2s ease;
@@ -315,19 +379,19 @@ body {
 }
 
 .auth-view {
-  width: min(100%, 530px);
+  width: min(100%, 430px);
   margin: 0 auto;
-  padding-top: 6px;
+  padding-top: 4px;
   animation: fadeUp 0.28s ease-out;
 }
 
 .auth-form {
   display: grid;
-  gap: 14px;
+  gap: 12px;
 }
 
 .auth-form-enroll {
-  gap: 18px;
+  gap: 16px;
 }
 
 .auth-field {
@@ -338,8 +402,8 @@ body {
   position: relative;
   display: flex;
   align-items: center;
-  min-height: 60px;
-  border-radius: 20px;
+  min-height: 54px;
+  border-radius: 18px;
   background:
     radial-gradient(circle at 24% 20%, rgba(255,255,255,.06), transparent 38%),
     linear-gradient(180deg, rgba(21, 43, 101, 0.86), rgba(13, 29, 78, 0.94));
@@ -374,11 +438,11 @@ body {
 }
 
 .auth-icon {
-  width: 58px;
-  min-width: 58px;
+  width: 54px;
+  min-width: 54px;
   display: grid;
   place-items: center;
-  font-size: 20px;
+  font-size: 18px;
   color: #b9c8ff;
   background: rgba(255, 255, 255, 0.025);
   border-right: 1px solid rgba(114, 147, 232, 0.10);
@@ -387,13 +451,13 @@ body {
 
 .auth-input {
   width: 100%;
-  height: 60px;
+  height: 54px;
   border: 0;
   outline: none;
   background: transparent;
   color: var(--text-main);
-  font-size: 16px;
-  padding: 0 18px;
+  font-size: 15px;
+  padding: 0 16px;
 }
 
 .auth-input::placeholder {
@@ -405,10 +469,10 @@ body {
   border: 0;
   background: rgba(255,255,255,.025);
   color: #a8b9ee;
-  width: 58px;
-  min-width: 58px;
-  height: 60px;
-  font-size: 18px;
+  width: 54px;
+  min-width: 54px;
+  height: 54px;
+  font-size: 17px;
   cursor: pointer;
 }
 
@@ -418,9 +482,9 @@ body {
   overflow: hidden;
   appearance: none;
   border: 0;
-  min-height: 58px;
-  border-radius: 20px;
-  font-size: 18px;
+  min-height: 56px;
+  border-radius: 18px;
+  font-size: 16px;
   font-weight: 900;
   cursor: pointer;
   transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
@@ -489,7 +553,7 @@ body {
 }
 
 .auth-panel-head {
-  margin-bottom: 18px;
+  margin-bottom: 16px;
 }
 
 .auth-panel-head.centered {
@@ -497,12 +561,12 @@ body {
 }
 
 .auth-panel-head-compact {
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
 .auth-panel-title {
   margin: 0 0 10px;
-  font-size: clamp(28px, 3.8vw, 42px);
+  font-size: clamp(26px, 3.4vw, 38px);
   line-height: 1.1;
   font-weight: 900;
 }
@@ -726,8 +790,6 @@ body {
 }
 
 .auth-status {
-  position: relative;
-  z-index: 2;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -800,6 +862,15 @@ body {
   }
 }
 
+@keyframes authShellFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
 @keyframes authBorderSpin {
   from {
     --auth-border-angle: 0deg;
@@ -809,12 +880,24 @@ body {
   }
 }
 
-@keyframes authSubtleFloat {
-  0%, 100% {
-    transform: translateY(0);
+@keyframes authModalLightSweep {
+  0% {
+    transform: translateX(-130%);
   }
-  50% {
-    transform: translateY(-4px);
+  42% {
+    transform: translateX(130%);
+  }
+  100% {
+    transform: translateX(130%);
+  }
+}
+
+@keyframes authCursorGlow {
+  from {
+    filter: brightness(1);
+  }
+  to {
+    filter: brightness(1.22);
   }
 }
 
@@ -835,6 +918,12 @@ body {
   50% {
     opacity: .9;
     transform: scale(1.18);
+  }
+}
+
+@keyframes authLogoRing {
+  to {
+    transform: rotate(360deg);
   }
 }
 
@@ -864,11 +953,11 @@ body {
 
 @keyframes authPlatformPulse {
   0%, 100% {
-    opacity: .50;
+    opacity: .48;
     transform: translateX(-50%) scale(.94);
   }
   50% {
-    opacity: .78;
+    opacity: .72;
     transform: translateX(-50%) scale(1.05);
   }
 }
@@ -879,22 +968,23 @@ body {
   }
 
   .auth-shell {
-    width: min(100%, 540px);
+    width: min(100%, 440px);
   }
 
   .auth-card {
+    min-height: auto;
     padding: 24px 18px 18px;
     border-radius: 28px;
   }
 
   .auth-logo,
   .auth-logo-wrap {
-    width: 58px;
-    height: 58px;
+    width: 62px;
+    height: 62px;
   }
 
   .auth-brand {
-    font-size: clamp(44px, 12vw, 60px);
+    font-size: clamp(42px, 12vw, 56px);
   }
 
   .auth-tabs {
@@ -947,163 +1037,22 @@ body {
 
   .auth-submit,
   .auth-secondary-btn {
-    min-height: 58px;
-    font-size: 17px;
+    min-height: 56px;
+    font-size: 16px;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .auth-shell,
   .auth-card,
   .auth-card::before,
+  .auth-card::after,
   .auth-logo,
   .auth-logo-wrap::before,
+  .auth-logo-wrap::after,
   .auth-page::after,
   .auth-submit::after,
   .auth-input-wrap::after {
     animation: none !important;
-  }
-}
-/* =========================================================
-   AUTH FINAL SCENE TUNE — narrow vertical card + premium sweep
-========================================================= */
-
-.auth-shell {
-  width: min(100%, 590px) !important;
-}
-
-.auth-card {
-  min-height: 660px;
-  padding: 38px 34px 32px !important;
-  transform:
-    perspective(1100px)
-    rotateX(var(--auth-tilt-x, 0deg))
-    rotateY(var(--auth-tilt-y, 0deg)) !important;
-  transition:
-    transform .18s ease,
-    box-shadow .22s ease,
-    border-color .22s ease !important;
-}
-
-.auth-card.is-tilting {
-  box-shadow:
-    0 38px 120px rgba(0, 0, 0, .52),
-    0 0 52px rgba(85,223,255,.14),
-    0 0 72px rgba(180,92,255,.14),
-    inset 0 1px 0 rgba(255,255,255,.08),
-    inset 0 -60px 100px rgba(0,0,0,.22) !important;
-}
-
-/* Лого трохи більше, щоб відповідало назві */
-.auth-logo-wrap {
-  width: 86px !important;
-  height: 86px !important;
-  margin-bottom: 14px !important;
-}
-
-.auth-logo {
-  width: 86px !important;
-  height: 86px !important;
-}
-
-.auth-brand {
-  font-size: clamp(58px, 5vw, 76px) !important;
-}
-
-/* Вужчі внутрішні елементи */
-.auth-tabs {
-  width: min(100%, 480px) !important;
-}
-
-.auth-view {
-  width: min(100%, 500px) !important;
-}
-
-/* Періодичний відблиск по всій модалці */
-.auth-card::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  border-radius: inherit;
-
-  background:
-    radial-gradient(
-      circle at var(--auth-mx, 50%) var(--auth-my, 50%),
-      rgba(255,255,255,.12),
-      rgba(85,223,255,.08) 16%,
-      transparent 34%
-    ),
-    linear-gradient(
-      115deg,
-      transparent 0%,
-      transparent 36%,
-      rgba(255,255,255,.18) 47%,
-      rgba(85,223,255,.12) 52%,
-      rgba(180,92,255,.10) 57%,
-      transparent 68%,
-      transparent 100%
-    );
-
-  opacity: .58;
-  transform: translateX(-130%);
-  animation: authModalLightSweep 3.8s ease-in-out infinite;
-}
-
-.auth-card.is-tilting::after {
-  opacity: .92;
-  animation:
-    authModalLightSweep 3.8s ease-in-out infinite,
-    authCursorGlow .9s ease-out infinite alternate;
-}
-
-@keyframes authModalLightSweep {
-  0% {
-    transform: translateX(-130%);
-  }
-  42% {
-    transform: translateX(130%);
-  }
-  100% {
-    transform: translateX(130%);
-  }
-}
-
-@keyframes authCursorGlow {
-  from {
-    filter: brightness(1);
-  }
-  to {
-    filter: brightness(1.22);
-  }
-}
-
-/* Забираємо надто квадратне враження */
-.auth-brand-zone {
-  padding-bottom: 28px !important;
-}
-
-.auth-form {
-  gap: 16px !important;
-}
-
-.auth-submit {
-  margin-top: 2px;
-}
-
-/* Мобільна адаптація */
-@media (max-width: 860px) {
-  .auth-shell {
-    width: min(100%, 540px) !important;
-  }
-
-  .auth-card {
-    min-height: auto;
-  }
-
-  .auth-logo,
-  .auth-logo-wrap {
-    width: 64px !important;
-    height: 64px !important;
   }
 }
