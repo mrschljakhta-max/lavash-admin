@@ -963,3 +963,147 @@ body {
     animation: none !important;
   }
 }
+/* =========================================================
+   AUTH FINAL SCENE TUNE — narrow vertical card + premium sweep
+========================================================= */
+
+.auth-shell {
+  width: min(100%, 590px) !important;
+}
+
+.auth-card {
+  min-height: 660px;
+  padding: 38px 34px 32px !important;
+  transform:
+    perspective(1100px)
+    rotateX(var(--auth-tilt-x, 0deg))
+    rotateY(var(--auth-tilt-y, 0deg)) !important;
+  transition:
+    transform .18s ease,
+    box-shadow .22s ease,
+    border-color .22s ease !important;
+}
+
+.auth-card.is-tilting {
+  box-shadow:
+    0 38px 120px rgba(0, 0, 0, .52),
+    0 0 52px rgba(85,223,255,.14),
+    0 0 72px rgba(180,92,255,.14),
+    inset 0 1px 0 rgba(255,255,255,.08),
+    inset 0 -60px 100px rgba(0,0,0,.22) !important;
+}
+
+/* Лого трохи більше, щоб відповідало назві */
+.auth-logo-wrap {
+  width: 86px !important;
+  height: 86px !important;
+  margin-bottom: 14px !important;
+}
+
+.auth-logo {
+  width: 86px !important;
+  height: 86px !important;
+}
+
+.auth-brand {
+  font-size: clamp(58px, 5vw, 76px) !important;
+}
+
+/* Вужчі внутрішні елементи */
+.auth-tabs {
+  width: min(100%, 480px) !important;
+}
+
+.auth-view {
+  width: min(100%, 500px) !important;
+}
+
+/* Періодичний відблиск по всій модалці */
+.auth-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  border-radius: inherit;
+
+  background:
+    radial-gradient(
+      circle at var(--auth-mx, 50%) var(--auth-my, 50%),
+      rgba(255,255,255,.12),
+      rgba(85,223,255,.08) 16%,
+      transparent 34%
+    ),
+    linear-gradient(
+      115deg,
+      transparent 0%,
+      transparent 36%,
+      rgba(255,255,255,.18) 47%,
+      rgba(85,223,255,.12) 52%,
+      rgba(180,92,255,.10) 57%,
+      transparent 68%,
+      transparent 100%
+    );
+
+  opacity: .58;
+  transform: translateX(-130%);
+  animation: authModalLightSweep 3.8s ease-in-out infinite;
+}
+
+.auth-card.is-tilting::after {
+  opacity: .92;
+  animation:
+    authModalLightSweep 3.8s ease-in-out infinite,
+    authCursorGlow .9s ease-out infinite alternate;
+}
+
+@keyframes authModalLightSweep {
+  0% {
+    transform: translateX(-130%);
+  }
+  42% {
+    transform: translateX(130%);
+  }
+  100% {
+    transform: translateX(130%);
+  }
+}
+
+@keyframes authCursorGlow {
+  from {
+    filter: brightness(1);
+  }
+  to {
+    filter: brightness(1.22);
+  }
+}
+
+/* Забираємо надто квадратне враження */
+.auth-brand-zone {
+  padding-bottom: 28px !important;
+}
+
+.auth-form {
+  gap: 16px !important;
+}
+
+.auth-submit {
+  margin-top: 2px;
+}
+
+/* Мобільна адаптація */
+@media (max-width: 860px) {
+  .auth-shell {
+    width: min(100%, 540px) !important;
+  }
+
+  .auth-card {
+    min-height: auto;
+  }
+
+  .auth-logo,
+  .auth-logo-wrap {
+    width: 64px !important;
+    height: 64px !important;
+  }
+}
