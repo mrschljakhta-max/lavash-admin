@@ -1612,3 +1612,35 @@
   background: linear-gradient(90deg, #58d8ff, #a56bff) !important;
   box-shadow: 0 0 14px rgba(123, 135, 255, .52) !important;
 }
+/* STEP 1.1 — card size fix */
+
+.dict-card {
+  width: 300px !important;
+  height: 400px !important;
+}
+
+.dict-card__icon {
+  width: 62px !important;
+  height: 62px !important;
+  margin-bottom: 20px !important;
+}
+
+.dict-card__title {
+  font-size: 26px !important;
+}
+
+.dict-card__metric-value {
+  font-size: 32px !important;
+}
+
+.dict-card__chips {
+  margin-top: 18px !important;
+}
+
+.dicts-carousel-stage {
+  transform: translateY(-34px) !important;
+}
+
+.dicts-dots {
+  bottom: 22px !important;
+}
