@@ -801,6 +801,7 @@ function bindEvents() {
 
 async function initAuthPage() {
   bindEvents();
+  setupAuthCardTilt();
   activateTab('login');
   await initExistingSession();
 }
@@ -843,3 +844,33 @@ document.addEventListener('DOMContentLoaded', () => {
     initAuthPage();
   }
 });
+function setupAuthCardTilt() {
+  const card = el('authCard');
+  if (!card) return;
+
+  card.addEventListener('mousemove', (event) => {
+    const rect = card.getBoundingClientRect();
+
+    const x = (event.clientX - rect.left) / rect.width;
+    const y = (event.clientY - rect.top) / rect.height;
+
+    const rotateY = (x - 0.5) * 8;
+    const rotateX = (0.5 - y) * 7;
+
+    card.style.setProperty('--auth-tilt-x', `${rotateX}deg`);
+    card.style.setProperty('--auth-tilt-y', `${rotateY}deg`);
+    card.style.setProperty('--auth-mx', `${x * 100}%`);
+    card.style.setProperty('--auth-my', `${y * 100}%`);
+
+    card.classList.add('is-tilting');
+  });
+
+  card.addEventListener('mouseleave', () => {
+    card.style.setProperty('--auth-tilt-x', '0deg');
+    card.style.setProperty('--auth-tilt-y', '0deg');
+    card.style.setProperty('--auth-mx', '50%');
+    card.style.setProperty('--auth-my', '50%');
+
+    card.classList.remove('is-tilting');
+  });
+}
