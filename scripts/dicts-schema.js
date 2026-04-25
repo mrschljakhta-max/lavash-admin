@@ -24,18 +24,25 @@
   ];
 
   const schemaRelations = [
-    { from: "units", to: "regions" },
-    { from: "units", to: "settlements" },
-    { from: "personnel", to: "roles" },
-    { from: "vehicles", to: "objectTypes" },
-    { from: "positions", to: "settlements" },
-    { from: "tasks", to: "statuses" },
-    { from: "events", to: "sources" },
-    { from: "events", to: "statuses" },
-    { from: "stations", to: "settlements" },
-    { from: "stations", to: "terrain" },
-    { from: "uav", to: "objectTypes" },
-    { from: "uav", to: "sources" }
+    { from: "units", to: "regions", power: "primary" },
+    { from: "units", to: "settlements", power: "secondary" },
+    { from: "personnel", to: "roles", power: "secondary" },
+    { from: "vehicles", to: "objectTypes", power: "primary" },
+    { from: "positions", to: "settlements", power: "primary" },
+    { from: "tasks", to: "statuses", power: "primary" },
+    { from: "events", to: "sources", power: "secondary" },
+    { from: "events", to: "statuses", power: "secondary" },
+    { from: "stations", to: "settlements", power: "primary" },
+    { from: "stations", to: "terrain", power: "secondary" },
+    { from: "uav", to: "objectTypes", power: "primary" },
+    { from: "uav", to: "sources", power: "secondary" },
+
+    { from: "units", to: "roles", power: "bg" },
+    { from: "vehicles", to: "settlements", power: "bg" },
+    { from: "positions", to: "terrain", power: "bg" },
+    { from: "stations", to: "statuses", power: "bg" },
+    { from: "tasks", to: "sources", power: "bg" },
+    { from: "uav", to: "settlements", power: "bg" }
   ];
 
   const state = {
@@ -51,11 +58,12 @@
 
     const centerX = 500;
     const centerY = 340;
-    const radiusX = 350;
-    const radiusY = 275;
 
-    const angleStart = -68;
-    const angleEnd = 68;
+    const radiusX = 345;
+    const radiusY = 286;
+
+    const angleStart = -112;
+    const angleEnd = 112;
 
     function place(items, side) {
       const count = items.length;
@@ -65,18 +73,21 @@
         const angle = angleStart + (angleEnd - angleStart) * t;
         const rad = degToRad(angle);
 
-        const x =
-          side === "left"
-            ? centerX - radiusX * Math.cos(rad)
-            : centerX + radiusX * Math.cos(rad);
+        const arcX = Math.cos(rad);
+        const arcY = Math.sin(rad);
 
-        const y = centerY + radiusY * Math.sin(rad);
+        const x = side === "left"
+          ? centerX - Math.abs(radiusX * arcX)
+          : centerX + Math.abs(radiusX * arcX);
+
+        const y = centerY + radiusY * arcY;
 
         state.positions.set(item.id, {
           ...item,
           side,
           x,
-          y
+          y,
+          angle
         });
       });
     }
@@ -97,7 +108,7 @@
     }
 
     return {
-      x: node.side === "left" ? node.x + 126 : node.x - 126,
+      x: node.side === "left" ? node.x + 128 : node.x - 128,
       y: node.y
     };
   }
@@ -107,18 +118,18 @@
     const b = getAnchor(relation.to);
 
     const hubX = 500;
-    const hubY = 340 + ((index % 7) - 3) * 14;
+    const hubY = 340 + ((index % 9) - 4) * 9;
 
     return `
       <path
-        class="schema-link"
+        class="schema-link schema-link--${relation.power || "secondary"}"
         data-from="${relation.from}"
         data-to="${relation.to}"
-        style="animation-delay:${index * -0.6}s"
+        style="animation-delay:${index * -0.72}s"
         d="
           M ${a.x} ${a.y}
-          C ${a.x + 95} ${a.y}, ${hubX - 90} ${hubY}, ${hubX} ${hubY}
-          C ${hubX + 90} ${hubY}, ${b.x - 95} ${b.y}, ${b.x} ${b.y}
+          C ${a.x + 115} ${a.y}, ${hubX - 82} ${hubY}, ${hubX} ${hubY}
+          C ${hubX + 82} ${hubY}, ${b.x - 115} ${b.y}, ${b.x} ${b.y}
         "
       />
     `;
@@ -157,20 +168,18 @@
 
     document.querySelectorAll(".schema-link").forEach((line) => {
       const active = line.dataset.from === id || line.dataset.to === id;
+
       line.classList.toggle("is-active", active);
       line.classList.toggle("is-muted", Boolean(id) && !active);
     });
+
+    document.querySelector(".schema-hub")?.classList.toggle("is-hot", Boolean(id));
   }
 
   function bindSchemaEvents() {
     document.querySelectorAll(".schema-orbit-card").forEach((card) => {
-      card.addEventListener("mouseenter", () => {
-        setActiveNode(card.dataset.id);
-      });
-
-      card.addEventListener("mouseleave", () => {
-        setActiveNode(null);
-      });
+      card.addEventListener("mouseenter", () => setActiveNode(card.dataset.id));
+      card.addEventListener("mouseleave", () => setActiveNode(null));
 
       card.addEventListener("click", () => {
         console.log("open dictionary:", card.dataset.id);
@@ -195,21 +204,27 @@
     root.innerHTML = `
       <div class="dict-schema-orbit">
         <div class="dict-schema-orbit__grid"></div>
+        <div class="schema-stars"></div>
 
         <div class="schema-shell schema-shell--left">
-          <span></span><span></span><span></span><span></span>
+          <span></span><span></span><span></span><span></span><span></span>
         </div>
 
         <div class="schema-shell schema-shell--right">
-          <span></span><span></span><span></span><span></span>
+          <span></span><span></span><span></span><span></span><span></span>
         </div>
+
+        <div class="schema-orbit-ring schema-orbit-ring--left"></div>
+        <div class="schema-orbit-ring schema-orbit-ring--right"></div>
 
         <div class="dict-schema-orbit__axis"></div>
 
         <div class="schema-hub">
+          <span class="schema-hub__halo"></span>
           <span class="schema-hub__ring schema-hub__ring--one"></span>
           <span class="schema-hub__ring schema-hub__ring--two"></span>
           <span class="schema-hub__ring schema-hub__ring--three"></span>
+          <span class="schema-hub__diamond"></span>
           <span class="schema-hub__core"></span>
         </div>
 
@@ -222,9 +237,17 @@
           <defs>
             <linearGradient id="schemaGradient" x1="0%" y1="0%" x2="100%" y2="0%">
               <stop offset="0%" stop-color="#14f7ee" />
-              <stop offset="50%" stop-color="#4fa8ff" />
+              <stop offset="48%" stop-color="#4fa8ff" />
               <stop offset="100%" stop-color="#9558ff" />
             </linearGradient>
+
+            <filter id="schemaGlow">
+              <feGaussianBlur stdDeviation="3.5" result="coloredBlur"/>
+              <feMerge>
+                <feMergeNode in="coloredBlur"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
           </defs>
 
           ${schemaRelations.map(renderLine).join("")}
@@ -240,9 +263,7 @@
   }
 
   function initSchemaViewSafe() {
-    requestAnimationFrame(() => {
-      renderSchema();
-    });
+    requestAnimationFrame(renderSchema);
   }
 
   window.renderDictsSchemaNow = initSchemaViewSafe;
