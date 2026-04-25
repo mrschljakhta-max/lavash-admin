@@ -2,49 +2,67 @@
   const ICON_PATH = "../assets/icons/schema/";
 
   const schemaLeft = [
-    { id: "units", label: "ПІДРОЗДІЛИ", icon: "units.svg", link: "primary" },
-    { id: "personnel", label: "ПЕРСОНАЛ", icon: "personnel.svg", link: "primary" },
-    { id: "vehicles", label: "ТЕХНІКА", icon: "vehicles.svg", link: "primary" },
-    { id: "positions", label: "ПОЗИЦІЇ", icon: "positions.svg", link: "primary" },
-    { id: "tasks", label: "ЗАВДАННЯ", icon: "tasks.svg", link: "secondary" },
-    { id: "events", label: "ПОДІЇ", icon: "events.svg", link: "secondary" },
-    { id: "stations", label: "СТАНЦІЇ РЕБ", icon: "stations.svg", link: "primary" },
-    { id: "uav", label: "БПЛА", icon: "uav.svg", link: "primary" }
+    { id: "units", label: "ПІДРОЗДІЛИ", icon: "units.svg" },
+    { id: "personnel", label: "ПЕРСОНАЛ", icon: "personnel.svg" },
+    { id: "vehicles", label: "ТЕХНІКА", icon: "vehicles.svg" },
+    { id: "positions", label: "ПОЗИЦІЇ", icon: "positions.svg" },
+    { id: "tasks", label: "ЗАВДАННЯ", icon: "tasks.svg" },
+    { id: "events", label: "ПОДІЇ", icon: "events.svg" },
+    { id: "stations", label: "СТАНЦІЇ РЕБ", icon: "stations.svg" },
+    { id: "uav", label: "БПЛА", icon: "uav.svg" }
   ];
 
   const schemaRight = [
-    { id: "countries", label: "КРАЇНИ", icon: "countries.svg", link: "primary" },
-    { id: "regions", label: "РЕГІОНИ", icon: "regions.svg", link: "primary" },
-    { id: "settlements", label: "НАСЕЛЕНІ ПУНКТИ", icon: "settlements.svg", link: "primary" },
-    { id: "terrain", label: "ТИПИ МІСЦЕВОСТІ", icon: "terrain.svg", link: "secondary" },
-    { id: "objectTypes", label: "ТИПИ ОБʼЄКТІВ", icon: "object-types.svg", link: "secondary" },
-    { id: "sources", label: "ДЖЕРЕЛА ІНФОРМАЦІЇ", icon: "sources.svg", link: "secondary" },
-    { id: "statuses", label: "СТАТУСИ", icon: "statuses.svg", link: "primary" },
-    { id: "roles", label: "РОЛІ КОРИСТУВАЧІВ", icon: "roles.svg", link: "primary" }
+    { id: "countries", label: "КРАЇНИ", icon: "countries.svg" },
+    { id: "regions", label: "РЕГІОНИ", icon: "regions.svg" },
+    { id: "settlements", label: "НАСЕЛЕНІ ПУНКТИ", icon: "settlements.svg" },
+    { id: "terrain", label: "ТИПИ МІСЦЕВОСТІ", icon: "terrain.svg" },
+    { id: "objectTypes", label: "ТИПИ ОБʼЄКТІВ", icon: "object-types.svg" },
+    { id: "sources", label: "ДЖЕРЕЛА ІНФОРМАЦІЇ", icon: "sources.svg" },
+    { id: "statuses", label: "СТАТУСИ", icon: "statuses.svg" },
+    { id: "roles", label: "РОЛІ КОРИСТУВАЧІВ", icon: "roles.svg" }
   ];
+
+  const relations = {
+    units: ["personnel", "vehicles", "positions", "tasks", "events", "stations", "roles", "statuses"],
+    personnel: ["units", "positions", "tasks", "events", "roles", "statuses"],
+    vehicles: ["units", "stations", "tasks", "events", "statuses"],
+    positions: ["units", "personnel", "settlements", "terrain", "objectTypes"],
+    tasks: ["units", "personnel", "vehicles", "events", "sources", "statuses"],
+    events: ["tasks", "stations", "uav", "settlements", "sources", "statuses"],
+    stations: ["units", "vehicles", "events", "settlements", "objectTypes", "statuses"],
+    uav: ["events", "sources", "statuses"],
+
+    countries: ["regions", "settlements"],
+    regions: ["countries", "settlements"],
+    settlements: ["regions", "countries", "positions", "events", "stations", "terrain"],
+    terrain: ["settlements", "positions", "stations"],
+    objectTypes: ["positions", "stations", "sources"],
+    sources: ["events", "tasks", "uav", "objectTypes"],
+    statuses: ["events", "tasks", "stations", "personnel", "vehicles"],
+    roles: ["users", "units", "personnel"]
+  };
 
   const state = { nodes: [] };
 
   function buildNodes() {
-    const ySlots = [116, 176, 236, 296, 356, 416, 476, 536];
-    const xLeft = [274, 238, 214, 198, 198, 214, 238, 274];
-    const xRight = [726, 762, 786, 802, 802, 786, 762, 726];
+    const ySlots = [120, 180, 240, 300, 360, 420, 480, 540];
 
     const left = schemaLeft.map((item, index) => ({
       ...item,
       side: "left",
-      x: xLeft[index],
+      x: 250 + Math.abs(index - 3.5) * 16,
       y: ySlots[index],
-      portX: xLeft[index] + 123,
+      portX: 358 + Math.abs(index - 3.5) * 8,
       portY: ySlots[index]
     }));
 
     const right = schemaRight.map((item, index) => ({
       ...item,
       side: "right",
-      x: xRight[index],
+      x: 750 - Math.abs(index - 3.5) * 16,
       y: ySlots[index],
-      portX: xRight[index] - 123,
+      portX: 642 - Math.abs(index - 3.5) * 8,
       portY: ySlots[index]
     }));
 
@@ -57,10 +75,12 @@
         class="schema-node schema-node--${node.side}"
         type="button"
         data-id="${node.id}"
-        style="left:${node.x}px; top:${node.y}px; --node-delay:${index * 0.07}s"
+        style="left:${node.x}px; top:${node.y}px; --node-delay:${index * 0.055}s"
         aria-label="Відкрити довідник: ${node.label}"
       >
-        <span class="schema-node__icon"><img src="${ICON_PATH + node.icon}" alt="" draggable="false" /></span>
+        <span class="schema-node__icon">
+          <img src="${ICON_PATH + node.icon}" alt="" draggable="false" />
+        </span>
         <span class="schema-node__label">${node.label}</span>
         <span class="schema-node__port"></span>
       </button>
@@ -69,41 +89,78 @@
 
   function renderHubLine(node, index) {
     const hubX = 500;
-    const hubY = 340;
-    const laneOffset = (index % 8 - 3.5) * 4.8;
-    const endX = node.side === "left" ? hubX - 42 : hubX + 42;
-    const midY = node.portY * 0.58 + hubY * 0.42 + laneOffset;
-    const c1x = node.side === "left" ? node.portX + 78 : node.portX - 78;
-    const c2x = node.side === "left" ? endX - 96 : endX + 96;
+    const hubY = 330;
+
+    const endX = node.side === "left" ? hubX - 32 : hubX + 32;
+    const direction = node.side === "left" ? 1 : -1;
+
+    const bend = Math.abs(node.y - hubY);
+    const roundness = 92 + bend * 0.34;
+
+    const c1x = node.portX + direction * roundness;
+    const c1y = node.portY;
+
+    const c2x = endX - direction * (118 + bend * 0.18);
+    const c2y = hubY + (node.portY - hubY) * 0.38;
 
     return `
       <path
-        class="schema-link schema-link--${node.side} schema-link--${node.link}"
+        class="schema-link schema-link--${node.side}"
         data-id="${node.id}"
-        style="animation-delay:${index * -0.34}s"
-        d="M ${node.portX} ${node.portY} C ${c1x} ${node.portY}, ${c2x} ${midY}, ${endX} ${hubY}"
+        d="M ${node.portX} ${node.portY} C ${c1x} ${c1y}, ${c2x} ${c2y}, ${endX} ${hubY}"
       />
     `;
   }
 
-  function renderMicroParticles() {
-    return state.nodes.map((node, index) => {
-      const sideClass = node.side === "left" ? "schema-particle--left" : "schema-particle--right";
-      return `<span class="schema-particle ${sideClass}" style="--p-y:${node.y}px; --p-delay:${index * -0.42}s"></span>`;
+  function renderLineDots(node) {
+    const count = 4;
+    return Array.from({ length: count }).map((_, i) => {
+      const ratio = (i + 1) / (count + 1);
+      return `
+        <span
+          class="schema-line-dot schema-line-dot--${node.side}"
+          data-id="${node.id}"
+          style="
+            --dot-y:${node.y}px;
+            --dot-i:${i};
+            --dot-r:${ratio};
+          "
+        ></span>
+      `;
     }).join("");
   }
 
+  function renderOuterSegments(side) {
+    return Array.from({ length: 8 }).map((_, i) => `
+      <span class="schema-orbit-segment schema-orbit-segment--${side}" style="--seg:${i};"></span>
+    `).join("");
+  }
+
+  function relatedIds(id) {
+    return new Set([id, ...(relations[id] || [])]);
+  }
+
   function setActiveNode(id) {
+    const activeSet = id ? relatedIds(id) : null;
+
     document.querySelectorAll(".schema-node").forEach((node) => {
-      const active = node.dataset.id === id;
-      node.classList.toggle("is-focused", active);
-      node.classList.toggle("is-dimmed", Boolean(id) && !active);
+      const nodeId = node.dataset.id;
+      const isMain = nodeId === id;
+      const isRelated = activeSet?.has(nodeId);
+
+      node.classList.toggle("is-focused", isMain);
+      node.classList.toggle("is-related", Boolean(id) && Boolean(isRelated) && !isMain);
+      node.classList.toggle("is-dimmed", Boolean(id) && !isRelated);
     });
 
-    document.querySelectorAll(".schema-link").forEach((line) => {
-      const active = line.dataset.id === id;
-      line.classList.toggle("is-active", active);
-      line.classList.toggle("is-muted", Boolean(id) && !active);
+    document.querySelectorAll(".schema-link, .schema-line-dot").forEach((el) => {
+      const itemId = el.dataset.id;
+      const isMain = itemId === id;
+      const isRelated = activeSet?.has(itemId);
+
+      el.classList.toggle("is-active", Boolean(isMain));
+      el.classList.toggle("is-related", Boolean(id) && Boolean(isRelated) && !isMain);
+      el.classList.toggle("is-muted", Boolean(id) && !isRelated);
     });
 
     document.querySelector(".schema-hub")?.classList.toggle("is-hot", Boolean(id));
@@ -115,12 +172,9 @@
       node.addEventListener("mouseleave", () => setActiveNode(null));
       node.addEventListener("focus", () => setActiveNode(node.dataset.id));
       node.addEventListener("blur", () => setActiveNode(null));
-      node.addEventListener("click", () => console.log("openDictionary:", node.dataset.id));
-    });
-
-    document.querySelectorAll(".schema-link").forEach((line) => {
-      line.addEventListener("mouseenter", () => setActiveNode(line.dataset.id));
-      line.addEventListener("mouseleave", () => setActiveNode(null));
+      node.addEventListener("click", () => {
+        console.log("openDictionary:", node.dataset.id);
+      });
     });
   }
 
@@ -129,57 +183,70 @@
     if (!root) return;
 
     buildNodes();
-    root.classList.add("dicts-schema-root");
 
     root.innerHTML = `
-      <div class="dict-schema-v5">
-        <div class="schema-space schema-space--stars-a"></div>
-        <div class="schema-space schema-space--stars-b"></div>
-        <div class="schema-bg-grid"></div>
-        <div class="schema-bg-glow"></div>
-        <div class="schema-hemisphere schema-hemisphere--left"></div>
-        <div class="schema-hemisphere schema-hemisphere--right"></div>
-        <div class="schema-orbit schema-orbit--left"><span>ОСНОВНІ ДОВІДНИКИ</span></div>
-        <div class="schema-orbit schema-orbit--right"><span>ДОДАТКОВІ ДОВІДНИКИ</span></div>
+      <div class="dict-schema-v6">
+        <div class="schema-space schema-space--a"></div>
+        <div class="schema-space schema-space--b"></div>
+        <div class="schema-grid"></div>
+        <div class="schema-nebula"></div>
+
+        <div class="schema-oval schema-oval--left"></div>
+        <div class="schema-oval schema-oval--right"></div>
+
+        <div class="schema-orbit schema-orbit--left">
+          ${renderOuterSegments("left")}
+        </div>
+
+        <div class="schema-orbit schema-orbit--right">
+          ${renderOuterSegments("right")}
+        </div>
+
         <div class="schema-axis"></div>
 
-        <svg class="schema-links" viewBox="0 0 1000 680" preserveAspectRatio="none" aria-hidden="true">
+        <svg class="schema-links" viewBox="0 0 1000 660" preserveAspectRatio="none" aria-hidden="true">
           <defs>
-            <linearGradient id="schemaCyanGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stop-color="#10fff3" stop-opacity=".98" />
-              <stop offset="100%" stop-color="#55a8ff" stop-opacity=".58" />
+            <linearGradient id="schemaCyan" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#13fff2" stop-opacity=".98" />
+              <stop offset="55%" stop-color="#20d7ff" stop-opacity=".82" />
+              <stop offset="100%" stop-color="#62a5ff" stop-opacity=".52" />
             </linearGradient>
-            <linearGradient id="schemaVioletGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stop-color="#8e5bff" stop-opacity=".58" />
-              <stop offset="100%" stop-color="#bd62ff" stop-opacity=".98" />
+
+            <linearGradient id="schemaViolet" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#7b55ff" stop-opacity=".52" />
+              <stop offset="48%" stop-color="#9d62ff" stop-opacity=".84" />
+              <stop offset="100%" stop-color="#d96dff" stop-opacity=".98" />
             </linearGradient>
-            <filter id="schemaGlow" x="-25%" y="-25%" width="150%" height="150%">
-              <feGaussianBlur stdDeviation="3" result="blur"/>
-              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+
+            <filter id="schemaGlow" x="-30%" y="-30%" width="160%" height="160%">
+              <feGaussianBlur stdDeviation="3.2" result="blur"/>
+              <feMerge>
+                <feMergeNode in="blur"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
             </filter>
           </defs>
+
           ${state.nodes.map(renderHubLine).join("")}
         </svg>
 
-        <div class="schema-particles">${renderMicroParticles()}</div>
-
-        <div class="schema-hub" aria-hidden="true">
-          <span class="schema-hub__halo"></span>
-          <span class="schema-hub__orbit schema-hub__orbit--a"></span>
-          <span class="schema-hub__orbit schema-hub__orbit--b"></span>
-          <span class="schema-hub__orbit schema-hub__orbit--c"></span>
-          <span class="schema-hub__diamond"></span>
-          <span class="schema-hub__core"></span>
-          <span class="schema-hub__caption">ЦЕНТРАЛЬНЕ ЯДРО<br>СИНХРОНІЗАЦІЇ ДАНИХ</span>
+        <div class="schema-line-dots">
+          ${state.nodes.map(renderLineDots).join("")}
         </div>
 
-        <div class="schema-nodes">${state.nodes.map(renderNode).join("")}</div>
+        <div class="schema-hub" aria-hidden="true">
+          <span class="schema-hub__aura"></span>
+          <span class="schema-hub__ring schema-hub__ring--1"></span>
+          <span class="schema-hub__ring schema-hub__ring--2"></span>
+          <span class="schema-hub__ring schema-hub__ring--3"></span>
+          <span class="schema-hub__crystal">
+            <i></i><b></b><em></em>
+          </span>
+          <span class="schema-hub__core"></span>
+        </div>
 
-        <div class="schema-legend" aria-hidden="true">
-          <span><i class="legend-line legend-line--primary"></i>ПРЯМІ ЗВʼЯЗКИ</span>
-          <span><i class="legend-line legend-line--secondary"></i>НЕПРЯМІ ЗВʼЯЗКИ</span>
-          <span><i class="legend-flow"></i>ПОТОК ДАНИХ</span>
-          <span><i class="legend-dot"></i>АКТИВНИЙ ВУЗОЛ</span>
+        <div class="schema-nodes">
+          ${state.nodes.map(renderNode).join("")}
         </div>
       </div>
     `;
