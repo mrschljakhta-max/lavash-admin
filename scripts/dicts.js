@@ -20,8 +20,7 @@
       { id: '5', title: 'Типи станцій', icon: 'stack', total: 142, status: 'active', type: 'dictionary' },
       { id: '6', title: 'Pending', icon: 'pending', total: 87, status: 'active', type: 'service' }
     ],
-    activeIndex: 0,
-    animating: false
+    activeIndex: 0
   };
 
   function formatNumber(value) {
@@ -80,41 +79,11 @@
     const STEP = 260;
 
     const map = {
-      "-2": {
-        x: -STEP * 2,
-        scale: 0.62,
-        depth: -260,
-        opacity: 0.42,
-        blur: 1.2
-      },
-      "-1": {
-        x: -STEP,
-        scale: 0.82,
-        depth: -120,
-        opacity: 0.72,
-        blur: 0.35
-      },
-      "0": {
-        x: 0,
-        scale: 1,
-        depth: 120,
-        opacity: 1,
-        blur: 0
-      },
-      "1": {
-        x: STEP,
-        scale: 0.82,
-        depth: -120,
-        opacity: 0.72,
-        blur: 0.35
-      },
-      "2": {
-        x: STEP * 2,
-        scale: 0.62,
-        depth: -260,
-        opacity: 0.42,
-        blur: 1.2
-      }
+      '-2': { x: -STEP * 2, scale: 0.62, depth: -260, opacity: 0.42, blur: 1.2 },
+      '-1': { x: -STEP, scale: 0.82, depth: -120, opacity: 0.72, blur: 0.35 },
+      '0': { x: 0, scale: 1, depth: 120, opacity: 1, blur: 0 },
+      '1': { x: STEP, scale: 0.82, depth: -120, opacity: 0.72, blur: 0.35 },
+      '2': { x: STEP * 2, scale: 0.62, depth: -260, opacity: 0.42, blur: 1.2 }
     };
 
     return map[String(offset)];
@@ -301,13 +270,48 @@
     }
   }
 
+  function setDictsViewMode(mode) {
+    const normalizedMode = mode === 'schema' ? 'schema' : 'carousel';
+
+    const page = document.getElementById('dictsPage');
+    const carouselView = document.getElementById('dictsCarouselView');
+    const schemaView = document.getElementById('dictsSchemaView');
+
+    if (page) {
+      page.classList.toggle('dicts-view--carousel', normalizedMode === 'carousel');
+      page.classList.toggle('dicts-view--schema', normalizedMode === 'schema');
+      page.setAttribute('data-dicts-view-mode', normalizedMode);
+    }
+
+    if (carouselView) {
+      carouselView.classList.toggle('hidden', normalizedMode !== 'carousel');
+      carouselView.hidden = normalizedMode !== 'carousel';
+      carouselView.setAttribute('aria-hidden', normalizedMode !== 'carousel' ? 'true' : 'false');
+    }
+
+    if (schemaView) {
+      schemaView.classList.toggle('hidden', normalizedMode !== 'schema');
+      schemaView.hidden = normalizedMode !== 'schema';
+      schemaView.setAttribute('aria-hidden', normalizedMode !== 'schema' ? 'true' : 'false');
+    }
+
+    if (normalizedMode === 'schema') {
+      window.LAVASH_DICTS_SCHEMA?.initSchemaView?.();
+    } else {
+      renderCarousel();
+    }
+  }
+
   function initDictsPage() {
     bindControls();
     renderCarousel();
   }
 
+  window.setDictsViewMode = setDictsViewMode;
+
   window.LAVASH_DICTS = {
     initDictsPage,
-    renderCarousel
+    renderCarousel,
+    setDictsViewMode
   };
 })();
