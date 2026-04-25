@@ -7,6 +7,7 @@
 }
 
 .dicts-schema-view {
+  position: relative;
   height: min(660px, calc(100vh - 210px));
   min-height: 600px;
   border-radius: 28px;
@@ -17,6 +18,30 @@
     linear-gradient(180deg, rgba(4, 8, 23, .98), rgba(1, 4, 14, .99));
   border: 1px solid rgba(132, 160, 255, .14);
   box-shadow: inset 0 0 90px rgba(0, 0, 0, .42);
+}
+
+.dicts-schema-view::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  pointer-events: none;
+  border-radius: inherit;
+  background:
+    linear-gradient(90deg,
+      rgba(4, 12, 32, .96) 0%,
+      rgba(4, 12, 32, .56) 5%,
+      transparent 15%,
+      transparent 85%,
+      rgba(4, 12, 32, .56) 95%,
+      rgba(4, 12, 32, .96) 100%
+    ),
+    linear-gradient(180deg,
+      rgba(4, 12, 32, .82) 0%,
+      transparent 11%,
+      transparent 89%,
+      rgba(4, 12, 32, .82) 100%
+    );
 }
 
 .dicts-schema-view.hidden {
@@ -31,11 +56,11 @@
 
 .dict-schema-v6 {
   position: relative;
-  width: 1000px;
+  width: 1200px;
   height: 680px;
   left: 50%;
   top: 50%;
-  transform: translate(-50%, -50%) scale(var(--schema-scale, .94));
+  transform: translate(-50%, -50%) scale(var(--schema-scale, .98));
   transform-origin: center;
   overflow: visible;
   isolation: isolate;
@@ -113,7 +138,7 @@
 }
 
 .schema-hemisphere--left {
-  left: 96px;
+  left: 196px;
   background: radial-gradient(ellipse at 62% 50%, rgba(18,255,241,.1), rgba(18,255,241,.035) 42%, transparent 72%);
   box-shadow:
     inset -42px 0 88px rgba(18,255,241,.1),
@@ -121,7 +146,7 @@
 }
 
 .schema-hemisphere--right {
-  right: 96px;
+  right: 196px;
   background: radial-gradient(ellipse at 38% 50%, rgba(166,92,255,.11), rgba(166,92,255,.04) 42%, transparent 72%);
   box-shadow:
     inset 42px 0 88px rgba(166,92,255,.1),
@@ -146,7 +171,7 @@
 }
 
 .schema-orbit--left {
-  left: 54px;
+  left: 154px;
   border-left: 2px solid rgba(18, 255, 241, .58);
   box-shadow:
     -9px 0 30px rgba(18,255,241,.23),
@@ -160,20 +185,8 @@
   animation: schemaOrbitSpin 20s linear infinite;
 }
 
-.schema-orbit--left::after {
-  left: -18px;
-  width: 40px;
-  background: repeating-linear-gradient(
-    to bottom,
-    transparent 0 42px,
-    rgba(18,255,241,.12) 43px 56px,
-    transparent 57px 74px
-  );
-  filter: drop-shadow(0 0 13px rgba(18,255,241,.72));
-}
-
 .schema-orbit--right {
-  right: 54px;
+  right: 154px;
   border-right: 2px solid rgba(166, 92, 255, .66);
   box-shadow:
     9px 0 30px rgba(166,92,255,.25),
@@ -187,16 +200,9 @@
   animation: schemaOrbitSpin 20s linear infinite reverse;
 }
 
+.schema-orbit--left::after,
 .schema-orbit--right::after {
-  right: -18px;
-  width: 40px;
-  background: repeating-linear-gradient(
-    to bottom,
-    transparent 0 42px,
-    rgba(166,92,255,.13) 43px 56px,
-    transparent 57px 74px
-  );
-  filter: drop-shadow(0 0 13px rgba(166,92,255,.76));
+  display: none;
 }
 
 .schema-orbit-segments {
@@ -215,13 +221,13 @@
 }
 
 .schema-orbit-segment--left {
-  left: 77px;
+  left: 177px;
   background: linear-gradient(90deg, rgba(18,255,241,.05), rgba(18,255,241,.95), rgba(18,255,241,.08));
   box-shadow: 0 0 16px rgba(18,255,241,.58);
 }
 
 .schema-orbit-segment--right {
-  right: 77px;
+  right: 177px;
   background: linear-gradient(90deg, rgba(166,92,255,.08), rgba(166,92,255,.98), rgba(166,92,255,.06));
   box-shadow: 0 0 16px rgba(166,92,255,.62);
 }
@@ -267,8 +273,8 @@
   content: "";
   position: absolute;
   left: 50%;
-  width: 150px;
-  height: 150px;
+  width: 160px;
+  height: 160px;
   transform: translateX(-50%);
   border-radius: 999px;
   background: radial-gradient(circle, rgba(77,166,255,.25), transparent 66%);
@@ -276,11 +282,11 @@
 }
 
 .schema-axis::before {
-  top: 220px;
+  top: 212px;
 }
 
 .schema-axis::after {
-  top: 278px;
+  top: 286px;
 }
 
 .schema-links {
@@ -401,7 +407,7 @@
 }
 
 .schema-particle--left {
-  left: 410px;
+  left: 510px;
   background: var(--schema-cyan);
   box-shadow:
     0 0 12px rgba(18,255,241,.88),
@@ -409,7 +415,7 @@
 }
 
 .schema-particle--right {
-  right: 410px;
+  right: 510px;
   background: var(--schema-violet);
   box-shadow:
     0 0 12px rgba(166,92,255,.9),
@@ -422,8 +428,8 @@
   left: 50%;
   top: 50%;
   z-index: 9;
-  width: 184px;
-  height: 184px;
+  width: 210px;
+  height: 210px;
   transform: translate(-50%, -50%);
   pointer-events: none;
   animation: schemaHubFloat 4.4s ease-in-out infinite;
@@ -437,12 +443,13 @@
 }
 
 .schema-hub__halo {
-  inset: -44px;
+  inset: -54px;
   border-radius: 999px;
   background:
-    radial-gradient(circle, rgba(255,255,255,.26) 0 4%, rgba(18,255,241,.3) 12%, rgba(77,166,255,.24) 34%, rgba(166,92,255,.22) 56%, transparent 76%);
-  filter: blur(13px);
-  opacity: .94;
+    radial-gradient(circle, rgba(255,255,255,.36) 0 3%, rgba(18,255,241,.34) 11%, rgba(77,166,255,.26) 32%, rgba(166,92,255,.24) 56%, transparent 76%);
+  filter: blur(15px);
+  opacity: .96;
+  animation: schemaHaloBreath 3.4s ease-in-out infinite;
 }
 
 .schema-hub__ring {
@@ -454,87 +461,83 @@
 }
 
 .schema-hub__ring--a {
-  inset: 2px;
+  inset: 4px;
   border-style: dashed;
   animation: schemaHubRotate 13s linear infinite;
 }
 
 .schema-hub__ring--b {
-  inset: 25px;
-  border-color: rgba(18,255,241,.36);
+  inset: 26px;
+  border-color: rgba(18,255,241,.38);
   animation: schemaHubRing 3.9s ease-in-out infinite;
 }
 
 .schema-hub__ring--c {
-  inset: 47px;
-  border-color: rgba(166,92,255,.42);
+  inset: 50px;
+  border-color: rgba(166,92,255,.44);
   animation: schemaHubRing 3.2s ease-in-out infinite reverse;
 }
 
 .schema-crystal {
   left: 50%;
   top: 50%;
-  width: 76px;
-  height: 76px;
-  transform-style: preserve-3d;
-  transform: translate(-50%, -50%) rotateX(58deg) rotateZ(45deg);
-  animation: schemaCrystalSpin 7.5s ease-in-out infinite;
-}
-
-.schema-crystal__face {
-  position: absolute;
-  inset: 0;
-  border-radius: 10px;
-  border: 2px solid rgba(255,255,255,.8);
+  width: 92px;
+  height: 92px;
+  transform: translate(-50%, -50%);
+  border-radius: 999px;
   background:
-    linear-gradient(135deg, rgba(255,255,255,.34), rgba(18,255,241,.28) 32%, rgba(77,166,255,.18) 55%, rgba(166,92,255,.2));
+    conic-gradient(
+      from 0deg,
+      rgba(18,255,241,.08),
+      rgba(18,255,241,.85),
+      rgba(77,166,255,.28),
+      rgba(166,92,255,.9),
+      rgba(18,255,241,.08)
+    );
+  filter: drop-shadow(0 0 24px rgba(18,255,241,.72));
+  animation: schemaEnergySpin 5.8s linear infinite;
+}
+
+.schema-crystal::before {
+  content: "";
+  position: absolute;
+  inset: 12px;
+  border-radius: 999px;
+  background:
+    radial-gradient(circle, rgba(255,255,255,.92) 0 6%, rgba(18,255,241,.65) 11%, rgba(77,166,255,.24) 34%, rgba(166,92,255,.24) 58%, transparent 72%);
   box-shadow:
-    inset 0 0 18px rgba(255,255,255,.28),
-    0 0 28px rgba(18,255,241,.68),
-    0 0 54px rgba(166,92,255,.5);
+    0 0 24px rgba(18,255,241,.76),
+    0 0 58px rgba(166,92,255,.5);
 }
 
-.schema-crystal__face--front {
-  transform: translateZ(18px);
-}
-
-.schema-crystal__face--back {
-  transform: translateZ(-18px) scale(.92);
-  opacity: .42;
-}
-
-.schema-crystal__edge {
+.schema-crystal::after {
+  content: "";
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 2px;
-  height: 88px;
-  transform-origin: center;
-  background: linear-gradient(to bottom, transparent, rgba(255,255,255,.95), transparent);
-  box-shadow: 0 0 16px rgba(18,255,241,.7);
+  width: 118px;
+  height: 18px;
+  transform: translate(-50%, -50%) rotate(-22deg);
+  border-radius: 999px;
+  background:
+    linear-gradient(90deg, transparent, rgba(255,255,255,.9), rgba(18,255,241,.72), rgba(166,92,255,.54), transparent);
+  filter: blur(.3px);
+  box-shadow:
+    0 0 20px rgba(18,255,241,.78),
+    0 0 42px rgba(166,92,255,.48);
+  animation: schemaLightSweep 2.8s ease-in-out infinite;
 }
 
-.schema-crystal__edge--a {
-  transform: translate(-50%, -50%) rotate(0deg);
-}
-
-.schema-crystal__edge--b {
-  transform: translate(-50%, -50%) rotate(90deg);
-}
-
-.schema-crystal__edge--c {
-  transform: translate(-50%, -50%) rotate(45deg);
-}
-
-.schema-crystal__edge--d {
-  transform: translate(-50%, -50%) rotate(-45deg);
+.schema-crystal__face,
+.schema-crystal__edge {
+  display: none;
 }
 
 .schema-hub__core {
   left: 50%;
   top: 50%;
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   border-radius: 999px;
   transform: translate(-50%, -50%);
   background:
@@ -761,12 +764,31 @@
   }
 }
 
-@keyframes schemaCrystalSpin {
+@keyframes schemaEnergySpin {
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+@keyframes schemaLightSweep {
   0%, 100% {
-    transform: translate(-50%, -50%) rotateX(58deg) rotateZ(45deg) scale(.96);
+    opacity: .52;
+    transform: translate(-50%, -50%) rotate(-22deg) scaleX(.76);
   }
   50% {
-    transform: translate(-50%, -50%) rotateX(62deg) rotateZ(225deg) scale(1.08);
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(-22deg) scaleX(1.12);
+  }
+}
+
+@keyframes schemaHaloBreath {
+  0%, 100% {
+    opacity: .82;
+    transform: scale(.92);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.08);
   }
 }
 
@@ -880,13 +902,13 @@
 
 @media (max-width: 1200px) {
   .dict-schema-v6 {
-    --schema-scale: .86;
+    --schema-scale: .9;
   }
 }
 
 @media (max-width: 980px) {
   .dict-schema-v6 {
-    --schema-scale: .72;
+    --schema-scale: .76;
   }
 }
 
