@@ -1,8 +1,5 @@
 (() => {
 
-  // =========================
-  // ICONS
-  // =========================
   const DICT_ICONS = {
     uav: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 11v5"/></svg>`,
     settlement: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="4"/></svg>`,
@@ -13,27 +10,20 @@
     plus: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14"/></svg>`
   };
 
-  // =========================
-  // STATE
-  // =========================
   const dictsState = {
     items: [
-      { id: '1', title: 'БпЛА', icon: 'uav', total: 1248, status: 'active', type: 'dictionary' },
-      { id: '2', title: 'Населені пункти', icon: 'settlement', total: 15892, status: 'active', type: 'dictionary' },
-      { id: '3', title: 'Станції', icon: 'station', total: 3751, status: 'active', type: 'dictionary' },
-      { id: '4', title: 'Підрозділи', icon: 'unit', total: 2156, status: 'active', type: 'dictionary' },
-      { id: '5', title: 'Типи станцій', icon: 'stack', total: 142, status: 'active', type: 'dictionary' },
-      { id: '6', title: 'Pending', icon: 'pending', total: 87, status: 'active', type: 'service' }
+      { id: '1', title: 'БпЛА', icon: 'uav', total: 1248 },
+      { id: '2', title: 'Населені пункти', icon: 'settlement', total: 15892 },
+      { id: '3', title: 'Станції', icon: 'station', total: 3751 },
+      { id: '4', title: 'Підрозділи', icon: 'unit', total: 2156 },
+      { id: '5', title: 'Типи станцій', icon: 'stack', total: 142 },
+      { id: '6', title: 'Pending', icon: 'pending', total: 87 }
     ],
-    activeIndex: 3,
-    animating: false
+    activeIndex: 3
   };
 
-  // =========================
-  // HELPERS
-  // =========================
-  function formatNumber(value) {
-    return new Intl.NumberFormat('uk-UA').format(value || 0);
+  function formatNumber(v) {
+    return new Intl.NumberFormat('uk-UA').format(v || 0);
   }
 
   function normalizeOffset(offset, total) {
@@ -43,69 +33,63 @@
     return offset;
   }
 
+  // 🔥 НОВА ГЕОМЕТРІЯ (3 РІВНІ)
   function computeTransform(offset) {
+    const STEP = 230;
+
     const map = {
-      "-2": { x: -430, scale: 0.7, rotate: 8, depth: -260 },
-      "-1": { x: -220, scale: 0.88, rotate: 5, depth: -120 },
-      "0":  { x: 0, scale: 1, rotate: 0, depth: 140 },
-      "1":  { x: 220, scale: 0.88, rotate: -5, depth: -120 },
-      "2":  { x: 430, scale: 0.7, rotate: -8, depth: -260 }
+      "-3": { x: -STEP * 3, scale: 0.48, rotate: 11, depth: -420, opacity: 0.26, blur: 2.4 },
+      "-2": { x: -STEP * 2, scale: 0.64, rotate: 8, depth: -280, opacity: 0.46, blur: 1.4 },
+      "-1": { x: -STEP, scale: 0.82, rotate: 4, depth: -120, opacity: 0.72, blur: 0.45 },
+
+      "0": { x: 0, scale: 1, rotate: 0, depth: 160, opacity: 1, blur: 0 },
+
+      "1": { x: STEP, scale: 0.82, rotate: -4, depth: -120, opacity: 0.72, blur: 0.45 },
+      "2": { x: STEP * 2, scale: 0.64, rotate: -8, depth: -280, opacity: 0.46, blur: 1.4 },
+      "3": { x: STEP * 3, scale: 0.48, rotate: -11, depth: -420, opacity: 0.26, blur: 2.4 }
     };
 
     return map[String(offset)] || {
-      x: offset < 0 ? -560 : 560,
-      scale: 0.6,
-      rotate: offset < 0 ? 12 : -12,
-      depth: -320
+      x: offset < 0 ? -STEP * 4 : STEP * 4,
+      scale: 0.4,
+      rotate: offset < 0 ? 14 : -14,
+      depth: -520,
+      opacity: 0,
+      blur: 3
     };
   }
 
   function getRenderItems() {
     return [
       ...dictsState.items,
-      {
-        id: 'create',
-        title: 'Новий довідник',
-        icon: 'plus',
-        total: 0,
-        status: 'new',
-        type: 'service',
-        __create: true
-      }
+      { id: 'create', title: 'Новий довідник', icon: 'plus', __create: true }
     ];
   }
 
-  function getCardClass(offset, item) {
+  function getCardClass(offset) {
     const abs = Math.abs(offset);
 
-    let cls = 'dict-card';
+    if (offset === 0) return 'dict-card is-center';
+    if (abs === 1) return 'dict-card is-level-1';
+    if (abs === 2) return 'dict-card is-level-2';
+    if (abs === 3) return 'dict-card is-level-3';
 
-    if (offset === 0) cls += ' is-active';
-    else if (abs === 1) cls += ' is-near';
-    else if (abs === 2) cls += ' is-far';
-    else cls += ' is-hidden';
-
-    if (item.__create) cls += ' dict-card--create';
-
-    return cls;
+    return 'dict-card is-hidden';
   }
 
-  // =========================
-  // RENDER
-  // =========================
   function renderCard(item, index, total) {
-
     const offset = normalizeOffset(index - dictsState.activeIndex, total);
-    const { x, scale, rotate, depth } = computeTransform(offset);
+    const t = computeTransform(offset);
 
     return `
-      <button class="${getCardClass(offset, item)}"
+      <button class="${getCardClass(offset)}"
         data-index="${index}"
         style="
-          transform:
-            translate3d(${x}px,0,${depth}px)
-            scale(${scale})
-            rotateY(${rotate}deg);
+          transform: translate3d(${t.x}px,0,${t.depth}px)
+          scale(${t.scale})
+          rotateY(${t.rotate}deg);
+          opacity:${t.opacity};
+          filter: blur(${t.blur}px);
         ">
 
         <div class="dict-card__content">
@@ -121,7 +105,6 @@
             </div>
           `}
         </div>
-
       </button>
     `;
   }
@@ -136,43 +119,30 @@
       .map((item, i) => renderCard(item, i, items.length))
       .join('');
 
-    bindCardClicks(items);
+    bindClicks(items);
     renderDots(items);
   }
 
-  // =========================
-  // DOTS
-  // =========================
   function renderDots(items) {
     const dots = document.getElementById('dictsDots');
     if (!dots) return;
 
-    dots.innerHTML = items.map((_, i) => `
-      <div class="dict-dot ${i === dictsState.activeIndex ? 'is-active' : ''}" data-i="${i}"></div>
-    `).join('');
+    dots.innerHTML = items.map((_, i) =>
+      `<div class="dict-dot ${i === dictsState.activeIndex ? 'is-active' : ''}" data-i="${i}"></div>`
+    ).join('');
 
-    dots.querySelectorAll('.dict-dot').forEach(dot => {
-      dot.onclick = () => {
-        dictsState.activeIndex = Number(dot.dataset.i);
+    dots.querySelectorAll('.dict-dot').forEach(d => {
+      d.onclick = () => {
+        dictsState.activeIndex = Number(d.dataset.i);
         renderCarousel();
       };
     });
   }
 
-  // =========================
-  // EVENTS
-  // =========================
-  function bindCardClicks(items) {
+  function bindClicks(items) {
     document.querySelectorAll('.dict-card').forEach(card => {
       card.onclick = () => {
         const i = Number(card.dataset.index);
-        const item = items[i];
-
-        if (item.__create) {
-          alert("Створення довідника");
-          return;
-        }
-
         dictsState.activeIndex = i;
         renderCarousel();
       };
@@ -183,7 +153,6 @@
     const max = getRenderItems().length - 1;
 
     dictsState.activeIndex += step;
-
     if (dictsState.activeIndex < 0) dictsState.activeIndex = max;
     if (dictsState.activeIndex > max) dictsState.activeIndex = 0;
 
@@ -200,16 +169,11 @@
     }, { passive: false });
   }
 
-  // =========================
-  // INIT
-  // =========================
   function initDictsPage() {
     bindControls();
     renderCarousel();
   }
 
-  window.LAVASH_DICTS = {
-    initDictsPage
-  };
+  window.LAVASH_DICTS = { initDictsPage };
 
 })();
