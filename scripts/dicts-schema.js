@@ -36,13 +36,16 @@
     { from: "stations", to: "terrain", type: "secondary" },
     { from: "uav", to: "objectTypes", type: "primary" },
     { from: "uav", to: "sources", type: "secondary" },
+
     { from: "units", to: "roles", type: "bg" },
     { from: "vehicles", to: "settlements", type: "bg" },
     { from: "positions", to: "terrain", type: "bg" },
     { from: "stations", to: "statuses", type: "bg" }
   ];
 
-  const state = { nodes: [] };
+  const state = {
+    nodes: []
+  };
 
   function buildNodes() {
     const ySlots = [112, 172, 232, 292, 352, 412, 472, 532];
@@ -78,6 +81,7 @@
   function renderLine(relation, index) {
     const from = getNode(relation.from);
     const to = getNode(relation.to);
+
     if (!from || !to) return "";
 
     const hubX = 500;
@@ -109,18 +113,40 @@
         <span class="schema-node__icon">
           <img src="${ICON_PATH + node.icon}" alt="" draggable="false" />
         </span>
+
         <span class="schema-node__label">${node.label}</span>
         <span class="schema-node__port"></span>
       </button>
     `;
   }
 
+  function renderArcSegments(side) {
+    const count = 8;
+
+    return Array.from({ length: count })
+      .map((_, index) => {
+        const top = 64 + index * 70;
+        const rotation = side === "left"
+          ? -26 + index * 7.4
+          : 26 - index * 7.4;
+
+        return `
+          <span
+            class="schema-shell__segment"
+            style="top:${top}px; transform:rotate(${rotation}deg);"
+          ></span>
+        `;
+      })
+      .join("");
+  }
+
   function setActiveNode(id) {
     document.querySelectorAll(".schema-node").forEach((node) => {
       const nodeId = node.dataset.id;
-      const related = relations.some(({ from, to }) =>
-        (from === id && to === nodeId) || (to === id && from === nodeId)
-      );
+
+      const related = relations.some(({ from, to }) => {
+        return (from === id && to === nodeId) || (to === id && from === nodeId);
+      });
 
       node.classList.toggle("is-focused", nodeId === id);
       node.classList.toggle("is-related", related);
@@ -129,6 +155,7 @@
 
     document.querySelectorAll(".schema-link").forEach((line) => {
       const active = line.dataset.from === id || line.dataset.to === id;
+
       line.classList.toggle("is-active", active);
       line.classList.toggle("is-muted", Boolean(id) && !active);
     });
@@ -140,7 +167,10 @@
     document.querySelectorAll(".schema-node").forEach((node) => {
       node.addEventListener("mouseenter", () => setActiveNode(node.dataset.id));
       node.addEventListener("mouseleave", () => setActiveNode(null));
-      node.addEventListener("click", () => console.log("openDictionary:", node.dataset.id));
+
+      node.addEventListener("click", () => {
+        console.log("openDictionary:", node.dataset.id);
+      });
     });
 
     document.querySelectorAll(".schema-link").forEach((line) => {
@@ -168,25 +198,28 @@
 
   function renderSchema() {
     const root = document.getElementById("dictsSchemaRoot");
+
     if (!root) {
       console.warn("[dicts-schema] #dictsSchemaRoot не знайдено.");
       return;
     }
 
     buildNodes();
+
     root.classList.add("dicts-schema-root");
 
     root.innerHTML = `
       <div class="dict-schema-v4">
         <div class="schema-bg-grid"></div>
-        <div class="schema-bg-noise"></div>
+        <div class="schema-bg-stars"></div>
+        <div class="schema-bg-glow"></div>
 
         <div class="schema-shell schema-shell--left">
-          <span></span><span></span><span></span><span></span><span></span>
+          ${renderArcSegments("left")}
         </div>
 
         <div class="schema-shell schema-shell--right">
-          <span></span><span></span><span></span><span></span><span></span>
+          ${renderArcSegments("right")}
         </div>
 
         <div class="schema-arc-label schema-arc-label--left">ОСНОВНІ ДОВІДНИКИ</div>
@@ -194,7 +227,12 @@
 
         <div class="schema-axis"></div>
 
-        <svg class="schema-links" viewBox="0 0 1000 680" preserveAspectRatio="none" aria-hidden="true">
+        <svg
+          class="schema-links"
+          viewBox="0 0 1000 680"
+          preserveAspectRatio="none"
+          aria-hidden="true"
+        >
           <defs>
             <linearGradient id="schemaGradient" x1="0%" y1="0%" x2="100%" y2="0%">
               <stop offset="0%" stop-color="#14f7ee" />
@@ -237,5 +275,10 @@
   }
 
   window.renderDictsSchemaNow = initSchemaView;
-  window.LAVASH_DICTS_SCHEMA = { initSchemaView, renderSchema, relations };
+
+  window.LAVASH_DICTS_SCHEMA = {
+    initSchemaView,
+    renderSchema,
+    relations
+  };
 })();
