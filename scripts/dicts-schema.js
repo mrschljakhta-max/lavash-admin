@@ -36,52 +36,39 @@
     { from: "stations", to: "terrain", type: "secondary" },
     { from: "uav", to: "objectTypes", type: "primary" },
     { from: "uav", to: "sources", type: "secondary" },
-
     { from: "units", to: "roles", type: "bg" },
     { from: "vehicles", to: "settlements", type: "bg" },
     { from: "positions", to: "terrain", type: "bg" },
     { from: "stations", to: "statuses", type: "bg" }
   ];
 
-  const state = {
-    nodes: []
-  };
+  const state = { nodes: [] };
 
   function buildNodes() {
-    const centerX = 500;
-    const centerY = 340;
-
     const ySlots = [112, 172, 232, 292, 352, 412, 472, 532];
 
-    /*
-      Контрольована псевдодуга.
-      Це не “сухий еліпс”, який ламає верстку,
-      а стабільна орбітальна геометрія як на референсі.
-    */
-    const xCurveLeft = [282, 236, 202, 180, 180, 202, 236, 282];
-    const xCurveRight = [718, 764, 798, 820, 820, 798, 764, 718];
+    const xLeft = [282, 236, 202, 180, 180, 202, 236, 282];
+    const xRight = [718, 764, 798, 820, 820, 798, 764, 718];
 
     const left = schemaLeft.map((item, index) => ({
       ...item,
       side: "left",
-      x: xCurveLeft[index],
+      x: xLeft[index],
       y: ySlots[index],
-      anchorX: xCurveLeft[index] + 124,
+      anchorX: xLeft[index] + 124,
       anchorY: ySlots[index]
     }));
 
     const right = schemaRight.map((item, index) => ({
       ...item,
       side: "right",
-      x: xCurveRight[index],
+      x: xRight[index],
       y: ySlots[index],
-      anchorX: xCurveRight[index] - 124,
+      anchorX: xRight[index] - 124,
       anchorY: ySlots[index]
     }));
 
     state.nodes = [...left, ...right];
-
-    return { centerX, centerY };
   }
 
   function getNode(id) {
@@ -91,14 +78,10 @@
   function renderLine(relation, index) {
     const from = getNode(relation.from);
     const to = getNode(relation.to);
-
     if (!from || !to) return "";
 
     const hubX = 500;
     const hubY = 340 + ((index % 7) - 3) * 13;
-
-    const leftControlX = from.anchorX + 110;
-    const rightControlX = to.anchorX - 110;
 
     return `
       <path
@@ -108,8 +91,8 @@
         style="animation-delay:${index * -0.55}s"
         d="
           M ${from.anchorX} ${from.anchorY}
-          C ${leftControlX} ${from.anchorY}, ${hubX - 92} ${hubY}, ${hubX} ${hubY}
-          C ${hubX + 92} ${hubY}, ${rightControlX} ${to.anchorY}, ${to.anchorX} ${to.anchorY}
+          C ${from.anchorX + 110} ${from.anchorY}, ${hubX - 92} ${hubY}, ${hubX} ${hubY}
+          C ${hubX + 92} ${hubY}, ${to.anchorX - 110} ${to.anchorY}, ${to.anchorX} ${to.anchorY}
         "
       />
     `;
@@ -126,7 +109,6 @@
         <span class="schema-node__icon">
           <img src="${ICON_PATH + node.icon}" alt="" draggable="false" />
         </span>
-
         <span class="schema-node__label">${node.label}</span>
         <span class="schema-node__port"></span>
       </button>
@@ -136,10 +118,9 @@
   function setActiveNode(id) {
     document.querySelectorAll(".schema-node").forEach((node) => {
       const nodeId = node.dataset.id;
-
-      const related = relations.some(({ from, to }) => {
-        return (from === id && to === nodeId) || (to === id && from === nodeId);
-      });
+      const related = relations.some(({ from, to }) =>
+        (from === id && to === nodeId) || (to === id && from === nodeId)
+      );
 
       node.classList.toggle("is-focused", nodeId === id);
       node.classList.toggle("is-related", related);
@@ -148,7 +129,6 @@
 
     document.querySelectorAll(".schema-link").forEach((line) => {
       const active = line.dataset.from === id || line.dataset.to === id;
-
       line.classList.toggle("is-active", active);
       line.classList.toggle("is-muted", Boolean(id) && !active);
     });
@@ -160,10 +140,7 @@
     document.querySelectorAll(".schema-node").forEach((node) => {
       node.addEventListener("mouseenter", () => setActiveNode(node.dataset.id));
       node.addEventListener("mouseleave", () => setActiveNode(null));
-
-      node.addEventListener("click", () => {
-        console.log("openDictionary:", node.dataset.id);
-      });
+      node.addEventListener("click", () => console.log("openDictionary:", node.dataset.id));
     });
 
     document.querySelectorAll(".schema-link").forEach((line) => {
@@ -185,22 +162,18 @@
         document.querySelector(".schema-hub")?.classList.add("is-hot");
       });
 
-      line.addEventListener("mouseleave", () => {
-        setActiveNode(null);
-      });
+      line.addEventListener("mouseleave", () => setActiveNode(null));
     });
   }
 
   function renderSchema() {
     const root = document.getElementById("dictsSchemaRoot");
-
     if (!root) {
       console.warn("[dicts-schema] #dictsSchemaRoot не знайдено.");
       return;
     }
 
     buildNodes();
-
     root.classList.add("dicts-schema-root");
 
     root.innerHTML = `
@@ -221,12 +194,7 @@
 
         <div class="schema-axis"></div>
 
-        <svg
-          class="schema-links"
-          viewBox="0 0 1000 680"
-          preserveAspectRatio="none"
-          aria-hidden="true"
-        >
+        <svg class="schema-links" viewBox="0 0 1000 680" preserveAspectRatio="none" aria-hidden="true">
           <defs>
             <linearGradient id="schemaGradient" x1="0%" y1="0%" x2="100%" y2="0%">
               <stop offset="0%" stop-color="#14f7ee" />
@@ -269,10 +237,5 @@
   }
 
   window.renderDictsSchemaNow = initSchemaView;
-
-  window.LAVASH_DICTS_SCHEMA = {
-    initSchemaView,
-    renderSchema,
-    relations
-  };
+  window.LAVASH_DICTS_SCHEMA = { initSchemaView, renderSchema, relations };
 })();
