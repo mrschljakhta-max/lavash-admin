@@ -12,8 +12,8 @@
   border-radius: 28px;
   overflow: hidden;
   background:
-    radial-gradient(circle at 28% 50%, rgba(20, 247, 238, .14), transparent 40%),
-    radial-gradient(circle at 72% 50%, rgba(149, 88, 255, .16), transparent 40%),
+    radial-gradient(circle at 28% 50%, rgba(20, 247, 238, .16), transparent 42%),
+    radial-gradient(circle at 72% 50%, rgba(149, 88, 255, .18), transparent 42%),
     linear-gradient(180deg, rgba(5, 10, 26, .98), rgba(1, 5, 16, .99));
   border: 1px solid rgba(120, 150, 255, .14);
 }
@@ -39,96 +39,291 @@
   overflow: visible;
 }
 
-.schema-bg-grid {
+/* =========================
+   BACKGROUND
+========================= */
+
+.schema-bg-grid,
+.schema-bg-noise {
   position: absolute;
   inset: 0;
-  opacity: .14;
   border-radius: 34px;
+  pointer-events: none;
+}
+
+.schema-bg-grid {
+  opacity: .15;
   background-image:
     radial-gradient(circle, rgba(140, 174, 255, .36) 1px, transparent 1px);
   background-size: 22px 22px;
+}
+
+.schema-bg-noise {
+  opacity: .42;
+  background:
+    radial-gradient(circle at 18% 35%, rgba(20, 247, 238, .22) 0 1px, transparent 2px),
+    radial-gradient(circle at 38% 64%, rgba(20, 247, 238, .16) 0 1px, transparent 2px),
+    radial-gradient(circle at 64% 28%, rgba(149, 88, 255, .18) 0 1px, transparent 2px),
+    radial-gradient(circle at 78% 66%, rgba(149, 88, 255, .18) 0 1px, transparent 2px);
+  background-size: 90px 90px, 120px 120px, 100px 100px, 130px 130px;
+  animation: schemaStarsDrift 20s linear infinite;
+}
+
+/* =========================
+   OUTER SEGMENTED ARCS
+========================= */
+
+.schema-shell {
+  position: absolute;
+  top: 58px;
+  width: 410px;
+  height: 564px;
+  border-radius: 999px;
+  pointer-events: none;
+  z-index: 1;
+  opacity: .92;
+}
+
+.schema-shell--left {
+  left: 40px;
+  border-left: 2px solid rgba(20, 247, 238, .32);
+  box-shadow:
+    -22px 0 48px rgba(20, 247, 238, .16),
+    inset 30px 0 58px rgba(20, 247, 238, .045);
+  animation: schemaArcLeftBreath 4.5s ease-in-out infinite;
+}
+
+.schema-shell--right {
+  right: 40px;
+  border-right: 2px solid rgba(149, 88, 255, .36);
+  box-shadow:
+    22px 0 48px rgba(149, 88, 255, .18),
+    inset -30px 0 58px rgba(149, 88, 255, .05);
+  animation: schemaArcRightBreath 4.5s ease-in-out infinite;
+}
+
+.schema-shell span {
+  position: absolute;
+  width: 112px;
+  height: 4px;
+  border-radius: 999px;
+  opacity: .95;
+}
+
+.schema-shell--left span {
+  left: -13px;
+  background: linear-gradient(90deg, transparent, var(--schema-cyan));
+  box-shadow: 0 0 18px rgba(20, 247, 238, .85);
+}
+
+.schema-shell--right span {
+  right: -13px;
+  background: linear-gradient(90deg, var(--schema-violet), transparent);
+  box-shadow: 0 0 18px rgba(149, 88, 255, .85);
+}
+
+.schema-shell span:nth-child(1) { top: 34px; transform: rotate(-34deg); }
+.schema-shell span:nth-child(2) { top: 122px; transform: rotate(-18deg); }
+.schema-shell span:nth-child(3) { top: 280px; transform: rotate(0deg); }
+.schema-shell span:nth-child(4) { bottom: 122px; transform: rotate(18deg); }
+.schema-shell span:nth-child(5) { bottom: 34px; transform: rotate(34deg); }
+
+.schema-arc-label {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: .22em;
+  opacity: .82;
   pointer-events: none;
 }
+
+.schema-arc-label--left {
+  left: 28px;
+  color: var(--schema-cyan);
+  transform: translateY(-50%) rotate(-90deg);
+  text-shadow: 0 0 12px rgba(20, 247, 238, .72);
+}
+
+.schema-arc-label--right {
+  right: 16px;
+  color: var(--schema-violet);
+  transform: translateY(-50%) rotate(90deg);
+  text-shadow: 0 0 12px rgba(149, 88, 255, .76);
+}
+
+/* =========================
+   AXIS + HUB REACTOR
+========================= */
 
 .schema-axis {
   position: absolute;
   left: 50%;
-  top: 52px;
-  bottom: 52px;
+  top: 44px;
+  bottom: 44px;
   width: 2px;
   transform: translateX(-50%);
   background: linear-gradient(
     to bottom,
     transparent,
-    rgba(20, 247, 238, .55),
-    rgba(100, 130, 255, .82),
-    rgba(149, 88, 255, .62),
+    rgba(20, 247, 238, .72),
+    rgba(100, 130, 255, .98),
+    rgba(149, 88, 255, .85),
     transparent
   );
   box-shadow:
-    0 0 16px rgba(20, 247, 238, .35),
-    0 0 34px rgba(149, 88, 255, .36);
-  z-index: 2;
+    0 0 18px rgba(20, 247, 238, .54),
+    0 0 44px rgba(149, 88, 255, .56);
+  z-index: 3;
+  animation: schemaAxisBreath 3.8s ease-in-out infinite;
 }
 
-.schema-center-marker {
+.schema-hub {
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 74px;
-  height: 74px;
+  width: 154px;
+  height: 154px;
   transform: translate(-50%, -50%);
+  z-index: 6;
+  pointer-events: none;
+  animation: schemaHubFloat 4s ease-in-out infinite;
+}
+
+.schema-hub__halo,
+.schema-hub__ring,
+.schema-hub__diamond,
+.schema-hub__core {
+  position: absolute;
   border-radius: 999px;
+}
+
+.schema-hub__halo {
+  inset: -24px;
   background:
-    radial-gradient(circle, rgba(46, 240, 255, .58), rgba(139, 92, 246, .28) 42%, transparent 72%);
-  box-shadow:
-    0 0 24px rgba(46, 240, 255, .35),
-    0 0 46px rgba(149, 88, 255, .3);
-  z-index: 3;
-  pointer-events: none;
+    radial-gradient(circle, rgba(20, 247, 238, .22), rgba(79, 168, 255, .16) 36%, rgba(149, 88, 255, .14) 58%, transparent 72%);
+  filter: blur(12px);
+  opacity: .82;
 }
 
-.schema-center-marker span {
+.schema-hub__core {
+  inset: 58px;
+  background:
+    radial-gradient(circle, #fff 0 11%, #14f7ee 24%, #4fa8ff 48%, #9558ff 78%);
+  box-shadow:
+    0 0 18px rgba(255, 255, 255, .92),
+    0 0 42px rgba(20, 247, 238, .8),
+    0 0 76px rgba(149, 88, 255, .62);
+  animation: schemaHubPulse 2.4s ease-in-out infinite;
+}
+
+.schema-hub__diamond {
+  left: 50%;
+  top: 50%;
+  width: 38px;
+  height: 38px;
+  transform: translate(-50%, -50%) rotate(45deg);
+  border-radius: 8px;
+  border: 2px solid rgba(255, 255, 255, .82);
+  box-shadow:
+    inset 0 0 12px rgba(20, 247, 238, .38),
+    0 0 22px rgba(149, 88, 255, .52);
+  animation: schemaDiamondSpin 8s linear infinite;
+}
+
+.schema-hub__ring {
+  border: 1px solid rgba(135, 180, 255, .28);
+  box-shadow:
+    inset 0 0 24px rgba(20, 247, 238, .15),
+    0 0 30px rgba(149, 88, 255, .18);
+}
+
+.schema-hub__ring--inner {
+  inset: 42px;
+  animation: schemaHubRing 3.2s ease-in-out infinite;
+}
+
+.schema-hub__ring--middle {
+  inset: 24px;
+  animation: schemaHubRing 4s ease-in-out infinite reverse;
+}
+
+.schema-hub__ring--outer {
+  inset: 2px;
+  opacity: .58;
+  border-style: dashed;
+  animation: schemaHubRotate 11s linear infinite;
+}
+
+.schema-hub.is-hot .schema-hub__halo {
+  opacity: 1;
+  filter: blur(8px);
+}
+
+/* =========================
+   SVG LINKS
+========================= */
+
+.schema-links {
   position: absolute;
-  inset: 27px;
-  border-radius: 999px;
-  background: #2ef0ff;
-  box-shadow:
-    0 0 16px #2ef0ff,
-    0 0 30px rgba(149, 88, 255, .6);
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 4;
+  pointer-events: visibleStroke;
 }
 
-.schema-arc {
-  position: absolute;
-  top: 54px;
-  width: 420px;
-  height: 572px;
-  border-radius: 999px;
-  pointer-events: none;
-  opacity: .5;
-  z-index: 1;
+.schema-link {
+  fill: none;
+  stroke: url(#schemaGradient);
+  filter: url(#schemaGlow);
+  stroke-linecap: round;
+  stroke-dashoffset: 0;
+  animation: schemaLineFlow 16s linear infinite;
+  transition:
+    opacity .22s ease,
+    stroke-width .22s ease,
+    filter .22s ease;
 }
 
-.schema-arc--left {
-  left: 44px;
-  border-left: 2px solid rgba(20, 247, 238, .34);
-  box-shadow:
-    -18px 0 38px rgba(20, 247, 238, .12),
-    inset 26px 0 48px rgba(20, 247, 238, .035);
+.schema-link--bg {
+  opacity: .08;
+  stroke-width: .8;
+  stroke-dasharray: 3 16;
 }
 
-.schema-arc--right {
-  right: 44px;
-  border-right: 2px solid rgba(149, 88, 255, .38);
-  box-shadow:
-    18px 0 38px rgba(149, 88, 255, .13),
-    inset -26px 0 48px rgba(149, 88, 255, .04);
+.schema-link--secondary {
+  opacity: .24;
+  stroke-width: 1.1;
+  stroke-dasharray: 5 14;
 }
+
+.schema-link--primary {
+  opacity: .55;
+  stroke-width: 1.55;
+  stroke-dasharray: 8 16;
+}
+
+.schema-link.is-active {
+  opacity: 1;
+  stroke-width: 3;
+  stroke-dasharray: 10 12;
+  animation-duration: 3s;
+}
+
+.schema-link.is-muted {
+  opacity: .03;
+}
+
+/* =========================
+   NODES
+========================= */
 
 .schema-nodes {
   position: absolute;
   inset: 0;
-  z-index: 5;
+  z-index: 7;
 }
 
 .schema-node {
@@ -159,7 +354,8 @@
     transform .22s ease,
     border-color .22s ease,
     box-shadow .22s ease,
-    opacity .22s ease;
+    opacity .22s ease,
+    filter .22s ease;
 }
 
 .schema-node--left {
@@ -178,24 +374,35 @@
     rgba(16, 8, 40, .82);
 }
 
-.schema-node:hover {
-  transform: translate(-50%, -50%) scale(1.06);
+.schema-node:hover,
+.schema-node.is-focused {
+  transform: translate(-50%, -50%) scale(1.075);
+  opacity: 1;
 }
 
-.schema-node--left:hover {
-  border-color: rgba(20, 247, 238, .95);
+.schema-node--left:hover,
+.schema-node--left.is-focused,
+.schema-node--left.is-related {
+  border-color: rgba(20, 247, 238, .98);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, .13),
-    0 0 18px rgba(20, 247, 238, .5),
-    0 0 38px rgba(20, 247, 238, .2);
+    0 0 18px rgba(20, 247, 238, .55),
+    0 0 42px rgba(20, 247, 238, .22);
 }
 
-.schema-node--right:hover {
-  border-color: rgba(149, 88, 255, .98);
+.schema-node--right:hover,
+.schema-node--right.is-focused,
+.schema-node--right.is-related {
+  border-color: rgba(149, 88, 255, 1);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, .13),
-    0 0 18px rgba(149, 88, 255, .52),
-    0 0 38px rgba(149, 88, 255, .24);
+    0 0 18px rgba(149, 88, 255, .56),
+    0 0 42px rgba(149, 88, 255, .26);
+}
+
+.schema-node.is-dimmed {
+  opacity: .1;
+  filter: grayscale(.8) blur(.35px);
 }
 
 .schema-node__icon {
@@ -247,6 +454,7 @@
   height: 15px;
   border-radius: 999px;
   background: currentColor;
+  animation: schemaDotPulse 2.2s ease-in-out infinite;
 }
 
 .schema-node--left .schema-node__port {
@@ -254,8 +462,8 @@
   color: var(--schema-cyan);
   box-shadow:
     0 0 10px var(--schema-cyan),
-    0 0 25px rgba(20, 247, 238, .76),
-    0 0 46px rgba(20, 247, 238, .26);
+    0 0 25px rgba(20, 247, 238, .78),
+    0 0 50px rgba(20, 247, 238, .28);
 }
 
 .schema-node--right .schema-node__port {
@@ -263,8 +471,122 @@
   color: var(--schema-violet);
   box-shadow:
     0 0 10px var(--schema-violet),
-    0 0 25px rgba(149, 88, 255, .8),
-    0 0 46px rgba(149, 88, 255, .3);
+    0 0 25px rgba(149, 88, 255, .82),
+    0 0 50px rgba(149, 88, 255, .32);
+}
+
+/* =========================
+   ANIMATIONS
+========================= */
+
+@keyframes schemaLineFlow {
+  to {
+    stroke-dashoffset: -220;
+  }
+}
+
+@keyframes schemaStarsDrift {
+  to {
+    background-position: 90px 90px, -120px 120px, 100px -100px, -130px -130px;
+  }
+}
+
+@keyframes schemaAxisBreath {
+  0%, 100% {
+    opacity: .7;
+    filter: blur(0);
+  }
+  50% {
+    opacity: 1;
+    filter: blur(.45px);
+  }
+}
+
+@keyframes schemaHubFloat {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(.98);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.045);
+  }
+}
+
+@keyframes schemaHubPulse {
+  0%, 100% {
+    transform: scale(.9);
+    opacity: .78;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+}
+
+@keyframes schemaHubRing {
+  0%, 100% {
+    transform: scale(.82);
+    opacity: .26;
+  }
+  50% {
+    transform: scale(1.16);
+    opacity: .78;
+  }
+}
+
+@keyframes schemaHubRotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes schemaDiamondSpin {
+  from {
+    transform: translate(-50%, -50%) rotate(45deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(405deg);
+  }
+}
+
+@keyframes schemaDotPulse {
+  0%, 100% {
+    transform: scale(.92);
+    opacity: .72;
+  }
+  50% {
+    transform: scale(1.28);
+    opacity: 1;
+  }
+}
+
+@keyframes schemaArcLeftBreath {
+  0%, 100% {
+    opacity: .52;
+    box-shadow:
+      -22px 0 48px rgba(20, 247, 238, .14),
+      inset 30px 0 58px rgba(20, 247, 238, .045);
+  }
+  50% {
+    opacity: .98;
+    box-shadow:
+      -26px 0 72px rgba(20, 247, 238, .3),
+      inset 34px 0 68px rgba(20, 247, 238, .1);
+  }
+}
+
+@keyframes schemaArcRightBreath {
+  0%, 100% {
+    opacity: .52;
+    box-shadow:
+      22px 0 48px rgba(149, 88, 255, .16),
+      inset -30px 0 58px rgba(149, 88, 255, .05);
+  }
+  50% {
+    opacity: .98;
+    box-shadow:
+      26px 0 72px rgba(149, 88, 255, .32),
+      inset -34px 0 68px rgba(149, 88, 255, .11);
+  }
 }
 
 @media (max-width: 1200px) {
