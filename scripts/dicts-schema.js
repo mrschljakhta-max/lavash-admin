@@ -28,11 +28,18 @@
     byId: new Map()
   };
 
+  const SCENE = {
+    width: 1200,
+    height: 680,
+    hubX: 600,
+    hubY: 340
+  };
+
   function buildNodes() {
     const ySlots = [112, 174, 236, 298, 360, 422, 484, 546];
 
-    const leftX = [286, 254, 226, 210, 210, 226, 254, 286];
-    const rightX = [714, 746, 774, 790, 790, 774, 746, 714];
+    const leftX = [314, 282, 254, 238, 238, 254, 282, 314];
+    const rightX = [886, 918, 946, 962, 962, 946, 918, 886];
 
     const left = schemaLeft.map((item, index) => ({
       ...item,
@@ -42,7 +49,7 @@
       y: ySlots[index],
       portX: leftX[index] + 122,
       portY: ySlots[index],
-      orbitX: 104,
+      orbitX: 172,
       orbitY: ySlots[index]
     }));
 
@@ -54,7 +61,7 @@
       y: ySlots[index],
       portX: rightX[index] - 122,
       portY: ySlots[index],
-      orbitX: 896,
+      orbitX: 1028,
       orbitY: ySlots[index]
     }));
 
@@ -66,10 +73,10 @@
     const dir = side === "left" ? 1 : -1;
     const distance = Math.abs(toX - fromX);
 
-    const c1x = fromX + dir * distance * 0.42 * curve;
+    const c1x = fromX + dir * distance * 0.45 * curve;
     const c1y = fromY;
 
-    const c2x = toX - dir * distance * 0.38 * curve;
+    const c2x = toX - dir * distance * 0.4 * curve;
     const c2y = toY;
 
     return `M ${fromX} ${fromY} C ${c1x} ${c1y}, ${c2x} ${c2y}, ${toX} ${toY}`;
@@ -94,13 +101,13 @@
   }
 
   function renderMainLink(node, index) {
-    const hubX = node.side === "left" ? 454 : 546;
-    const hubY = 340;
+    const hubX = node.side === "left" ? SCENE.hubX - 58 : SCENE.hubX + 58;
+    const hubY = SCENE.hubY;
 
-    const offset = (node.index - 3.5) * 3.6;
+    const offset = (node.index - 3.5) * 3.2;
     const targetY = hubY + offset;
 
-    const d = cubicPath(node.portX, node.portY, hubX, targetY, node.side, 1.03);
+    const d = cubicPath(node.portX, node.portY, hubX, targetY, node.side, 1.08);
 
     return `
       <path
@@ -118,21 +125,24 @@
 
     const fromX = node.portX;
     const fromY = node.portY;
-    const toX = target.side === "left" ? target.portX + 16 : target.portX - 16;
+
+    const toX = target.side === "left" ? target.portX + 18 : target.portX - 18;
     const toY = target.portY;
 
-    const middleX = node.side === target.side
-      ? node.side === "left" ? 500 : 500
-      : 500;
+    const fromDir = node.side === "left" ? 1 : -1;
+    const toDir = target.side === "left" ? 1 : -1;
 
-    const bias = node.side === "left" ? 1 : -1;
-    const c1x = fromX + bias * 120;
-    const c2x = toX - (target.side === "left" ? 1 : -1) * 120;
+    const c1x = fromX + fromDir * 148;
+    const c2x = toX - toDir * 148;
 
-    const lift = Math.max(-90, Math.min(90, (target.index - node.index) * 15));
+    const lift = Math.max(-92, Math.min(92, (target.index - node.index) * 15));
     const midY = (fromY + toY) / 2 + lift;
 
-    const d = `M ${fromX} ${fromY} C ${c1x} ${fromY}, ${middleX} ${midY}, ${c2x} ${toY} S ${toX} ${toY}, ${toX} ${toY}`;
+    const d = `
+      M ${fromX} ${fromY}
+      C ${c1x} ${fromY}, ${SCENE.hubX} ${midY}, ${c2x} ${toY}
+      S ${toX} ${toY}, ${toX} ${toY}
+    `;
 
     return `
       <path
@@ -174,13 +184,20 @@
 
   function renderNodeDots() {
     return state.nodes.map((node) => {
-      const firstX = node.side === "left" ? 438 : 562;
-      const secondX = node.side === "left" ? 472 : 528;
-      const colorSide = node.side;
+      const firstX = node.side === "left" ? SCENE.hubX - 140 : SCENE.hubX + 140;
+      const secondX = node.side === "left" ? SCENE.hubX - 86 : SCENE.hubX + 86;
 
       return `
-        <span class="schema-flow-dot schema-flow-dot--${colorSide}" data-id="${node.id}" style="left:${firstX}px; top:${node.portY}px; --dot-delay:${node.index * -0.22}s"></span>
-        <span class="schema-flow-dot schema-flow-dot--${colorSide}" data-id="${node.id}" style="left:${secondX}px; top:${node.portY + (340 - node.portY) * .28}px; --dot-delay:${node.index * -0.31}s"></span>
+        <span
+          class="schema-flow-dot schema-flow-dot--${node.side}"
+          data-id="${node.id}"
+          style="left:${firstX}px; top:${node.portY}px; --dot-delay:${node.index * -0.22}s"
+        ></span>
+        <span
+          class="schema-flow-dot schema-flow-dot--${node.side}"
+          data-id="${node.id}"
+          style="left:${secondX}px; top:${node.portY + (SCENE.hubY - node.portY) * .3}px; --dot-delay:${node.index * -0.31}s"
+        ></span>
       `;
     }).join("");
   }
@@ -225,6 +242,7 @@
       const kind = line.dataset.kind;
 
       const isMain = kind === "main" && lineId === id;
+
       const isRelation =
         kind === "relation" &&
         hasActive &&
@@ -293,7 +311,7 @@
 
         <div class="schema-axis"></div>
 
-        <svg class="schema-links" viewBox="0 0 1000 680" preserveAspectRatio="none" aria-hidden="true">
+        <svg class="schema-links" viewBox="0 0 1200 680" preserveAspectRatio="none" aria-hidden="true">
           <defs>
             <linearGradient id="schemaCyanGradient" x1="0%" y1="0%" x2="100%" y2="0%">
               <stop offset="0%" stop-color="#12fff1" stop-opacity=".98" />
@@ -329,15 +347,7 @@
           <span class="schema-hub__ring schema-hub__ring--b"></span>
           <span class="schema-hub__ring schema-hub__ring--c"></span>
 
-          <span class="schema-crystal">
-            <span class="schema-crystal__face schema-crystal__face--front"></span>
-            <span class="schema-crystal__face schema-crystal__face--back"></span>
-            <span class="schema-crystal__edge schema-crystal__edge--a"></span>
-            <span class="schema-crystal__edge schema-crystal__edge--b"></span>
-            <span class="schema-crystal__edge schema-crystal__edge--c"></span>
-            <span class="schema-crystal__edge schema-crystal__edge--d"></span>
-          </span>
-
+          <span class="schema-crystal"></span>
           <span class="schema-hub__core"></span>
         </div>
 
