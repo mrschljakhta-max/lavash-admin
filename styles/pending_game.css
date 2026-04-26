@@ -1681,3 +1681,236 @@
 .pg-wheel {
   transform: translateY(-8px) !important;
 }
+/* =========================================================
+   PENDING GAME — HARD SCALE LOCK
+   Фінальний фікс масштабу сторінки редактора
+========================================================= */
+
+.pg-page {
+  height: 100%;
+  max-height: 100%;
+  overflow: hidden !important;
+
+  padding: 0 22px 10px !important;
+  display: grid !important;
+  grid-template-rows: 56px 1fr 118px !important;
+  gap: 8px !important;
+}
+
+/* верхня панель */
+.pg-rankbar {
+  width: min(920px, 78vw) !important;
+  height: 56px !important;
+  max-height: 56px !important;
+
+  margin: 0 auto !important;
+
+  display: grid !important;
+  grid-template-columns: 220px 1fr 118px !important;
+  gap: 8px !important;
+  align-items: center !important;
+}
+
+.pg-rankbadge,
+.pg-xp,
+.pg-today {
+  height: 48px !important;
+  min-height: 48px !important;
+  max-height: 48px !important;
+  padding: 6px 10px !important;
+  border-radius: 14px !important;
+}
+
+.pg-rankbadge__chevron {
+  width: 36px !important;
+  height: 36px !important;
+}
+
+.pg-rankbadge__label {
+  font-size: 12px !important;
+}
+
+.pg-rankbadge__sub {
+  font-size: 9px !important;
+}
+
+.pg-xp__top {
+  font-size: 10px !important;
+  margin-bottom: 5px !important;
+}
+
+.pg-xp__track {
+  height: 6px !important;
+}
+
+/* центральна сцена */
+.pg-stage {
+  min-height: 0 !important;
+  height: 100% !important;
+  display: grid !important;
+  place-items: center !important;
+  overflow: hidden !important;
+}
+
+.pg-carousel-wrap {
+  width: 100% !important;
+  height: 100% !important;
+  display: grid !important;
+  place-items: center !important;
+  overflow: hidden !important;
+}
+
+.pg-carousel {
+  width: 100% !important;
+  min-height: 0 !important;
+  height: 100% !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  gap: clamp(22px, 3vw, 54px) !important;
+  overflow: hidden !important;
+}
+
+/* горизонтальні картки */
+.pg-card {
+  width: clamp(250px, 20vw, 340px) !important;
+  height: clamp(150px, 18vh, 200px) !important;
+}
+
+.pg-card.is-active {
+  transform: scale(1.03) rotateY(0deg) translateY(0) !important;
+}
+
+/* нижній пульт — область */
+.pg-control-dock {
+  height: 118px !important;
+  max-height: 118px !important;
+
+  display: grid !important;
+  place-items: center !important;
+
+  margin: 0 auto !important;
+  overflow: visible !important;
+}
+
+/* сам пульт */
+.pg-control {
+  width: 200px !important;
+  height: 200px !important;
+
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 7px !important;
+
+  transform: scale(.82) translateY(-38px) !important;
+  transform-origin: center bottom !important;
+}
+
+/* кнопки пульта */
+.ctrl {
+  border: 1px solid rgba(255,255,255,.14) !important;
+  outline: none !important;
+  cursor: pointer !important;
+
+  color: #eef3ff !important;
+  background: #10275f !important;
+
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.10),
+    0 14px 28px rgba(0,0,0,.28) !important;
+
+  transition: transform .18s ease, filter .18s ease !important;
+}
+
+.ctrl:hover {
+  transform: scale(1.06) !important;
+  filter: brightness(1.15) !important;
+}
+
+.ctrl span {
+  width: 26px !important;
+  height: 26px !important;
+  margin-bottom: 5px !important;
+
+  border-radius: 999px !important;
+  display: grid !important;
+  place-items: center !important;
+
+  background: rgba(255,255,255,.12) !important;
+  border: 1px solid rgba(255,255,255,.18) !important;
+
+  font-size: 12px !important;
+  font-weight: 900 !important;
+}
+
+.ctrl strong {
+  font-size: 13px !important;
+  font-weight: 900 !important;
+  line-height: 1.1 !important;
+}
+
+.ctrl small {
+  margin-top: 3px !important;
+  font-size: 9px !important;
+  opacity: .7 !important;
+}
+
+/* форми кнопок */
+.ctrl-ignore {
+  border-radius: 80px 10px 10px 10px !important;
+  background: linear-gradient(145deg, #ff4d6d, #561126) !important;
+}
+
+.ctrl-confirm {
+  border-radius: 10px 80px 10px 10px !important;
+  background: linear-gradient(145deg, #20d68f, #064a39) !important;
+}
+
+.ctrl-center {
+  pointer-events: none !important;
+  border-radius: 10px 10px 10px 80px !important;
+  background: linear-gradient(145deg, #123a8c, #04133c) !important;
+}
+
+.ctrl-center strong {
+  font-size: 21px !important;
+}
+
+.ctrl-skip {
+  border-radius: 10px 10px 80px 10px !important;
+  background: linear-gradient(145deg, #8d58ff, #33207c) !important;
+}
+
+/* прибрати старий pg-wheel, якщо десь лишився */
+.pg-wheel,
+.pg-wheel__sector,
+.pg-wheel__center,
+.pg-wheel__skip {
+  display: none !important;
+}
+
+/* на низьких екранах */
+@media (max-height: 820px) {
+  .pg-page {
+    grid-template-rows: 52px 1fr 104px !important;
+  }
+
+  .pg-rankbar {
+    height: 52px !important;
+  }
+
+  .pg-card {
+    height: clamp(140px, 17vh, 180px) !important;
+  }
+
+  .pg-control {
+    transform: scale(.74) translateY(-48px) !important;
+  }
+}
