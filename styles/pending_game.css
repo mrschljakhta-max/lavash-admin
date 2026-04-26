@@ -844,3 +844,144 @@
   font-size: 11px;
   line-height: 1.35;
 }
+/* =========================================================
+   FIX — CLEAN PENDING SCENE AFTER HOTKEY POPOVER UPDATE
+========================================================= */
+
+.pg-page--clean {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  padding: 0 26px 10px;
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  gap: 14px;
+}
+
+.pg-stage {
+  position: relative;
+  z-index: 2;
+  min-height: 0;
+  display: grid;
+  place-items: center;
+}
+
+.pg-help-btn {
+  position: absolute;
+  z-index: 30;
+  left: 26px;
+  bottom: 168px;
+
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+
+  border: 1px solid rgba(118, 150, 236, .22);
+  background:
+    radial-gradient(circle at 35% 25%, rgba(255,255,255,.14), transparent 45%),
+    linear-gradient(180deg, rgba(20, 48, 120, .92), rgba(6, 18, 58, .96));
+
+  color: #eef3ff;
+  font-size: 22px;
+  cursor: pointer;
+
+  box-shadow:
+    0 16px 40px rgba(0,0,0,.28),
+    0 0 26px rgba(85,223,255,.14);
+
+  display: grid;
+  place-items: center;
+}
+
+.pg-help-btn:hover {
+  transform: translateY(-2px);
+  border-color: rgba(85,223,255,.45);
+}
+
+.pg-help-popover {
+  position: absolute;
+  z-index: 35;
+  left: 26px;
+  bottom: 224px;
+
+  width: 230px;
+  padding: 14px;
+
+  border-radius: 18px;
+  border: 1px solid rgba(118,150,236,.18);
+  background:
+    radial-gradient(circle at 20% 0%, rgba(85,223,255,.10), transparent 46%),
+    linear-gradient(180deg, rgba(13, 34, 96, .96), rgba(5, 17, 55, .98));
+
+  box-shadow:
+    0 18px 44px rgba(0,0,0,.34),
+    inset 0 1px 0 rgba(255,255,255,.05);
+
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(8px) scale(.96);
+  transition: .18s ease;
+}
+
+.pg-help-popover.is-open {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+}
+
+.pg-help-popover__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.pg-help-popover__head strong {
+  color: #eef3ff;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.pg-help-popover__head button {
+  width: 26px;
+  height: 26px;
+  border: 0;
+  border-radius: 8px;
+  background: rgba(255,255,255,.08);
+  color: #eef3ff;
+  cursor: pointer;
+}
+
+.pg-help-popover__grid {
+  display: grid;
+  grid-template-columns: 54px 1fr;
+  gap: 8px 10px;
+  align-items: center;
+}
+
+.pg-help-popover__grid span {
+  min-height: 24px;
+  padding: 0 8px;
+  border-radius: 8px;
+  display: inline-grid;
+  place-items: center;
+
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.06);
+
+  color: #eef3ff;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.pg-help-popover__grid p {
+  margin: 0;
+  color: #a9b7de;
+  font-size: 12px;
+}
+
+/* щоб стара ліва панель точно не вилізала */
+.pg-hotkeys,
+.pg-side {
+  display: none !important;
+}
