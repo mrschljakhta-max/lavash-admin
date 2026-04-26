@@ -3473,3 +3473,42 @@ select {
   background: rgba(118, 150, 236, .35);
   border-radius: 999px;
 }
+/* =========================================================
+   🔥 FINAL FIX — COMPACT HEIGHT (NO SCROLL, PERFECT FIT)
+========================================================= */
+
+/* прибираємо примусову висоту */
+.upload-page--clean .upload-card {
+  min-height: auto !important;
+  max-height: 520px;              /* 🔥 головний контроль */
+  height: fit-content;
+}
+
+/* вирівнюємо обидві картки */
+.upload-page--clean .upload-grid {
+  align-items: stretch;
+}
+
+/* робимо контент компактнішим */
+.upload-page--clean .drop-zone--compact {
+  min-height: 160px !important;
+  padding: 16px !important;
+}
+
+/* список файлів компактніший */
+.upload-page--clean .upload-list--compact {
+  max-height: 120px !important;
+}
+
+/* загальний контейнер без зайвого скролу */
+.workspace-body--page {
+  overflow: hidden !important;
+}
+
+/* центрування по висоті */
+.upload-page--clean {
+  min-height: calc(100vh - 120px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
