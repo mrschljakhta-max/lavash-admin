@@ -153,6 +153,24 @@
     });
   }
 
+  function renderRightRankList() {
+  const ranks = [
+    { level: 10, title: 'Ведучий оператор' },
+    { level: 11, title: 'Спеціаліст' },
+    { level: 12, title: 'Аналітик II' },
+    { level: 13, title: 'Аналітик III рівня' },
+    { level: 14, title: 'Аналітик II рівня' }
+  ];
+
+  return ranks.map((rank) => `
+    <div class="pg-right-rank-row ${rank.level === state.level ? 'is-current' : ''}">
+      <span>${getChevron(rank.level)}</span>
+      <b>${rank.level}</b>
+      <em>${rank.title}</em>
+    </div>
+  `).join('');
+}
+  
   function renderRightPanel() {
   const rightTools =
     document.querySelector('.right-tools__inner') ||
