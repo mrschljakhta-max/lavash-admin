@@ -1658,3 +1658,143 @@
     opacity: 0;
   }
 }
+/* =========================================================
+   PENDING GAME — PREMIUM FLIP BACK FORM
+========================================================= */
+
+.pg-card.is-active.is-flipped .pg-card__inner {
+  transform: rotateY(180deg) !important;
+}
+
+.pg-card.is-active .pg-card__back {
+  padding: 30px 34px !important;
+  background:
+    radial-gradient(circle at 15% 12%, rgba(85,223,255,.14), transparent 34%),
+    radial-gradient(circle at 86% 88%, rgba(141,88,255,.18), transparent 38%),
+    linear-gradient(135deg, rgba(7, 25, 72, .98), rgba(4, 12, 38, .98)) !important;
+}
+
+.pg-edit-head {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: flex-start !important;
+  gap: 16px !important;
+  margin-bottom: 20px !important;
+}
+
+.pg-edit-head h3 {
+  margin: 0 !important;
+  color: #eef3ff !important;
+  font-size: clamp(24px, 2vw, 34px) !important;
+  line-height: 1.05 !important;
+  letter-spacing: -.03em !important;
+}
+
+.pg-edit-head span {
+  padding: 8px 12px !important;
+  border-radius: 999px !important;
+  background: rgba(85,223,255,.10) !important;
+  border: 1px solid rgba(85,223,255,.22) !important;
+  color: #9fdfff !important;
+  font-size: 12px !important;
+  white-space: nowrap !important;
+}
+
+.pg-edit-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+}
+
+.pg-edit-grid label,
+.pg-edit-note {
+  display: grid !important;
+  gap: 6px !important;
+}
+
+.pg-edit-grid label span,
+.pg-edit-note span {
+  color: rgba(220,230,255,.72) !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  letter-spacing: .04em !important;
+  text-transform: uppercase !important;
+}
+
+.pg-card input,
+.pg-card textarea {
+  width: 100% !important;
+  min-height: 44px !important;
+  border-radius: 13px !important;
+  padding: 0 13px !important;
+  outline: none !important;
+
+  color: #eef3ff !important;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.085), rgba(255,255,255,.04)) !important;
+  border: 1px solid rgba(118,150,236,.20) !important;
+
+  font-size: 14px !important;
+  font-weight: 700 !important;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.07),
+    0 8px 20px rgba(0,0,0,.16) !important;
+}
+
+.pg-card input:focus,
+.pg-card textarea:focus {
+  border-color: rgba(85,223,255,.58) !important;
+  box-shadow:
+    0 0 0 3px rgba(85,223,255,.10),
+    inset 0 1px 0 rgba(255,255,255,.08) !important;
+}
+
+.pg-edit-note {
+  margin-top: 14px !important;
+}
+
+.pg-card textarea {
+  min-height: 82px !important;
+  padding: 12px 13px !important;
+  resize: none !important;
+  line-height: 1.35 !important;
+}
+
+.pg-save-btn {
+  position: absolute !important;
+  right: 34px !important;
+  bottom: 28px !important;
+
+  min-width: 210px !important;
+  min-height: 48px !important;
+
+  border: 0 !important;
+  border-radius: 999px !important;
+  color: #07142f !important;
+  font-size: 15px !important;
+  font-weight: 1000 !important;
+  cursor: pointer !important;
+
+  background:
+    linear-gradient(90deg, #55dfff, #37e6b2) !important;
+
+  box-shadow:
+    0 0 28px rgba(85,223,255,.20),
+    0 16px 34px rgba(0,0,0,.26) !important;
+}
+
+.pg-save-btn:hover {
+  transform: translateY(-2px) !important;
+  filter: brightness(1.08) !important;
+}
+
+.pg-card.is-active.is-flipped .pg-card__front {
+  pointer-events: none !important;
+}
+
+@media (max-width: 1280px) {
+  .pg-edit-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
