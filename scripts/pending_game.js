@@ -353,7 +353,7 @@
         <div class="pg-xp-pop" id="pgXpPop">+10 XP</div>
       </section>
     `;
-
+    renderRightPanel();
     bind();
   }
 
