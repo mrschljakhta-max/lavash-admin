@@ -1983,3 +1983,51 @@
 .pg-carousel-wrap:has(.pg-card.is-flipped)::after {
   opacity: .16 !important;
 }
+
+
+/* =========================================================
+   LAVASH PENDING — SHIFT HOTKEYS OVERRIDE v5
+   ←/→ перемотка, Shift+A/S/D дії. Без Ctrl-конфліктів.
+========================================================= */
+
+.pg-carousel-wrap::after {
+  content: "← → перемотка   |   Shift+A ігнор   Shift+S пропуск   Shift+D підтвердити" !important;
+  position: absolute !important;
+  left: 50% !important;
+  bottom: 18px !important;
+  transform: translateX(-50%) !important;
+  min-height: 40px !important;
+  padding: 0 24px !important;
+  border-radius: 999px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: rgba(220, 230, 255, .72) !important;
+  font-size: 12px !important;
+  font-weight: 900 !important;
+  letter-spacing: .06em !important;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(85,223,255,.18), transparent 50%),
+    rgba(7, 22, 64, .65) !important;
+  border: 1px solid rgba(85,223,255,.20) !important;
+  box-shadow:
+    0 12px 30px rgba(0,0,0,.25),
+    inset 0 1px 0 rgba(255,255,255,.05) !important;
+  backdrop-filter: blur(10px) !important;
+  pointer-events: none !important;
+  text-shadow: 0 0 18px rgba(85,223,255,.22) !important;
+}
+
+.pg-right-hotkeys {
+  grid-template-columns: 72px 1fr !important;
+}
+
+.pg-right-hotkeys span {
+  min-width: 64px !important;
+  padding: 0 7px !important;
+  white-space: nowrap !important;
+}
+
+.pg-carousel-wrap:has(.pg-card.is-flipped)::after {
+  opacity: .18 !important;
+}
