@@ -2174,3 +2174,86 @@
 .pg-carousel {
   transition: transform .46s cubic-bezier(.18,.85,.22,1) !important;
 }
+/* =========================================================
+   PENDING GAME — FORCED ACTION FLYOUT
+========================================================= */
+
+.pg-card.is-active.is-key-ignore {
+  animation: pgFlyIgnore .72s cubic-bezier(.18,.92,.2,1) forwards !important;
+}
+
+.pg-card.is-active.is-key-confirm {
+  animation: pgFlyConfirm .72s cubic-bezier(.18,.92,.2,1) forwards !important;
+}
+
+.pg-card.is-active.is-key-skip {
+  animation: pgFlySkip .72s cubic-bezier(.18,.92,.2,1) forwards !important;
+}
+
+@keyframes pgFlyIgnore {
+  0% {
+    opacity: 1;
+    transform: perspective(1200px) translate3d(0,0,0) rotateZ(0deg) scale(1);
+    filter: brightness(1);
+  }
+
+  18% {
+    opacity: 1;
+    transform: perspective(1200px) translate3d(-38px,-8px,0) rotateZ(-5deg) scale(1.025);
+    filter: brightness(1.2);
+  }
+
+  100% {
+    opacity: 0;
+    transform: perspective(1200px) translate3d(-760px,40px,0) rotateZ(-22deg) scale(.76);
+    filter: brightness(1.12) blur(5px);
+  }
+}
+
+@keyframes pgFlyConfirm {
+  0% {
+    opacity: 1;
+    transform: perspective(1200px) translate3d(0,0,0) rotateZ(0deg) scale(1);
+    filter: brightness(1);
+  }
+
+  18% {
+    opacity: 1;
+    transform: perspective(1200px) translate3d(38px,-8px,0) rotateZ(5deg) scale(1.025);
+    filter: brightness(1.2);
+  }
+
+  100% {
+    opacity: 0;
+    transform: perspective(1200px) translate3d(760px,40px,0) rotateZ(22deg) scale(.76);
+    filter: brightness(1.12) blur(5px);
+  }
+}
+
+@keyframes pgFlySkip {
+  0% {
+    opacity: 1;
+    transform: perspective(1200px) translate3d(0,0,0) rotateZ(0deg) scale(1);
+    filter: brightness(1);
+  }
+
+  18% {
+    opacity: 1;
+    transform: perspective(1200px) translate3d(0,34px,0) rotateZ(1deg) scale(.98);
+    filter: brightness(1.16);
+  }
+
+  100% {
+    opacity: 0;
+    transform: perspective(1200px) translate3d(0,640px,0) rotateZ(4deg) scale(.7);
+    filter: brightness(1.05) blur(6px);
+  }
+}
+
+/* якщо transform заданий inline drag-логікою — теж прибиваємо */
+.pg-card.is-active.is-key-ignore,
+.pg-card.is-active.is-key-confirm,
+.pg-card.is-active.is-key-skip {
+  pointer-events: none !important;
+  will-change: transform, opacity, filter !important;
+}
