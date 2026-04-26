@@ -90,8 +90,7 @@
     level: 12,
     rank: 'Аналітик II',
     streak: 7,
-    accuracy: 92,
-    helpOpen: false
+    accuracy: 92
   };
 
   function qs(selector) {
@@ -154,99 +153,124 @@
   }
 
   function renderRightRankList() {
-  const ranks = [
-    { level: 10, title: 'Ведучий оператор' },
-    { level: 11, title: 'Спеціаліст' },
-    { level: 12, title: 'Аналітик II' },
-    { level: 13, title: 'Аналітик III рівня' },
-    { level: 14, title: 'Аналітик II рівня' }
-  ];
+    const ranks = [
+      { level: 10, title: 'Ведучий оператор' },
+      { level: 11, title: 'Спеціаліст' },
+      { level: 12, title: 'Аналітик II' },
+      { level: 13, title: 'Аналітик III рівня' },
+      { level: 14, title: 'Аналітик II рівня' }
+    ];
 
-  return ranks.map((rank) => `
-    <div class="pg-right-rank-row ${rank.level === state.level ? 'is-current' : ''}">
-      <span>${getChevron(rank.level)}</span>
-      <b>${rank.level}</b>
-      <em>${rank.title}</em>
-    </div>
-  `).join('');
-}
-  
+    return ranks.map((rank) => `
+      <div class="pg-right-rank-row ${rank.level === state.level ? 'is-current' : ''}">
+        <span>${getChevron(rank.level)}</span>
+        <b>${rank.level}</b>
+        <em>${rank.title}</em>
+      </div>
+    `).join('');
+  }
+
   function renderRightPanel() {
-  const rightTools =
-    document.querySelector('.right-tools__inner') ||
-    document.querySelector('.right-tools');
+    const rightTools =
+      document.querySelector('.right-tools__inner') ||
+      document.querySelector('.right-tools');
 
-  if (!rightTools) return;
+    if (!rightTools) return;
 
-  const progress = Math.round((state.xp / state.xpMax) * 100);
+    const progress = Math.round((state.xp / state.xpMax) * 100);
 
-  const oldPanel = document.getElementById('pendingGameRightPanel');
-  if (oldPanel) oldPanel.remove();
+    const oldPanel = document.getElementById('pendingGameRightPanel');
+    if (oldPanel) oldPanel.remove();
 
-  const panel = document.createElement('div');
-  panel.id = 'pendingGameRightPanel';
-  panel.className = 'pg-right-panel';
+    const panel = document.createElement('div');
+    panel.id = 'pendingGameRightPanel';
+    panel.className = 'pg-right-panel';
 
-  panel.innerHTML = `
-    <section class="pg-right-card">
-      <h3>Ваш прогрес</h3>
+    panel.innerHTML = `
+      <section class="pg-right-card">
+        <h3>Ваш прогрес</h3>
 
-      <div class="pg-right-user">
-        <div class="pg-right-avatar">OP</div>
-        <div>
-          <strong>Operator_07</strong>
-          <span>ID: OP-7721</span>
+        <div class="pg-right-user">
+          <div class="pg-right-avatar">OP</div>
+          <div>
+            <strong>Operator_07</strong>
+            <span>ID: OP-7721</span>
+          </div>
         </div>
-      </div>
 
-      <div class="pg-right-rank">
-        <span>${getChevron(state.level)}</span>
-        <strong>${state.rank}</strong>
-      </div>
-
-      <div class="pg-right-track">
-        <div style="width:${progress}%"></div>
-      </div>
-
-      <div class="pg-right-stats">
-        <div>
-          <b>+${state.todayXp}</b>
-          <span>XP сьогодні</span>
+        <div class="pg-right-rank">
+          <span>${getChevron(state.level)}</span>
+          <strong>${state.rank}</strong>
         </div>
-        <div>
-          <b>${state.accuracy}%</b>
-          <span>точність</span>
+
+        <div class="pg-right-track">
+          <div style="width:${progress}%"></div>
         </div>
-        <div>
-          <b>${state.streak}</b>
-          <span>streak</span>
+
+        <div class="pg-right-stats">
+          <div>
+            <b>+${state.todayXp}</b>
+            <span>XP сьогодні</span>
+          </div>
+          <div>
+            <b>${state.accuracy}%</b>
+            <span>точність</span>
+          </div>
+          <div>
+            <b>${state.streak}</b>
+            <span>streak</span>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <section class="pg-right-card">
-      <h3>Ранги</h3>
+      <section class="pg-right-card">
+        <h3>Обробка</h3>
 
-      <div class="pg-right-ranks">
-        ${renderRightRankList()}
-      </div>
-    </section>
+        <div class="pg-right-counter">
+          <strong>${state.active + 1}</strong>
+          <span>/</span>
+          <strong>${records.length}</strong>
+        </div>
 
-    <section class="pg-right-card">
-      <h3>Досягнення</h3>
+        <p class="pg-right-note">Поточний запис / всього у черзі</p>
+      </section>
 
-      <div class="pg-right-achievements">
-        <p>✅ 10 записів без помилки</p>
-        <p>✅ 100 підтверджених записів</p>
-        <p>✅ 5 виправлень підряд</p>
-        <p>✅ Точність понад 90%</p>
-      </div>
-    </section>
-  `;
+      <section class="pg-right-card">
+        <h3>Гарячі клавіші</h3>
 
-  rightTools.appendChild(panel);
-}
-  
+        <div class="pg-right-hotkeys">
+          <span>← →</span><p>перемикання</p>
+          <span>1</span><p>ігнорувати</p>
+          <span>2</span><p>підтвердити</p>
+          <span>3</span><p>пропустити</p>
+          <span>Space</span><p>flip / edit</p>
+          <span>Esc</span><p>скасувати</p>
+        </div>
+      </section>
+
+      <section class="pg-right-card">
+        <h3>Ранги</h3>
+
+        <div class="pg-right-ranks">
+          ${renderRightRankList()}
+        </div>
+      </section>
+
+      <section class="pg-right-card">
+        <h3>Досягнення</h3>
+
+        <div class="pg-right-achievements">
+          <p>✅ 10 записів без помилки</p>
+          <p>✅ 100 підтверджених записів</p>
+          <p>✅ 5 виправлень підряд</p>
+          <p>✅ Точність понад 90%</p>
+        </div>
+      </section>
+    `;
+
+    rightTools.appendChild(panel);
+  }
+
   function render() {
     const root = getRoot();
     if (!root) return;
@@ -259,25 +283,6 @@
       <section class="pg-page pg-page--clean" id="pendingGamePage">
         <div class="pg-bg-orb pg-bg-orb--left"></div>
         <div class="pg-bg-orb pg-bg-orb--right"></div>
-
-        <button class="pg-help-btn" type="button" data-pg-help title="Гарячі клавіші">
-          ⌨
-        </button>
-
-        <div class="pg-help-popover ${state.helpOpen ? 'is-open' : ''}" data-pg-help-popover>
-          <div class="pg-help-popover__head">
-            <strong>Гарячі клавіші</strong>
-            <button type="button" data-pg-help-close>×</button>
-          </div>
-          <div class="pg-help-popover__grid">
-            <span>← →</span><p>перемикання карток</p>
-            <span>1</span><p>ігнорувати</p>
-            <span>2</span><p>підтвердити</p>
-            <span>3</span><p>пропустити</p>
-            <span>Space</span><p>flip / edit</p>
-            <span>Esc</span><p>скасувати</p>
-          </div>
-        </div>
 
         <header class="pg-rankbar">
           <div class="pg-rankbadge pg-tier-${getTier(state.level)}">
@@ -302,27 +307,13 @@
             <span>Сьогодні</span>
             <strong>+${state.todayXp} XP</strong>
           </div>
-
-          <button class="pg-top-btn" type="button">🏆 ТОП операторів</button>
         </header>
 
-        <div class="pg-progressline">
-          <span>Прогрес обробки записів</span>
-          <div class="pg-progressline__track">
-            <div class="pg-progressline__fill" style="width:${Math.round(((state.active + 1) / records.length) * 100)}%"></div>
-          </div>
-          <strong>Запис ${state.active + 1} із ${records.length}</strong>
-        </div>
-
         <main class="pg-stage">
-          <section class="pg-carousel-wrap">
-            <button class="pg-nav-btn pg-nav-btn--left" type="button" data-pg-prev>‹</button>
-
+          <section class="pg-carousel-wrap" data-pg-carousel-wrap>
             <div class="pg-carousel">
               ${getVisibleRecords().map(({ record, index, slot }) => renderCard(record, index, slot)).join('')}
             </div>
-
-            <button class="pg-nav-btn pg-nav-btn--right" type="button" data-pg-next>›</button>
           </section>
         </main>
 
@@ -353,6 +344,7 @@
         <div class="pg-xp-pop" id="pgXpPop">+10 XP</div>
       </section>
     `;
+
     renderRightPanel();
     bind();
   }
@@ -413,19 +405,6 @@
   }
 
   function bind() {
-    qs('[data-pg-prev]')?.addEventListener('click', prev);
-    qs('[data-pg-next]')?.addEventListener('click', next);
-
-    qs('[data-pg-help]')?.addEventListener('click', () => {
-      state.helpOpen = !state.helpOpen;
-      render();
-    });
-
-    qs('[data-pg-help-close]')?.addEventListener('click', () => {
-      state.helpOpen = false;
-      render();
-    });
-
     document.querySelectorAll('.pg-card.is-active').forEach((card) => {
       card.addEventListener('click', (event) => {
         if (event.target.closest('input, textarea, button')) return;
@@ -438,17 +417,28 @@
         handleAction(btn.dataset.pgAction);
       });
     });
+
+    const carousel = qs('[data-pg-carousel-wrap]');
+    if (carousel) {
+      carousel.addEventListener('wheel', (event) => {
+        event.preventDefault();
+
+        if (event.deltaY > 0 || event.deltaX > 0) {
+          next();
+        } else {
+          prev();
+        }
+      }, { passive: false });
+    }
   }
 
   function prev() {
     state.active = (state.active - 1 + records.length) % records.length;
-    state.helpOpen = false;
     render();
   }
 
   function next() {
     state.active = (state.active + 1) % records.length;
-    state.helpOpen = false;
     render();
   }
 
@@ -463,7 +453,6 @@
 
     state.xp = Math.min(state.xpMax, state.xp + xp);
     state.todayXp += xp;
-    state.helpOpen = false;
 
     showXpPop(xp);
     setTimeout(next, 280);
@@ -498,12 +487,6 @@
       if (event.key === 'Enter') handleAction('confirm');
 
       if (event.key === 'Escape') {
-        if (state.helpOpen) {
-          state.helpOpen = false;
-          render();
-          return;
-        }
-
         qs('.pg-card.is-active')?.classList.remove('is-flipped');
       }
     });
