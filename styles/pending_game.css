@@ -1199,3 +1199,123 @@
     height: 86px !important;
   }
 }
+/* =========================================================
+   PENDING GAME — CLEANUP STEP
+========================================================= */
+
+.pg-page {
+  padding-top: 0 !important;
+  gap: 8px !important;
+  grid-template-rows: auto minmax(0, 1fr) auto !important;
+}
+
+.pg-rankbar {
+  margin-top: -8px !important;
+  grid-template-columns: 280px minmax(320px, 1fr) 150px !important;
+}
+
+.pg-top-btn,
+.pg-progressline,
+.pg-help-btn,
+.pg-help-popover,
+.pg-nav-btn {
+  display: none !important;
+}
+
+.pg-stage {
+  min-height: 0 !important;
+  display: grid !important;
+  place-items: center !important;
+}
+
+.pg-carousel-wrap {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  cursor: grab;
+}
+
+.pg-carousel-wrap:active {
+  cursor: grabbing;
+}
+
+/* right navbar: обробка + hotkeys */
+.pg-right-counter {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 0 4px;
+}
+
+.pg-right-counter strong {
+  font-size: 30px;
+  font-weight: 1000;
+  color: #eef3ff;
+}
+
+.pg-right-counter span {
+  color: #55dfff;
+  font-size: 18px;
+}
+
+.pg-right-note {
+  margin: 0;
+  color: #a9b7de;
+  text-align: center;
+  font-size: 11px;
+}
+
+.pg-right-hotkeys {
+  display: grid;
+  grid-template-columns: 54px 1fr;
+  gap: 7px 9px;
+  align-items: center;
+}
+
+.pg-right-hotkeys span {
+  min-height: 24px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  color: #eef3ff;
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.06);
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.pg-right-hotkeys p {
+  margin: 0;
+  color: #a9b7de;
+  font-size: 11px;
+}
+
+/* нижній пульт — заготовка під півколо */
+.pg-wheel {
+  max-width: 760px !important;
+  height: 128px !important;
+  grid-template-columns: 1fr 140px 1fr 96px !important;
+  align-items: end !important;
+}
+
+.pg-wheel__sector,
+.pg-wheel__skip,
+.pg-wheel__center {
+  box-shadow:
+    0 18px 44px rgba(0,0,0,.28),
+    inset 0 1px 0 rgba(255,255,255,.10);
+}
+
+.pg-wheel__sector--ignore {
+  border-radius: 110px 24px 18px 18px !important;
+}
+
+.pg-wheel__sector--confirm {
+  border-radius: 24px 110px 18px 18px !important;
+}
+
+.pg-wheel__center {
+  border-radius: 999px 999px 18px 18px !important;
+}
