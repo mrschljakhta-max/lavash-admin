@@ -3410,3 +3410,66 @@ select {
     min-height: 520px;
   }
 }
+/* =========================
+   UPLOAD FULL SCREEN FIX
+   без правого бігунка + рівні картки
+========================= */
+
+.workspace-body--page {
+  overflow: hidden !important;
+  padding-right: 0 !important;
+}
+
+.upload-page--wide {
+  height: calc(100vh - 112px) !important;
+  overflow: hidden !important;
+}
+
+.upload-page--wide .upload-grid {
+  height: 100% !important;
+  align-items: stretch !important;
+}
+
+.upload-page--wide .upload-card {
+  height: 100% !important;
+  min-height: 0 !important;
+  display: grid !important;
+  grid-template-rows: auto 1fr auto !important;
+}
+
+.upload-page--wide .drop-zone--compact {
+  height: 100% !important;
+  min-height: 0 !important;
+}
+
+.upload-page--wide .upload-list-wrap {
+  min-height: 92px !important;
+}
+
+.upload-page--wide .upload-list--compact {
+  max-height: 64px !important;
+  overflow-y: auto !important;
+}
+
+/* прибираємо зовнішній скрол сторінки */
+.workspace-body--page::-webkit-scrollbar {
+  display: none !important;
+}
+
+.workspace-body--page {
+  scrollbar-width: none !important;
+}
+
+/* внутрішній список файлів лишаємо акуратним */
+.upload-list--compact::-webkit-scrollbar {
+  width: 6px;
+}
+
+.upload-list--compact::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.upload-list--compact::-webkit-scrollbar-thumb {
+  background: rgba(118, 150, 236, .35);
+  border-radius: 999px;
+}
