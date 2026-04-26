@@ -164,9 +164,9 @@
         <h3>Гарячі клавіші</h3>
         <div class="pg-right-hotkeys">
           <span>← →</span><p>перемотка карток</p>
-          <span>Ctrl+A</span><p>ігнор</p>
-          <span>Ctrl+S</span><p>пропуск</p>
-          <span>Ctrl+D</span><p>підтвердити</p>
+          <span>Shift+A</span><p>ігнор</p>
+          <span>Shift+S</span><p>пропуск</p>
+          <span>Shift+D</span><p>підтвердити</p>
           <span>Space</span><p>flip / edit</p>
           <span>Esc</span><p>скасувати</p>
         </div>
@@ -471,8 +471,17 @@
     document.addEventListener('keydown', (event) => {
       if (!qs('#pendingGamePage')) return;
 
-      const activeInput = event.target?.closest?.('input, textarea');
+      const activeTag = document.activeElement?.tagName?.toLowerCase();
+      const isTyping = activeTag === 'input' || activeTag === 'textarea';
       const key = event.key.toLowerCase();
+
+      if (isTyping) {
+        if (event.key === 'Escape') {
+          event.preventDefault();
+          qs('.pg-card.is-active')?.classList.remove('is-flipped');
+        }
+        return;
+      }
 
       if (event.key === 'ArrowLeft') {
         event.preventDefault();
@@ -486,31 +495,32 @@
         return;
       }
 
-      if (event.ctrlKey && key === 'a') {
+      if (event.shiftKey && key === 'a') {
         event.preventDefault();
         handleAction('ignore');
         return;
       }
 
-      if (event.ctrlKey && key === 's') {
+      if (event.shiftKey && key === 's') {
         event.preventDefault();
         handleAction('skip');
         return;
       }
 
-      if (event.ctrlKey && key === 'd') {
+      if (event.shiftKey && key === 'd') {
         event.preventDefault();
         handleAction('confirm');
         return;
       }
 
-      if (event.code === 'Space' && !activeInput) {
+      if (event.code === 'Space') {
         event.preventDefault();
         qs('.pg-card.is-active')?.classList.toggle('is-flipped');
         return;
       }
 
       if (event.key === 'Escape') {
+        event.preventDefault();
         qs('.pg-card.is-active')?.classList.remove('is-flipped');
       }
     });
