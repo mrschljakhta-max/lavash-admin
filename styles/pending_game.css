@@ -1453,3 +1453,208 @@
   width: min(520px, 28vw) !important;
   height: min(260px, 30vh) !important;
 }
+/* =========================================================
+   PENDING GAME — FINAL HERO CARD VISUAL
+========================================================= */
+
+.pg-card.is-active {
+  width: min(1040px, 66vw) !important;
+  height: min(520px, 52vh) !important;
+  border-radius: 36px !important;
+}
+
+.pg-card.is-active .pg-card__face {
+  padding: 34px 42px !important;
+  border-radius: 36px !important;
+  background:
+    radial-gradient(circle at 76% 52%, rgba(85, 223, 255, .18), transparent 30%),
+    radial-gradient(circle at 90% 90%, rgba(141, 88, 255, .26), transparent 38%),
+    linear-gradient(135deg, rgba(19, 68, 165, .96), rgba(4, 16, 50, .98)) !important;
+
+  box-shadow:
+    0 0 0 1px rgba(85, 223, 255, .35) inset,
+    0 0 38px rgba(55, 230, 178, .28),
+    0 0 110px rgba(141, 88, 255, .20),
+    0 34px 90px rgba(0, 0, 0, .48) !important;
+}
+
+.pg-card.is-active .pg-card__content {
+  height: calc(100% - 54px) !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, .95fr) minmax(340px, 1.05fr) !important;
+  gap: 34px !important;
+  align-items: center !important;
+}
+
+.pg-card.is-active h2 {
+  font-size: clamp(46px, 4vw, 76px) !important;
+  line-height: .96 !important;
+  letter-spacing: -.045em !important;
+  max-width: 100% !important;
+}
+
+.pg-card.is-active .pg-card__date {
+  font-size: 18px !important;
+  margin-top: 24px !important;
+}
+
+.pg-card.is-active .pg-card__meta {
+  font-size: 18px !important;
+  gap: 12px !important;
+  margin-top: 20px !important;
+}
+
+.pg-card.is-active .pg-card__chip {
+  width: fit-content !important;
+  min-height: 44px !important;
+  padding: 0 22px !important;
+  border-radius: 999px !important;
+  font-size: 15px !important;
+  margin-top: 26px !important;
+}
+
+.pg-card.is-active .pg-card__front > small {
+  bottom: 24px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  font-size: 14px !important;
+  opacity: .78 !important;
+}
+
+/* HUD круги навколо БПЛА */
+.pg-card.is-active .pg-visual {
+  position: relative !important;
+  height: 100% !important;
+  display: grid !important;
+  place-items: center !important;
+}
+
+.pg-card.is-active .pg-visual::before {
+  content: "";
+  position: absolute;
+  width: min(420px, 30vw);
+  height: min(420px, 30vw);
+  border-radius: 50%;
+  background:
+    repeating-radial-gradient(
+      circle,
+      rgba(85, 223, 255, .18) 0 1px,
+      transparent 1px 34px
+    );
+  opacity: .38;
+  animation: pgHudSpin 22s linear infinite;
+}
+
+.pg-card.is-active .pg-visual::after {
+  content: "";
+  position: absolute;
+  width: min(340px, 24vw);
+  height: min(340px, 24vw);
+  border-radius: 50%;
+  border: 1px dashed rgba(141, 88, 255, .45);
+  box-shadow: 0 0 36px rgba(85, 223, 255, .14);
+  animation: pgHudSpinReverse 34s linear infinite;
+}
+
+@keyframes pgHudSpin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pgHudSpinReverse {
+  to { transform: rotate(-360deg); }
+}
+
+/* більший БПЛА */
+.pg-card.is-active .pg-drone {
+  position: relative !important;
+  z-index: 4 !important;
+  width: clamp(330px, 25vw, 460px) !important;
+  height: clamp(230px, 18vw, 320px) !important;
+  transform: rotate(-14deg) translateX(0) !important;
+  filter:
+    drop-shadow(0 30px 34px rgba(0,0,0,.42))
+    drop-shadow(0 0 28px rgba(85,223,255,.20));
+}
+
+/* світлові точки внизу картки */
+.pg-card.is-active .pg-card__chip::after {
+  content: "";
+  display: inline-flex;
+  width: 72px;
+  height: 10px;
+  margin-left: 14px;
+  background:
+    radial-gradient(circle, #37e6b2 0 4px, transparent 5px) 0 50% / 18px 10px repeat-x;
+  vertical-align: middle;
+  filter: drop-shadow(0 0 8px rgba(55,230,178,.8));
+}
+
+/* бокові картки ближче й красивіші */
+.pg-card:not(.is-active) {
+  width: min(420px, 24vw) !important;
+  height: min(360px, 42vh) !important;
+  opacity: .22 !important;
+  filter: saturate(.55) brightness(.48) blur(.3px) !important;
+}
+
+.pg-card[data-slot="-1"],
+.pg-card[data-slot="1"] {
+  opacity: .32 !important;
+  transform: scale(.72) translateY(8px) !important;
+}
+
+.pg-card[data-slot="-2"],
+.pg-card[data-slot="2"] {
+  opacity: .14 !important;
+  transform: scale(.58) translateY(12px) !important;
+}
+
+/* точки каруселі знизу */
+.pg-carousel-wrap::after {
+  content: "‹   •   •   ●   •   •   ›";
+  position: absolute;
+  left: 50%;
+  bottom: 26px;
+  transform: translateX(-50%);
+  color: rgba(210, 225, 255, .45);
+  font-size: 30px;
+  letter-spacing: 14px;
+  text-shadow: 0 0 18px rgba(85,223,255,.28);
+  pointer-events: none;
+}
+
+.pg-carousel-wrap {
+  position: relative !important;
+}
+
+/* мікроанімація світла по рамці */
+.pg-card.is-active .pg-card__face::before {
+  content: "";
+  position: absolute;
+  inset: -60%;
+  background:
+    linear-gradient(
+      115deg,
+      transparent 43%,
+      rgba(255,255,255,.20) 49%,
+      rgba(85,223,255,.16) 52%,
+      transparent 59%
+    );
+  animation: pgCardSweep 5.2s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 2;
+}
+
+@keyframes pgCardSweep {
+  0%, 58% {
+    transform: translateX(-62%) rotate(8deg);
+    opacity: 0;
+  }
+  66% {
+    opacity: .95;
+  }
+  100% {
+    transform: translateX(62%) rotate(8deg);
+    opacity: 0;
+  }
+}
