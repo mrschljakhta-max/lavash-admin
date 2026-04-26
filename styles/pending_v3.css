@@ -3512,3 +3512,116 @@ select {
   flex-direction: column;
   justify-content: center;
 }
+.pending-scene {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: space-between;
+}
+
+/* ================= RANK ================= */
+
+.rank-bar {
+  padding: 10px 20px;
+}
+
+.rank-bar__track {
+  height: 6px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.rank-bar__fill {
+  height: 100%;
+  background: linear-gradient(90deg,#4b83ff,#8d58ff);
+  box-shadow: 0 0 12px rgba(120,120,255,0.6);
+}
+
+.rank-bar__label {
+  margin-top: 6px;
+  font-size: 13px;
+  color: #a9b7de;
+}
+
+/* ================= CAROUSEL ================= */
+
+.carousel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  flex: 1;
+}
+
+.card {
+  width: 260px;
+  height: 340px;
+  perspective: 1000px;
+  opacity: 0.4;
+  transform: scale(0.8);
+  transition: 0.3s;
+}
+
+.card.active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.card-inner {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: 0.6s;
+}
+
+.card.flipped .card-inner {
+  transform: rotateY(180deg);
+}
+
+.card-front,
+.card-back {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+
+  border-radius: 20px;
+  padding: 16px;
+
+  background: rgba(25,52,116,0.95);
+  border: 1px solid rgba(118,150,236,0.2);
+}
+
+.card-back {
+  transform: rotateY(180deg);
+}
+
+/* ================= PANEL ================= */
+
+.control-panel {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  padding: 14px;
+}
+
+.btn {
+  padding: 14px 22px;
+  border-radius: 12px;
+  border: none;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.btn.approve {
+  background: #00d27a;
+}
+
+.btn.ignore {
+  background: #ff4d6d;
+}
+
+.btn.skip {
+  background: #4b83ff;
+}
