@@ -3625,3 +3625,174 @@ select {
 .btn.skip {
   background: #4b83ff;
 }
+/* =========================================================
+   PENDING GAME — BIG HORIZONTAL CARD PATCH
+========================================================= */
+
+.pg-page {
+  grid-template-rows: 58px minmax(0, 1fr) 26px !important;
+  padding: 0 22px 4px !important;
+}
+
+.pg-stage {
+  height: 100% !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+
+.pg-carousel {
+  width: 100% !important;
+  height: 100% !important;
+  gap: clamp(18px, 2.4vw, 44px) !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* головна картка — велика горизонтальна */
+.pg-card {
+  width: clamp(560px, 54vw, 960px) !important;
+  height: clamp(300px, 46vh, 520px) !important;
+  opacity: .18 !important;
+  transform: scale(.58) rotateY(var(--pg-card-rotate, 0deg)) translateY(6px) !important;
+  filter: saturate(.55) brightness(.55) !important;
+}
+
+.pg-card.is-active {
+  opacity: 1 !important;
+  transform: scale(1) rotateY(0deg) translateY(0) !important;
+  filter: saturate(1.12) brightness(1.08) !important;
+}
+
+/* щоб бокові не розлазились */
+.pg-card[data-slot="-2"],
+.pg-card[data-slot="2"] {
+  transform: scale(.45) rotateY(var(--pg-card-rotate, 0deg)) translateY(8px) !important;
+  opacity: .12 !important;
+}
+
+.pg-card[data-slot="-1"],
+.pg-card[data-slot="1"] {
+  transform: scale(.55) rotateY(var(--pg-card-rotate, 0deg)) translateY(6px) !important;
+  opacity: .20 !important;
+}
+
+/* внутрішня сітка картки */
+.pg-card__face {
+  padding: 28px 34px !important;
+  border-radius: 32px !important;
+}
+
+.pg-card__content {
+  grid-template-columns: minmax(0, 1.25fr) minmax(260px, .75fr) !important;
+  gap: 32px !important;
+  height: calc(100% - 52px) !important;
+}
+
+.pg-card h2 {
+  font-size: clamp(42px, 4vw, 72px) !important;
+  line-height: .95 !important;
+  letter-spacing: -.04em !important;
+}
+
+.pg-card__date {
+  font-size: 18px !important;
+  margin-top: 18px !important;
+}
+
+.pg-card__meta {
+  font-size: 17px !important;
+  gap: 10px !important;
+  margin-top: 18px !important;
+}
+
+.pg-card__chip {
+  min-height: 42px !important;
+  padding: 0 18px !important;
+  font-size: 14px !important;
+  margin-top: 22px !important;
+}
+
+.pg-card__front > small {
+  bottom: 20px !important;
+  font-size: 13px !important;
+}
+
+/* БПЛА справа — більший, але не перекриває текст */
+.pg-visual {
+  height: 100% !important;
+}
+
+.pg-drone {
+  width: clamp(260px, 20vw, 360px) !important;
+  height: clamp(190px, 15vw, 260px) !important;
+  transform: rotate(-12deg) translateX(-4%) !important;
+}
+
+.pg-drone__body {
+  left: 22px !important;
+  top: 44% !important;
+  width: 78% !important;
+  height: 24% !important;
+}
+
+.pg-drone__wing {
+  left: 28% !important;
+  width: 68% !important;
+  height: 34% !important;
+}
+
+.pg-drone__wing--l {
+  top: 12% !important;
+}
+
+.pg-drone__wing--r {
+  bottom: 10% !important;
+}
+
+/* зворот карти — під велику форму */
+.pg-edit-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+}
+
+.pg-card input,
+.pg-card textarea {
+  min-height: 42px !important;
+  font-size: 14px !important;
+}
+
+.pg-card textarea {
+  min-height: 78px !important;
+}
+
+.pg-save-btn {
+  min-height: 46px !important;
+  font-size: 15px !important;
+}
+
+/* пульт прибрано остаточно */
+.pg-dome-dock,
+.pg-dome,
+.pg-dome-btn,
+.pg-dome-core,
+.pg-control-dock,
+.pg-control,
+.pg-wheel {
+  display: none !important;
+}
+
+/* низ не лишає велику пусту зону */
+.pg-xp-pop {
+  top: 58% !important;
+}
+
+@media (max-height: 820px) {
+  .pg-card {
+    width: clamp(540px, 52vw, 880px) !important;
+    height: clamp(280px, 42vh, 460px) !important;
+  }
+
+  .pg-card h2 {
+    font-size: clamp(38px, 3.5vw, 62px) !important;
+  }
+}
