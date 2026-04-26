@@ -183,3 +183,62 @@
     loadPendingRows
   };
 })();
+function renderPendingScene() {
+  const root =
+    document.getElementById('app') ||
+    document.querySelector('.workspace-body');
+
+  if (!root) return;
+
+  root.innerHTML = `
+    <div class="pending-scene">
+
+      <!-- PROGRESS / RANK -->
+      <div class="rank-bar">
+        <div class="rank-bar__track">
+          <div class="rank-bar__fill" style="width: 38%"></div>
+        </div>
+        <div class="rank-bar__label">
+          ⭐ Рівень 12 — Старший спеціаліст
+        </div>
+      </div>
+
+      <!-- CAROUSEL -->
+      <div class="carousel">
+
+        ${[1,2,3,4,5].map(i => `
+          <div class="card ${i === 3 ? 'active' : ''}">
+            <div class="card-inner">
+
+              <!-- FRONT -->
+              <div class="card-front">
+                <h3>Запис #${i}</h3>
+                <p>БпЛА: Shahed</p>
+                <p>Локація: Харків</p>
+              </div>
+
+              <!-- BACK -->
+              <div class="card-back">
+                <input value="Shahed" />
+                <input value="Харків" />
+                <textarea>Коментар...</textarea>
+              </div>
+
+            </div>
+          </div>
+        `).join('')}
+
+      </div>
+
+      <!-- CONTROL PANEL -->
+      <div class="control-panel">
+        <button class="btn approve">✔ Підтвердити</button>
+        <button class="btn ignore">✖ Ігнорувати</button>
+        <button class="btn skip">➡ Пропустити</button>
+      </div>
+
+    </div>
+  `;
+
+  initPendingInteractions();
+}
