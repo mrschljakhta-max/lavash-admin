@@ -90,7 +90,8 @@
     level: 12,
     rank: 'Аналітик II',
     streak: 7,
-    accuracy: 92
+    accuracy: 92,
+    isResolving: false
   };
 
   function qs(selector) {
@@ -178,7 +179,6 @@
     if (!rightTools) return;
 
     const progress = Math.round((state.xp / state.xpMax) * 100);
-
     const oldPanel = document.getElementById('pendingGameRightPanel');
     if (oldPanel) oldPanel.remove();
 
@@ -225,19 +225,16 @@
 
       <section class="pg-right-card">
         <h3>Обробка</h3>
-
         <div class="pg-right-counter">
           <strong>${state.active + 1}</strong>
           <span>/</span>
           <strong>${records.length}</strong>
         </div>
-
         <p class="pg-right-note">Поточний запис / всього у черзі</p>
       </section>
 
       <section class="pg-right-card">
         <h3>Гарячі клавіші</h3>
-
         <div class="pg-right-hotkeys">
           <span>← →</span><p>перемикання</p>
           <span>1</span><p>ігнорувати</p>
@@ -250,7 +247,6 @@
 
       <section class="pg-right-card">
         <h3>Ранги</h3>
-
         <div class="pg-right-ranks">
           ${renderRightRankList()}
         </div>
@@ -258,7 +254,6 @@
 
       <section class="pg-right-card">
         <h3>Досягнення</h3>
-
         <div class="pg-right-achievements">
           <p>✅ 10 записів без помилки</p>
           <p>✅ 100 підтверджених записів</p>
@@ -317,32 +312,33 @@
           </section>
         </main>
 
-       <footer class="pg-control-dock">
-  <div class="pg-control">
-    <button class="ctrl ctrl-ignore" type="button" data-pg-action="ignore">
-      <span>1</span>
-      <strong>Ігнор</strong>
-      <small>відхилити</small>
-    </button>
+        <footer class="pg-dome-dock">
+          <div class="pg-dome" aria-label="Пульт керування записами">
+            <button class="pg-dome-btn pg-dome-btn--ignore" type="button" data-pg-action="ignore">
+              <span>1</span>
+              <strong>Ігнор</strong>
+              <small>відхилити</small>
+            </button>
 
-    <button class="ctrl ctrl-confirm" type="button" data-pg-action="confirm">
-      <span>2</span>
-      <strong>ОК</strong>
-      <small>підтвердити</small>
-    </button>
+            <button class="pg-dome-btn pg-dome-btn--confirm" type="button" data-pg-action="confirm">
+              <span>2</span>
+              <strong>ОК</strong>
+              <small>підтвердити</small>
+            </button>
 
-    <div class="ctrl ctrl-center">
-      <small>Запис</small>
-      <strong>${state.active + 1} / ${records.length}</strong>
-    </div>
+            <button class="pg-dome-btn pg-dome-btn--skip" type="button" data-pg-action="skip">
+              <span>3</span>
+              <strong>Пропуск</strong>
+              <small>далі</small>
+            </button>
 
-    <button class="ctrl ctrl-skip" type="button" data-pg-action="skip">
-      <span>3</span>
-      <strong>Пропуск</strong>
-      <small>далі</small>
-    </button>
-  </div>
-</footer>
+            <div class="pg-dome-core">
+              <small>залишилось</small>
+              <strong>${records.length - state.active}</strong>
+              <span>${state.active + 1} / ${records.length}</span>
+            </div>
+          </div>
+        </footer>
 
         <div class="pg-xp-pop" id="pgXpPop">+10 XP</div>
       </section>
@@ -359,46 +355,86 @@
       <article class="pg-card ${active} pg-card--${record.status}" data-index="${index}" data-slot="${slot}">
         <div class="pg-card__inner">
           <div class="pg-card__face pg-card__front">
-            <div class="pg-card__status">${getStatusLabel(record.status)}</div>
-            <button class="pg-card__star" type="button">☆</button>
-
-            <h2>${record.title}</h2>
-            <p class="pg-card__date">${record.createdAt}</p>
-
-            <div class="pg-card__meta">
-              <span>📡 ${record.station}</span>
-              <span>📍 ${record.settlement}</span>
+            <div class="pg-card__topline">
+              <div class="pg-card__status">${getStatusLabel(record.status)}</div>
+              <button class="pg-card__star" type="button" aria-label="Позначити">☆</button>
             </div>
 
-            <div class="pg-visual pg-visual--uav">
-              <div class="pg-drone">
-                <div class="pg-drone__body"></div>
-                <div class="pg-drone__wing pg-drone__wing--l"></div>
-                <div class="pg-drone__wing pg-drone__wing--r"></div>
+            <div class="pg-card__content">
+              <div>
+                <h2>${record.title}</h2>
+                <p class="pg-card__date">${record.createdAt}</p>
+                <div class="pg-card__meta">
+                  <span>📡 ${record.station}</span>
+                  <span>📍 ${record.settlement}</span>
+                </div>
+                <div class="pg-card__chip">${record.type}</div>
+              </div>
+
+              <div class="pg-visual pg-visual--uav">
+                <div class="pg-drone">
+                  <div class="pg-drone__body"></div>
+                  <div class="pg-drone__wing pg-drone__wing--l"></div>
+                  <div class="pg-drone__wing pg-drone__wing--r"></div>
+                </div>
               </div>
             </div>
 
-            <div class="pg-card__chip">${record.type}</div>
-            <small>Натисніть, щоб переглянути деталі</small>
+            <small>Клік — редагувати / Space — flip</small>
           </div>
 
           <div class="pg-card__face pg-card__back">
-            <h3>Редагування запису</h3>
+            <div class="pg-edit-head">
+              <h3>Редагування запису</h3>
+              <span>${record.source}</span>
+            </div>
 
-            <label>Модель</label>
-            <input value="${record.model}" />
+            <div class="pg-edit-grid">
+              <label>
+                <span>Модель</span>
+                <input value="${record.model}" />
+              </label>
 
-            <label>Станція</label>
-            <input value="${record.station}" />
+              <label>
+                <span>Тип</span>
+                <input value="${record.type}" />
+              </label>
 
-            <label>Населений пункт</label>
-            <input value="${record.settlement}" />
+              <label>
+                <span>Дата / час</span>
+                <input value="${record.createdAt}" />
+              </label>
 
-            <label>Координати</label>
-            <input value="${record.coordinates}" />
+              <label>
+                <span>Станція</span>
+                <input value="${record.station}" />
+              </label>
 
-            <label>Опис</label>
-            <textarea>Система пропонує: ${record.model}. Confidence: ${record.confidence}%</textarea>
+              <label>
+                <span>Населений пункт</span>
+                <input value="${record.settlement}" />
+              </label>
+
+              <label>
+                <span>Координати</span>
+                <input value="${record.coordinates}" />
+              </label>
+
+              <label>
+                <span>Висота</span>
+                <input value="${record.altitude}" />
+              </label>
+
+              <label>
+                <span>Швидкість</span>
+                <input value="${record.speed}" />
+              </label>
+            </div>
+
+            <label class="pg-edit-note">
+              <span>Примітка</span>
+              <textarea>Система пропонує: ${record.model}. Confidence: ${record.confidence}%</textarea>
+            </label>
 
             <button class="pg-save-btn" type="button">Зберегти зміни</button>
           </div>
@@ -436,38 +472,45 @@
   }
 
   function prev() {
+    if (state.isResolving) return;
     state.active = (state.active - 1 + records.length) % records.length;
     render();
   }
 
   function next() {
+    if (state.isResolving) return;
     state.active = (state.active + 1) % records.length;
     render();
   }
 
   function handleAction(action) {
-  const xpMap = {
-    ignore: 8,
-    confirm: 10,
-    skip: 5
-  };
+    if (state.isResolving) return;
 
-  const xp = xpMap[action] || 5;
-  const activeCard = qs('.pg-card.is-active');
+    const xpMap = {
+      ignore: 8,
+      confirm: 10,
+      skip: 5
+    };
 
-  state.xp = Math.min(state.xpMax, state.xp + xp);
-  state.todayXp += xp;
+    const xp = xpMap[action] || 5;
+    const activeCard = qs('.pg-card.is-active');
 
-  if (activeCard) {
-    activeCard.classList.add('is-resolving');
+    state.isResolving = true;
+    state.xp = Math.min(state.xpMax, state.xp + xp);
+    state.todayXp += xp;
+
+    if (activeCard) {
+      activeCard.classList.add(`is-resolving-${action}`);
+    }
+
+    showXpPop(xp);
+
+    setTimeout(() => {
+      state.active = (state.active + 1) % records.length;
+      state.isResolving = false;
+      render();
+    }, 460);
   }
-
-  showXpPop(xp);
-
-  setTimeout(() => {
-    next();
-  }, 360);
-}
 
   function showXpPop(xp) {
     const pop = qs('#pgXpPop');
