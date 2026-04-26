@@ -468,6 +468,8 @@
     }
 
     if (activeCard) {
+      activeCard.style.transform = '';
+      
       activeCard.classList.remove(
         'is-key-ignore',
         'is-key-confirm',
