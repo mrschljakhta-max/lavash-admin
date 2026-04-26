@@ -960,3 +960,239 @@
     transform-origin: center top;
   }
 }
+
+
+/* =========================================================
+   LAVASH PENDING — FINAL OVERRIDES v3
+   Wide operational cards + calmer hemisphere control
+========================================================= */
+
+.pg-page {
+  grid-template-rows: 58px minmax(0, 1fr) 172px !important;
+  gap: 8px !important;
+  padding: 0 22px 8px !important;
+}
+
+.pg-rankbar {
+  width: min(1040px, 72vw) !important;
+  height: 54px !important;
+  margin: 2px auto 0 !important;
+  grid-template-columns: 245px minmax(460px, 1fr) 132px !important;
+}
+
+.pg-rankbadge,
+.pg-xp,
+.pg-today {
+  height: 50px !important;
+  min-height: 50px !important;
+}
+
+.pg-stage {
+  margin-top: 0 !important;
+}
+
+.pg-carousel {
+  gap: clamp(32px, 4vw, 78px) !important;
+  align-items: center !important;
+}
+
+.pg-card {
+  width: clamp(520px, 42vw, 760px) !important;
+  height: clamp(255px, 33vh, 365px) !important;
+  opacity: .26 !important;
+  transform: scale(.72) rotateY(var(--pg-card-rotate, 0deg)) translateY(10px) !important;
+}
+
+.pg-card.is-active {
+  transform: scale(1.02) rotateY(0deg) translateY(0) !important;
+  opacity: 1 !important;
+}
+
+.pg-card__face {
+  padding: 22px 26px !important;
+  border-radius: 28px !important;
+}
+
+.pg-card__content {
+  height: calc(100% - 50px) !important;
+  grid-template-columns: minmax(0, 1fr) 240px !important;
+  gap: 22px !important;
+}
+
+.pg-card h2 {
+  font-size: clamp(28px, 2.6vw, 44px) !important;
+  max-width: 100% !important;
+}
+
+.pg-card__date,
+.pg-card__meta {
+  font-size: 15px !important;
+}
+
+.pg-card__chip {
+  min-height: 36px !important;
+  font-size: 13px !important;
+}
+
+.pg-visual {
+  height: 190px !important;
+}
+
+.pg-drone {
+  width: 210px !important;
+  height: 148px !important;
+}
+
+.pg-drone__body {
+  left: 18px !important;
+  top: 58px !important;
+  width: 158px !important;
+  height: 38px !important;
+}
+
+.pg-drone__wing {
+  left: 48px !important;
+  width: 138px !important;
+  height: 58px !important;
+}
+
+.pg-drone__wing--l { top: 18px !important; }
+.pg-drone__wing--r { bottom: 16px !important; }
+
+.pg-card__back {
+  grid-template-rows: auto minmax(0, 1fr) auto auto !important;
+}
+
+.pg-edit-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+}
+
+.pg-card textarea {
+  min-height: 58px !important;
+}
+
+/* New calmer hemisphere controller */
+.pg-dome-dock {
+  height: 172px !important;
+  place-items: start center !important;
+}
+
+.pg-dome {
+  width: 560px !important;
+  height: 172px !important;
+  transform: translateY(-4px) !important;
+  border-radius: 560px 560px 34px 34px !important;
+  background:
+    radial-gradient(circle at 50% 100%, rgba(85,223,255,.20), transparent 38%),
+    linear-gradient(180deg, rgba(12,34,96,.50), rgba(2,10,32,.94)) !important;
+}
+
+.pg-dome::before {
+  width: 360px !important;
+  height: 138px !important;
+  bottom: 10px !important;
+}
+
+.pg-dome-btn {
+  height: 96px !important;
+  width: 138px !important;
+  display: grid !important;
+  align-content: center !important;
+  justify-items: center !important;
+}
+
+.pg-dome-btn--ignore {
+  left: 54px !important;
+  bottom: 28px !important;
+  border-radius: 96px 22px 22px 34px !important;
+}
+
+.pg-dome-btn--confirm {
+  right: 54px !important;
+  bottom: 28px !important;
+  border-radius: 22px 96px 34px 22px !important;
+}
+
+.pg-dome-btn--skip {
+  top: 12px !important;
+  left: 50% !important;
+  width: 124px !important;
+  height: 82px !important;
+  border-radius: 64px 64px 24px 24px !important;
+}
+
+.pg-dome-core {
+  width: 136px !important;
+  height: 92px !important;
+  bottom: 18px !important;
+  border-radius: 76px 76px 24px 24px !important;
+}
+
+.pg-dome-core strong {
+  font-size: 34px !important;
+}
+
+.pg-dome-btn strong {
+  font-size: 16px !important;
+}
+
+/* better action direction: card exits by action */
+.pg-card.is-resolving-ignore {
+  animation: pgResolveLeft .48s cubic-bezier(.2,.8,.2,1) forwards !important;
+}
+.pg-card.is-resolving-confirm {
+  animation: pgResolveRight .48s cubic-bezier(.2,.8,.2,1) forwards !important;
+}
+.pg-card.is-resolving-skip {
+  animation: pgResolveUp .48s cubic-bezier(.2,.8,.2,1) forwards !important;
+}
+
+@keyframes pgResolveLeft {
+  0% { opacity: 1; transform: scale(1.02) translateX(0) rotate(0deg); }
+  100% { opacity: 0; transform: scale(.86) translateX(-560px) rotate(-8deg); filter: brightness(1.2); }
+}
+@keyframes pgResolveRight {
+  0% { opacity: 1; transform: scale(1.02) translateX(0) rotate(0deg); }
+  100% { opacity: 0; transform: scale(.86) translateX(560px) rotate(8deg); filter: brightness(1.2); }
+}
+@keyframes pgResolveUp {
+  0% { opacity: 1; transform: scale(1.02) translateY(0); }
+  100% { opacity: 0; transform: scale(.78) translateY(-260px); filter: brightness(1.2); }
+}
+
+@media (max-height: 820px) {
+  .pg-page {
+    grid-template-rows: 54px minmax(0, 1fr) 142px !important;
+  }
+
+  .pg-card {
+    width: clamp(480px, 40vw, 680px) !important;
+    height: clamp(220px, 30vh, 310px) !important;
+  }
+
+  .pg-dome-dock {
+    height: 142px !important;
+  }
+
+  .pg-dome {
+    transform: translateY(-14px) scale(.88) !important;
+    transform-origin: center top !important;
+  }
+}
+
+@media (max-width: 1400px) {
+  .pg-rankbar {
+    width: min(960px, 72vw) !important;
+    grid-template-columns: 230px minmax(390px, 1fr) 120px !important;
+  }
+
+  .pg-card {
+    width: clamp(460px, 40vw, 640px) !important;
+  }
+
+  .pg-dome {
+    transform: translateY(-10px) scale(.88) !important;
+    transform-origin: center top !important;
+  }
+}
