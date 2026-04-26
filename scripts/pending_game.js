@@ -7,7 +7,7 @@
       createdAt: '08.05.2024 10:24',
       station: 'Radar_01',
       settlement: 'с. Гора',
-      region: 'Київська обл., Бориспільський р-н',
+      region: 'Київська обл.',
       coordinates: '50.3489° N, 30.9590° E',
       type: 'Ударний БПЛА',
       model: 'Shahed-136',
@@ -15,70 +15,6 @@
       speed: '185 км/год',
       source: 'raw_word_events',
       confidence: 72
-    },
-    {
-      id: 'a12f77c9',
-      title: 'БПЛА SuperCam',
-      status: 'warning',
-      createdAt: '08.05.2024 09:41',
-      station: 'Radar_03',
-      settlement: 'с. Слобожанське',
-      region: 'Харківська обл.',
-      coordinates: '49.9912° N, 36.2311° E',
-      type: 'Розвідувальний БПЛА',
-      model: 'SuperCam',
-      altitude: '1600 м',
-      speed: '95 км/год',
-      source: 'raw_excel_events',
-      confidence: 45
-    },
-    {
-      id: 'b41c90aa',
-      title: 'БПЛА Орлан-10',
-      status: 'error',
-      createdAt: '08.05.2024 08:12',
-      station: 'Radar_02',
-      settlement: 'м. Чернігів',
-      region: 'Чернігівська обл.',
-      coordinates: '51.4982° N, 31.2893° E',
-      type: 'Розвідувальний БПЛА',
-      model: 'Орлан-10',
-      altitude: '1800 м',
-      speed: '110 км/год',
-      source: 'raw_word_events',
-      confidence: 38
-    },
-    {
-      id: 'c88e11f0',
-      title: 'БПЛА Zala 421',
-      status: 'valid',
-      createdAt: '08.05.2024 11:02',
-      station: 'Radar_04',
-      settlement: 'с. Іванівка',
-      region: 'Донецька обл.',
-      coordinates: '48.0121° N, 37.8022° E',
-      type: 'Розвідувальний БПЛА',
-      model: 'Zala 421',
-      altitude: '1300 м',
-      speed: '105 км/год',
-      source: 'norm_word_events',
-      confidence: 91
-    },
-    {
-      id: 'd91f22ab',
-      title: 'БПЛА Ланцет-3',
-      status: 'skipped',
-      createdAt: '08.05.2024 11:45',
-      station: 'Radar_05',
-      settlement: 'м. Харків',
-      region: 'Харківська обл.',
-      coordinates: '49.9935° N, 36.2304° E',
-      type: 'Баражуючий боєприпас',
-      model: 'Ланцет-3',
-      altitude: '900 м',
-      speed: '140 км/год',
-      source: 'raw_word_events',
-      confidence: 63
     }
   ];
 
@@ -124,20 +60,20 @@
     }[status] || '#55dfff';
   }
 
-  function getTier(level) {
-    if (level <= 10) return 'blue';
-    if (level <= 20) return 'green';
-    if (level <= 30) return 'orange';
-    if (level <= 40) return 'red';
-    return 'violet';
-  }
-
   function getChevron(level) {
     if (level <= 10) return '▰';
     if (level <= 20) return '▰▰';
     if (level <= 30) return '▰▰▰';
     if (level <= 40) return '▰▰▰▰';
     return '⚡';
+  }
+
+  function getTier(level) {
+    if (level <= 10) return 'blue';
+    if (level <= 20) return 'green';
+    if (level <= 30) return 'orange';
+    if (level <= 40) return 'red';
+    return 'violet';
   }
 
   function getVisibleRecords() {
@@ -208,18 +144,9 @@
         </div>
 
         <div class="pg-right-stats">
-          <div>
-            <b>+${state.todayXp}</b>
-            <span>XP сьогодні</span>
-          </div>
-          <div>
-            <b>${state.accuracy}%</b>
-            <span>точність</span>
-          </div>
-          <div>
-            <b>${state.streak}</b>
-            <span>streak</span>
-          </div>
+          <div><b>+${state.todayXp}</b><span>XP сьогодні</span></div>
+          <div><b>${state.accuracy}%</b><span>точність</span></div>
+          <div><b>${state.streak}</b><span>streak</span></div>
         </div>
       </section>
 
@@ -312,7 +239,6 @@
           </section>
         </main>
 
-
         <div class="pg-xp-pop" id="pgXpPop">+10 XP</div>
       </section>
     `;
@@ -363,45 +289,14 @@
             </div>
 
             <div class="pg-edit-grid">
-              <label>
-                <span>Модель</span>
-                <input value="${record.model}" />
-              </label>
-
-              <label>
-                <span>Тип</span>
-                <input value="${record.type}" />
-              </label>
-
-              <label>
-                <span>Дата / час</span>
-                <input value="${record.createdAt}" />
-              </label>
-
-              <label>
-                <span>Станція</span>
-                <input value="${record.station}" />
-              </label>
-
-              <label>
-                <span>Населений пункт</span>
-                <input value="${record.settlement}" />
-              </label>
-
-              <label>
-                <span>Координати</span>
-                <input value="${record.coordinates}" />
-              </label>
-
-              <label>
-                <span>Висота</span>
-                <input value="${record.altitude}" />
-              </label>
-
-              <label>
-                <span>Швидкість</span>
-                <input value="${record.speed}" />
-              </label>
+              <label><span>Модель</span><input value="${record.model}" /></label>
+              <label><span>Тип</span><input value="${record.type}" /></label>
+              <label><span>Дата / час</span><input value="${record.createdAt}" /></label>
+              <label><span>Станція</span><input value="${record.station}" /></label>
+              <label><span>Населений пункт</span><input value="${record.settlement}" /></label>
+              <label><span>Координати</span><input value="${record.coordinates}" /></label>
+              <label><span>Висота</span><input value="${record.altitude}" /></label>
+              <label><span>Швидкість</span><input value="${record.speed}" /></label>
             </div>
 
             <label class="pg-edit-note">
@@ -417,76 +312,93 @@
   }
 
   function bindCardDrag(card) {
-  let startX = 0;
-  let startY = 0;
-  let currentX = 0;
-  let currentY = 0;
-  let isDragging = false;
+    let startX = 0;
+    let startY = 0;
+    let currentX = 0;
+    let currentY = 0;
+    let isDragging = false;
 
-  card.addEventListener('pointerdown', (event) => {
-    if (event.target.closest('input, textarea, button')) return;
-    if (card.classList.contains('is-flipped')) return;
+    card.addEventListener('pointerdown', (event) => {
+      if (event.target.closest('input, textarea, button')) return;
+      if (card.classList.contains('is-flipped')) return;
 
-    isDragging = true;
-    startX = event.clientX;
-    startY = event.clientY;
+      isDragging = true;
+      startX = event.clientX;
+      startY = event.clientY;
+      currentX = 0;
+      currentY = 0;
 
-    card.setPointerCapture(event.pointerId);
-    card.classList.add('is-dragging');
-  });
+      card.dataset.dragAction = '';
+      card.setPointerCapture(event.pointerId);
+      card.classList.add('is-dragging');
+    });
 
-  card.addEventListener('pointermove', (event) => {
-    if (!isDragging) return;
+    card.addEventListener('pointermove', (event) => {
+      if (!isDragging) return;
 
-    currentX = event.clientX - startX;
-    currentY = event.clientY - startY;
+      currentX = event.clientX - startX;
+      currentY = event.clientY - startY;
 
-    const rotate = currentX / 28;
-    card.style.transform = `perspective(1200px) translate(${currentX}px, ${currentY}px) rotate(${rotate}deg) scale(1)`;
-  });
+      const rotate = currentX / 28;
+      card.style.transform = `perspective(1200px) translate(${currentX}px, ${currentY}px) rotate(${rotate}deg) scale(1)`;
 
-  card.addEventListener('pointerup', (event) => {
-    if (!isDragging) return;
+      if (currentX > 120) {
+        card.dataset.dragAction = 'confirm';
+      } else if (currentX < -120) {
+        card.dataset.dragAction = 'ignore';
+      } else if (currentY > 110) {
+        card.dataset.dragAction = 'skip';
+      } else {
+        card.dataset.dragAction = '';
+      }
+    });
 
-    isDragging = false;
-    card.releasePointerCapture(event.pointerId);
-    card.classList.remove('is-dragging');
+    card.addEventListener('pointerup', (event) => {
+      if (!isDragging) return;
 
-    if (currentX > 160) {
-      handleAction('confirm');
-      return;
-    }
+      isDragging = false;
+      card.releasePointerCapture(event.pointerId);
+      card.classList.remove('is-dragging');
 
-    if (currentX < -160) {
-      handleAction('ignore');
-      return;
-    }
+      const dragAction = card.dataset.dragAction;
+      card.dataset.dragAction = '';
 
-    if (currentY > 140) {
-      handleAction('skip');
-      return;
-    }
+      if (currentX > 160 || dragAction === 'confirm') {
+        handleAction('confirm');
+        return;
+      }
 
-    card.style.transform = '';
-    currentX = 0;
-    currentY = 0;
-  });
-}
-  
+      if (currentX < -160 || dragAction === 'ignore') {
+        handleAction('ignore');
+        return;
+      }
+
+      if (currentY > 140 || dragAction === 'skip') {
+        handleAction('skip');
+        return;
+      }
+
+      card.style.transform = '';
+      currentX = 0;
+      currentY = 0;
+    });
+
+    card.addEventListener('pointercancel', () => {
+      isDragging = false;
+      card.classList.remove('is-dragging');
+      card.dataset.dragAction = '';
+      card.style.transform = '';
+    });
+  }
+
   function bind() {
     document.querySelectorAll('.pg-card.is-active').forEach((card) => {
       bindCardDrag(card);
-    
+
       card.addEventListener('click', (event) => {
         if (event.target.closest('input, textarea, button')) return;
         if (card.classList.contains('is-dragging')) return;
         card.classList.toggle('is-flipped');
-      });
-    });
-
-    document.querySelectorAll('[data-pg-action]').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        handleAction(btn.dataset.pgAction);
       });
     });
 
