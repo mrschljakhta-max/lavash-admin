@@ -271,11 +271,12 @@
               </div>
 
               <div class="pg-visual pg-visual--uav">
-                <div class="pg-drone">
-                  <div class="pg-drone__body"></div>
-                  <div class="pg-drone__wing pg-drone__wing--l"></div>
-                  <div class="pg-drone__wing pg-drone__wing--r"></div>
-                </div>
+                <img
+                  class="pg-uav-img"
+                  src="../assets/img/uav/shahed-136.png"
+                  alt="${record.model || record.title}"
+                  loading="lazy"
+                />
               </div>
             </div>
 
