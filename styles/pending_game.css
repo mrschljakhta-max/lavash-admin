@@ -2257,3 +2257,31 @@
   pointer-events: none !important;
   will-change: transform, opacity, filter !important;
 }
+.pg-drone {
+  display: none !important;
+}
+
+.pg-uav-img {
+  width: clamp(360px, 28vw, 560px);
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+  transform: rotate(-8deg) translateX(20px);
+  filter:
+    drop-shadow(0 34px 36px rgba(0,0,0,.45))
+    drop-shadow(0 0 28px rgba(85,223,255,.18));
+  animation: pgUavFloat 5.5s ease-in-out infinite;
+}
+
+@keyframes pgUavFloat {
+  0%, 100% {
+    transform: rotate(-8deg) translate(20px, 0);
+  }
+  50% {
+    transform: rotate(-6deg) translate(28px, -12px);
+  }
+}
+
+.pg-card.is-active .pg-visual {
+  overflow: visible !important;
+}
