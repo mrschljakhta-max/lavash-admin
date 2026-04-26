@@ -84,27 +84,15 @@
 
   const state = {
     active: 0,
-    xp: 740,
+    xp: 842,
     xpMax: 1000,
-    todayXp: 120,
+    todayXp: 222,
     level: 12,
     rank: 'Аналітик II',
     streak: 7,
-    accuracy: 92
+    accuracy: 92,
+    helpOpen: false
   };
-
-  const rankTitles = [
-    'Рекрут', 'Новобранець', 'Курсант', 'Стажер', 'Молодший оператор',
-    'Оператор III класу', 'Оператор II класу', 'Оператор I класу', 'Старший оператор', 'Ведучий оператор',
-    'Спеціаліст', 'Старший спеціаліст', 'Аналітик III рівня', 'Аналітик II рівня', 'Аналітик I рівня',
-    'Старший аналітик', 'Ведучий аналітик', 'Оператор-розвідник', 'Аналітик РЕР', 'Оператор РЕБ',
-    'Старший оператор РЕБ', 'Спеціаліст РЕР', 'Ведучий спеціаліст РЕР', 'Тактичний аналітик', 'Старший тактичний аналітик',
-    'Інженер РЕБ', 'Старший інженер РЕБ', 'Фахівець подавлення', 'Координатор аналізу', 'Офіцер обробки даних',
-    'Старший офіцер аналізу', 'Куратор зміни', 'Начальник групи', 'Старший координатор', 'Тактичний офіцер',
-    'Офіцер РЕБ', 'Старший офіцер РЕБ', 'Начальник секції', 'Офіцер ситуаційного центру', 'Старший офіцер управління',
-    'Начальник зміни', 'Куратор системи', 'Офіцер оперативного центру', 'Старший офіцер штабу', 'Начальник аналітики',
-    'Координатор операцій', 'Керівник РЕБ/РЕР', 'Начальник управління', 'Архітектор системи', 'Командир цифрового фронту'
-  ];
 
   function qs(selector) {
     return document.querySelector(selector);
@@ -125,17 +113,44 @@
     }[status] || 'Новий';
   }
 
+  function getStatusColor(status) {
+    return {
+      new: '#37e6b2',
+      warning: '#f5a524',
+      error: '#ff4d6d',
+      valid: '#25d889',
+      skipped: '#8d58ff',
+      fixed: '#55dfff'
+    }[status] || '#55dfff';
+  }
+
+  function getTier(level) {
+    if (level <= 10) return 'blue';
+    if (level <= 20) return 'green';
+    if (level <= 30) return 'orange';
+    if (level <= 40) return 'red';
+    return 'violet';
+  }
+
+  function getChevron(level) {
+    if (level <= 10) return '▰';
+    if (level <= 20) return '▰▰';
+    if (level <= 30) return '▰▰▰';
+    if (level <= 40) return '▰▰▰▰';
+    return '⚡';
+  }
+
   function getVisibleRecords() {
     const total = records.length;
-    const indexes = [-2, -1, 0, 1, 2].map((offset) => {
-      return (state.active + offset + total) % total;
-    });
 
-    return indexes.map((index, position) => ({
-      record: records[index],
-      index,
-      slot: position - 2
-    }));
+    return [-2, -1, 0, 1, 2].map((offset) => {
+      const index = (state.active + offset + total) % total;
+      return {
+        record: records[index],
+        index,
+        slot: offset
+      };
+    });
   }
 
   function render() {
@@ -144,11 +159,31 @@
 
     const progress = Math.round((state.xp / state.xpMax) * 100);
     const activeRecord = records[state.active];
+    document.documentElement.style.setProperty('--pg-accent-status', getStatusColor(activeRecord.status));
 
     root.innerHTML = `
-      <section class="pg-page" id="pendingGamePage">
+      <section class="pg-page pg-page--clean" id="pendingGamePage">
         <div class="pg-bg-orb pg-bg-orb--left"></div>
         <div class="pg-bg-orb pg-bg-orb--right"></div>
+
+        <button class="pg-help-btn" type="button" data-pg-help title="Гарячі клавіші">
+          ⌨
+        </button>
+
+        <div class="pg-help-popover ${state.helpOpen ? 'is-open' : ''}" data-pg-help-popover>
+          <div class="pg-help-popover__head">
+            <strong>Гарячі клавіші</strong>
+            <button type="button" data-pg-help-close>×</button>
+          </div>
+          <div class="pg-help-popover__grid">
+            <span>← →</span><p>перемикання карток</p>
+            <span>1</span><p>ігнорувати</p>
+            <span>2</span><p>підтвердити</p>
+            <span>3</span><p>пропустити</p>
+            <span>Space</span><p>flip / edit</p>
+            <span>Esc</span><p>скасувати</p>
+          </div>
+        </div>
 
         <header class="pg-rankbar">
           <div class="pg-rankbadge pg-tier-${getTier(state.level)}">
@@ -185,17 +220,7 @@
           <strong>Запис ${state.active + 1} із ${records.length}</strong>
         </div>
 
-        <main class="pg-layout">
-          <aside class="pg-hotkeys">
-            <h3>Гарячі клавіші</h3>
-            <p><b>← →</b> перемикання</p>
-            <p><b>1</b> ігнорувати</p>
-            <p><b>2</b> підтвердити</p>
-            <p><b>3</b> пропустити</p>
-            <p><b>Space</b> flip / edit</p>
-            <p><b>Esc</b> скасувати</p>
-          </aside>
-
+        <main class="pg-stage">
           <section class="pg-carousel-wrap">
             <button class="pg-nav-btn pg-nav-btn--left" type="button" data-pg-prev>‹</button>
 
@@ -205,41 +230,6 @@
 
             <button class="pg-nav-btn pg-nav-btn--right" type="button" data-pg-next>›</button>
           </section>
-
-          <aside class="pg-side">
-            <section class="pg-user">
-              <h3>Ваш прогрес</h3>
-              <div class="pg-user__row">
-                <div class="pg-avatar">OP</div>
-                <div>
-                  <strong>Operator_07</strong>
-                  <span>ID: OP-7721</span>
-                </div>
-              </div>
-              <div class="pg-side-rank">${getChevron(state.level)} ${state.rank}</div>
-              <div class="pg-mini-track">
-                <div style="width:${progress}%"></div>
-              </div>
-              <div class="pg-stats">
-                <div><b>+${state.todayXp}</b><span>XP сьогодні</span></div>
-                <div><b>${state.accuracy}%</b><span>точність</span></div>
-                <div><b>${state.streak}</b><span>streak</span></div>
-              </div>
-            </section>
-
-            <section class="pg-ranks">
-              <h3>Ранги</h3>
-              ${renderRankList()}
-            </section>
-
-            <section class="pg-achievements">
-              <h3>Досягнення</h3>
-              <p>✅ 10 записів без помилки</p>
-              <p>✅ 100 підтверджених записів</p>
-              <p>✅ 5 виправлень підряд</p>
-              <p>✅ Точність понад 90%</p>
-            </section>
-          </aside>
         </main>
 
         <footer class="pg-wheel">
@@ -271,11 +261,11 @@
     `;
 
     bind();
-    setActiveInfo(activeRecord);
   }
 
   function renderCard(record, index, slot) {
     const active = slot === 0 ? 'is-active' : '';
+
     return `
       <article class="pg-card ${active} pg-card--${record.status}" data-index="${index}" data-slot="${slot}">
         <div class="pg-card__inner">
@@ -291,10 +281,12 @@
               <span>📍 ${record.settlement}</span>
             </div>
 
-            <div class="pg-drone">
-              <div class="pg-drone__body"></div>
-              <div class="pg-drone__wing pg-drone__wing--l"></div>
-              <div class="pg-drone__wing pg-drone__wing--r"></div>
+            <div class="pg-visual pg-visual--uav">
+              <div class="pg-drone">
+                <div class="pg-drone__body"></div>
+                <div class="pg-drone__wing pg-drone__wing--l"></div>
+                <div class="pg-drone__wing pg-drone__wing--r"></div>
+              </div>
             </div>
 
             <div class="pg-card__chip">${record.type}</div>
@@ -326,58 +318,19 @@
     `;
   }
 
-  function renderRankList() {
-    const current = state.level;
-    const from = Math.max(1, current - 2);
-    const to = Math.min(50, current + 2);
-
-    let html = '';
-    for (let level = from; level <= to; level++) {
-      html += `
-        <div class="pg-rank-row ${level === current ? 'is-current' : ''}">
-          <span>${getChevron(level)}</span>
-          <b>${level}</b>
-          <em>${rankTitles[level - 1]}</em>
-        </div>
-      `;
-    }
-    return html;
-  }
-
-  function getTier(level) {
-    if (level <= 10) return 'blue';
-    if (level <= 20) return 'green';
-    if (level <= 30) return 'orange';
-    if (level <= 40) return 'red';
-    return 'violet';
-  }
-
-  function getChevron(level) {
-    if (level <= 10) return '▰';
-    if (level <= 20) return '▰▰';
-    if (level <= 30) return '▰▰▰';
-    if (level <= 40) return '▰▰▰▰';
-    return '⚡';
-  }
-
-  function setActiveInfo(record) {
-    document.documentElement.style.setProperty('--pg-accent-status', getStatusColor(record.status));
-  }
-
-  function getStatusColor(status) {
-    return {
-      new: '#37e6b2',
-      warning: '#f5a524',
-      error: '#ff4d6d',
-      valid: '#25d889',
-      skipped: '#8d58ff',
-      fixed: '#55dfff'
-    }[status] || '#55dfff';
-  }
-
   function bind() {
     qs('[data-pg-prev]')?.addEventListener('click', prev);
     qs('[data-pg-next]')?.addEventListener('click', next);
+
+    qs('[data-pg-help]')?.addEventListener('click', () => {
+      state.helpOpen = !state.helpOpen;
+      render();
+    });
+
+    qs('[data-pg-help-close]')?.addEventListener('click', () => {
+      state.helpOpen = false;
+      render();
+    });
 
     document.querySelectorAll('.pg-card.is-active').forEach((card) => {
       card.addEventListener('click', (event) => {
@@ -395,11 +348,13 @@
 
   function prev() {
     state.active = (state.active - 1 + records.length) % records.length;
+    state.helpOpen = false;
     render();
   }
 
   function next() {
     state.active = (state.active + 1) % records.length;
+    state.helpOpen = false;
     render();
   }
 
@@ -411,8 +366,10 @@
     };
 
     const xp = xpMap[action] || 5;
+
     state.xp = Math.min(state.xpMax, state.xp + xp);
     state.todayXp += xp;
+    state.helpOpen = false;
 
     showXpPop(xp);
     setTimeout(next, 280);
@@ -447,6 +404,12 @@
       if (event.key === 'Enter') handleAction('confirm');
 
       if (event.key === 'Escape') {
+        if (state.helpOpen) {
+          state.helpOpen = false;
+          render();
+          return;
+        }
+
         qs('.pg-card.is-active')?.classList.remove('is-flipped');
       }
     });
@@ -454,7 +417,11 @@
 
   function init() {
     render();
-    bindHotkeys();
+
+    if (!window.__LAVASH_PENDING_GAME_HOTKEYS_BOUND__) {
+      window.__LAVASH_PENDING_GAME_HOTKEYS_BOUND__ = true;
+      bindHotkeys();
+    }
   }
 
   window.LAVASH_PENDING_GAME = {
