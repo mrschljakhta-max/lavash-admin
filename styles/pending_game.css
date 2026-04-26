@@ -1319,3 +1319,130 @@
 .pg-wheel__center {
   border-radius: 999px 999px 18px 18px !important;
 }
+/* =========================================================
+   PENDING GAME — HORIZONTAL CARDS + SCALE FIX
+========================================================= */
+
+.pg-page {
+  padding-top: 18px !important;
+  grid-template-rows: auto minmax(0, 1fr) auto !important;
+  gap: 12px !important;
+}
+
+/* верхню панель трохи нижче */
+.pg-rankbar {
+  margin-top: 10px !important;
+}
+
+/* прибрати зайве затемнення при перерендері */
+.pg-carousel {
+  animation: none !important;
+  min-height: 330px !important;
+}
+
+/* картки стають горизонтальнішими */
+.pg-card {
+  width: clamp(260px, 22vw, 360px) !important;
+  height: clamp(190px, 25vh, 250px) !important;
+  transform: scale(.82) rotateY(var(--pg-card-rotate, 0deg)) translateY(8px) !important;
+}
+
+.pg-card.is-active {
+  transform: scale(1.06) rotateY(0deg) translateY(0) !important;
+}
+
+/* внутрішня композиція horizontal card */
+.pg-card__face {
+  padding: 16px 18px !important;
+  border-radius: 22px !important;
+}
+
+.pg-card h2 {
+  max-width: 62%;
+  font-size: 19px !important;
+  line-height: 1.12 !important;
+}
+
+.pg-card__date,
+.pg-card__meta {
+  font-size: 11px !important;
+}
+
+.pg-card__meta {
+  gap: 5px !important;
+  margin-top: 10px !important;
+}
+
+.pg-card__chip {
+  left: 18px !important;
+  bottom: 18px !important;
+  transform: none !important;
+  min-height: 28px !important;
+  font-size: 10px !important;
+}
+
+.pg-card small {
+  display: none !important;
+}
+
+/* БПЛА справа, а не по центру */
+.pg-visual {
+  position: absolute;
+  right: 18px;
+  top: 52%;
+  width: 120px;
+  height: 100px;
+  transform: translateY(-50%);
+}
+
+.pg-drone {
+  left: 50% !important;
+  top: 50% !important;
+  width: 120px !important;
+  height: 90px !important;
+}
+
+/* прибрати blur/fade при діях */
+.pg-rankbar,
+.pg-stage,
+.pg-wheel,
+.pg-card,
+.pg-card__face {
+  animation: none !important;
+}
+
+/* анімація відпрацьованої картки */
+.pg-card.is-resolving {
+  animation: pgCardResolve .38s ease forwards !important;
+}
+
+@keyframes pgCardResolve {
+  0% {
+    opacity: 1;
+    transform: scale(1.06) translateY(0);
+    filter: brightness(1.1);
+  }
+  45% {
+    opacity: 1;
+    transform: scale(1.12) translateY(-10px);
+    filter: brightness(1.35);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(.72) translateY(28px);
+    filter: blur(8px);
+  }
+}
+
+/* праві системні кнопки тимчасово ховаємо */
+.right-tools .tool-btn,
+.right-tools__inner .tool-btn,
+.right-tools .right-tool,
+.right-tools__inner .right-tool {
+  display: none !important;
+}
+
+/* але наш right-panel лишаємо */
+.pg-right-panel {
+  display: grid !important;
+}
