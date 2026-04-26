@@ -312,33 +312,6 @@
           </section>
         </main>
 
-        <footer class="pg-dome-dock">
-          <div class="pg-dome" aria-label="Пульт керування записами">
-            <button class="pg-dome-btn pg-dome-btn--ignore" type="button" data-pg-action="ignore">
-              <span>1</span>
-              <strong>Ігнор</strong>
-              <small>відхилити</small>
-            </button>
-
-            <button class="pg-dome-btn pg-dome-btn--confirm" type="button" data-pg-action="confirm">
-              <span>2</span>
-              <strong>ОК</strong>
-              <small>підтвердити</small>
-            </button>
-
-            <button class="pg-dome-btn pg-dome-btn--skip" type="button" data-pg-action="skip">
-              <span>3</span>
-              <strong>Пропуск</strong>
-              <small>далі</small>
-            </button>
-
-            <div class="pg-dome-core">
-              <small>залишилось</small>
-              <strong>${records.length - state.active}</strong>
-              <span>${state.active + 1} / ${records.length}</span>
-            </div>
-          </div>
-        </footer>
 
         <div class="pg-xp-pop" id="pgXpPop">+10 XP</div>
       </section>
