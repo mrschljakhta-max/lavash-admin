@@ -1446,3 +1446,238 @@
 .pg-right-panel {
   display: grid !important;
 }
+/* =========================================================
+   PENDING GAME — FINAL SCALE + TOP BAR POSITION
+========================================================= */
+
+.pg-page {
+  padding: 0 22px 6px !important;
+  gap: 4px !important;
+  grid-template-rows: auto minmax(0, 1fr) auto !important;
+}
+
+/* верхню панель підняти вище */
+.pg-rankbar {
+  margin-top: -18px !important;
+  grid-template-columns: 260px minmax(420px, 1fr) 130px !important;
+  gap: 8px !important;
+  align-items: center !important;
+}
+
+.pg-rankbadge,
+.pg-xp,
+.pg-today {
+  min-height: 48px !important;
+  border-radius: 14px !important;
+}
+
+.pg-rankbadge {
+  padding: 6px 10px !important;
+}
+
+.pg-rankbadge__chevron {
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 10px !important;
+}
+
+.pg-rankbadge__label {
+  font-size: 12px !important;
+}
+
+.pg-rankbadge__sub {
+  font-size: 9px !important;
+}
+
+.pg-xp {
+  padding: 7px 10px !important;
+}
+
+.pg-xp__top {
+  font-size: 10px !important;
+  margin-bottom: 5px !important;
+}
+
+.pg-xp__track {
+  height: 6px !important;
+}
+
+.pg-today span {
+  font-size: 10px !important;
+}
+
+.pg-today strong {
+  font-size: 14px !important;
+}
+
+.pg-stage {
+  min-height: 0 !important;
+  margin-top: -4px !important;
+}
+
+.pg-carousel {
+  min-height: 275px !important;
+}
+
+.pg-card {
+  width: clamp(250px, 20vw, 330px) !important;
+  height: clamp(165px, 22vh, 215px) !important;
+}
+
+.pg-card.is-active {
+  transform: scale(1.03) rotateY(0deg) translateY(0) !important;
+}
+
+/* =========================================================
+   PENDING GAME — NEW SEMICIRCLE CONTROL DOCK
+========================================================= */
+
+.pg-wheel {
+  position: relative !important;
+  width: min(620px, 58vw) !important;
+  height: 118px !important;
+  max-width: none !important;
+  margin: 0 auto !important;
+
+  display: grid !important;
+  grid-template-columns: 1fr 120px 1fr !important;
+  gap: 0 !important;
+  align-items: end !important;
+
+  border-radius: 999px 999px 22px 22px !important;
+  background:
+    radial-gradient(circle at 50% 100%, rgba(85,223,255,.16), transparent 42%),
+    linear-gradient(180deg, rgba(9, 28, 82, .22), rgba(3, 12, 38, .82));
+
+  border: 1px solid rgba(118,150,236,.14);
+  box-shadow:
+    0 -12px 42px rgba(85,223,255,.08),
+    0 22px 60px rgba(0,0,0,.32),
+    inset 0 1px 0 rgba(255,255,255,.05);
+
+  overflow: visible !important;
+  isolation: isolate;
+}
+
+.pg-wheel::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -34px;
+  width: 360px;
+  height: 180px;
+  transform: translateX(-50%);
+  border-radius: 999px 999px 0 0;
+  background:
+    radial-gradient(circle at 50% 100%, rgba(85,223,255,.20), transparent 46%),
+    radial-gradient(circle at 50% 30%, rgba(141,88,255,.16), transparent 62%);
+  filter: blur(10px);
+  opacity: .7;
+  z-index: -1;
+}
+
+.pg-wheel__sector,
+.pg-wheel__skip,
+.pg-wheel__center {
+  position: relative !important;
+  min-height: 82px !important;
+  height: 82px !important;
+  padding: 10px 16px !important;
+
+  border: 1px solid rgba(255,255,255,.12) !important;
+  color: #fff !important;
+  cursor: pointer;
+
+  display: grid !important;
+  place-items: center !important;
+  align-content: center !important;
+  text-align: center !important;
+
+  transition:
+    transform .18s ease,
+    filter .18s ease,
+    box-shadow .18s ease !important;
+}
+
+.pg-wheel__sector:hover,
+.pg-wheel__skip:hover {
+  transform: translateY(-7px) scale(1.02) !important;
+  filter: brightness(1.16) saturate(1.1);
+}
+
+.pg-wheel__sector--ignore {
+  border-radius: 90px 12px 18px 18px !important;
+  background:
+    radial-gradient(circle at 35% 0%, rgba(255,255,255,.20), transparent 42%),
+    linear-gradient(155deg, rgba(255,80,122,.72), rgba(84,8,31,.88)) !important;
+}
+
+.pg-wheel__sector--confirm {
+  border-radius: 12px 90px 18px 18px !important;
+  background:
+    radial-gradient(circle at 68% 0%, rgba(255,255,255,.18), transparent 42%),
+    linear-gradient(25deg, rgba(0,110,78,.9), rgba(33,220,151,.62)) !important;
+}
+
+.pg-wheel__center {
+  height: 96px !important;
+  min-height: 96px !important;
+  align-self: end !important;
+  border-radius: 999px 999px 18px 18px !important;
+  background:
+    radial-gradient(circle at 50% 20%, rgba(85,223,255,.20), transparent 44%),
+    linear-gradient(180deg, rgba(17,55,132,.94), rgba(4,17,58,.98)) !important;
+  border-color: rgba(85,223,255,.26) !important;
+  box-shadow:
+    0 0 24px rgba(85,223,255,.18),
+    inset 0 1px 0 rgba(255,255,255,.08);
+}
+
+.pg-wheel__skip {
+  position: absolute !important;
+  right: -96px !important;
+  bottom: 0 !important;
+  width: 86px !important;
+  border-radius: 30px !important;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255,255,255,.18), transparent 42%),
+    linear-gradient(180deg, rgba(141,88,255,.86), rgba(55,31,139,.96)) !important;
+}
+
+.pg-wheel__sector span,
+.pg-wheel__skip span {
+  width: 28px !important;
+  height: 28px !important;
+  margin: 0 auto 4px !important;
+  border-radius: 999px !important;
+  font-size: 13px !important;
+  font-weight: 900 !important;
+  background: rgba(255,255,255,.10);
+  border: 1px solid rgba(255,255,255,.18);
+}
+
+.pg-wheel__sector strong,
+.pg-wheel__skip strong {
+  font-size: 14px !important;
+  line-height: 1.1 !important;
+}
+
+.pg-wheel__sector small {
+  margin-top: 2px !important;
+  font-size: 9px !important;
+  opacity: .72 !important;
+}
+
+.pg-wheel__center small {
+  font-size: 10px !important;
+  color: #9fb2e6 !important;
+}
+
+.pg-wheel__center strong {
+  font-size: 24px !important;
+  line-height: 1 !important;
+}
+
+.pg-wheel {
+  transform: translateY(-8px) !important;
+}
