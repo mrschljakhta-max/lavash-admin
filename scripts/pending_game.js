@@ -153,6 +153,82 @@
     });
   }
 
+  function renderRightPanel() {
+  const rightTools =
+    document.querySelector('.right-tools__inner') ||
+    document.querySelector('.right-tools');
+
+  if (!rightTools) return;
+
+  const progress = Math.round((state.xp / state.xpMax) * 100);
+
+  const oldPanel = document.getElementById('pendingGameRightPanel');
+  if (oldPanel) oldPanel.remove();
+
+  const panel = document.createElement('div');
+  panel.id = 'pendingGameRightPanel';
+  panel.className = 'pg-right-panel';
+
+  panel.innerHTML = `
+    <section class="pg-right-card">
+      <h3>Ваш прогрес</h3>
+
+      <div class="pg-right-user">
+        <div class="pg-right-avatar">OP</div>
+        <div>
+          <strong>Operator_07</strong>
+          <span>ID: OP-7721</span>
+        </div>
+      </div>
+
+      <div class="pg-right-rank">
+        <span>${getChevron(state.level)}</span>
+        <strong>${state.rank}</strong>
+      </div>
+
+      <div class="pg-right-track">
+        <div style="width:${progress}%"></div>
+      </div>
+
+      <div class="pg-right-stats">
+        <div>
+          <b>+${state.todayXp}</b>
+          <span>XP сьогодні</span>
+        </div>
+        <div>
+          <b>${state.accuracy}%</b>
+          <span>точність</span>
+        </div>
+        <div>
+          <b>${state.streak}</b>
+          <span>streak</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="pg-right-card">
+      <h3>Ранги</h3>
+
+      <div class="pg-right-ranks">
+        ${renderRightRankList()}
+      </div>
+    </section>
+
+    <section class="pg-right-card">
+      <h3>Досягнення</h3>
+
+      <div class="pg-right-achievements">
+        <p>✅ 10 записів без помилки</p>
+        <p>✅ 100 підтверджених записів</p>
+        <p>✅ 5 виправлень підряд</p>
+        <p>✅ Точність понад 90%</p>
+      </div>
+    </section>
+  `;
+
+  rightTools.appendChild(panel);
+}
+  
   function render() {
     const root = getRoot();
     if (!root) return;
