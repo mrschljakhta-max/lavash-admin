@@ -404,14 +404,23 @@
 
     const carousel = qs('[data-pg-carousel-wrap]');
     if (carousel) {
+      let wheelLock = false;
+
       carousel.addEventListener('wheel', (event) => {
         event.preventDefault();
+
+        if (wheelLock || state.isResolving) return;
+        wheelLock = true;
 
         if (event.deltaY > 0 || event.deltaX > 0) {
           next();
         } else {
           prev();
         }
+
+        setTimeout(() => {
+          wheelLock = false;
+        }, 360);
       }, { passive: false });
     }
   }
@@ -428,6 +437,14 @@
     render();
   }
 
+  function getActionLabel(action) {
+    return {
+      ignore: 'ПРОІГНОРОВАНО',
+      confirm: 'ПОГОДЖЕНО',
+      skip: 'ПРОПУСКАЄМО'
+    }[action] || '';
+  }
+
   function handleAction(action) {
     if (state.isResolving) return;
 
@@ -439,13 +456,29 @@
 
     const xp = xpMap[action] || 5;
     const activeCard = qs('.pg-card.is-active');
+    const page = qs('#pendingGamePage');
 
     state.isResolving = true;
     state.xp = Math.min(state.xpMax, state.xp + xp);
     state.todayXp += xp;
 
+    if (page) {
+      page.dataset.actionFlash = action;
+      page.dataset.actionLabel = getActionLabel(action);
+    }
+
     if (activeCard) {
-      activeCard.classList.add(`is-resolving-${action}`);
+      activeCard.classList.remove(
+        'is-key-ignore',
+        'is-key-confirm',
+        'is-key-skip',
+        'is-resolving-ignore',
+        'is-resolving-confirm',
+        'is-resolving-skip'
+      );
+
+      void activeCard.offsetWidth;
+      activeCard.classList.add(`is-key-${action}`);
     }
 
     showXpPop(xp);
@@ -453,8 +486,14 @@
     setTimeout(() => {
       state.active = (state.active + 1) % records.length;
       state.isResolving = false;
+
+      if (page) {
+        page.dataset.actionFlash = '';
+        page.dataset.actionLabel = '';
+      }
+
       render();
-    }, 460);
+    }, 620);
   }
 
   function showXpPop(xp) {
