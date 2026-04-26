@@ -1798,3 +1798,24 @@
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   }
 }
+/* =========================================================
+   PENDING GAME — DRAG INTERACTION
+========================================================= */
+
+.pg-card.is-active {
+  cursor: grab !important;
+  touch-action: none !important;
+}
+
+.pg-card.is-active.is-dragging {
+  cursor: grabbing !important;
+  transition: none !important;
+  z-index: 20 !important;
+}
+
+.pg-card.is-active.is-dragging .pg-card__face {
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.06) inset,
+    0 0 46px rgba(85,223,255,.28),
+    0 42px 110px rgba(0,0,0,.52) !important;
+}
