@@ -443,20 +443,28 @@
   }
 
   function handleAction(action) {
-    const xpMap = {
-      ignore: 8,
-      confirm: 10,
-      skip: 5
-    };
+  const xpMap = {
+    ignore: 8,
+    confirm: 10,
+    skip: 5
+  };
 
-    const xp = xpMap[action] || 5;
+  const xp = xpMap[action] || 5;
+  const activeCard = qs('.pg-card.is-active');
 
-    state.xp = Math.min(state.xpMax, state.xp + xp);
-    state.todayXp += xp;
+  state.xp = Math.min(state.xpMax, state.xp + xp);
+  state.todayXp += xp;
 
-    showXpPop(xp);
-    setTimeout(next, 280);
+  if (activeCard) {
+    activeCard.classList.add('is-resolving');
   }
+
+  showXpPop(xp);
+
+  setTimeout(() => {
+    next();
+  }, 360);
+}
 
   function showXpPop(xp) {
     const pop = qs('#pgXpPop');
