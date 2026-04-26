@@ -163,10 +163,10 @@
       <section class="pg-right-card">
         <h3>Гарячі клавіші</h3>
         <div class="pg-right-hotkeys">
-          <span>← →</span><p>перемикання</p>
-          <span>1</span><p>ігнорувати</p>
-          <span>2</span><p>підтвердити</p>
-          <span>3</span><p>пропустити</p>
+          <span>← →</span><p>перемотка карток</p>
+          <span>Ctrl+A</span><p>ігнор</p>
+          <span>Ctrl+S</span><p>пропуск</p>
+          <span>Ctrl+D</span><p>підтвердити</p>
           <span>Space</span><p>flip / edit</p>
           <span>Esc</span><p>скасувати</p>
         </div>
@@ -471,19 +471,44 @@
     document.addEventListener('keydown', (event) => {
       if (!qs('#pendingGamePage')) return;
 
-      if (event.key === 'ArrowLeft') prev();
-      if (event.key === 'ArrowRight') next();
+      const activeInput = event.target?.closest?.('input, textarea');
+      const key = event.key.toLowerCase();
 
-      if (event.key === '1') handleAction('ignore');
-      if (event.key === '2') handleAction('confirm');
-      if (event.key === '3') handleAction('skip');
-
-      if (event.code === 'Space') {
+      if (event.key === 'ArrowLeft') {
         event.preventDefault();
-        qs('.pg-card.is-active')?.classList.toggle('is-flipped');
+        prev();
+        return;
       }
 
-      if (event.key === 'Enter') handleAction('confirm');
+      if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        next();
+        return;
+      }
+
+      if (event.ctrlKey && key === 'a') {
+        event.preventDefault();
+        handleAction('ignore');
+        return;
+      }
+
+      if (event.ctrlKey && key === 's') {
+        event.preventDefault();
+        handleAction('skip');
+        return;
+      }
+
+      if (event.ctrlKey && key === 'd') {
+        event.preventDefault();
+        handleAction('confirm');
+        return;
+      }
+
+      if (event.code === 'Space' && !activeInput) {
+        event.preventDefault();
+        qs('.pg-card.is-active')?.classList.toggle('is-flipped');
+        return;
+      }
 
       if (event.key === 'Escape') {
         qs('.pg-card.is-active')?.classList.remove('is-flipped');
