@@ -317,29 +317,32 @@
           </section>
         </main>
 
-        <footer class="pg-wheel">
-          <button class="pg-wheel__sector pg-wheel__sector--ignore" type="button" data-pg-action="ignore">
-            <span>1</span>
-            <strong>Ігнорувати</strong>
-            <small>Відхилити запис</small>
-          </button>
+       <footer class="pg-control-dock">
+  <div class="pg-control">
+    <button class="ctrl ctrl-ignore" type="button" data-pg-action="ignore">
+      <span>1</span>
+      <strong>Ігнор</strong>
+      <small>відхилити</small>
+    </button>
 
-          <div class="pg-wheel__center">
-            <small>Поточний запис</small>
-            <strong>${state.active + 1} / ${records.length}</strong>
-          </div>
+    <button class="ctrl ctrl-confirm" type="button" data-pg-action="confirm">
+      <span>2</span>
+      <strong>ОК</strong>
+      <small>підтвердити</small>
+    </button>
 
-          <button class="pg-wheel__sector pg-wheel__sector--confirm" type="button" data-pg-action="confirm">
-            <span>2</span>
-            <strong>Підтвердити</strong>
-            <small>Дані вірні</small>
-          </button>
+    <div class="ctrl ctrl-center">
+      <small>Запис</small>
+      <strong>${state.active + 1} / ${records.length}</strong>
+    </div>
 
-          <button class="pg-wheel__skip" type="button" data-pg-action="skip">
-            <span>3</span>
-            <strong>Пропустити</strong>
-          </button>
-        </footer>
+    <button class="ctrl ctrl-skip" type="button" data-pg-action="skip">
+      <span>3</span>
+      <strong>Пропуск</strong>
+      <small>далі</small>
+    </button>
+  </div>
+</footer>
 
         <div class="pg-xp-pop" id="pgXpPop">+10 XP</div>
       </section>
