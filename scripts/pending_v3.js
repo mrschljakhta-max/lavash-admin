@@ -63,59 +63,37 @@
   }
 
   function bindPendingEvents() {
-    const { refreshBtn } = getPendingElements();
+  const { refreshBtn } = getPendingElements();
 
-    if (refreshBtn) {
-      refreshBtn.addEventListener('click', () => {
-        loadPendingRows().catch((error) => {
-          console.error('pending refresh error:', error);
-        });
+  if (refreshBtn) {
+    refreshBtn.addEventListener('click', () => {
+      loadPendingRows().catch((error) => {
+        console.error('pending refresh error:', error);
       });
-    }
+    });
   }
+}
 
-  async function initPendingPage() {
-    if (!isPendingPage()) return;
+async function initPendingPage() {
+  if (!isPendingPage()) return;
 
-    const els = getPendingElements();
-    if (!els.pageRoot && !els.searchInput && !els.statusFilter && !els.typeFilter) {
-      return;
-    }
+  bindPendingEvents();
 
-    bindPendingEvents();
+  try {
     await loadPendingRows();
+  } catch (error) {
+    console.warn('pending load warning:', error);
   }
 
-  window.LAVASH_PENDING = {
-    initPendingPage,
-    loadPendingRows
-  };
-})();(() => {
-  function getPendingElements() {
-    return {
-      searchInput:
-        document.getElementById('searchInput') ||
-        document.getElementById('pendingSearchInput'),
+  renderPendingScene();
+}
 
-      statusFilter:
-        document.getElementById('statusFilter') ||
-        document.getElementById('pendingStatusFilter'),
-
-      typeFilter:
-        document.getElementById('typeFilter') ||
-        document.getElementById('pendingTypeFilter'),
-
-      refreshBtn:
-        document.getElementById('refreshBtn') ||
-        document.getElementById('pendingRefreshBtn'),
-
-      pageRoot:
-        document.getElementById('pendingPage') ||
-        document.querySelector('[data-page="pending"]') ||
-        document.querySelector('.pending-page')
-    };
-  }
-
+window.LAVASH_PENDING = {
+  initPendingPage,
+  loadPendingRows,
+  renderPendingScene
+};
+})();
   function isPendingPage() {
     const hash = window.location.hash.replace('#', '').trim();
     return hash === '' || hash === 'pending';
