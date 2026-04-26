@@ -1936,3 +1936,50 @@
   transition: none !important;
   z-index: 50 !important;
 }
+
+
+/* =========================================================
+   LAVASH PENDING — FINAL HOTKEY HUD OVERRIDE
+   ←/→ перемотка, Ctrl+A/S/D дії
+========================================================= */
+
+.pg-carousel-wrap::after {
+  content: "← → перемотка   |   Ctrl+A ігнор   Ctrl+S пропуск   Ctrl+D підтвердити" !important;
+  position: absolute !important;
+  left: 50% !important;
+  bottom: 18px !important;
+  transform: translateX(-50%) !important;
+
+  height: 40px !important;
+  min-height: 40px !important;
+  padding: 0 24px !important;
+  border-radius: 999px !important;
+
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  white-space: nowrap !important;
+
+  color: rgba(220, 230, 255, .76) !important;
+  font-size: 12px !important;
+  font-weight: 850 !important;
+  letter-spacing: .055em !important;
+
+  background:
+    radial-gradient(circle at 50% 0%, rgba(85,223,255,.18), transparent 52%),
+    rgba(7, 22, 64, .66) !important;
+
+  border: 1px solid rgba(85,223,255,.20) !important;
+
+  box-shadow:
+    0 12px 30px rgba(0,0,0,.25),
+    inset 0 1px 0 rgba(255,255,255,.06) !important;
+
+  backdrop-filter: blur(10px) !important;
+  pointer-events: none !important;
+  text-shadow: 0 0 14px rgba(85,223,255,.20) !important;
+}
+
+.pg-carousel-wrap:has(.pg-card.is-flipped)::after {
+  opacity: .16 !important;
+}
