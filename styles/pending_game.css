@@ -985,3 +985,217 @@
 .pg-side {
   display: none !important;
 }
+/* =========================================================
+   PENDING GAME — SCALE FIX
+   Стискає сцену, щоб усе влізало в екран
+========================================================= */
+
+.pg-page {
+  padding: 0 22px 6px !important;
+  gap: 8px !important;
+  grid-template-rows: auto auto minmax(0, 1fr) auto !important;
+}
+
+/* верхня панель нижча */
+.pg-rankbar {
+  grid-template-columns: 250px minmax(260px, 1fr) 120px 160px !important;
+  gap: 9px !important;
+}
+
+.pg-rankbadge,
+.pg-xp,
+.pg-today,
+.pg-top-btn {
+  min-height: 58px !important;
+  border-radius: 15px !important;
+}
+
+.pg-rankbadge {
+  padding: 8px 12px !important;
+}
+
+.pg-rankbadge__chevron {
+  width: 42px !important;
+  height: 42px !important;
+  border-radius: 12px !important;
+  font-size: 14px !important;
+}
+
+.pg-rankbadge__label {
+  font-size: 13px !important;
+}
+
+.pg-rankbadge__sub {
+  font-size: 10px !important;
+}
+
+.pg-xp {
+  padding: 9px 12px !important;
+}
+
+.pg-xp__top {
+  font-size: 11px !important;
+  margin-bottom: 7px !important;
+}
+
+.pg-today strong {
+  font-size: 15px !important;
+}
+
+.pg-top-btn {
+  font-size: 13px !important;
+}
+
+/* progress line */
+.pg-progressline {
+  grid-template-columns: 170px 1fr 110px !important;
+  font-size: 11px !important;
+  gap: 9px !important;
+}
+
+/* головна зона */
+.pg-stage {
+  min-height: 0 !important;
+}
+
+.pg-carousel {
+  min-height: 300px !important;
+  gap: clamp(12px, 1.4vw, 24px) !important;
+}
+
+/* картки */
+.pg-card {
+  width: clamp(170px, 15vw, 230px) !important;
+  height: clamp(250px, 34vh, 330px) !important;
+}
+
+.pg-card.is-active {
+  transform: scale(1.02) rotateY(0deg) translateY(0) !important;
+}
+
+.pg-card__face {
+  border-radius: 20px !important;
+  padding: 16px !important;
+}
+
+.pg-card h2 {
+  font-size: 19px !important;
+  line-height: 1.15 !important;
+}
+
+.pg-card__date,
+.pg-card__meta {
+  font-size: 12px !important;
+}
+
+.pg-card__chip {
+  bottom: 42px !important;
+  min-height: 28px !important;
+  font-size: 11px !important;
+}
+
+.pg-card small {
+  bottom: 14px !important;
+  font-size: 10px !important;
+}
+
+/* візуал БПЛА */
+.pg-drone {
+  width: 112px !important;
+  height: 82px !important;
+  top: 56% !important;
+}
+
+.pg-drone__body {
+  width: 82px !important;
+  height: 22px !important;
+}
+
+.pg-drone__wing {
+  width: 72px !important;
+  height: 34px !important;
+}
+
+/* нижній пульт */
+.pg-wheel {
+  height: 112px !important;
+  max-width: 720px !important;
+  grid-template-columns: 1fr 145px 1fr 92px !important;
+  gap: 6px !important;
+}
+
+.pg-wheel__sector,
+.pg-wheel__skip {
+  min-height: 82px !important;
+  padding: 12px !important;
+}
+
+.pg-wheel__center {
+  height: 98px !important;
+}
+
+.pg-wheel__center strong {
+  font-size: 26px !important;
+}
+
+.pg-wheel__sector span,
+.pg-wheel__skip span {
+  width: 34px !important;
+  height: 34px !important;
+  margin-bottom: 5px !important;
+  font-size: 15px !important;
+}
+
+.pg-wheel__sector strong,
+.pg-wheel__skip strong {
+  font-size: 15px !important;
+}
+
+.pg-wheel__sector small {
+  font-size: 10px !important;
+}
+
+/* кнопки навігації */
+.pg-nav-btn {
+  width: 38px !important;
+  height: 38px !important;
+  font-size: 25px !important;
+}
+
+/* кнопка гарячих клавіш */
+.pg-help-btn {
+  width: 40px !important;
+  height: 40px !important;
+  left: 20px !important;
+  bottom: 128px !important;
+}
+
+.pg-help-popover {
+  left: 20px !important;
+  bottom: 174px !important;
+}
+
+/* якщо висота екрана мала */
+@media (max-height: 820px) {
+  .pg-card {
+    width: clamp(160px, 13.5vw, 210px) !important;
+    height: clamp(230px, 31vh, 300px) !important;
+  }
+
+  .pg-carousel {
+    min-height: 270px !important;
+  }
+
+  .pg-wheel {
+    height: 96px !important;
+  }
+
+  .pg-wheel__sector,
+  .pg-wheel__skip {
+    min-height: 72px !important;
+  }
+
+  .pg-wheel__center {
+    height: 86px !important;
+  }
+}
