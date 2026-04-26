@@ -82,7 +82,7 @@
 }
 
 .pg-carousel {
-  animation: pgFadeIn .55s ease-out both;
+  animation: none !important;
 }
 
 .pg-nav-btn,
