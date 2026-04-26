@@ -416,10 +416,70 @@
     `;
   }
 
+  function bindCardDrag(card) {
+  let startX = 0;
+  let startY = 0;
+  let currentX = 0;
+  let currentY = 0;
+  let isDragging = false;
+
+  card.addEventListener('pointerdown', (event) => {
+    if (event.target.closest('input, textarea, button')) return;
+    if (card.classList.contains('is-flipped')) return;
+
+    isDragging = true;
+    startX = event.clientX;
+    startY = event.clientY;
+
+    card.setPointerCapture(event.pointerId);
+    card.classList.add('is-dragging');
+  });
+
+  card.addEventListener('pointermove', (event) => {
+    if (!isDragging) return;
+
+    currentX = event.clientX - startX;
+    currentY = event.clientY - startY;
+
+    const rotate = currentX / 28;
+    card.style.transform = `perspective(1200px) translate(${currentX}px, ${currentY}px) rotate(${rotate}deg) scale(1)`;
+  });
+
+  card.addEventListener('pointerup', (event) => {
+    if (!isDragging) return;
+
+    isDragging = false;
+    card.releasePointerCapture(event.pointerId);
+    card.classList.remove('is-dragging');
+
+    if (currentX > 160) {
+      handleAction('confirm');
+      return;
+    }
+
+    if (currentX < -160) {
+      handleAction('ignore');
+      return;
+    }
+
+    if (currentY > 140) {
+      handleAction('skip');
+      return;
+    }
+
+    card.style.transform = '';
+    currentX = 0;
+    currentY = 0;
+  });
+}
+  
   function bind() {
     document.querySelectorAll('.pg-card.is-active').forEach((card) => {
+      bindCardDrag(card);
+    
       card.addEventListener('click', (event) => {
         if (event.target.closest('input, textarea, button')) return;
+        if (card.classList.contains('is-dragging')) return;
         card.classList.toggle('is-flipped');
       });
     });
