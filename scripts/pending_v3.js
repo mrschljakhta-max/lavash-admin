@@ -176,6 +176,8 @@
 
     bindPendingEvents();
     await loadPendingRows();
+
+    renderPendingScene(); // 🔥 ОЦЕ ДОДАЄШ
   }
 
   window.LAVASH_PENDING = {
