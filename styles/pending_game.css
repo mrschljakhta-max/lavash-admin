@@ -1775,8 +1775,13 @@
 
 /* горизонтальні картки */
 .pg-card {
-  width: clamp(250px, 20vw, 340px) !important;
-  height: clamp(150px, 18vh, 200px) !important;
+  width: clamp(420px, 46vw, 720px);
+  height: clamp(240px, 32vh, 380px);
+
+  border-radius: 22px;
+  padding: 18px 20px;
+
+  transition: transform .35s ease, box-shadow .35s ease;
 }
 
 .pg-card.is-active {
