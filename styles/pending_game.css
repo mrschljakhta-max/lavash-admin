@@ -1423,3 +1423,33 @@
     font-size: clamp(36px, 4vw, 62px) !important;
   }
 }
+/* FORCE WIDE ACTIVE CARD */
+
+.pg-card.is-active {
+  width: min(980px, 62vw) !important;
+  height: min(460px, 48vh) !important;
+  aspect-ratio: 2.35 / 1 !important;
+}
+
+.pg-card.is-active .pg-card__content {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.25fr) minmax(260px, .75fr) !important;
+  align-items: center !important;
+}
+
+.pg-card.is-active h2 {
+  font-size: clamp(38px, 3.8vw, 68px) !important;
+  max-width: 100% !important;
+  white-space: normal !important;
+}
+
+.pg-card.is-active .pg-visual {
+  display: grid !important;
+  place-items: center !important;
+  opacity: 1 !important;
+}
+
+.pg-card:not(.is-active) {
+  width: min(520px, 28vw) !important;
+  height: min(260px, 30vh) !important;
+}
