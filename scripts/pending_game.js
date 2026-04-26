@@ -507,63 +507,61 @@
   }
 
   function bindHotkeys() {
-    document.addEventListener('keydown', (event) => {
-      if (!qs('#pendingGamePage')) return;
+  document.addEventListener('keydown', (event) => {
+    if (!qs('#pendingGamePage')) return;
 
-      const activeTag = document.activeElement?.tagName?.toLowerCase();
-      const isTyping = activeTag === 'input' || activeTag === 'textarea';
-      const key = event.key.toLowerCase();
+    const isTyping = event.target?.closest?.('input, textarea');
 
-      if (isTyping) {
-        if (event.key === 'Escape') {
-          event.preventDefault();
-          qs('.pg-card.is-active')?.classList.remove('is-flipped');
-        }
-        return;
-      }
-
-      if (event.key === 'ArrowLeft') {
-        event.preventDefault();
-        prev();
-        return;
-      }
-
-      if (event.key === 'ArrowRight') {
-        event.preventDefault();
-        next();
-        return;
-      }
-
-      if (event.shiftKey && key === 'a') {
-        event.preventDefault();
-        handleAction('ignore');
-        return;
-      }
-
-      if (event.shiftKey && key === 's') {
-        event.preventDefault();
-        handleAction('skip');
-        return;
-      }
-
-      if (event.shiftKey && key === 'd') {
-        event.preventDefault();
-        handleAction('confirm');
-        return;
-      }
-
-      if (event.code === 'Space') {
-        event.preventDefault();
-        qs('.pg-card.is-active')?.classList.toggle('is-flipped');
-        return;
-      }
-
+    if (isTyping) {
       if (event.key === 'Escape') {
         event.preventDefault();
         qs('.pg-card.is-active')?.classList.remove('is-flipped');
       }
-    });
-  }
+      return;
+    }
+
+    if (event.code === 'ArrowLeft') {
+      event.preventDefault();
+      prev();
+      return;
+    }
+
+    if (event.code === 'ArrowRight') {
+      event.preventDefault();
+      next();
+      return;
+    }
+
+    if (event.shiftKey && event.code === 'KeyA') {
+      event.preventDefault();
+      handleAction('ignore');
+      return;
+    }
+
+    if (event.shiftKey && event.code === 'KeyS') {
+      event.preventDefault();
+      handleAction('skip');
+      return;
+    }
+
+    if (event.shiftKey && event.code === 'KeyD') {
+      event.preventDefault();
+      handleAction('confirm');
+      return;
+    }
+
+    if (event.code === 'Space') {
+      event.preventDefault();
+      qs('.pg-card.is-active')?.classList.toggle('is-flipped');
+      return;
+    }
+
+    if (event.code === 'Escape') {
+      event.preventDefault();
+      qs('.pg-card.is-active')?.classList.remove('is-flipped');
+    }
+  });
+}
 
   function init() {
     render();
