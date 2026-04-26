@@ -3348,3 +3348,65 @@ select {
   transform: translateY(-2px) scale(1.01);
   box-shadow: 0 10px 20px rgba(0,0,0,0.25);
 }
+/* =========================
+   UPLOAD WIDE FINAL FIX
+   прибирає другий заголовок і розтягує картки
+========================= */
+
+.upload-page--wide {
+  height: calc(100vh - 128px);
+  display: grid;
+  grid-template-rows: 1fr;
+  gap: 0;
+  padding: 0;
+}
+
+.upload-page--wide .upload-topbar,
+.upload-page--wide .upload-page__title {
+  display: none !important;
+}
+
+.upload-grid--wide,
+.upload-page--wide .upload-grid {
+  height: 100%;
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 18px;
+  align-items: stretch;
+}
+
+.upload-page--wide .upload-card {
+  height: 100%;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: auto minmax(260px, 1fr) auto;
+}
+
+.upload-page--wide .drop-zone--compact {
+  min-height: 260px;
+  height: 100%;
+}
+
+.upload-page--wide .upload-list-wrap {
+  min-height: 0;
+}
+
+.upload-page--wide .upload-list--compact {
+  max-height: 150px;
+}
+
+@media (max-width: 1280px) {
+  .upload-page--wide {
+    height: auto;
+  }
+
+  .upload-grid--wide,
+  .upload-page--wide .upload-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .upload-page--wide .upload-card {
+    min-height: 520px;
+  }
+}
