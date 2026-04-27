@@ -2510,3 +2510,32 @@
     0 0 24px rgba(245,165,36,.18),
     0 12px 34px rgba(0,0,0,.28);
 }
+/* CLEAN CARD — прибираємо все зайве з лицьової сторони */
+
+.pg-card__front .pg-card__status,
+.pg-card__front .pg-data__type,
+.pg-card__front .pg-data__hint,
+.pg-card__front .pg-context,
+.pg-card__front .pg-confidence,
+.pg-card__front .pg-card__chip,
+.pg-card__front .pg-visual-label,
+.pg-card__front .pg-card__star {
+  display: none !important;
+}
+
+/* робимо головне значення чистим і виразним */
+.pg-card__front .pg-data__value {
+  margin-top: 0 !important;
+  max-width: 520px !important;
+}
+
+/* вирівнюємо лівий блок після видалення зайвого */
+.pg-card__front .pg-data {
+  justify-content: center !important;
+  gap: 18px !important;
+}
+
+/* щоб картка не виглядала порожньою */
+.pg-card__front .pg-card__content--new {
+  align-items: center !important;
+}
