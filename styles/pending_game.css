@@ -3091,3 +3091,106 @@
     height: 112px !important;
   }
 }
+/* FIX: повертаємо HUD рангу і XP-кільце */
+
+.pg-side-rank {
+  position: fixed !important;
+  left: 360px !important;
+  top: 300px !important;
+  z-index: 50 !important;
+
+  width: 220px !important;
+  height: 86px !important;
+  border-radius: 20px !important;
+
+  display: grid !important;
+  place-content: center !important;
+
+  background:
+    radial-gradient(circle at 50% 0%, rgba(85,223,255,.14), transparent 55%),
+    rgba(8, 24, 70, .82) !important;
+
+  border: 1px solid rgba(85,223,255,.18) !important;
+  box-shadow:
+    0 0 28px rgba(85,223,255,.12),
+    inset 0 1px 0 rgba(255,255,255,.08) !important;
+
+  backdrop-filter: blur(14px) !important;
+}
+
+.pg-side-rank small {
+  color: rgba(220,230,255,.55) !important;
+  font-size: 12px !important;
+  font-weight: 900 !important;
+  text-transform: uppercase !important;
+  text-align: right !important;
+}
+
+.pg-side-rank strong {
+  color: #fff1a8 !important;
+  font-size: 20px !important;
+  font-weight: 1000 !important;
+  text-shadow: 0 0 18px rgba(255,220,90,.25) !important;
+}
+
+.pg-side-rank span {
+  color: rgba(230,240,255,.72) !important;
+  font-size: 12px !important;
+  font-weight: 850 !important;
+  text-align: right !important;
+}
+
+.pg-xp-ring {
+  position: fixed !important;
+  right: 320px !important;
+  top: 275px !important;
+  z-index: 55 !important;
+
+  width: 128px !important;
+  height: 128px !important;
+  border-radius: 50% !important;
+
+  display: grid !important;
+  place-items: center !important;
+
+  background:
+    radial-gradient(circle at center, rgba(12,24,62,.98) 0 54%, transparent 55%),
+    conic-gradient(
+      var(--pg-card-accent, #55dfff) 0deg,
+      var(--pg-card-accent, #55dfff) 305deg,
+      rgba(255,255,255,.12) 305deg 360deg
+    ) !important;
+
+  box-shadow:
+    0 0 34px color-mix(in srgb, var(--pg-card-accent, #55dfff), transparent 55%),
+    inset 0 0 26px rgba(0,0,0,.32) !important;
+}
+
+.pg-xp-ring::before {
+  content: "";
+  position: absolute;
+  inset: 13px;
+  border-radius: inherit;
+  background:
+    radial-gradient(circle at 45% 35%, rgba(85,223,255,.24), transparent 48%),
+    linear-gradient(180deg, rgba(12,31,82,.96), rgba(3,10,30,.98));
+  box-shadow: inset 0 0 30px rgba(0,0,0,.45);
+}
+
+.pg-xp-ring strong {
+  position: relative;
+  z-index: 2;
+  color: #fff !important;
+  font-size: 34px !important;
+  font-weight: 1000 !important;
+  line-height: .9 !important;
+}
+
+.pg-xp-ring span {
+  position: relative;
+  z-index: 2;
+  color: var(--pg-card-accent, #55dfff) !important;
+  font-size: 11px !important;
+  font-weight: 1000 !important;
+  text-transform: uppercase !important;
+}
