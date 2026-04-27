@@ -2590,3 +2590,53 @@
 .pg-card__front small {
   display: none !important;
 }
+.pg-data__icon,
+.pg-unknown-badge__icon {
+  width: 22px;
+  height: 22px;
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 auto;
+}
+
+.pg-data__icon img,
+.pg-unknown-badge__icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter:
+    brightness(0)
+    saturate(100%)
+    invert(79%)
+    sepia(64%)
+    saturate(1423%)
+    hue-rotate(142deg)
+    brightness(103%)
+    contrast(103%)
+    drop-shadow(0 0 8px var(--pg-card-accent));
+}
+
+/* якщо SVG вже кольорові — можна замість складного filter лишити це */
+.pg-card[data-unknown-type="uav"] {
+  --pg-card-accent: #38dfff;
+}
+
+.pg-card[data-unknown-type="settlement"] {
+  --pg-card-accent: #f5b84b;
+}
+
+.pg-card[data-unknown-type="unit"] {
+  --pg-card-accent: #ff5f7e;
+}
+
+.pg-card[data-unknown-type="station"] {
+  --pg-card-accent: #37e6b2;
+}
+
+.pg-card[data-unknown-type="object"] {
+  --pg-card-accent: #9b7cff;
+}
+
+.pg-card[data-unknown-type="record"] {
+  --pg-card-accent: #d8dfff;
+}
