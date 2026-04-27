@@ -325,48 +325,6 @@
     return document.querySelector(selector);
   }
 
-
-  function injectPendingGameLayoutCss() {
-    if (document.getElementById('pendingGameNavbarRankbarCss')) return;
-
-    const style = document.createElement('style');
-    style.id = 'pendingGameNavbarRankbarCss';
-    style.textContent = `
-      #pendingGamePage .pg-rankbar {
-        display: none !important;
-      }
-
-      #pendingGamePage {
-        padding-top: 0 !important;
-      }
-
-      #pendingGamePage .pg-stage {
-        min-height: calc(100vh - 190px) !important;
-        display: grid !important;
-        place-items: center !important;
-        padding-top: 0 !important;
-      }
-
-      #pendingGamePage .pg-carousel-wrap {
-        margin-top: 0 !important;
-      }
-
-      .pg-right-card--rankbar {
-        border-color: rgba(85, 223, 255, .24) !important;
-      }
-
-      .pg-right-card--rankbar .pg-right-note {
-        margin-top: 10px !important;
-        color: rgba(230, 240, 255, .66) !important;
-        font-size: 12px !important;
-        font-weight: 800 !important;
-        line-height: 1.35 !important;
-      }
-    `;
-
-    document.head.appendChild(style);
-  }
-
   function getRoot() {
     return qs('.workspace-body') || qs('.workspace-body--page') || qs('#app');
   }
@@ -457,9 +415,34 @@
     panel.id = 'pendingGameRightPanel';
     panel.className = 'pg-right-panel';
 
+    rightTools.classList.add('has-pending-game-panel');
+
     panel.innerHTML = `
       <section class="pg-right-card pg-right-card--rankbar">
-        <h3>Ранг оператора</h3>
+        <h3>Ранг</h3>
+
+        <div class="pg-right-rank">
+          <span>${getChevron(state.level)}</span>
+          <strong>${state.rank}</strong>
+        </div>
+
+        <div class="pg-right-track">
+          <div style="width:${progress}%"></div>
+        </div>
+
+        <p class="pg-right-note">
+          XP ${state.xp} / ${state.xpMax} · до наступного: ${state.xpMax - state.xp} XP
+        </p>
+
+        <div class="pg-right-stats">
+          <div><b>+${state.todayXp}</b><span>сьогодні</span></div>
+          <div><b>${state.accuracy}%</b><span>точність</span></div>
+          <div><b>${state.streak}</b><span>streak</span></div>
+        </div>
+      </section>
+
+      <section class="pg-right-card">
+        <h3>Ваш прогрес</h3>
 
         <div class="pg-right-user">
           <div class="pg-right-avatar">OP</div>
@@ -478,12 +461,8 @@
           <div style="width:${progress}%"></div>
         </div>
 
-        <p class="pg-right-note">
-          XP ${state.xp} / ${state.xpMax} · до наступного: ${state.xpMax - state.xp}
-        </p>
-
         <div class="pg-right-stats">
-          <div><b>+${state.todayXp}</b><span>сьогодні</span></div>
+          <div><b>+${state.todayXp}</b><span>XP сьогодні</span></div>
           <div><b>${state.accuracy}%</b><span>точність</span></div>
           <div><b>${state.streak}</b><span>streak</span></div>
         </div>
@@ -545,8 +524,6 @@
       <section class="pg-page pg-page--clean" id="pendingGamePage">
         <div class="pg-bg-orb pg-bg-orb--left"></div>
         <div class="pg-bg-orb pg-bg-orb--right"></div>
-
-        <!-- rankbar moved to right navbar -->
 
         <main class="pg-stage">
           <section class="pg-carousel-wrap" data-pg-carousel-wrap>
@@ -1262,8 +1239,39 @@
   });
 }
 
+
+  function injectPendingGameCss() {
+    if (document.getElementById('pendingGameRuntimeCss')) return;
+
+    const style = document.createElement('style');
+    style.id = 'pendingGameRuntimeCss';
+    style.textContent = `
+      #pendingGamePage .pg-rankbar { display: none !important; }
+      #pendingGamePage { padding-top: 0 !important; }
+      #pendingGamePage .pg-stage {
+        min-height: calc(100vh - 190px) !important;
+        display: grid !important;
+        place-items: center !important;
+      }
+      .right-tools.has-pending-game-panel,
+      .right-tools__inner.has-pending-game-panel {
+        overflow-y: auto !important;
+      }
+      .pg-right-card--rankbar {
+        border-color: rgba(85, 223, 255, .24) !important;
+      }
+      .pg-right-card--rankbar .pg-right-note {
+        margin-top: 10px;
+        color: rgba(230, 240, 255, .66);
+        font-size: 12px;
+        font-weight: 800;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
   function init() {
-    injectPendingGameLayoutCss();
+    injectPendingGameCss();
     render();
 
     if (!window.__LAVASH_PENDING_GAME_HOTKEYS_BOUND__) {
