@@ -3506,3 +3506,135 @@
     transform: translate(calc(-50% + 500px), -50%) scale(.52) rotateY(-20deg) translateZ(-280px) !important;
   }
 }
+
+/* =========================================================
+   LAVASH PENDING — FINAL POSITION TUNING
+   Зауваження: підняти сцену, рознести HUD від картки,
+   залишити портретну центральну картку і hotkeys нижче.
+========================================================= */
+
+#pendingGamePage.pg-page,
+#pendingGamePage.pg-page--game {
+  --pg-card-w: clamp(410px, 29vw, 520px) !important;
+  --pg-card-h: clamp(590px, 72vh, 740px) !important;
+  --pg-card-half-w: calc(var(--pg-card-w) / 2) !important;
+  --pg-card-half-h: calc(var(--pg-card-h) / 2) !important;
+
+  /* було нижче; піднімаємо всю сцену */
+  --pg-card-center-y: 50% !important;
+
+  /* відстань HUD від картки */
+  --pg-hud-gap: clamp(72px, 5.4vw, 118px) !important;
+
+  overflow: hidden !important;
+}
+
+/* Центр сцени — активна картка завжди в центрі */
+#pendingGamePage .pg-card {
+  top: var(--pg-card-center-y) !important;
+}
+
+#pendingGamePage .pg-card.is-active {
+  width: var(--pg-card-w) !important;
+  height: var(--pg-card-h) !important;
+  top: var(--pg-card-center-y) !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) scale(1) rotateY(0deg) translateZ(0) !important;
+}
+
+/* Бокові картки — лишаються позаду активної */
+#pendingGamePage .pg-card[data-slot='-1'] {
+  top: var(--pg-card-center-y) !important;
+  transform: translate(calc(-50% - 350px), -50%) scale(.70) rotateY(13deg) translateZ(-140px) !important;
+  opacity: .28 !important;
+}
+
+#pendingGamePage .pg-card[data-slot='1'] {
+  top: var(--pg-card-center-y) !important;
+  transform: translate(calc(-50% + 350px), -50%) scale(.70) rotateY(-13deg) translateZ(-140px) !important;
+  opacity: .28 !important;
+}
+
+#pendingGamePage .pg-card[data-slot='-2'] {
+  top: var(--pg-card-center-y) !important;
+  transform: translate(calc(-50% - 610px), -50%) scale(.50) rotateY(20deg) translateZ(-280px) !important;
+  opacity: .12 !important;
+}
+
+#pendingGamePage .pg-card[data-slot='2'] {
+  top: var(--pg-card-center-y) !important;
+  transform: translate(calc(-50% + 610px), -50%) scale(.50) rotateY(-20deg) translateZ(-280px) !important;
+  opacity: .12 !important;
+}
+
+/* Ранг — ліворуч від картки, більше повітря */
+#pendingGamePage .pg-hud-rank-card {
+  left: calc(50% - var(--pg-card-half-w) - var(--pg-hud-gap)) !important;
+  top: calc(var(--pg-card-center-y) - var(--pg-card-half-h) + 38px) !important;
+  transform: translateX(-100%) !important;
+  width: 196px !important;
+  min-height: 84px !important;
+  justify-items: end !important;
+}
+
+/* XP-кільце — праворуч від картки, симетрично */
+#pendingGamePage .pg-hud-xp-ring {
+  left: calc(50% + var(--pg-card-half-w) + var(--pg-hud-gap)) !important;
+  top: calc(var(--pg-card-center-y) - var(--pg-card-half-h) + 30px) !important;
+  width: 126px !important;
+  height: 126px !important;
+}
+
+/* Hotkeys — тільки нижче картки, не накладається */
+#pendingGamePage .pg-hotkey-strip,
+#pendingGamePage .pg-carousel-wrap::after {
+  top: calc(var(--pg-card-center-y) + var(--pg-card-half-h) + 34px) !important;
+  bottom: auto !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  z-index: 60 !important;
+}
+
+/* На нижчих екранах — зберігаємо логіку, але не ламаємо висоту */
+@media (max-height: 860px) {
+  #pendingGamePage.pg-page,
+  #pendingGamePage.pg-page--game {
+    --pg-card-w: clamp(380px, 27vw, 470px) !important;
+    --pg-card-h: clamp(535px, 66vh, 640px) !important;
+    --pg-card-center-y: 50% !important;
+    --pg-hud-gap: clamp(62px, 4.6vw, 92px) !important;
+  }
+
+  #pendingGamePage .pg-hud-rank-card {
+    top: calc(var(--pg-card-center-y) - var(--pg-card-half-h) + 28px) !important;
+    width: 182px !important;
+    min-height: 78px !important;
+  }
+
+  #pendingGamePage .pg-hud-xp-ring {
+    top: calc(var(--pg-card-center-y) - var(--pg-card-half-h) + 20px) !important;
+    width: 116px !important;
+    height: 116px !important;
+  }
+
+  #pendingGamePage .pg-hotkey-strip,
+  #pendingGamePage .pg-carousel-wrap::after {
+    top: calc(var(--pg-card-center-y) + var(--pg-card-half-h) + 24px) !important;
+  }
+}
+
+@media (max-width: 1450px) {
+  #pendingGamePage.pg-page,
+  #pendingGamePage.pg-page--game {
+    --pg-hud-gap: clamp(44px, 3.8vw, 72px) !important;
+  }
+
+  #pendingGamePage .pg-hud-rank-card {
+    width: 176px !important;
+  }
+
+  #pendingGamePage .pg-hud-xp-ring {
+    width: 112px !important;
+    height: 112px !important;
+  }
+}
