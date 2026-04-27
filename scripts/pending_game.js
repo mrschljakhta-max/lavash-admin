@@ -783,7 +783,7 @@
               </section>
             </div>
 
-            <small>Клік — редагувати / Space — flip</small>
+            <small>← → перемотка | A ігнор | S пропуск | D підтвердити | Space редагувати</small>
           </div>
 
           <div class="pg-card__face pg-card__back">
@@ -1265,31 +1265,31 @@
       }
 
       #pendingGamePage .pg-stage {
-        min-height: calc(100vh - 270px) !important;
+        min-height: calc(100vh - 245px) !important;
         display: grid !important;
         place-items: center !important;
-        padding-top: 78px !important;
+        padding-top: 112px !important;
       }
 
       .pg-game-hud {
         position: absolute;
-        top: 8px;
-        right: clamp(118px, 8vw, 168px);
-        z-index: 60;
+        top: -8px;
+        right: clamp(126px, 8.5vw, 182px);
+        z-index: 70;
         display: flex;
         align-items: center;
-        gap: 16px;
+        gap: 14px;
         pointer-events: none;
       }
 
       .pg-hud-rank-label {
-        min-width: 164px;
-        padding: 14px 18px;
-        border-radius: 22px;
+        min-width: 150px;
+        padding: 12px 16px;
+        border-radius: 20px;
         text-align: right;
-        background: rgba(8, 23, 63, .38);
-        border: 1px solid rgba(85, 223, 255, .13);
-        box-shadow: 0 18px 44px rgba(0,0,0,.16), inset 0 1px 0 rgba(255,255,255,.07);
+        background: rgba(8, 23, 63, .44);
+        border: 1px solid rgba(85, 223, 255, .15);
+        box-shadow: 0 16px 38px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.08);
         backdrop-filter: blur(14px);
       }
 
@@ -1323,8 +1323,8 @@
 
       .pg-rank-ring {
         --pg-ring-progress: 0deg;
-        width: 126px;
-        height: 126px;
+        width: 114px;
+        height: 114px;
         border-radius: 50%;
         position: relative;
         display: grid;
@@ -1358,7 +1358,7 @@
 
       .pg-rank-ring__core strong {
         color: #fff;
-        font-size: 26px;
+        font-size: 24px;
         font-weight: 1000;
         letter-spacing: -.04em;
         text-shadow: 0 0 18px rgba(85,223,255,.28);
@@ -1379,6 +1379,29 @@
       .pg-hud-mini,
       .pg-operator-strip {
         display: none !important;
+      }
+
+      #pendingGamePage .pg-card__front small {
+        position: absolute !important;
+        left: 50% !important;
+        bottom: -82px !important;
+        transform: translateX(-50%) !important;
+        z-index: 80 !important;
+        min-width: min(620px, 78vw) !important;
+        padding: 13px 26px !important;
+        border-radius: 999px !important;
+        display: inline-flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        color: rgba(230, 240, 255, .78) !important;
+        font-size: 13px !important;
+        font-weight: 1000 !important;
+        letter-spacing: .02em !important;
+        background: rgba(8, 23, 63, .72) !important;
+        border: 1px solid rgba(85, 223, 255, .20) !important;
+        box-shadow: 0 16px 44px rgba(0,0,0,.30), 0 0 26px rgba(85,223,255,.10) !important;
+        backdrop-filter: blur(16px) !important;
+        pointer-events: none !important;
       }
 
       #pendingGamePage[data-action-flash]::after {
