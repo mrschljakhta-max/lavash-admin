@@ -547,37 +547,49 @@
         label: 'Невідомий БПЛА',
         shortLabel: 'БПЛА',
         iconUrl: '../assets/icons/unknown/uav.svg',
-        color: '#38dfff'
+        color: '#38dfff',
+        bg1: 'rgba(18, 78, 190, .92)',
+        bg2: 'rgba(8, 28, 82, .96)'
       },
       settlement: {
         label: 'Невідомий населений пункт',
         shortLabel: 'НП',
         iconUrl: '../assets/icons/unknown/settlement.svg',
-        color: '#f5b84b'
+        color: '#f5b84b',
+        bg1: 'rgba(128, 86, 8, .92)',
+        bg2: 'rgba(54, 38, 13, .96)'
       },
       unit: {
         label: 'Невідомий підрозділ',
         shortLabel: 'Підрозділ',
         iconUrl: '../assets/icons/unknown/unit.svg',
-        color: '#ff5f7e'
+        color: '#ff5f7e',
+        bg1: 'rgba(112, 22, 50, .92)',
+        bg2: 'rgba(55, 14, 34, .96)'
       },
       station: {
         label: 'Невідома станція',
         shortLabel: 'Станція',
         iconUrl: '../assets/icons/unknown/station.svg',
-        color: '#37e6b2'
+        color: '#37e6b2',
+        bg1: 'rgba(8, 96, 84, .92)',
+        bg2: 'rgba(6, 44, 54, .96)'
       },
       object: {
         label: 'Невідомий об’єкт прикриття',
         shortLabel: 'Об’єкт',
         iconUrl: '../assets/icons/unknown/object.svg',
-        color: '#9b7cff'
+        color: '#9b7cff',
+        bg1: 'rgba(76, 45, 158, .92)',
+        bg2: 'rgba(34, 24, 76, .96)'
       },
       record: {
         label: 'Невідомий запис',
         shortLabel: 'Запис',
         iconUrl: '../assets/icons/unknown/record.svg',
-        color: '#d8dfff'
+        color: '#d8dfff',
+        bg1: 'rgba(72, 80, 110, .88)',
+        bg2: 'rgba(22, 28, 48, .96)'
       }
     };
 
@@ -719,7 +731,7 @@
         data-slot="${slot}"
         data-status="${record.status || 'unknown'}"
         data-unknown-type="${unknownType}"
-        style="--pg-card-accent:${unknownConfig.color};"
+        style="--pg-card-accent:${unknownConfig.color}; --pg-card-bg-1:${unknownConfig.bg1}; --pg-card-bg-2:${unknownConfig.bg2};"
       >
         <div class="pg-card__inner">
           <div class="pg-card__face pg-card__front">
@@ -804,6 +816,46 @@
     `;
   }
 
+  function updateActiveRecordField(field, value) {
+    const record = records[state.active];
+    if (!record) return;
+
+    record[field] = value;
+
+    if (field === 'unknownType') {
+      const config = getUnknownConfig(value);
+      record.dataType = config.shortLabel;
+      record.status = 'unknown';
+    }
+  }
+
+  function saveActiveCardEdits(card) {
+    const record = records[state.active];
+    if (!record) return;
+
+    card.querySelectorAll('[data-field]').forEach((field) => {
+      const key = field.dataset.field;
+      if (!key) return;
+
+      record[key] = field.value;
+    });
+
+    if (record.mainValue) {
+      record.title = `${record.dataType || getUnknownConfig(record.unknownType).shortLabel} ${record.mainValue}`;
+      if (record.unknownType === 'uav') record.model = record.mainValue;
+      if (record.unknownType === 'settlement') record.settlement = record.mainValue;
+      if (record.unknownType === 'station') record.station = record.mainValue;
+    }
+
+    showSavePulse(card);
+  }
+
+  function showSavePulse(card) {
+    card.classList.remove('is-saved-pulse');
+    void card.offsetWidth;
+    card.classList.add('is-saved-pulse');
+  }
+
   function bindCardDrag(card) {
     let startX = 0;
     let startY = 0;
@@ -812,7 +864,7 @@
     let isDragging = false;
 
     card.addEventListener('pointerdown', (event) => {
-      if (event.target.closest('input, textarea, button')) return;
+      if (event.target.closest('input, textarea, select, option, button, label')) return;
       if (card.classList.contains('is-flipped')) return;
 
       isDragging = true;
@@ -889,9 +941,21 @@
       bindCardDrag(card);
 
       card.addEventListener('click', (event) => {
-        if (event.target.closest('input, textarea, button')) return;
+        if (event.target.closest('input, textarea, select, option, button, label')) return;
         if (card.classList.contains('is-dragging')) return;
         card.classList.toggle('is-flipped');
+      });
+
+      card.querySelector('[data-field="unknownType"]')?.addEventListener('change', (event) => {
+        event.stopPropagation();
+        updateActiveRecordField('unknownType', event.target.value);
+        render();
+        qs('.pg-card.is-active')?.classList.add('is-flipped');
+      });
+
+      card.querySelector('.pg-save-btn')?.addEventListener('click', (event) => {
+        event.stopPropagation();
+        saveActiveCardEdits(card);
       });
     });
 
@@ -1005,7 +1069,7 @@
   document.addEventListener('keydown', (event) => {
     if (!qs('#pendingGamePage')) return;
 
-    const isTyping = event.target?.closest?.('input, textarea');
+    const isTyping = event.target?.closest?.('input, textarea, select, option');
 
     if (isTyping) {
       if (event.key === 'Escape') {
