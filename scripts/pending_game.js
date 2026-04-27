@@ -318,14 +318,6 @@
     rank: 'Аналітик II',
     streak: 7,
     accuracy: 92,
-    combo: 0,
-    bestCombo: 0,
-    sessionTotal: 0,
-    sessionCorrect: 0,
-    sessionErrors: 0,
-    lastActionAt: 0,
-    lastCardShownAt: Date.now(),
-    recentActions: [],
     isResolving: false
   };
 
@@ -409,49 +401,89 @@
   }
 
   function renderRightPanel() {
+    const rightTools =
+      document.querySelector('.right-tools__inner') ||
+      document.querySelector('.right-tools');
+
+    if (!rightTools) return;
+
+    const progress = Math.round((state.xp / state.xpMax) * 100);
     const oldPanel = document.getElementById('pendingGameRightPanel');
     if (oldPanel) oldPanel.remove();
 
-    document.querySelectorAll('.pg-right-panel, #pendingGameRightPanel').forEach((panel) => {
-      panel.remove();
-    });
-  }
+    const panel = document.createElement('div');
+    panel.id = 'pendingGameRightPanel';
+    panel.className = 'pg-right-panel';
 
-  function getXpProgress() {
-    return Math.max(0, Math.min(100, Math.round((state.xp / state.xpMax) * 100)));
-  }
+    panel.innerHTML = `
+      <section class="pg-right-card">
+        <h3>Ваш прогрес</h3>
 
-  function getXpMultiplier() {
-    if (state.combo >= 20) return 2;
-    if (state.combo >= 10) return 1.5;
-    if (state.combo >= 5) return 1.25;
-    return 1;
-  }
-
-  function renderGameHud() {
-    const progress = getXpProgress();
-    const dash = Math.round((progress / 100) * 360);
-
-    return `
-      <aside class="pg-game-hud" aria-label="Ранг оператора">
-        <div class="pg-hud-rank-label">
-          <span>Ранг</span>
-          <strong>${state.rank}</strong>
-          <em>Рівень ${state.level}</em>
-        </div>
-
-        <div class="pg-rank-ring" style="--pg-ring-progress:${dash}deg;">
-          <div class="pg-rank-ring__core">
-            <strong>${state.xp}</strong>
-            <span>XP</span>
+        <div class="pg-right-user">
+          <div class="pg-right-avatar">OP</div>
+          <div>
+            <strong>Operator_07</strong>
+            <span>ID: OP-7721</span>
           </div>
         </div>
-      </aside>
-    `;
-  }
 
-  function renderOperatorFooter() {
-    return '';
+        <div class="pg-right-rank">
+          <span>${getChevron(state.level)}</span>
+          <strong>${state.rank}</strong>
+        </div>
+
+        <div class="pg-right-track">
+          <div style="width:${progress}%"></div>
+        </div>
+
+        <div class="pg-right-stats">
+          <div><b>+${state.todayXp}</b><span>XP сьогодні</span></div>
+          <div><b>${state.accuracy}%</b><span>точність</span></div>
+          <div><b>${state.streak}</b><span>streak</span></div>
+        </div>
+      </section>
+
+      <section class="pg-right-card">
+        <h3>Обробка</h3>
+        <div class="pg-right-counter">
+          <strong>${state.active + 1}</strong>
+          <span>/</span>
+          <strong>${records.length}</strong>
+        </div>
+        <p class="pg-right-note">Поточний запис / всього у черзі</p>
+      </section>
+
+      <section class="pg-right-card">
+        <h3>Гарячі клавіші</h3>
+        <div class="pg-right-hotkeys">
+          <span>← →</span><p>перемотка карток</p>
+          <span>Shift+A</span><p>ігнор</p>
+          <span>Shift+S</span><p>пропуск</p>
+          <span>Shift+D</span><p>підтвердити</p>
+          <span>Space</span><p>flip / edit</p>
+          <span>Esc</span><p>скасувати</p>
+        </div>
+      </section>
+
+      <section class="pg-right-card">
+        <h3>Ранги</h3>
+        <div class="pg-right-ranks">
+          ${renderRightRankList()}
+        </div>
+      </section>
+
+      <section class="pg-right-card">
+        <h3>Досягнення</h3>
+        <div class="pg-right-achievements">
+          <p>✅ 10 записів без помилки</p>
+          <p>✅ 100 підтверджених записів</p>
+          <p>✅ 5 виправлень підряд</p>
+          <p>✅ Точність понад 90%</p>
+        </div>
+      </section>
+    `;
+
+    rightTools.appendChild(panel);
   }
 
   function render() {
@@ -464,11 +496,27 @@
     document.documentElement.style.setProperty('--pg-accent-status', activeUnknownConfig.color || getStatusColor(activeRecord.status));
 
     root.innerHTML = `
-      <section class="pg-page pg-page--clean" id="pendingGamePage">
+      <section class="pg-page pg-page--game" id="pendingGamePage">
         <div class="pg-bg-orb pg-bg-orb--left"></div>
         <div class="pg-bg-orb pg-bg-orb--right"></div>
 
-        ${renderGameHud()}
+        <div class="pg-game-hud" aria-hidden="true">
+          <aside class="pg-hud-rank-card">
+            <span class="pg-hud-rank-card__kicker">Ранг</span>
+            <strong>${state.rank}</strong>
+            <small>Рівень ${state.level}</small>
+          </aside>
+
+          <aside
+            class="pg-hud-xp-ring"
+            style="--pg-ring-progress:${progress * 3.6}deg; --pg-ring-accent:${activeUnknownConfig.color};"
+          >
+            <div class="pg-hud-xp-ring__core">
+              <strong>${state.xp}</strong>
+              <span>XP</span>
+            </div>
+          </aside>
+        </div>
 
         <main class="pg-stage">
           <section class="pg-carousel-wrap" data-pg-carousel-wrap>
@@ -478,11 +526,18 @@
           </section>
         </main>
 
+        <div class="pg-hotkey-strip">
+          <span>← → перемотка</span>
+          <span>A ігнор</span>
+          <span>S пропуск</span>
+          <span>D підтвердити</span>
+          <span>Space редагувати</span>
+        </div>
+
         <div class="pg-xp-pop" id="pgXpPop">+10 XP</div>
       </section>
     `;
 
-    renderRightPanel();
     bind();
   }
 
@@ -783,7 +838,7 @@
               </section>
             </div>
 
-            <small>← → перемотка | A ігнор | S пропуск | D підтвердити | Space редагувати</small>
+            <small>Клік — редагувати / Space — flip</small>
           </div>
 
           <div class="pg-card__face pg-card__back">
@@ -1064,90 +1119,31 @@
     }[action] || '';
   }
 
-  function pushRecentAction(action, xp, bonusText) {
-    const active = records[state.active];
-    state.recentActions.unshift({
-      action,
-      xp,
-      bonusText,
-      value: active?.mainValue || active?.title || 'Запис',
-      time: new Date().toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' })
-    });
-
-    state.recentActions = state.recentActions.slice(0, 6);
-  }
-
-  function getActionXp(action) {
-    return {
-      ignore: 6,
-      confirm: 10,
-      skip: 3
-    }[action] || 3;
-  }
-
-  function getActionComboImpact(action, decisionTime) {
-    const fast = decisionTime <= 2500;
-    const veryFast = decisionTime <= 1300;
-
-    if (action === 'skip') {
-      return { comboGain: 0, streakGain: 0, speedBonus: fast ? 1 : 0, isCorrect: false };
-    }
-
-    return {
-      comboGain: veryFast ? 2 : 1,
-      streakGain: 1,
-      speedBonus: veryFast ? 4 : fast ? 2 : 0,
-      isCorrect: true
-    };
-  }
-
   function handleAction(action) {
     if (state.isResolving) return;
 
-    const now = Date.now();
-    const decisionTime = now - (state.lastCardShownAt || now);
-    const baseXp = getActionXp(action);
-    const impact = getActionComboImpact(action, decisionTime);
-    const multiplier = getXpMultiplier();
-    const rawXp = baseXp + impact.speedBonus;
-    const xp = Math.max(1, Math.round(rawXp * multiplier));
+    const xpMap = {
+      ignore: 8,
+      confirm: 10,
+      skip: 5
+    };
+
+    const xp = xpMap[action] || 5;
     const activeCard = qs('.pg-card.is-active');
     const page = qs('#pendingGamePage');
 
     state.isResolving = true;
-    state.sessionTotal += 1;
-
-    if (impact.isCorrect) {
-      state.sessionCorrect += 1;
-      state.streak += impact.streakGain;
-      state.combo += impact.comboGain;
-      state.bestCombo = Math.max(state.bestCombo, state.combo);
-    } else if (action === 'skip') {
-      state.combo = Math.max(0, state.combo - 1);
-    } else {
-      state.sessionErrors += 1;
-      state.streak = 0;
-      state.combo = 0;
-    }
-
     state.xp = Math.min(state.xpMax, state.xp + xp);
     state.todayXp += xp;
-    state.accuracy = state.sessionTotal
-      ? Math.round((state.sessionCorrect / state.sessionTotal) * 100)
-      : state.accuracy;
-
-    const bonusText = impact.speedBonus ? `швидкість +${impact.speedBonus}` : '';
-    pushRecentAction(action, xp, bonusText);
 
     if (page) {
       page.dataset.actionFlash = action;
       page.dataset.actionLabel = getActionLabel(action);
-      page.dataset.combo = String(state.combo);
     }
 
     if (activeCard) {
       activeCard.style.transform = '';
-
+      
       activeCard.classList.remove(
         'is-key-ignore',
         'is-key-confirm',
@@ -1166,8 +1162,6 @@
     setTimeout(() => {
       state.active = (state.active + 1) % records.length;
       state.isResolving = false;
-      state.lastActionAt = now;
-      state.lastCardShownAt = Date.now();
 
       if (page) {
         page.dataset.actionFlash = '';
@@ -1214,19 +1208,19 @@
       return;
     }
 
-    if (event.code === 'KeyA') {
+    if (!event.shiftKey && !event.ctrlKey && !event.altKey && event.code === 'KeyA') {
       event.preventDefault();
       handleAction('ignore');
       return;
     }
 
-    if (event.code === 'KeyS') {
+    if (!event.shiftKey && !event.ctrlKey && !event.altKey && event.code === 'KeyS') {
       event.preventDefault();
       handleAction('skip');
       return;
     }
 
-    if (event.code === 'KeyD') {
+    if (!event.shiftKey && !event.ctrlKey && !event.altKey && event.code === 'KeyD') {
       event.preventDefault();
       handleAction('confirm');
       return;
@@ -1245,251 +1239,7 @@
   });
 }
 
-  function injectGamificationCss() {
-    if (document.getElementById('pendingGameGamificationCss')) return;
-
-    const style = document.createElement('style');
-    style.id = 'pendingGameGamificationCss';
-    style.textContent = `
-      #pendingGamePage .pg-rankbar,
-      #pendingGamePage .pg-right-panel,
-      #pendingGamePage #pendingGameRightPanel {
-        display: none !important;
-      }
-
-      #pendingGamePage.pg-page--clean {
-        position: relative !important;
-        min-height: calc(100vh - 130px) !important;
-        padding-top: 0 !important;
-        overflow: hidden !important;
-      }
-
-      #pendingGamePage .pg-stage {
-        min-height: calc(100vh - 245px) !important;
-        display: grid !important;
-        place-items: center !important;
-        padding-top: 112px !important;
-      }
-
-      .pg-game-hud {
-        position: absolute;
-        top: -8px;
-        right: clamp(126px, 8.5vw, 182px);
-        z-index: 70;
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        pointer-events: none;
-      }
-
-      .pg-hud-rank-label {
-        min-width: 150px;
-        padding: 12px 16px;
-        border-radius: 20px;
-        text-align: right;
-        background: rgba(8, 23, 63, .44);
-        border: 1px solid rgba(85, 223, 255, .15);
-        box-shadow: 0 16px 38px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.08);
-        backdrop-filter: blur(14px);
-      }
-
-      .pg-hud-rank-label span {
-        display: block;
-        color: rgba(223,233,255,.62);
-        font-size: 10px;
-        font-weight: 1000;
-        letter-spacing: .1em;
-        text-transform: uppercase;
-      }
-
-      .pg-hud-rank-label strong {
-        display: block;
-        margin-top: 5px;
-        color: #fff0a8;
-        font-size: 18px;
-        font-weight: 1000;
-        line-height: 1.05;
-        text-shadow: 0 0 18px rgba(255,209,102,.26);
-      }
-
-      .pg-hud-rank-label em {
-        display: block;
-        margin-top: 4px;
-        color: rgba(230,240,255,.62);
-        font-size: 12px;
-        font-style: normal;
-        font-weight: 800;
-      }
-
-      .pg-rank-ring {
-        --pg-ring-progress: 0deg;
-        width: 114px;
-        height: 114px;
-        border-radius: 50%;
-        position: relative;
-        display: grid;
-        place-items: center;
-        background:
-          conic-gradient(from -90deg, #36e6ff 0deg, #8a5cff var(--pg-ring-progress), rgba(255,255,255,.08) var(--pg-ring-progress), rgba(255,255,255,.08) 360deg);
-        box-shadow:
-          0 0 24px rgba(85,223,255,.24),
-          0 0 46px rgba(141,88,255,.22);
-        animation: pgRankBreathe 4.6s ease-in-out infinite;
-      }
-
-      .pg-rank-ring::before {
-        content: '';
-        position: absolute;
-        inset: 8px;
-        border-radius: inherit;
-        background: radial-gradient(circle at 45% 35%, rgba(85,223,255,.20), rgba(5,12,38,.96) 62%);
-        box-shadow: inset 0 0 22px rgba(0,0,0,.55);
-      }
-
-      .pg-rank-ring__core {
-        position: relative;
-        z-index: 2;
-        display: grid;
-        place-items: center;
-        text-align: center;
-        color: #fff;
-        line-height: 1.02;
-      }
-
-      .pg-rank-ring__core strong {
-        color: #fff;
-        font-size: 24px;
-        font-weight: 1000;
-        letter-spacing: -.04em;
-        text-shadow: 0 0 18px rgba(85,223,255,.28);
-      }
-
-      .pg-rank-ring__core span {
-        margin-top: 2px;
-        color: #58ddff;
-        font-size: 11px;
-        font-weight: 1000;
-        letter-spacing: .12em;
-        text-transform: uppercase;
-      }
-
-      .pg-hud-stack,
-      .pg-hud-pill,
-      .pg-hud-grid,
-      .pg-hud-mini,
-      .pg-operator-strip {
-        display: none !important;
-      }
-
-      #pendingGamePage .pg-card__front small {
-        position: absolute !important;
-        left: 50% !important;
-        bottom: -82px !important;
-        transform: translateX(-50%) !important;
-        z-index: 80 !important;
-        min-width: min(620px, 78vw) !important;
-        padding: 13px 26px !important;
-        border-radius: 999px !important;
-        display: inline-flex !important;
-        justify-content: center !important;
-        align-items: center !important;
-        color: rgba(230, 240, 255, .78) !important;
-        font-size: 13px !important;
-        font-weight: 1000 !important;
-        letter-spacing: .02em !important;
-        background: rgba(8, 23, 63, .72) !important;
-        border: 1px solid rgba(85, 223, 255, .20) !important;
-        box-shadow: 0 16px 44px rgba(0,0,0,.30), 0 0 26px rgba(85,223,255,.10) !important;
-        backdrop-filter: blur(16px) !important;
-        pointer-events: none !important;
-      }
-
-      #pendingGamePage[data-action-flash]::after {
-        content: attr(data-action-label);
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
-        z-index: 100;
-        padding: 20px 34px;
-        border-radius: 999px;
-        color: #fff;
-        font-size: 34px;
-        font-weight: 1000;
-        letter-spacing: .08em;
-        text-transform: uppercase;
-        opacity: 0;
-        pointer-events: none;
-      }
-
-      #pendingGamePage[data-action-flash="confirm"]::after {
-        background: rgba(18, 180, 112, .28);
-        border: 1px solid rgba(55, 230, 178, .65);
-        box-shadow: 0 0 44px rgba(55,230,178,.28);
-        animation: pgActionStamp .58s ease both;
-      }
-
-      #pendingGamePage[data-action-flash="ignore"]::after {
-        background: rgba(210, 34, 74, .28);
-        border: 1px solid rgba(255, 95, 126, .7);
-        box-shadow: 0 0 44px rgba(255,95,126,.28);
-        animation: pgActionStamp .58s ease both;
-      }
-
-      #pendingGamePage[data-action-flash="skip"]::after {
-        background: rgba(120, 86, 255, .26);
-        border: 1px solid rgba(155, 124, 255, .7);
-        box-shadow: 0 0 44px rgba(155,124,255,.28);
-        animation: pgActionStamp .58s ease both;
-      }
-
-      .pg-card.is-key-confirm {
-        animation: pgCardConfirm .62s cubic-bezier(.2,.9,.2,1) both !important;
-      }
-
-      .pg-card.is-key-ignore {
-        animation: pgCardIgnore .62s cubic-bezier(.2,.9,.2,1) both !important;
-      }
-
-      .pg-card.is-key-skip {
-        animation: pgCardSkip .62s cubic-bezier(.2,.9,.2,1) both !important;
-      }
-
-      @keyframes pgCardConfirm {
-        0% { transform: perspective(1200px) translateX(0) rotate(0deg) scale(1); opacity: 1; }
-        35% { transform: perspective(1200px) translateX(80px) rotate(5deg) scale(1.02); opacity: 1; }
-        100% { transform: perspective(1200px) translateX(620px) rotate(15deg) scale(.92); opacity: 0; }
-      }
-
-      @keyframes pgCardIgnore {
-        0% { transform: perspective(1200px) translateX(0) rotate(0deg) scale(1); opacity: 1; }
-        35% { transform: perspective(1200px) translateX(-80px) rotate(-5deg) scale(1.02); opacity: 1; }
-        100% { transform: perspective(1200px) translateX(-620px) rotate(-15deg) scale(.92); opacity: 0; }
-      }
-
-      @keyframes pgCardSkip {
-        0% { transform: perspective(1200px) translateY(0) scale(1); opacity: 1; }
-        35% { transform: perspective(1200px) translateY(70px) scale(.98); opacity: 1; }
-        100% { transform: perspective(1200px) translateY(520px) scale(.86); opacity: 0; }
-      }
-
-      @keyframes pgActionStamp {
-        0% { opacity: 0; transform: translate(-50%, -50%) scale(.72); filter: blur(10px); }
-        28% { opacity: 1; transform: translate(-50%, -50%) scale(1.04); filter: blur(0); }
-        100% { opacity: 0; transform: translate(-50%, -64%) scale(1); filter: blur(2px); }
-      }
-
-      @keyframes pgRankBreathe {
-        0%, 100% { filter: brightness(1); }
-        50% { filter: brightness(1.18); }
-      }
-    `;
-
-    document.head.appendChild(style);
-  }
-
   function init() {
-    injectGamificationCss();
     render();
 
     if (!window.__LAVASH_PENDING_GAME_HOTKEYS_BOUND__) {
