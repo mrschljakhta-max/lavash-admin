@@ -2804,3 +2804,10 @@
 .pg-select__item:hover {
   background: color-mix(in srgb, var(--pg-card-accent), transparent 80%);
 }
+/* підняти верхню панель показників */
+#pendingGamePage .pg-rankbar {
+  margin-top: -28px !important;
+  transform: translateY(-10px);
+}
+
+/* якщо треба ще вище — збільшуй ці два значення */
