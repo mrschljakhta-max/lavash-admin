@@ -2813,3 +2813,15 @@
 #pendingGamePage .pg-rankbar {
   margin-top: -18px !important;
 }
+/* Ранк-бар поверх всього */
+.pg-rankbar {
+  position: fixed !important;
+
+  top: 72px; /* під хедером */
+  left: 120px; /* щоб не залазив на лівий сайдбар */
+  right: 100px; /* щоб не залазив на правий */
+
+  z-index: 9999;
+
+  margin: 0 !important;
+}
