@@ -500,22 +500,29 @@
         <div class="pg-bg-orb pg-bg-orb--left"></div>
         <div class="pg-bg-orb pg-bg-orb--right"></div>
 
-        <div class="pg-game-hud" aria-hidden="true">
-          <aside class="pg-hud-rank-card">
-            <span class="pg-hud-rank-card__kicker">Ранг</span>
-            <strong>${state.rank}</strong>
-            <small>Рівень ${state.level}</small>
-          </aside>
-
-          <aside
-            class="pg-hud-xp-ring"
-            style="--pg-ring-progress:${progress * 3.6}deg; --pg-ring-accent:${activeUnknownConfig.color};"
-          >
-            <div class="pg-hud-xp-ring__core">
-              <strong>${state.xp}</strong>
-              <span>XP</span>
+        <div class="pg-rankbar" aria-label="Прогрес оператора">
+          <div class="pg-rankbadge">
+            <div class="pg-rankbadge__chevron">${getChevron(state.level)}</div>
+            <div>
+              <div class="pg-rankbadge__label">Ранг ${state.rank}</div>
+              <div class="pg-rankbadge__sub">Рівень ${state.level}</div>
             </div>
-          </aside>
+          </div>
+
+          <div class="pg-xp">
+            <div class="pg-xp__top">
+              <span>${state.xp} XP</span>
+              <span>${state.xpMax} XP</span>
+            </div>
+            <div class="pg-xp__track">
+              <div class="pg-xp__fill" style="width:${progress}%"></div>
+            </div>
+          </div>
+
+          <div class="pg-today">
+            <span>Сьогодні</span>
+            <strong>+${state.todayXp}</strong>
+          </div>
         </div>
 
         <main class="pg-stage">
