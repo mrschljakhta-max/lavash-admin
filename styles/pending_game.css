@@ -2811,3 +2811,10 @@
 }
 
 /* якщо треба ще вище — збільшуй ці два значення */
+#pendingGamePage {
+  padding-top: 0 !important;
+}
+
+#pendingGamePage .pg-rankbar {
+  margin-top: -18px !important;
+}
