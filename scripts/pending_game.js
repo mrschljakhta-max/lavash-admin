@@ -253,42 +253,50 @@
   }
 
   function getUnknownConfig(type) {
-    return {
+    const configs = {
       uav: {
         label: 'Невідомий БПЛА',
-        icon: '✈',
-        color: '#55dfff'
+        shortLabel: 'БПЛА',
+        iconUrl: '../assets/icons/unknown/uav.svg',
+        color: '#38dfff'
       },
       settlement: {
         label: 'Невідомий населений пункт',
-        icon: '⌖',
-        color: '#f5a524'
+        shortLabel: 'НП',
+        iconUrl: '../assets/icons/unknown/settlement.svg',
+        color: '#f5b84b'
       },
       unit: {
         label: 'Невідомий підрозділ',
-        icon: '▰',
-        color: '#ff4d6d'
+        shortLabel: 'Підрозділ',
+        iconUrl: '../assets/icons/unknown/unit.svg',
+        color: '#ff5f7e'
       },
       station: {
         label: 'Невідома станція',
-        icon: '⌁',
+        shortLabel: 'Станція',
+        iconUrl: '../assets/icons/unknown/station.svg',
         color: '#37e6b2'
       },
       object: {
         label: 'Невідомий об’єкт прикриття',
-        icon: '◎',
-        color: '#ffd166'
+        shortLabel: 'Об’єкт',
+        iconUrl: '../assets/icons/unknown/object.svg',
+        color: '#9b7cff'
       },
       record: {
         label: 'Невідомий запис',
-        icon: '◇',
-        color: '#8d58ff'
+        shortLabel: 'Запис',
+        iconUrl: '../assets/icons/unknown/record.svg',
+        color: '#d8dfff'
       }
-    }[type] || {
-      label: 'Невідомий запис',
-      icon: '◇',
-      color: '#8d58ff'
     };
+
+    return configs[type] || configs.record;
+  }
+
+  function getUnknownIconUrl(type) {
+    return getUnknownConfig(type).iconUrl;
   }
 
   function getUnknownLabel(type) {
@@ -296,7 +304,7 @@
   }
 
   function getDataIcon(type) {
-    return getUnknownConfig(type).icon;
+    return getUnknownConfig(type).shortLabel;
   }
 
   function safeValue(value, fallback = '—') {
@@ -331,14 +339,18 @@
             </div>
 
             <div class="pg-unknown-badge">
-              <span>${unknownConfig.icon}</span>
+              <span class="pg-unknown-badge__icon">
+                <img src="${unknownConfig.iconUrl}" alt="${unknownConfig.label}" loading="lazy">
+              </span>
               <strong>${unknownConfig.label}</strong>
             </div>
 
             <div class="pg-card__content pg-card__content--new">
               <section class="pg-data">
                 <div class="pg-data__type">
-                  <span class="pg-data__icon">${unknownConfig.icon}</span>
+                  <span class="pg-data__icon">
+                    <img src="${unknownConfig.iconUrl}" alt="${dataType}" loading="lazy">
+                  </span>
                   <span>${dataType}</span>
                 </div>
 
