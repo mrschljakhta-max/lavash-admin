@@ -325,6 +325,48 @@
     return document.querySelector(selector);
   }
 
+
+  function injectPendingGameLayoutCss() {
+    if (document.getElementById('pendingGameNavbarRankbarCss')) return;
+
+    const style = document.createElement('style');
+    style.id = 'pendingGameNavbarRankbarCss';
+    style.textContent = `
+      #pendingGamePage .pg-rankbar {
+        display: none !important;
+      }
+
+      #pendingGamePage {
+        padding-top: 0 !important;
+      }
+
+      #pendingGamePage .pg-stage {
+        min-height: calc(100vh - 190px) !important;
+        display: grid !important;
+        place-items: center !important;
+        padding-top: 0 !important;
+      }
+
+      #pendingGamePage .pg-carousel-wrap {
+        margin-top: 0 !important;
+      }
+
+      .pg-right-card--rankbar {
+        border-color: rgba(85, 223, 255, .24) !important;
+      }
+
+      .pg-right-card--rankbar .pg-right-note {
+        margin-top: 10px !important;
+        color: rgba(230, 240, 255, .66) !important;
+        font-size: 12px !important;
+        font-weight: 800 !important;
+        line-height: 1.35 !important;
+      }
+    `;
+
+    document.head.appendChild(style);
+  }
+
   function getRoot() {
     return qs('.workspace-body') || qs('.workspace-body--page') || qs('#app');
   }
@@ -416,8 +458,8 @@
     panel.className = 'pg-right-panel';
 
     panel.innerHTML = `
-      <section class="pg-right-card">
-        <h3>Ваш прогрес</h3>
+      <section class="pg-right-card pg-right-card--rankbar">
+        <h3>Ранг оператора</h3>
 
         <div class="pg-right-user">
           <div class="pg-right-avatar">OP</div>
@@ -436,8 +478,12 @@
           <div style="width:${progress}%"></div>
         </div>
 
+        <p class="pg-right-note">
+          XP ${state.xp} / ${state.xpMax} · до наступного: ${state.xpMax - state.xp}
+        </p>
+
         <div class="pg-right-stats">
-          <div><b>+${state.todayXp}</b><span>XP сьогодні</span></div>
+          <div><b>+${state.todayXp}</b><span>сьогодні</span></div>
           <div><b>${state.accuracy}%</b><span>точність</span></div>
           <div><b>${state.streak}</b><span>streak</span></div>
         </div>
@@ -500,30 +546,7 @@
         <div class="pg-bg-orb pg-bg-orb--left"></div>
         <div class="pg-bg-orb pg-bg-orb--right"></div>
 
-        <header class="pg-rankbar">
-          <div class="pg-rankbadge pg-tier-${getTier(state.level)}">
-            <div class="pg-rankbadge__chevron">${getChevron(state.level)}</div>
-            <div>
-              <div class="pg-rankbadge__label">Ранг: ${state.rank}</div>
-              <div class="pg-rankbadge__sub">Рівень ${state.level}</div>
-            </div>
-          </div>
-
-          <div class="pg-xp">
-            <div class="pg-xp__top">
-              <span>XP ${state.xp} / ${state.xpMax}</span>
-              <span>До наступного рангу: ${state.xpMax - state.xp} XP</span>
-            </div>
-            <div class="pg-xp__track">
-              <div class="pg-xp__fill" style="width:${progress}%"></div>
-            </div>
-          </div>
-
-          <div class="pg-today">
-            <span>Сьогодні</span>
-            <strong>+${state.todayXp} XP</strong>
-          </div>
-        </header>
+        <!-- rankbar moved to right navbar -->
 
         <main class="pg-stage">
           <section class="pg-carousel-wrap" data-pg-carousel-wrap>
@@ -1240,6 +1263,7 @@
 }
 
   function init() {
+    injectPendingGameLayoutCss();
     render();
 
     if (!window.__LAVASH_PENDING_GAME_HOTKEYS_BOUND__) {
