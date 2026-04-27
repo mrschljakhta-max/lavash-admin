@@ -2813,15 +2813,46 @@
 #pendingGamePage .pg-rankbar {
   margin-top: -18px !important;
 }
-/* Ранк-бар поверх всього */
-.pg-rankbar {
-  position: fixed !important;
+/* FIX LAYOUT: rankbar окремо, картка окремо */
+#pendingGamePage {
+  display: grid !important;
+  grid-template-rows: auto 1fr !important;
+  min-height: calc(100vh - 120px) !important;
+  padding-top: 10px !important;
+  overflow: hidden !important;
+}
 
-  top: 72px; /* під хедером */
-  left: 120px; /* щоб не залазив на лівий сайдбар */
-  right: 100px; /* щоб не залазив на правий */
+/* прибрати попередній fixed-режим */
+#pendingGamePage .pg-rankbar {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  z-index: 20 !important;
 
-  z-index: 9999;
+  width: min(1180px, calc(100vw - 300px)) !important;
+  margin: 0 auto 34px auto !important;
+  transform: none !important;
+}
 
-  margin: 0 !important;
+/* зона каруселі нижче ранкбару */
+#pendingGamePage .pg-stage {
+  position: relative !important;
+  z-index: 5 !important;
+  min-height: 520px !important;
+  display: grid !important;
+  place-items: center !important;
+  padding-top: 10px !important;
+}
+
+/* сама карусель не має залазити під rankbar */
+#pendingGamePage .pg-carousel-wrap {
+  position: relative !important;
+  margin-top: 0 !important;
+  transform: none !important;
+}
+
+/* гарячі клавіші — поверх картки, але не під rankbar */
+#pendingGamePage .pg-card__front small {
+  bottom: -58px !important;
 }
