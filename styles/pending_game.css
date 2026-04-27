@@ -3225,3 +3225,119 @@
     top: calc(50% + var(--pg-hero-half-h) + 18px) !important;
   }
 }
+
+/* =========================================================
+   LAVASH PENDING — PORTRAIT COVERFLOW GAME UI v1
+   Центральна картка вужча/вища + 5 карток у 3 рівні глибини.
+   HUD рангу та XP піднято вище й винесено з потоку сцени.
+========================================================= */
+
+#pendingGamePage.pg-page,
+#pendingGamePage.pg-page--game {
+  --pg-card-w: clamp(340px, 25vw, 430px);
+  --pg-card-h: clamp(500px, 64vh, 640px);
+  --pg-card-half-w: calc(var(--pg-card-w) / 2);
+  --pg-card-half-h: calc(var(--pg-card-h) / 2);
+  padding: 0 !important;
+  overflow: hidden !important;
+  min-height: 100% !important;
+}
+
+#pendingGamePage .pg-stage,
+#pendingGamePage .pg-carousel-wrap,
+#pendingGamePage .pg-carousel {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  overflow: visible !important;
+  display: block !important;
+  perspective: 1600px !important;
+  transform-style: preserve-3d !important;
+}
+
+#pendingGamePage .pg-card {
+  position: absolute !important;
+  left: 50% !important;
+  top: 54% !important;
+  width: var(--pg-card-w) !important;
+  height: var(--pg-card-h) !important;
+  aspect-ratio: auto !important;
+  margin: 0 !important;
+  opacity: .18 !important;
+  filter: saturate(.58) brightness(.46) blur(.35px) !important;
+  transform-origin: center center !important;
+  transition: transform .52s cubic-bezier(.18,.85,.22,1), opacity .42s ease, filter .42s ease !important;
+}
+
+#pendingGamePage .pg-card[data-slot="-2"] { z-index: 2 !important; opacity: .12 !important; transform: translate(calc(-50% - 560px), -50%) scale(.54) rotateY(18deg) translateZ(-260px) !important; }
+#pendingGamePage .pg-card[data-slot="-1"] { z-index: 6 !important; opacity: .28 !important; filter: saturate(.68) brightness(.56) blur(.18px) !important; transform: translate(calc(-50% - 310px), -50%) scale(.72) rotateY(12deg) translateZ(-130px) !important; }
+#pendingGamePage .pg-card[data-slot="1"] { z-index: 6 !important; opacity: .28 !important; filter: saturate(.68) brightness(.56) blur(.18px) !important; transform: translate(calc(-50% + 310px), -50%) scale(.72) rotateY(-12deg) translateZ(-130px) !important; }
+#pendingGamePage .pg-card[data-slot="2"] { z-index: 2 !important; opacity: .12 !important; transform: translate(calc(-50% + 560px), -50%) scale(.54) rotateY(-18deg) translateZ(-260px) !important; }
+
+#pendingGamePage .pg-card.is-active {
+  z-index: 20 !important;
+  width: var(--pg-card-w) !important;
+  height: var(--pg-card-h) !important;
+  opacity: 1 !important;
+  filter: saturate(1.12) brightness(1.08) !important;
+  transform: translate(-50%, -50%) scale(1) rotateY(0deg) translateZ(0) !important;
+}
+
+#pendingGamePage .pg-card.is-active .pg-card__face { padding: clamp(24px, 2.2vw, 34px) !important; border-radius: 34px !important; }
+
+#pendingGamePage .pg-card.is-active .pg-card__content,
+#pendingGamePage .pg-card.is-active .pg-card__content--new {
+  height: calc(100% - 64px) !important;
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  grid-template-rows: minmax(210px, 1fr) auto !important;
+  gap: 22px !important;
+  align-items: center !important;
+  justify-items: center !important;
+}
+
+#pendingGamePage .pg-card.is-active .pg-visual { grid-row: 1 !important; width: 100% !important; height: min(300px, 34vh) !important; display: grid !important; place-items: center !important; opacity: .96 !important; }
+#pendingGamePage .pg-card.is-active .pg-data { grid-row: 2 !important; width: 100% !important; display: grid !important; justify-items: center !important; text-align: center !important; gap: 14px !important; }
+#pendingGamePage .pg-card.is-active .pg-data__value,
+#pendingGamePage .pg-card.is-active h2 { max-width: 100% !important; font-size: clamp(40px, 3.2vw, 58px) !important; line-height: 1.02 !important; letter-spacing: -.045em !important; text-align: center !important; overflow-wrap: anywhere !important; }
+#pendingGamePage .pg-card.is-active .pg-unknown-badge { left: 50% !important; top: 28px !important; transform: translateX(-50%) !important; max-width: calc(100% - 48px) !important; white-space: nowrap !important; }
+
+#pendingGamePage .pg-card:not(.is-active) .pg-card__face { border-radius: 32px !important; }
+#pendingGamePage .pg-card:not(.is-active) .pg-card__content,
+#pendingGamePage .pg-card:not(.is-active) .pg-card__content--new { grid-template-columns: 1fr !important; grid-template-rows: 1fr auto !important; justify-items: center !important; text-align: center !important; }
+#pendingGamePage .pg-card:not(.is-active) .pg-visual { transform: scale(.75) !important; opacity: .55 !important; }
+#pendingGamePage .pg-card:not(.is-active) h2,
+#pendingGamePage .pg-card:not(.is-active) .pg-data__value { font-size: clamp(30px, 2.4vw, 44px) !important; text-align: center !important; }
+
+#pendingGamePage .pg-game-hud { position: absolute !important; inset: 0 !important; z-index: 70 !important; pointer-events: none !important; }
+#pendingGamePage .pg-hud-rank-card { left: calc(50% + 64px) !important; top: calc(54% - var(--pg-card-half-h) - 120px) !important; transform: translateX(-100%) !important; width: 170px !important; min-height: 76px !important; }
+#pendingGamePage .pg-hud-xp-ring { left: calc(50% + 86px) !important; top: calc(54% - var(--pg-card-half-h) - 128px) !important; width: 112px !important; height: 112px !important; }
+#pendingGamePage .pg-hotkey-strip { top: calc(54% + var(--pg-card-half-h) + 28px) !important; left: 50% !important; transform: translateX(-50%) !important; max-width: min(760px, 72vw) !important; }
+#pendingGamePage .pg-carousel-wrap::after { display: none !important; content: none !important; }
+
+#pendingGamePage .pg-card.is-key-ignore { animation: pgPortraitFlyLeft .62s cubic-bezier(.18,.9,.2,1) forwards !important; }
+#pendingGamePage .pg-card.is-key-confirm { animation: pgPortraitFlyRight .62s cubic-bezier(.18,.9,.2,1) forwards !important; }
+#pendingGamePage .pg-card.is-key-skip { animation: pgPortraitFlyDown .62s cubic-bezier(.18,.9,.2,1) forwards !important; }
+
+@keyframes pgPortraitFlyLeft { 0% { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(0deg); } 38% { opacity: 1; transform: translate(calc(-50% - 70px), -50%) scale(1.02) rotate(-7deg); } 100% { opacity: 0; transform: translate(calc(-50% - 620px), calc(-50% + 8px)) scale(.72) rotate(-18deg); filter: blur(4px) brightness(1.1); } }
+@keyframes pgPortraitFlyRight { 0% { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(0deg); } 38% { opacity: 1; transform: translate(calc(-50% + 70px), -50%) scale(1.02) rotate(7deg); } 100% { opacity: 0; transform: translate(calc(-50% + 620px), calc(-50% + 8px)) scale(.72) rotate(18deg); filter: blur(4px) brightness(1.1); } }
+@keyframes pgPortraitFlyDown { 0% { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(0deg); } 38% { opacity: 1; transform: translate(-50%, calc(-50% + 60px)) scale(.98) rotate(2deg); } 100% { opacity: 0; transform: translate(-50%, calc(-50% + 560px)) scale(.68) rotate(5deg); filter: blur(5px) brightness(1.1); } }
+
+@media (max-height: 820px) {
+  #pendingGamePage.pg-page,
+  #pendingGamePage.pg-page--game { --pg-card-w: clamp(320px, 23vw, 390px); --pg-card-h: clamp(450px, 60vh, 560px); }
+  #pendingGamePage .pg-card { top: 55% !important; }
+  #pendingGamePage .pg-hud-rank-card { top: calc(55% - var(--pg-card-half-h) - 96px) !important; }
+  #pendingGamePage .pg-hud-xp-ring { top: calc(55% - var(--pg-card-half-h) - 104px) !important; width: 100px !important; height: 100px !important; }
+  #pendingGamePage .pg-hotkey-strip { top: calc(55% + var(--pg-card-half-h) + 20px) !important; }
+}
+
+@media (max-width: 1500px) {
+  #pendingGamePage.pg-page,
+  #pendingGamePage.pg-page--game { --pg-card-w: clamp(320px, 24vw, 390px); --pg-card-h: clamp(470px, 62vh, 590px); }
+  #pendingGamePage .pg-card[data-slot="-1"] { transform: translate(calc(-50% - 275px), -50%) scale(.70) rotateY(12deg) translateZ(-130px) !important; }
+  #pendingGamePage .pg-card[data-slot="1"] { transform: translate(calc(-50% + 275px), -50%) scale(.70) rotateY(-12deg) translateZ(-130px) !important; }
+  #pendingGamePage .pg-card[data-slot="-2"] { transform: translate(calc(-50% - 500px), -50%) scale(.52) rotateY(18deg) translateZ(-260px) !important; }
+  #pendingGamePage .pg-card[data-slot="2"] { transform: translate(calc(-50% + 500px), -50%) scale(.52) rotateY(-18deg) translateZ(-260px) !important; }
+}
