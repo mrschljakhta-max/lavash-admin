@@ -1,7 +1,7 @@
 (() => {
   const records = [
     {
-      id: '98a7f2e1',
+      id: 'uav-001',
       title: 'БПЛА Shahed-136',
       status: 'unknown',
       dataType: 'БПЛА',
@@ -14,10 +14,298 @@
       coordinates: '50.3489° N, 30.9590° E',
       type: 'Ударний БПЛА',
       model: 'Shahed-136',
-      altitude: '2200 м',
-      speed: '185 км/год',
+      ownership: 'ворожий',
       source: 'raw_word_events',
       confidence: 72
+    },
+    {
+      id: 'uav-002',
+      title: 'БПЛА Lancet-3',
+      status: 'unknown',
+      dataType: 'БПЛА',
+      mainValue: 'Ланцет-3',
+      unknownType: 'uav',
+      createdAt: '08.05.2024 11:45',
+      station: 'Radar_05',
+      settlement: 'м. Харків',
+      region: 'Харківська обл.',
+      coordinates: '49.9935° N, 36.2304° E',
+      type: 'Баражуючий боєприпас',
+      model: 'Lancet-3',
+      ownership: 'ворожий',
+      source: 'raw_word_events',
+      confidence: 64
+    },
+    {
+      id: 'uav-003',
+      title: 'БПЛА Zala 421',
+      status: 'unknown',
+      dataType: 'БПЛА',
+      mainValue: 'Zala 421',
+      unknownType: 'uav',
+      createdAt: '08.05.2024 12:10',
+      station: 'Radar_04',
+      settlement: 'с. Іванівка',
+      region: 'Чернігівська обл.',
+      coordinates: '51.2380° N, 31.2980° E',
+      type: 'Розвідувальний БПЛА',
+      model: 'Zala 421',
+      ownership: 'ворожий',
+      source: 'raw_excel_events',
+      confidence: 81
+    },
+    {
+      id: 'settlement-001',
+      title: 'НП Часів Яр',
+      status: 'unknown',
+      dataType: 'Населений пункт',
+      mainValue: 'Часів Яр',
+      unknownType: 'settlement',
+      createdAt: '08.05.2024 09:15',
+      station: 'Radar_02',
+      settlement: 'Часів Яр',
+      hromada: 'Часовоярська',
+      district: 'Бахмутський',
+      region: 'Донецька обл.',
+      lat: '48.5937',
+      lon: '37.8572',
+      source: 'dict_pending',
+      confidence: 58
+    },
+    {
+      id: 'settlement-002',
+      title: 'НП Кудрівка',
+      status: 'unknown',
+      dataType: 'Населений пункт',
+      mainValue: 'Кудрівка',
+      unknownType: 'settlement',
+      createdAt: '08.05.2024 13:22',
+      station: 'Radar_03',
+      settlement: 'Кудрівка',
+      hromada: 'Сосницька',
+      district: 'Корюківський',
+      region: 'Чернігівська обл.',
+      lat: '51.6351',
+      lon: '32.7164',
+      source: 'dict_pending',
+      confidence: 62
+    },
+    {
+      id: 'settlement-003',
+      title: 'НП Новоєгорівка',
+      status: 'unknown',
+      dataType: 'Населений пункт',
+      mainValue: 'Новоєгорівка',
+      unknownType: 'settlement',
+      createdAt: '08.05.2024 14:05',
+      station: 'Radar_01',
+      settlement: 'Новоєгорівка',
+      hromada: 'Коломийчиська',
+      district: 'Сватівський',
+      region: 'Луганська обл.',
+      lat: '49.4750',
+      lon: '37.8900',
+      source: 'raw_word_events',
+      confidence: 51
+    },
+    {
+      id: 'unit-001',
+      title: 'Підрозділ 2 АДн',
+      status: 'unknown',
+      dataType: 'Підрозділ',
+      mainValue: '2 АДн',
+      unknownType: 'unit',
+      createdAt: '08.05.2024 19:48',
+      station: '—',
+      settlement: 'м. Бахмут',
+      parentUnit: '45 оабр',
+      source: 'telegram_parse',
+      confidence: 67
+    },
+    {
+      id: 'unit-002',
+      title: 'Підрозділ 1 батарея',
+      status: 'unknown',
+      dataType: 'Підрозділ',
+      mainValue: '1 батарея',
+      unknownType: 'unit',
+      createdAt: '08.05.2024 20:11',
+      station: '—',
+      settlement: '—',
+      parentUnit: '2 АДн',
+      source: 'raw_excel_events',
+      confidence: 74
+    },
+    {
+      id: 'unit-003',
+      title: 'Підрозділ РЕБ-група',
+      status: 'unknown',
+      dataType: 'Підрозділ',
+      mainValue: 'РЕБ-група',
+      unknownType: 'unit',
+      createdAt: '08.05.2024 21:02',
+      station: '—',
+      settlement: '—',
+      parentUnit: 'служба РЕБ',
+      source: 'manual_import',
+      confidence: 49
+    },
+    {
+      id: 'station-001',
+      title: 'Станція Radar_07',
+      status: 'unknown',
+      dataType: 'Станція',
+      mainValue: 'Radar_07',
+      unknownType: 'station',
+      createdAt: '08.05.2024 15:33',
+      station: 'Radar_07',
+      settlement: 'с. Гора',
+      region: 'Київська обл.',
+      source: 'raw_word_events',
+      confidence: 61
+    },
+    {
+      id: 'station-002',
+      title: 'Станція Халк',
+      status: 'unknown',
+      dataType: 'Станція',
+      mainValue: 'Халк',
+      unknownType: 'station',
+      createdAt: '08.05.2024 16:07',
+      station: 'Халк',
+      settlement: 'м. Словʼянськ',
+      region: 'Донецька обл.',
+      source: 'raw_word_events',
+      confidence: 77
+    },
+    {
+      id: 'station-003',
+      title: 'Станція Медельїн',
+      status: 'unknown',
+      dataType: 'Станція',
+      mainValue: 'Медельїн',
+      unknownType: 'station',
+      createdAt: '08.05.2024 16:42',
+      station: 'Медельїн',
+      settlement: 'м. Ізюм',
+      region: 'Харківська обл.',
+      source: 'raw_word_events',
+      confidence: 69
+    },
+    {
+      id: 'object-001',
+      title: 'Обʼєкт прикриття ОКП',
+      status: 'unknown',
+      dataType: 'Обʼєкт прикриття',
+      mainValue: 'ОКП',
+      unknownType: 'object',
+      createdAt: '08.05.2024 17:12',
+      station: 'Radar_06',
+      settlement: 'с. Гора',
+      unitOwner: '2 АДн',
+      source: 'request_form',
+      confidence: 83
+    },
+    {
+      id: 'object-002',
+      title: 'Обʼєкт прикриття ПУ',
+      status: 'unknown',
+      dataType: 'Обʼєкт прикриття',
+      mainValue: 'ПУ дивізіону',
+      unknownType: 'object',
+      createdAt: '08.05.2024 17:38',
+      station: 'Radar_01',
+      settlement: 'м. Краматорськ',
+      unitOwner: '1 АДн',
+      source: 'request_form',
+      confidence: 57
+    },
+    {
+      id: 'object-003',
+      title: 'Обʼєкт прикриття склад БК',
+      status: 'unknown',
+      dataType: 'Обʼєкт прикриття',
+      mainValue: 'Склад БК',
+      unknownType: 'object',
+      createdAt: '08.05.2024 18:20',
+      station: 'Radar_08',
+      settlement: 'м. Дружківка',
+      unitOwner: '45 оабр',
+      source: 'request_form',
+      confidence: 66
+    },
+    {
+      id: 'record-001',
+      title: 'Невідомий запис #117',
+      status: 'unknown',
+      dataType: 'Запис',
+      mainValue: '323 10 30.04.2026 BMuIK0I',
+      unknownType: 'record',
+      createdAt: '08.05.2024 22:18',
+      station: '—',
+      settlement: '—',
+      source: 'ocr_fragment',
+      confidence: 22
+    },
+    {
+      id: 'record-002',
+      title: 'Невідомий запис #118',
+      status: 'unknown',
+      dataType: 'Запис',
+      mainValue: 'E3BT / KponHBa / Aenbra',
+      unknownType: 'record',
+      createdAt: '08.05.2024 22:31',
+      station: '—',
+      settlement: '—',
+      source: 'ocr_fragment',
+      confidence: 18
+    },
+    {
+      id: 'record-003',
+      title: 'Невідомий запис #119',
+      status: 'unknown',
+      dataType: 'Запис',
+      mainValue: 'рядок не класифіковано',
+      unknownType: 'record',
+      createdAt: '08.05.2024 22:44',
+      station: '—',
+      settlement: '—',
+      source: 'raw_text',
+      confidence: 12
+    },
+    {
+      id: 'uav-004',
+      title: 'БПЛА SuperCam',
+      status: 'unknown',
+      dataType: 'БПЛА',
+      mainValue: 'SuperCam',
+      unknownType: 'uav',
+      createdAt: '08.05.2024 23:05',
+      station: 'Radar_09',
+      settlement: 'м. Купʼянськ',
+      type: 'Розвідувальний БПЛА',
+      model: 'SuperCam',
+      ownership: 'ворожий',
+      source: 'raw_word_events',
+      confidence: 73
+    },
+    {
+      id: 'settlement-004',
+      title: 'НП Новоселівка',
+      status: 'unknown',
+      dataType: 'Населений пункт',
+      mainValue: 'Новоселівка',
+      unknownType: 'settlement',
+      createdAt: '08.05.2024 23:31',
+      station: 'Radar_10',
+      settlement: 'Новоселівка',
+      hromada: 'Лиманська',
+      district: 'Краматорський',
+      region: 'Донецька обл.',
+      lat: '48.9880',
+      lon: '37.8090',
+      source: 'dict_pending',
+      confidence: 47
     }
   ];
 
@@ -204,7 +492,8 @@
 
     const progress = Math.round((state.xp / state.xpMax) * 100);
     const activeRecord = records[state.active];
-    document.documentElement.style.setProperty('--pg-accent-status', getStatusColor(activeRecord.status));
+    const activeUnknownConfig = getUnknownConfig(activeRecord.unknownType || 'record');
+    document.documentElement.style.setProperty('--pg-accent-status', activeUnknownConfig.color || getStatusColor(activeRecord.status));
 
     root.innerHTML = `
       <section class="pg-page pg-page--clean" id="pendingGamePage">
@@ -311,13 +600,117 @@
     return value === undefined || value === null || value === '' ? fallback : value;
   }
 
+  function getUnknownTypeOptions(selectedType) {
+    const types = [
+      ['uav', 'БПЛА'],
+      ['settlement', 'Населений пункт'],
+      ['object', 'Обʼєкт прикриття'],
+      ['unit', 'Підрозділ'],
+      ['station', 'Станція'],
+      ['record', 'Невідомий запис']
+    ];
+
+    return types.map(([value, label]) => `
+      <option value="${value}" ${value === selectedType ? 'selected' : ''}>${label}</option>
+    `).join('');
+  }
+
+  function renderOwnershipOptions(selectedValue) {
+    const values = [
+      ['ворожий', 'Ворожий'],
+      ['україна', 'Україна'],
+      ['спільний', 'Спільний']
+    ];
+
+    return values.map(([value, label]) => `
+      <option value="${value}" ${value === selectedValue ? 'selected' : ''}>${label}</option>
+    `).join('');
+  }
+
+  function renderUnitOptions(selectedValue) {
+    const values = [
+      '45 оабр',
+      'служба РЕБ',
+      '1 АДн',
+      '2 АДн',
+      '3 АДн',
+      '1 батарея',
+      '2 батарея',
+      'РЕБ-група'
+    ];
+
+    const selected = selectedValue || '';
+    const options = values.map((value) => `
+      <option value="${value}" ${value === selected ? 'selected' : ''}>${value}</option>
+    `).join('');
+
+    return `<option value="" ${!selected ? 'selected' : ''}>Не обрано</option>${options}`;
+  }
+
+  function renderTypeSpecificEditFields(record, unknownType) {
+    if (unknownType === 'uav') {
+      return `
+        <label>
+          <span>Приналежність</span>
+          <select data-field="ownership">
+            ${renderOwnershipOptions(record.ownership || 'ворожий')}
+          </select>
+        </label>
+      `;
+    }
+
+    if (unknownType === 'settlement') {
+      return `
+        <label><span>Громада</span><input data-field="hromada" value="${safeValue(record.hromada, '')}" /></label>
+        <label><span>Район</span><input data-field="district" value="${safeValue(record.district, '')}" /></label>
+        <label><span>Область</span><input data-field="region" value="${safeValue(record.region, '')}" /></label>
+        <label><span>Lat</span><input data-field="lat" value="${safeValue(record.lat, '')}" /></label>
+        <label><span>Lon</span><input data-field="lon" value="${safeValue(record.lon, '')}" /></label>
+      `;
+    }
+
+    if (unknownType === 'object') {
+      return `
+        <label>
+          <span>Підрозділ, до якого належить</span>
+          <select data-field="unitOwner">
+            ${renderUnitOptions(record.unitOwner)}
+          </select>
+        </label>
+      `;
+    }
+
+    if (unknownType === 'unit') {
+      return `
+        <label>
+          <span>Батьківський підрозділ</span>
+          <select data-field="parentUnit">
+            ${renderUnitOptions(record.parentUnit)}
+          </select>
+        </label>
+      `;
+    }
+
+    return `
+      <label class="pg-edit-wide">
+        <span>Коментар класифікації</span>
+        <input data-field="classificationNote" value="${safeValue(record.classificationNote, '')}" placeholder="Що саме не вдалося визначити" />
+      </label>
+    `;
+  }
+
+  function getVisualImage(record, unknownType) {
+    if (unknownType === 'uav') return '../assets/img/uav/shahed-136.png';
+    return getUnknownIconUrl(unknownType);
+  }
+
   function renderCard(record, index, slot) {
     const active = slot === 0 ? 'is-active' : '';
     const unknownType = record.unknownType || 'record';
     const unknownConfig = getUnknownConfig(unknownType);
-    const dataType = record.dataType || record.type || 'Запис';
+    const dataType = record.dataType || record.type || unknownConfig.shortLabel || 'Запис';
     const mainValue = record.mainValue || record.model || record.settlement || record.title || 'Невідоме значення';
-    const confidence = Number(record.confidence || 0);
+    const visualImage = getVisualImage(record, unknownType);
 
     return `
       <article
@@ -355,56 +748,17 @@
                 </div>
 
                 <h2 class="pg-data__value">${mainValue}</h2>
-
-                <p class="pg-data__hint">
-                  Значення потребує підтвердження оператором
-                </p>
-
-                <div class="pg-context">
-                  <div class="pg-context__row">
-                    <span>Час</span>
-                    <strong>${safeValue(record.createdAt)}</strong>
-                  </div>
-
-                  <div class="pg-context__row">
-                    <span>Джерело</span>
-                    <strong>${safeValue(record.source)}</strong>
-                  </div>
-
-                  <div class="pg-context__row">
-                    <span>Станція</span>
-                    <strong>${safeValue(record.station)}</strong>
-                  </div>
-
-                  <div class="pg-context__row">
-                    <span>НП</span>
-                    <strong>${safeValue(record.settlement)}</strong>
-                  </div>
-                </div>
-
-                <div class="pg-confidence">
-                  <span>Впевненість</span>
-                  <div class="pg-confidence__bar">
-                    <i style="width:${Math.max(0, Math.min(100, confidence))}%"></i>
-                  </div>
-                  <b>${confidence}%</b>
-                </div>
               </section>
 
               <section class="pg-visual pg-visual--${unknownType}">
                 <div class="pg-radar-core"></div>
 
                 <img
-                  class="pg-uav-img"
-                  src="../assets/img/uav/shahed-136.png"
+                  class="pg-uav-img pg-unknown-visual-img"
+                  src="${visualImage}"
                   alt="${mainValue}"
                   loading="lazy"
                 />
-
-                <div class="pg-visual-label">
-                  <span>${dataType}</span>
-                  <strong>${mainValue}</strong>
-                </div>
               </section>
             </div>
 
@@ -417,20 +771,30 @@
               <span>${safeValue(record.source, 'unknown_source')}</span>
             </div>
 
-            <div class="pg-edit-grid">
-              <label><span>Тип даних</span><input value="${dataType}" /></label>
-              <label><span>Значення</span><input value="${mainValue}" /></label>
-              <label><span>Дата / час</span><input value="${safeValue(record.createdAt, '')}" /></label>
-              <label><span>Станція</span><input value="${safeValue(record.station, '')}" /></label>
-              <label><span>Населений пункт</span><input value="${safeValue(record.settlement, '')}" /></label>
-              <label><span>Координати</span><input value="${safeValue(record.coordinates, '')}" /></label>
-              <label><span>Модель</span><input value="${safeValue(record.model, '')}" /></label>
-              <label><span>Впевненість</span><input value="${confidence}%" /></label>
+            <div class="pg-edit-grid pg-edit-grid--clean">
+              <label>
+                <span>Тип обʼєкта</span>
+                <select data-field="unknownType">
+                  ${getUnknownTypeOptions(unknownType)}
+                </select>
+              </label>
+
+              <div class="pg-readonly-field">
+                <span>Теперішнє значення</span>
+                <strong>${mainValue}</strong>
+              </div>
+
+              <label class="pg-edit-wide">
+                <span>Редагування назви</span>
+                <input data-field="mainValue" value="${mainValue}" placeholder="Введи правильну назву" />
+              </label>
+
+              ${renderTypeSpecificEditFields(record, unknownType)}
             </div>
 
             <label class="pg-edit-note">
               <span>Примітка</span>
-              <textarea>Система не впевнена у значенні: ${mainValue}</textarea>
+              <textarea data-field="note">Система не впевнена у значенні: ${mainValue}</textarea>
             </label>
 
             <button class="pg-save-btn" type="button">Зберегти зміни</button>
