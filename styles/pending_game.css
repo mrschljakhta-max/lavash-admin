@@ -2856,3 +2856,27 @@
 #pendingGamePage .pg-card__front small {
   bottom: -58px !important;
 }
+#pendingGamePage .pg-rankbar {
+  display: none !important;
+}
+
+#pendingGamePage {
+  padding-top: 0 !important;
+}
+
+#pendingGamePage .pg-stage {
+  min-height: calc(100vh - 190px) !important;
+  display: grid !important;
+  place-items: center !important;
+}
+
+.pg-right-card--rankbar {
+  border-color: rgba(85, 223, 255, .24) !important;
+}
+
+.pg-right-card--rankbar .pg-right-note {
+  margin-top: 10px;
+  color: rgba(230, 240, 255, .66);
+  font-size: 12px;
+  font-weight: 800;
+}
