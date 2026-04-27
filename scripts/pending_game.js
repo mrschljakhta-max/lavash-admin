@@ -612,6 +612,81 @@
     return value === undefined || value === null || value === '' ? fallback : value;
   }
 
+  function escapeAttr(value) {
+    return String(value ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/"/g, '&quot;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+  }
+
+  function renderCustomSelect(field, options, selectedValue, placeholder = 'Не обрано') {
+    const normalizedOptions = options || [];
+    const selected = normalizedOptions.find(([value]) => value === selectedValue);
+    const currentValue = selected ? selected[0] : '';
+    const currentLabel = selected ? selected[1] : placeholder;
+
+    return `
+      <div
+        class="pg-select"
+        data-field="${field}"
+        data-value="${escapeAttr(currentValue)}"
+        tabindex="0"
+        role="button"
+        aria-label="${escapeAttr(currentLabel)}"
+      >
+        <div class="pg-select__head">
+          <span>${currentLabel}</span>
+          <b>⌄</b>
+        </div>
+
+        <div class="pg-select__dropdown">
+          ${normalizedOptions.map(([value, label]) => `
+            <button
+              type="button"
+              class="pg-select__item ${value === currentValue ? 'is-selected' : ''}"
+              data-value="${escapeAttr(value)}"
+            >${label}</button>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  function getUnknownTypeOptionList() {
+    return [
+      ['uav', 'БПЛА'],
+      ['settlement', 'Населений пункт'],
+      ['object', 'Обʼєкт прикриття'],
+      ['unit', 'Підрозділ'],
+      ['station', 'Станція'],
+      ['record', 'Невідомий запис']
+    ];
+  }
+
+  function getOwnershipOptionList() {
+    return [
+      ['ворожий', 'Ворожий'],
+      ['україна', 'Україна'],
+      ['спільний', 'Спільний']
+    ];
+  }
+
+  function getUnitOptionList(includeEmpty = true) {
+    const values = [
+      '45 оабр',
+      'служба РЕБ',
+      '1 АДн',
+      '2 АДн',
+      '3 АДн',
+      '1 батарея',
+      '2 батарея',
+      'РЕБ-група'
+    ].map((value) => [value, value]);
+
+    return includeEmpty ? [['', 'Не обрано'], ...values] : values;
+  }
+
   function getUnknownTypeOptions(selectedType) {
     const types = [
       ['uav', 'БПЛА'],
@@ -664,9 +739,7 @@
       return `
         <label>
           <span>Приналежність</span>
-          <select data-field="ownership">
-            ${renderOwnershipOptions(record.ownership || 'ворожий')}
-          </select>
+          ${renderCustomSelect('ownership', getOwnershipOptionList(), record.ownership || 'ворожий')}
         </label>
       `;
     }
@@ -685,9 +758,7 @@
       return `
         <label>
           <span>Підрозділ, до якого належить</span>
-          <select data-field="unitOwner">
-            ${renderUnitOptions(record.unitOwner)}
-          </select>
+          ${renderCustomSelect('unitOwner', getUnitOptionList(), record.unitOwner || '')}
         </label>
       `;
     }
@@ -696,19 +767,12 @@
       return `
         <label>
           <span>Батьківський підрозділ</span>
-          <select data-field="parentUnit">
-            ${renderUnitOptions(record.parentUnit)}
-          </select>
+          ${renderCustomSelect('parentUnit', getUnitOptionList(), record.parentUnit || '')}
         </label>
       `;
     }
 
-    return `
-      <label class="pg-edit-wide">
-        <span>Коментар класифікації</span>
-        <input data-field="classificationNote" value="${safeValue(record.classificationNote, '')}" placeholder="Що саме не вдалося визначити" />
-      </label>
-    `;
+    return '';
   }
 
   function getVisualImage(record, unknownType) {
@@ -786,9 +850,7 @@
             <div class="pg-edit-grid pg-edit-grid--clean">
               <label>
                 <span>Тип обʼєкта</span>
-                <select data-field="unknownType">
-                  ${getUnknownTypeOptions(unknownType)}
-                </select>
+                ${renderCustomSelect('unknownType', getUnknownTypeOptionList(), unknownType)}
               </label>
 
               <div class="pg-readonly-field">
@@ -804,10 +866,6 @@
               ${renderTypeSpecificEditFields(record, unknownType)}
             </div>
 
-            <label class="pg-edit-note">
-              <span>Примітка</span>
-              <textarea data-field="note">Система не впевнена у значенні: ${mainValue}</textarea>
-            </label>
 
             <button class="pg-save-btn" type="button">Зберегти зміни</button>
           </div>
@@ -837,7 +895,7 @@
       const key = field.dataset.field;
       if (!key) return;
 
-      record[key] = field.value;
+      record[key] = field.dataset.value !== undefined ? field.dataset.value : field.value;
     });
 
     if (record.mainValue) {
@@ -864,7 +922,7 @@
     let isDragging = false;
 
     card.addEventListener('pointerdown', (event) => {
-      if (event.target.closest('input, textarea, select, option, button, label')) return;
+      if (event.target.closest('input, textarea, select, option, button, label, .pg-select')) return;
       if (card.classList.contains('is-flipped')) return;
 
       isDragging = true;
@@ -936,19 +994,78 @@
     });
   }
 
+  function bindCustomSelects(card) {
+    card.querySelectorAll('.pg-select').forEach((select) => {
+      const head = select.querySelector('.pg-select__head');
+      const label = select.querySelector('.pg-select__head span');
+      const items = select.querySelectorAll('.pg-select__item');
+
+      const closeOthers = () => {
+        card.querySelectorAll('.pg-select.is-open').forEach((opened) => {
+          if (opened !== select) opened.classList.remove('is-open');
+        });
+      };
+
+      head?.addEventListener('click', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        closeOthers();
+        select.classList.toggle('is-open');
+      });
+
+      select.addEventListener('keydown', (event) => {
+        if (event.code === 'Enter' || event.code === 'Space') {
+          event.preventDefault();
+          event.stopPropagation();
+          closeOthers();
+          select.classList.toggle('is-open');
+        }
+
+        if (event.code === 'Escape') {
+          event.preventDefault();
+          event.stopPropagation();
+          select.classList.remove('is-open');
+        }
+      });
+
+      items.forEach((item) => {
+        item.addEventListener('click', (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+
+          const value = item.dataset.value || '';
+          const text = item.textContent.trim();
+
+          select.dataset.value = value;
+          if (label) label.textContent = text;
+
+          items.forEach((node) => node.classList.remove('is-selected'));
+          item.classList.add('is-selected');
+          select.classList.remove('is-open');
+
+          select.dispatchEvent(new CustomEvent('pg-select-change', {
+            bubbles: true,
+            detail: { field: select.dataset.field, value, label: text }
+          }));
+        });
+      });
+    });
+  }
+
   function bind() {
     document.querySelectorAll('.pg-card.is-active').forEach((card) => {
       bindCardDrag(card);
+      bindCustomSelects(card);
 
       card.addEventListener('click', (event) => {
-        if (event.target.closest('input, textarea, select, option, button, label')) return;
+        if (event.target.closest('input, textarea, select, option, button, label, .pg-select')) return;
         if (card.classList.contains('is-dragging')) return;
         card.classList.toggle('is-flipped');
       });
 
-      card.querySelector('[data-field="unknownType"]')?.addEventListener('change', (event) => {
+      card.querySelector('[data-field="unknownType"]')?.addEventListener('pg-select-change', (event) => {
         event.stopPropagation();
-        updateActiveRecordField('unknownType', event.target.value);
+        updateActiveRecordField('unknownType', event.detail.value);
         render();
         qs('.pg-card.is-active')?.classList.add('is-flipped');
       });
@@ -1069,7 +1186,7 @@
   document.addEventListener('keydown', (event) => {
     if (!qs('#pendingGamePage')) return;
 
-    const isTyping = event.target?.closest?.('input, textarea, select, option');
+    const isTyping = event.target?.closest?.('input, textarea, select, option, .pg-select');
 
     if (isTyping) {
       if (event.key === 'Escape') {
@@ -1128,6 +1245,15 @@
     if (!window.__LAVASH_PENDING_GAME_HOTKEYS_BOUND__) {
       window.__LAVASH_PENDING_GAME_HOTKEYS_BOUND__ = true;
       bindHotkeys();
+    }
+
+    if (!window.__LAVASH_PENDING_SELECT_CLOSE_BOUND__) {
+      window.__LAVASH_PENDING_SELECT_CLOSE_BOUND__ = true;
+      document.addEventListener('click', () => {
+        document.querySelectorAll('.pg-select.is-open').forEach((select) => {
+          select.classList.remove('is-open');
+        });
+      });
     }
   }
 
