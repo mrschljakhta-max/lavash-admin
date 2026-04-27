@@ -2738,3 +2738,69 @@
       var(--pg-card-bg-deep)
     ) !important;
 }
+.pg-select {
+  position: relative;
+  width: 100%;
+}
+
+.pg-select__head {
+  height: 54px;
+  padding: 0 18px;
+  border-radius: 14px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  font-weight: 600;
+  color: #fff;
+
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.08);
+
+  cursor: pointer;
+  transition: all .2s ease;
+}
+
+.pg-select__head:hover {
+  border-color: var(--pg-card-accent);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--pg-card-accent), transparent 70%);
+}
+
+.pg-select__dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+
+  border-radius: 14px;
+  overflow: hidden;
+
+  background: rgba(20,28,60,.96);
+  backdrop-filter: blur(12px);
+
+  border: 1px solid rgba(255,255,255,.08);
+
+  opacity: 0;
+  transform: translateY(6px);
+  pointer-events: none;
+
+  transition: all .2s ease;
+  z-index: 20;
+}
+
+.pg-select.open .pg-select__dropdown {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.pg-select__item {
+  padding: 14px 18px;
+  cursor: pointer;
+  transition: background .2s ease;
+}
+
+.pg-select__item:hover {
+  background: color-mix(in srgb, var(--pg-card-accent), transparent 80%);
+}
