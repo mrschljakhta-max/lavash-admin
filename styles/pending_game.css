@@ -3341,3 +3341,168 @@
   #pendingGamePage .pg-card[data-slot="-2"] { transform: translate(calc(-50% - 500px), -50%) scale(.52) rotateY(18deg) translateZ(-260px) !important; }
   #pendingGamePage .pg-card[data-slot="2"] { transform: translate(calc(-50% + 500px), -50%) scale(.52) rotateY(-18deg) translateZ(-260px) !important; }
 }
+
+/* =========================================================
+   LAVASH PENDING — SIDE HUD + BIG PORTRAIT CARD FINAL
+   1) центральна картка більша: вища + трохи ширша
+   2) плашка рангу ліворуч від картки
+   3) XP-кільце праворуч від картки
+   4) гарячі клавіші нижче картки, без накладання
+========================================================= */
+
+#pendingGamePage.pg-page,
+#pendingGamePage.pg-page--game {
+  --pg-card-w: clamp(390px, 28vw, 500px) !important;
+  --pg-card-h: clamp(560px, 70vh, 720px) !important;
+  --pg-card-half-w: calc(var(--pg-card-w) / 2) !important;
+  --pg-card-half-h: calc(var(--pg-card-h) / 2) !important;
+  --pg-card-center-y: 55% !important;
+  overflow: hidden !important;
+}
+
+/* Центральна активна картка — домінанта сцени */
+#pendingGamePage .pg-card {
+  top: var(--pg-card-center-y) !important;
+  width: var(--pg-card-w) !important;
+  height: var(--pg-card-h) !important;
+}
+
+#pendingGamePage .pg-card.is-active {
+  width: var(--pg-card-w) !important;
+  height: var(--pg-card-h) !important;
+  transform: translate(-50%, -50%) scale(1) rotateY(0deg) translateZ(0) !important;
+}
+
+/* 5-карткова depth-карусель: 2 і 3 ближче, 4 і 5 далі */
+#pendingGamePage .pg-card[data-slot="-1"] {
+  transform: translate(calc(-50% - 330px), -50%) scale(.72) rotateY(13deg) translateZ(-135px) !important;
+  opacity: .30 !important;
+}
+
+#pendingGamePage .pg-card[data-slot="1"] {
+  transform: translate(calc(-50% + 330px), -50%) scale(.72) rotateY(-13deg) translateZ(-135px) !important;
+  opacity: .30 !important;
+}
+
+#pendingGamePage .pg-card[data-slot="-2"] {
+  transform: translate(calc(-50% - 575px), -50%) scale(.54) rotateY(20deg) translateZ(-280px) !important;
+  opacity: .13 !important;
+}
+
+#pendingGamePage .pg-card[data-slot="2"] {
+  transform: translate(calc(-50% + 575px), -50%) scale(.54) rotateY(-20deg) translateZ(-280px) !important;
+  opacity: .13 !important;
+}
+
+/* Внутрішня геометрія портретної картки */
+#pendingGamePage .pg-card.is-active .pg-card__face {
+  padding: clamp(26px, 2.3vw, 38px) !important;
+  border-radius: 36px !important;
+}
+
+#pendingGamePage .pg-card.is-active .pg-card__content,
+#pendingGamePage .pg-card.is-active .pg-card__content--new {
+  height: calc(100% - 70px) !important;
+  grid-template-columns: 1fr !important;
+  grid-template-rows: minmax(260px, 1fr) auto !important;
+  gap: 24px !important;
+}
+
+#pendingGamePage .pg-card.is-active .pg-visual {
+  height: min(360px, 40vh) !important;
+}
+
+#pendingGamePage .pg-card.is-active .pg-data__value,
+#pendingGamePage .pg-card.is-active h2 {
+  font-size: clamp(48px, 3.7vw, 72px) !important;
+  line-height: .98 !important;
+}
+
+/* HUD як side-elements відносно центральної картки */
+#pendingGamePage .pg-game-hud {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 70 !important;
+  pointer-events: none !important;
+}
+
+/* Плашка рангу — ліворуч від картки, не зверху */
+#pendingGamePage .pg-hud-rank-card {
+  left: calc(50% - var(--pg-card-half-w) - 30px) !important;
+  top: calc(var(--pg-card-center-y) - var(--pg-card-half-h) + 48px) !important;
+  transform: translateX(-100%) !important;
+  width: 190px !important;
+  min-height: 84px !important;
+  justify-items: end !important;
+}
+
+/* XP-кільце — праворуч від картки, дзеркально до рангу */
+#pendingGamePage .pg-hud-xp-ring {
+  left: calc(50% + var(--pg-card-half-w) + 30px) !important;
+  top: calc(var(--pg-card-center-y) - var(--pg-card-half-h) + 36px) !important;
+  width: 124px !important;
+  height: 124px !important;
+}
+
+#pendingGamePage .pg-hud-xp-ring__core strong {
+  font-size: 28px !important;
+}
+
+/* Гарячі клавіші — окремо нижче, не залазять на картку */
+#pendingGamePage .pg-hotkey-strip {
+  top: calc(var(--pg-card-center-y) + var(--pg-card-half-h) + 32px) !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  max-width: min(780px, 72vw) !important;
+  z-index: 60 !important;
+}
+
+/* Якщо місця по висоті менше — трохи стискаємо, але логіку не ламаємо */
+@media (max-height: 860px) {
+  #pendingGamePage.pg-page,
+  #pendingGamePage.pg-page--game {
+    --pg-card-w: clamp(360px, 26vw, 450px) !important;
+    --pg-card-h: clamp(510px, 64vh, 610px) !important;
+    --pg-card-center-y: 55% !important;
+  }
+
+  #pendingGamePage .pg-card.is-active .pg-visual {
+    height: min(300px, 34vh) !important;
+  }
+
+  #pendingGamePage .pg-hud-rank-card {
+    top: calc(var(--pg-card-center-y) - var(--pg-card-half-h) + 36px) !important;
+    width: 176px !important;
+    min-height: 78px !important;
+  }
+
+  #pendingGamePage .pg-hud-xp-ring {
+    top: calc(var(--pg-card-center-y) - var(--pg-card-half-h) + 26px) !important;
+    width: 110px !important;
+    height: 110px !important;
+  }
+}
+
+@media (max-width: 1500px) {
+  #pendingGamePage.pg-page,
+  #pendingGamePage.pg-page--game {
+    --pg-card-w: clamp(350px, 25vw, 430px) !important;
+    --pg-card-h: clamp(500px, 62vh, 590px) !important;
+  }
+
+  #pendingGamePage .pg-card[data-slot="-1"] {
+    transform: translate(calc(-50% - 285px), -50%) scale(.70) rotateY(13deg) translateZ(-135px) !important;
+  }
+
+  #pendingGamePage .pg-card[data-slot="1"] {
+    transform: translate(calc(-50% + 285px), -50%) scale(.70) rotateY(-13deg) translateZ(-135px) !important;
+  }
+
+  #pendingGamePage .pg-card[data-slot="-2"] {
+    transform: translate(calc(-50% - 500px), -50%) scale(.52) rotateY(20deg) translateZ(-280px) !important;
+  }
+
+  #pendingGamePage .pg-card[data-slot="2"] {
+    transform: translate(calc(-50% + 500px), -50%) scale(.52) rotateY(-20deg) translateZ(-280px) !important;
+  }
+}
