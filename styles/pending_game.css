@@ -2881,368 +2881,41 @@
   font-weight: 800;
 }
 
-
 /* =========================================================
-   LAVASH PENDING — GAME UI FINAL ARCHITECTURE
-   Центрована картка + HUD як overlay, без container-зсувів
+   LAVASH PENDING — CLEAN FINAL HUD LAYOUT
+   1) центральна картка лишається по центру
+   2) плашка рангу незалежна від картки і винесена вліво
+   3) XP-кільце незалежне від картки і винесене вправо
+   4) гарячі клавіші нижче картки, без накладання
+   5) старі контейнерні обмеження та зайві rankbar-панелі сховані
 ========================================================= */
 
 #pendingGamePage.pg-page,
 #pendingGamePage.pg-page--game {
-  --pg-hero-half-w: min(520px, 31vw);
-  --pg-hero-half-h: min(260px, 26vh);
+  --pg-card-w: clamp(410px, 29vw, 520px) !important;
+  --pg-card-h: clamp(590px, 72vh, 740px) !important;
+  --pg-card-half-w: calc(var(--pg-card-w) / 2) !important;
+  --pg-card-half-h: calc(var(--pg-card-h) / 2) !important;
+  --pg-card-center-y: 50% !important;
 
-  position: relative !important;
-  width: 100% !important;
-  height: 100% !important;
-  min-height: calc(100vh - 112px) !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  display: block !important;
-  overflow: visible !important;
-  isolation: isolate !important;
-}
+  /* HUD тепер живе від країв робочої сцени, а не від картки */
+  --pg-rank-left: clamp(150px, 13vw, 280px) !important;
+  --pg-xp-right: clamp(150px, 11vw, 260px) !important;
 
-#pendingGamePage .pg-rankbar,
-#pendingGamePage .pg-right-panel,
-#pendingGamePage .pg-session-strip,
-#pendingGamePage .pg-xp-panel,
-#pendingGamePage .pg-combo-panel,
-#pendingGamePage .pg-stats-panel,
-.right-tools .pg-right-panel,
-.right-tools__inner .pg-right-panel {
-  display: none !important;
-}
-
-#pendingGamePage .pg-bg-orb {
-  z-index: -1 !important;
-  pointer-events: none !important;
-}
-
-#pendingGamePage .pg-stage {
-  position: absolute !important;
-  inset: 0 !important;
-  width: 100% !important;
-  height: 100% !important;
-  display: grid !important;
-  place-items: center !important;
-  overflow: visible !important;
-  z-index: 5 !important;
-  margin: 0 !important;
-  padding: 0 !important;
-}
-
-#pendingGamePage .pg-carousel-wrap {
-  position: absolute !important;
-  inset: 0 !important;
-  width: 100% !important;
-  height: 100% !important;
-  display: block !important;
-  overflow: visible !important;
-  cursor: grab !important;
-}
-
-#pendingGamePage .pg-carousel-wrap::after {
-  content: none !important;
-  display: none !important;
-}
-
-#pendingGamePage .pg-carousel {
-  position: absolute !important;
-  inset: 0 !important;
-  width: 100% !important;
-  height: 100% !important;
-  display: block !important;
-  overflow: visible !important;
-  perspective: 1600px !important;
-  transform: none !important;
-}
-
-#pendingGamePage .pg-card {
-  position: absolute !important;
-  left: 50% !important;
-  top: 50% !important;
-  margin: 0 !important;
-  width: min(520px, 26vw) !important;
-  height: min(300px, 34vh) !important;
-  opacity: .16 !important;
-  filter: saturate(.5) brightness(.42) blur(.2px) !important;
-  z-index: 1 !important;
-  transition:
-    transform .48s cubic-bezier(.18,.85,.22,1),
-    opacity .34s ease,
-    filter .34s ease !important;
-}
-
-#pendingGamePage .pg-card[data-slot="-2"] {
-  transform: translate(calc(-50% - 660px), -50%) scale(.52) rotateY(12deg) !important;
-}
-
-#pendingGamePage .pg-card[data-slot="-1"] {
-  transform: translate(calc(-50% - 360px), -50%) scale(.66) rotateY(8deg) !important;
-  opacity: .24 !important;
-}
-
-#pendingGamePage .pg-card[data-slot="1"] {
-  transform: translate(calc(-50% + 360px), -50%) scale(.66) rotateY(-8deg) !important;
-  opacity: .24 !important;
-}
-
-#pendingGamePage .pg-card[data-slot="2"] {
-  transform: translate(calc(-50% + 660px), -50%) scale(.52) rotateY(-12deg) !important;
-}
-
-#pendingGamePage .pg-card.is-active {
-  width: min(1040px, 62vw) !important;
-  height: min(520px, 52vh) !important;
-  aspect-ratio: 2 / 1 !important;
-  transform: translate(-50%, -50%) scale(1) rotateY(0deg) !important;
-  opacity: 1 !important;
-  filter: saturate(1.12) brightness(1.08) !important;
-  z-index: 20 !important;
-}
-
-#pendingGamePage .pg-card.is-active.is-key-ignore,
-#pendingGamePage .pg-card.is-active.is-key-confirm,
-#pendingGamePage .pg-card.is-active.is-key-skip {
-  z-index: 80 !important;
-}
-
-#pendingGamePage .pg-card.is-key-ignore {
-  animation: pgGameFlyLeft .62s cubic-bezier(.18,.9,.2,1) forwards !important;
-}
-
-#pendingGamePage .pg-card.is-key-confirm {
-  animation: pgGameFlyRight .62s cubic-bezier(.18,.9,.2,1) forwards !important;
-}
-
-#pendingGamePage .pg-card.is-key-skip {
-  animation: pgGameFlyDown .62s cubic-bezier(.18,.9,.2,1) forwards !important;
-}
-
-@keyframes pgGameFlyLeft {
-  0% { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(0deg); }
-  35% { opacity: 1; transform: translate(calc(-50% - 82px), calc(-50% - 4px)) scale(1.02) rotate(-7deg); }
-  100% { opacity: 0; transform: translate(calc(-50% - 760px), calc(-50% + 12px)) scale(.78) rotate(-18deg); filter: blur(4px) brightness(1.1); }
-}
-
-@keyframes pgGameFlyRight {
-  0% { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(0deg); }
-  35% { opacity: 1; transform: translate(calc(-50% + 82px), calc(-50% - 4px)) scale(1.02) rotate(7deg); }
-  100% { opacity: 0; transform: translate(calc(-50% + 760px), calc(-50% + 12px)) scale(.78) rotate(18deg); filter: blur(4px) brightness(1.1); }
-}
-
-@keyframes pgGameFlyDown {
-  0% { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(0deg); }
-  35% { opacity: 1; transform: translate(-50%, calc(-50% + 70px)) scale(.98) rotate(2deg); }
-  100% { opacity: 0; transform: translate(-50%, calc(-50% + 560px)) scale(.72) rotate(5deg); filter: blur(5px) brightness(1.1); }
-}
-
-#pendingGamePage .pg-game-hud {
-  position: absolute !important;
-  inset: 0 !important;
-  z-index: 55 !important;
-  pointer-events: none !important;
-}
-
-#pendingGamePage .pg-hud-rank-card {
-  position: absolute !important;
-  left: calc(50% - var(--pg-hero-half-w) - 22px) !important;
-  top: calc(50% - var(--pg-hero-half-h) - 74px) !important;
-  transform: translateX(-100%) !important;
-  width: 168px !important;
-  min-height: 76px !important;
-  padding: 14px 18px !important;
-  border-radius: 18px !important;
-  display: grid !important;
-  justify-items: end !important;
-  align-content: center !important;
-  background:
-    radial-gradient(circle at 80% 0%, rgba(85,223,255,.14), transparent 54%),
-    linear-gradient(180deg, rgba(12,31,86,.82), rgba(4,14,44,.76)) !important;
-  border: 1px solid rgba(118,150,236,.22) !important;
-  box-shadow:
-    0 20px 52px rgba(0,0,0,.32),
-    inset 0 1px 0 rgba(255,255,255,.06) !important;
-  backdrop-filter: blur(14px) !important;
-}
-
-#pendingGamePage .pg-hud-rank-card__kicker {
-  color: rgba(220,230,255,.56) !important;
-  font-size: 10px !important;
-  font-weight: 1000 !important;
-  letter-spacing: .12em !important;
-  text-transform: uppercase !important;
-}
-
-#pendingGamePage .pg-hud-rank-card strong {
-  margin-top: 4px !important;
-  color: #fff4b8 !important;
-  font-size: 19px !important;
-  font-weight: 1000 !important;
-  line-height: 1 !important;
-  text-shadow: 0 0 16px rgba(255,211,107,.25) !important;
-}
-
-#pendingGamePage .pg-hud-rank-card small {
-  margin-top: 7px !important;
-  color: rgba(220,230,255,.70) !important;
-  font-size: 11px !important;
-  font-weight: 900 !important;
-}
-
-#pendingGamePage .pg-hud-xp-ring {
-  position: absolute !important;
-  left: calc(50% + var(--pg-hero-half-w) + 22px) !important;
-  top: calc(50% - var(--pg-hero-half-h) - 92px) !important;
-  width: 112px !important;
-  height: 112px !important;
-  border-radius: 50% !important;
-  display: grid !important;
-  place-items: center !important;
-  background:
-    conic-gradient(var(--pg-ring-accent, #55dfff) 0 var(--pg-ring-progress), rgba(141,88,255,.34) var(--pg-ring-progress) 360deg) !important;
-  box-shadow:
-    0 0 42px color-mix(in srgb, var(--pg-ring-accent, #55dfff), transparent 62%),
-    0 22px 54px rgba(0,0,0,.36) !important;
-  animation: pgHudRingBreath 3.2s ease-in-out infinite !important;
-}
-
-#pendingGamePage .pg-hud-xp-ring::before {
-  content: "" !important;
-  position: absolute !important;
-  inset: 10px !important;
-  border-radius: 50% !important;
-  background:
-    radial-gradient(circle at 42% 24%, rgba(85,223,255,.28), transparent 42%),
-    linear-gradient(180deg, rgba(11,28,78,.96), rgba(2,7,28,.98)) !important;
-  box-shadow: inset 0 0 24px rgba(0,0,0,.58) !important;
-}
-
-#pendingGamePage .pg-hud-xp-ring__core {
-  position: relative !important;
-  z-index: 2 !important;
-  display: grid !important;
-  place-items: center !important;
-  line-height: 1 !important;
-}
-
-#pendingGamePage .pg-hud-xp-ring__core strong {
-  color: #fff !important;
-  font-size: 28px !important;
-  font-weight: 1000 !important;
-  text-shadow: 0 0 16px rgba(85,223,255,.34) !important;
-}
-
-#pendingGamePage .pg-hud-xp-ring__core span {
-  margin-top: 5px !important;
-  color: var(--pg-ring-accent, #55dfff) !important;
-  font-size: 10px !important;
-  font-weight: 1000 !important;
-  letter-spacing: .12em !important;
-  text-transform: uppercase !important;
-}
-
-@keyframes pgHudRingBreath {
-  0%, 100% { transform: scale(1); filter: brightness(1); }
-  50% { transform: scale(1.035); filter: brightness(1.14); }
-}
-
-#pendingGamePage .pg-hotkey-strip {
-  position: absolute !important;
-  left: 50% !important;
-  top: calc(50% + var(--pg-hero-half-h) + 24px) !important;
-  transform: translateX(-50%) !important;
-  z-index: 60 !important;
-  min-height: 40px !important;
-  padding: 0 22px !important;
-  border-radius: 999px !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 16px !important;
-  white-space: nowrap !important;
-  pointer-events: none !important;
-  color: rgba(220,230,255,.72) !important;
-  font-size: 12px !important;
-  font-weight: 900 !important;
-  letter-spacing: .045em !important;
-  background:
-    radial-gradient(circle at 50% 0%, rgba(85,223,255,.16), transparent 52%),
-    rgba(7,22,64,.64) !important;
-  border: 1px solid rgba(85,223,255,.20) !important;
-  box-shadow:
-    0 12px 30px rgba(0,0,0,.25),
-    inset 0 1px 0 rgba(255,255,255,.05) !important;
-  backdrop-filter: blur(10px) !important;
-  text-shadow: 0 0 18px rgba(85,223,255,.22) !important;
-}
-
-#pendingGamePage:has(.pg-card.is-flipped) .pg-hotkey-strip {
-  opacity: .14 !important;
-}
-
-#pendingGamePage .pg-xp-pop {
-  position: absolute !important;
-  left: calc(50% + var(--pg-hero-half-w) + 78px) !important;
-  top: calc(50% - var(--pg-hero-half-h) - 104px) !important;
-  z-index: 90 !important;
-}
-
-@media (max-width: 1500px) {
-  #pendingGamePage.pg-page,
-  #pendingGamePage.pg-page--game {
-    --pg-hero-half-w: min(460px, 30vw);
-    --pg-hero-half-h: min(230px, 25vh);
-  }
-
-  #pendingGamePage .pg-card.is-active {
-    width: min(920px, 60vw) !important;
-    height: min(460px, 50vh) !important;
-  }
-
-  #pendingGamePage .pg-hud-rank-card {
-    width: 154px !important;
-  }
-
-  #pendingGamePage .pg-hud-xp-ring {
-    width: 102px !important;
-    height: 102px !important;
-  }
-}
-
-@media (max-height: 820px) {
-  #pendingGamePage.pg-page,
-  #pendingGamePage.pg-page--game {
-    --pg-hero-half-h: min(220px, 24vh);
-  }
-
-  #pendingGamePage .pg-card.is-active {
-    height: min(440px, 48vh) !important;
-  }
-
-  #pendingGamePage .pg-hotkey-strip {
-    top: calc(50% + var(--pg-hero-half-h) + 18px) !important;
-  }
-}
-
-/* =========================================================
-   LAVASH PENDING — PORTRAIT COVERFLOW GAME UI v1
-   Центральна картка вужча/вища + 5 карток у 3 рівні глибини.
-   HUD рангу та XP піднято вище й винесено з потоку сцени.
-========================================================= */
-
-#pendingGamePage.pg-page,
-#pendingGamePage.pg-page--game {
-  --pg-card-w: clamp(340px, 25vw, 430px);
-  --pg-card-h: clamp(500px, 64vh, 640px);
-  --pg-card-half-w: calc(var(--pg-card-w) / 2);
-  --pg-card-half-h: calc(var(--pg-card-h) / 2);
   padding: 0 !important;
   overflow: hidden !important;
   min-height: 100% !important;
 }
 
+/* старі верхні/праві rankbar-панелі не потрібні */
+#pendingGamePage .pg-rankbar,
+#pendingGamePage .pg-right-card--rankbar,
+#pendingGamePage .pg-session-stats,
+#pendingGamePage .pg-right-panel {
+  display: none !important;
+}
+
+/* сцена не повинна створювати контейнерні межі */
 #pendingGamePage .pg-stage,
 #pendingGamePage .pg-carousel-wrap,
 #pendingGamePage .pg-carousel {
@@ -3256,145 +2929,52 @@
   transform-style: preserve-3d !important;
 }
 
+/* активна картка — строго центр сцени */
 #pendingGamePage .pg-card {
   position: absolute !important;
   left: 50% !important;
-  top: 54% !important;
-  width: var(--pg-card-w) !important;
-  height: var(--pg-card-h) !important;
-  aspect-ratio: auto !important;
-  margin: 0 !important;
-  opacity: .18 !important;
-  filter: saturate(.58) brightness(.46) blur(.35px) !important;
-  transform-origin: center center !important;
-  transition: transform .52s cubic-bezier(.18,.85,.22,1), opacity .42s ease, filter .42s ease !important;
-}
-
-#pendingGamePage .pg-card[data-slot="-2"] { z-index: 2 !important; opacity: .12 !important; transform: translate(calc(-50% - 560px), -50%) scale(.54) rotateY(18deg) translateZ(-260px) !important; }
-#pendingGamePage .pg-card[data-slot="-1"] { z-index: 6 !important; opacity: .28 !important; filter: saturate(.68) brightness(.56) blur(.18px) !important; transform: translate(calc(-50% - 310px), -50%) scale(.72) rotateY(12deg) translateZ(-130px) !important; }
-#pendingGamePage .pg-card[data-slot="1"] { z-index: 6 !important; opacity: .28 !important; filter: saturate(.68) brightness(.56) blur(.18px) !important; transform: translate(calc(-50% + 310px), -50%) scale(.72) rotateY(-12deg) translateZ(-130px) !important; }
-#pendingGamePage .pg-card[data-slot="2"] { z-index: 2 !important; opacity: .12 !important; transform: translate(calc(-50% + 560px), -50%) scale(.54) rotateY(-18deg) translateZ(-260px) !important; }
-
-#pendingGamePage .pg-card.is-active {
-  z-index: 20 !important;
-  width: var(--pg-card-w) !important;
-  height: var(--pg-card-h) !important;
-  opacity: 1 !important;
-  filter: saturate(1.12) brightness(1.08) !important;
-  transform: translate(-50%, -50%) scale(1) rotateY(0deg) translateZ(0) !important;
-}
-
-#pendingGamePage .pg-card.is-active .pg-card__face { padding: clamp(24px, 2.2vw, 34px) !important; border-radius: 34px !important; }
-
-#pendingGamePage .pg-card.is-active .pg-card__content,
-#pendingGamePage .pg-card.is-active .pg-card__content--new {
-  height: calc(100% - 64px) !important;
-  display: grid !important;
-  grid-template-columns: 1fr !important;
-  grid-template-rows: minmax(210px, 1fr) auto !important;
-  gap: 22px !important;
-  align-items: center !important;
-  justify-items: center !important;
-}
-
-#pendingGamePage .pg-card.is-active .pg-visual { grid-row: 1 !important; width: 100% !important; height: min(300px, 34vh) !important; display: grid !important; place-items: center !important; opacity: .96 !important; }
-#pendingGamePage .pg-card.is-active .pg-data { grid-row: 2 !important; width: 100% !important; display: grid !important; justify-items: center !important; text-align: center !important; gap: 14px !important; }
-#pendingGamePage .pg-card.is-active .pg-data__value,
-#pendingGamePage .pg-card.is-active h2 { max-width: 100% !important; font-size: clamp(40px, 3.2vw, 58px) !important; line-height: 1.02 !important; letter-spacing: -.045em !important; text-align: center !important; overflow-wrap: anywhere !important; }
-#pendingGamePage .pg-card.is-active .pg-unknown-badge { left: 50% !important; top: 28px !important; transform: translateX(-50%) !important; max-width: calc(100% - 48px) !important; white-space: nowrap !important; }
-
-#pendingGamePage .pg-card:not(.is-active) .pg-card__face { border-radius: 32px !important; }
-#pendingGamePage .pg-card:not(.is-active) .pg-card__content,
-#pendingGamePage .pg-card:not(.is-active) .pg-card__content--new { grid-template-columns: 1fr !important; grid-template-rows: 1fr auto !important; justify-items: center !important; text-align: center !important; }
-#pendingGamePage .pg-card:not(.is-active) .pg-visual { transform: scale(.75) !important; opacity: .55 !important; }
-#pendingGamePage .pg-card:not(.is-active) h2,
-#pendingGamePage .pg-card:not(.is-active) .pg-data__value { font-size: clamp(30px, 2.4vw, 44px) !important; text-align: center !important; }
-
-#pendingGamePage .pg-game-hud { position: absolute !important; inset: 0 !important; z-index: 70 !important; pointer-events: none !important; }
-#pendingGamePage .pg-hud-rank-card { left: calc(50% + 64px) !important; top: calc(54% - var(--pg-card-half-h) - 120px) !important; transform: translateX(-100%) !important; width: 170px !important; min-height: 76px !important; }
-#pendingGamePage .pg-hud-xp-ring { left: calc(50% + 86px) !important; top: calc(54% - var(--pg-card-half-h) - 128px) !important; width: 112px !important; height: 112px !important; }
-#pendingGamePage .pg-hotkey-strip { top: calc(54% + var(--pg-card-half-h) + 28px) !important; left: 50% !important; transform: translateX(-50%) !important; max-width: min(760px, 72vw) !important; }
-#pendingGamePage .pg-carousel-wrap::after { display: none !important; content: none !important; }
-
-#pendingGamePage .pg-card.is-key-ignore { animation: pgPortraitFlyLeft .62s cubic-bezier(.18,.9,.2,1) forwards !important; }
-#pendingGamePage .pg-card.is-key-confirm { animation: pgPortraitFlyRight .62s cubic-bezier(.18,.9,.2,1) forwards !important; }
-#pendingGamePage .pg-card.is-key-skip { animation: pgPortraitFlyDown .62s cubic-bezier(.18,.9,.2,1) forwards !important; }
-
-@keyframes pgPortraitFlyLeft { 0% { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(0deg); } 38% { opacity: 1; transform: translate(calc(-50% - 70px), -50%) scale(1.02) rotate(-7deg); } 100% { opacity: 0; transform: translate(calc(-50% - 620px), calc(-50% + 8px)) scale(.72) rotate(-18deg); filter: blur(4px) brightness(1.1); } }
-@keyframes pgPortraitFlyRight { 0% { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(0deg); } 38% { opacity: 1; transform: translate(calc(-50% + 70px), -50%) scale(1.02) rotate(7deg); } 100% { opacity: 0; transform: translate(calc(-50% + 620px), calc(-50% + 8px)) scale(.72) rotate(18deg); filter: blur(4px) brightness(1.1); } }
-@keyframes pgPortraitFlyDown { 0% { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(0deg); } 38% { opacity: 1; transform: translate(-50%, calc(-50% + 60px)) scale(.98) rotate(2deg); } 100% { opacity: 0; transform: translate(-50%, calc(-50% + 560px)) scale(.68) rotate(5deg); filter: blur(5px) brightness(1.1); } }
-
-@media (max-height: 820px) {
-  #pendingGamePage.pg-page,
-  #pendingGamePage.pg-page--game { --pg-card-w: clamp(320px, 23vw, 390px); --pg-card-h: clamp(450px, 60vh, 560px); }
-  #pendingGamePage .pg-card { top: 55% !important; }
-  #pendingGamePage .pg-hud-rank-card { top: calc(55% - var(--pg-card-half-h) - 96px) !important; }
-  #pendingGamePage .pg-hud-xp-ring { top: calc(55% - var(--pg-card-half-h) - 104px) !important; width: 100px !important; height: 100px !important; }
-  #pendingGamePage .pg-hotkey-strip { top: calc(55% + var(--pg-card-half-h) + 20px) !important; }
-}
-
-@media (max-width: 1500px) {
-  #pendingGamePage.pg-page,
-  #pendingGamePage.pg-page--game { --pg-card-w: clamp(320px, 24vw, 390px); --pg-card-h: clamp(470px, 62vh, 590px); }
-  #pendingGamePage .pg-card[data-slot="-1"] { transform: translate(calc(-50% - 275px), -50%) scale(.70) rotateY(12deg) translateZ(-130px) !important; }
-  #pendingGamePage .pg-card[data-slot="1"] { transform: translate(calc(-50% + 275px), -50%) scale(.70) rotateY(-12deg) translateZ(-130px) !important; }
-  #pendingGamePage .pg-card[data-slot="-2"] { transform: translate(calc(-50% - 500px), -50%) scale(.52) rotateY(18deg) translateZ(-260px) !important; }
-  #pendingGamePage .pg-card[data-slot="2"] { transform: translate(calc(-50% + 500px), -50%) scale(.52) rotateY(-18deg) translateZ(-260px) !important; }
-}
-
-/* =========================================================
-   LAVASH PENDING — SIDE HUD + BIG PORTRAIT CARD FINAL
-   1) центральна картка більша: вища + трохи ширша
-   2) плашка рангу ліворуч від картки
-   3) XP-кільце праворуч від картки
-   4) гарячі клавіші нижче картки, без накладання
-========================================================= */
-
-#pendingGamePage.pg-page,
-#pendingGamePage.pg-page--game {
-  --pg-card-w: clamp(390px, 28vw, 500px) !important;
-  --pg-card-h: clamp(560px, 70vh, 720px) !important;
-  --pg-card-half-w: calc(var(--pg-card-w) / 2) !important;
-  --pg-card-half-h: calc(var(--pg-card-h) / 2) !important;
-  --pg-card-center-y: 55% !important;
-  overflow: hidden !important;
-}
-
-/* Центральна активна картка — домінанта сцени */
-#pendingGamePage .pg-card {
   top: var(--pg-card-center-y) !important;
   width: var(--pg-card-w) !important;
   height: var(--pg-card-h) !important;
+  margin: 0 !important;
+  transform-origin: center center !important;
 }
 
 #pendingGamePage .pg-card.is-active {
   width: var(--pg-card-w) !important;
   height: var(--pg-card-h) !important;
   transform: translate(-50%, -50%) scale(1) rotateY(0deg) translateZ(0) !important;
+  opacity: 1 !important;
+  z-index: 30 !important;
+  filter: saturate(1.12) brightness(1.08) !important;
 }
 
-/* 5-карткова depth-карусель: 2 і 3 ближче, 4 і 5 далі */
-#pendingGamePage .pg-card[data-slot="-1"] {
-  transform: translate(calc(-50% - 330px), -50%) scale(.72) rotateY(13deg) translateZ(-135px) !important;
-  opacity: .30 !important;
+/* 5-карткова глибина */
+#pendingGamePage .pg-card[data-slot='-1'] {
+  transform: translate(calc(-50% - 350px), -50%) scale(.70) rotateY(13deg) translateZ(-140px) !important;
+  opacity: .28 !important;
+  z-index: 8 !important;
 }
 
-#pendingGamePage .pg-card[data-slot="1"] {
-  transform: translate(calc(-50% + 330px), -50%) scale(.72) rotateY(-13deg) translateZ(-135px) !important;
-  opacity: .30 !important;
+#pendingGamePage .pg-card[data-slot='1'] {
+  transform: translate(calc(-50% + 350px), -50%) scale(.70) rotateY(-13deg) translateZ(-140px) !important;
+  opacity: .28 !important;
+  z-index: 8 !important;
 }
 
-#pendingGamePage .pg-card[data-slot="-2"] {
-  transform: translate(calc(-50% - 575px), -50%) scale(.54) rotateY(20deg) translateZ(-280px) !important;
-  opacity: .13 !important;
+#pendingGamePage .pg-card[data-slot='-2'] {
+  transform: translate(calc(-50% - 610px), -50%) scale(.50) rotateY(20deg) translateZ(-280px) !important;
+  opacity: .12 !important;
+  z-index: 3 !important;
 }
 
-#pendingGamePage .pg-card[data-slot="2"] {
-  transform: translate(calc(-50% + 575px), -50%) scale(.54) rotateY(-20deg) translateZ(-280px) !important;
-  opacity: .13 !important;
+#pendingGamePage .pg-card[data-slot='2'] {
+  transform: translate(calc(-50% + 610px), -50%) scale(.50) rotateY(-20deg) translateZ(-280px) !important;
+  opacity: .12 !important;
+  z-index: 3 !important;
 }
 
-/* Внутрішня геометрія портретної картки */
+/* внутрішня геометрія портретної картки */
 #pendingGamePage .pg-card.is-active .pg-card__face {
   padding: clamp(26px, 2.3vw, 38px) !important;
   border-radius: 36px !important;
@@ -3418,7 +2998,7 @@
   line-height: .98 !important;
 }
 
-/* HUD як side-elements відносно центральної картки */
+/* HUD-шар */
 #pendingGamePage .pg-game-hud {
   position: absolute !important;
   inset: 0 !important;
@@ -3426,166 +3006,35 @@
   pointer-events: none !important;
 }
 
-/* Плашка рангу — ліворуч від картки, не зверху */
+/* Ранг — незалежно ліворуч у сцені */
 #pendingGamePage .pg-hud-rank-card {
-  left: calc(50% - var(--pg-card-half-w) - 30px) !important;
-  top: calc(var(--pg-card-center-y) - var(--pg-card-half-h) + 48px) !important;
-  transform: translateX(-100%) !important;
-  width: 190px !important;
-  min-height: 84px !important;
+  position: absolute !important;
+  left: var(--pg-rank-left) !important;
+  top: calc(var(--pg-card-center-y) - var(--pg-card-half-h) + 34px) !important;
+  transform: none !important;
+  width: 210px !important;
+  min-height: 86px !important;
+  padding: 14px 18px !important;
   justify-items: end !important;
+  z-index: 75 !important;
 }
 
-/* XP-кільце — праворуч від картки, дзеркально до рангу */
+/* XP — незалежно праворуч у сцені */
 #pendingGamePage .pg-hud-xp-ring {
-  left: calc(50% + var(--pg-card-half-w) + 30px) !important;
-  top: calc(var(--pg-card-center-y) - var(--pg-card-half-h) + 36px) !important;
-  width: 124px !important;
-  height: 124px !important;
+  position: absolute !important;
+  left: auto !important;
+  right: var(--pg-xp-right) !important;
+  top: calc(var(--pg-card-center-y) - var(--pg-card-half-h) + 18px) !important;
+  width: 128px !important;
+  height: 128px !important;
+  z-index: 75 !important;
 }
 
 #pendingGamePage .pg-hud-xp-ring__core strong {
-  font-size: 28px !important;
+  font-size: 30px !important;
 }
 
-/* Гарячі клавіші — окремо нижче, не залазять на картку */
-#pendingGamePage .pg-hotkey-strip {
-  top: calc(var(--pg-card-center-y) + var(--pg-card-half-h) + 32px) !important;
-  left: 50% !important;
-  transform: translateX(-50%) !important;
-  max-width: min(780px, 72vw) !important;
-  z-index: 60 !important;
-}
-
-/* Якщо місця по висоті менше — трохи стискаємо, але логіку не ламаємо */
-@media (max-height: 860px) {
-  #pendingGamePage.pg-page,
-  #pendingGamePage.pg-page--game {
-    --pg-card-w: clamp(360px, 26vw, 450px) !important;
-    --pg-card-h: clamp(510px, 64vh, 610px) !important;
-    --pg-card-center-y: 55% !important;
-  }
-
-  #pendingGamePage .pg-card.is-active .pg-visual {
-    height: min(300px, 34vh) !important;
-  }
-
-  #pendingGamePage .pg-hud-rank-card {
-    top: calc(var(--pg-card-center-y) - var(--pg-card-half-h) + 36px) !important;
-    width: 176px !important;
-    min-height: 78px !important;
-  }
-
-  #pendingGamePage .pg-hud-xp-ring {
-    top: calc(var(--pg-card-center-y) - var(--pg-card-half-h) + 26px) !important;
-    width: 110px !important;
-    height: 110px !important;
-  }
-}
-
-@media (max-width: 1500px) {
-  #pendingGamePage.pg-page,
-  #pendingGamePage.pg-page--game {
-    --pg-card-w: clamp(350px, 25vw, 430px) !important;
-    --pg-card-h: clamp(500px, 62vh, 590px) !important;
-  }
-
-  #pendingGamePage .pg-card[data-slot="-1"] {
-    transform: translate(calc(-50% - 285px), -50%) scale(.70) rotateY(13deg) translateZ(-135px) !important;
-  }
-
-  #pendingGamePage .pg-card[data-slot="1"] {
-    transform: translate(calc(-50% + 285px), -50%) scale(.70) rotateY(-13deg) translateZ(-135px) !important;
-  }
-
-  #pendingGamePage .pg-card[data-slot="-2"] {
-    transform: translate(calc(-50% - 500px), -50%) scale(.52) rotateY(20deg) translateZ(-280px) !important;
-  }
-
-  #pendingGamePage .pg-card[data-slot="2"] {
-    transform: translate(calc(-50% + 500px), -50%) scale(.52) rotateY(-20deg) translateZ(-280px) !important;
-  }
-}
-
-/* =========================================================
-   LAVASH PENDING — FINAL POSITION TUNING
-   Зауваження: підняти сцену, рознести HUD від картки,
-   залишити портретну центральну картку і hotkeys нижче.
-========================================================= */
-
-#pendingGamePage.pg-page,
-#pendingGamePage.pg-page--game {
-  --pg-card-w: clamp(410px, 29vw, 520px) !important;
-  --pg-card-h: clamp(590px, 72vh, 740px) !important;
-  --pg-card-half-w: calc(var(--pg-card-w) / 2) !important;
-  --pg-card-half-h: calc(var(--pg-card-h) / 2) !important;
-
-  /* було нижче; піднімаємо всю сцену */
-  --pg-card-center-y: 50% !important;
-
-  /* відстань HUD від картки */
-  --pg-hud-gap: clamp(72px, 5.4vw, 118px) !important;
-
-  overflow: hidden !important;
-}
-
-/* Центр сцени — активна картка завжди в центрі */
-#pendingGamePage .pg-card {
-  top: var(--pg-card-center-y) !important;
-}
-
-#pendingGamePage .pg-card.is-active {
-  width: var(--pg-card-w) !important;
-  height: var(--pg-card-h) !important;
-  top: var(--pg-card-center-y) !important;
-  left: 50% !important;
-  transform: translate(-50%, -50%) scale(1) rotateY(0deg) translateZ(0) !important;
-}
-
-/* Бокові картки — лишаються позаду активної */
-#pendingGamePage .pg-card[data-slot='-1'] {
-  top: var(--pg-card-center-y) !important;
-  transform: translate(calc(-50% - 350px), -50%) scale(.70) rotateY(13deg) translateZ(-140px) !important;
-  opacity: .28 !important;
-}
-
-#pendingGamePage .pg-card[data-slot='1'] {
-  top: var(--pg-card-center-y) !important;
-  transform: translate(calc(-50% + 350px), -50%) scale(.70) rotateY(-13deg) translateZ(-140px) !important;
-  opacity: .28 !important;
-}
-
-#pendingGamePage .pg-card[data-slot='-2'] {
-  top: var(--pg-card-center-y) !important;
-  transform: translate(calc(-50% - 610px), -50%) scale(.50) rotateY(20deg) translateZ(-280px) !important;
-  opacity: .12 !important;
-}
-
-#pendingGamePage .pg-card[data-slot='2'] {
-  top: var(--pg-card-center-y) !important;
-  transform: translate(calc(-50% + 610px), -50%) scale(.50) rotateY(-20deg) translateZ(-280px) !important;
-  opacity: .12 !important;
-}
-
-/* Ранг — ліворуч від картки, більше повітря */
-#pendingGamePage .pg-hud-rank-card {
-  left: calc(50% - var(--pg-card-half-w) - var(--pg-hud-gap)) !important;
-  top: calc(var(--pg-card-center-y) - var(--pg-card-half-h) + 38px) !important;
-  transform: translateX(-100%) !important;
-  width: 196px !important;
-  min-height: 84px !important;
-  justify-items: end !important;
-}
-
-/* XP-кільце — праворуч від картки, симетрично */
-#pendingGamePage .pg-hud-xp-ring {
-  left: calc(50% + var(--pg-card-half-w) + var(--pg-hud-gap)) !important;
-  top: calc(var(--pg-card-center-y) - var(--pg-card-half-h) + 30px) !important;
-  width: 126px !important;
-  height: 126px !important;
-}
-
-/* Hotkeys — тільки нижче картки, не накладається */
+/* нижня підказка не залазить на картку */
 #pendingGamePage .pg-hotkey-strip,
 #pendingGamePage .pg-carousel-wrap::after {
   top: calc(var(--pg-card-center-y) + var(--pg-card-half-h) + 34px) !important;
@@ -3593,26 +3042,27 @@
   left: 50% !important;
   transform: translateX(-50%) !important;
   z-index: 60 !important;
+  max-width: min(760px, 72vw) !important;
 }
 
-/* На нижчих екранах — зберігаємо логіку, але не ламаємо висоту */
+/* адаптація під менші екрани */
 @media (max-height: 860px) {
   #pendingGamePage.pg-page,
   #pendingGamePage.pg-page--game {
     --pg-card-w: clamp(380px, 27vw, 470px) !important;
     --pg-card-h: clamp(535px, 66vh, 640px) !important;
-    --pg-card-center-y: 50% !important;
-    --pg-hud-gap: clamp(62px, 4.6vw, 92px) !important;
+    --pg-rank-left: clamp(130px, 11vw, 220px) !important;
+    --pg-xp-right: clamp(130px, 10vw, 220px) !important;
   }
 
   #pendingGamePage .pg-hud-rank-card {
-    top: calc(var(--pg-card-center-y) - var(--pg-card-half-h) + 28px) !important;
-    width: 182px !important;
+    top: calc(var(--pg-card-center-y) - var(--pg-card-half-h) + 26px) !important;
+    width: 188px !important;
     min-height: 78px !important;
   }
 
   #pendingGamePage .pg-hud-xp-ring {
-    top: calc(var(--pg-card-center-y) - var(--pg-card-half-h) + 20px) !important;
+    top: calc(var(--pg-card-center-y) - var(--pg-card-half-h) + 14px) !important;
     width: 116px !important;
     height: 116px !important;
   }
@@ -3626,7 +3076,10 @@
 @media (max-width: 1450px) {
   #pendingGamePage.pg-page,
   #pendingGamePage.pg-page--game {
-    --pg-hud-gap: clamp(44px, 3.8vw, 72px) !important;
+    --pg-card-w: clamp(360px, 25vw, 450px) !important;
+    --pg-card-h: clamp(515px, 64vh, 610px) !important;
+    --pg-rank-left: clamp(118px, 9vw, 170px) !important;
+    --pg-xp-right: clamp(118px, 8vw, 170px) !important;
   }
 
   #pendingGamePage .pg-hud-rank-card {
