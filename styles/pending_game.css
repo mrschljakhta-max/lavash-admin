@@ -3194,3 +3194,128 @@
   font-weight: 1000 !important;
   text-transform: uppercase !important;
 }
+/* ===== FIX: beautiful floating rank + XP ring HUD ===== */
+
+.pg-game-hud {
+  position: absolute;
+  inset: 72px 0 auto 0;
+  z-index: 20;
+  width: min(980px, 70vw);
+  margin: 0 auto;
+  height: 92px;
+  pointer-events: none;
+
+  display: grid;
+  grid-template-columns: 260px 1fr 116px;
+  align-items: center;
+}
+
+.pg-hud-rank-card {
+  justify-self: start;
+  min-width: 230px;
+  padding: 16px 18px;
+  border-radius: 24px;
+
+  background:
+    radial-gradient(circle at 20% 0%, rgba(85,223,255,.16), transparent 42%),
+    linear-gradient(180deg, rgba(12,31,86,.82), rgba(5,16,48,.74));
+
+  border: 1px solid rgba(118,150,236,.22);
+  box-shadow:
+    0 22px 55px rgba(0,0,0,.30),
+    inset 0 1px 0 rgba(255,255,255,.08);
+
+  backdrop-filter: blur(16px);
+}
+
+.pg-hud-rank-card__kicker {
+  display: block;
+  margin-bottom: 4px;
+  color: rgba(210,223,255,.78);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.pg-hud-rank-card strong {
+  display: block;
+  color: #f3f7ff;
+  font-size: 19px;
+  line-height: 1.1;
+  font-weight: 1000;
+  letter-spacing: .01em;
+}
+
+.pg-hud-rank-card small {
+  display: block;
+  margin-top: 7px;
+  color: #aab9e6;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.pg-hud-xp-ring {
+  justify-self: end;
+  width: 96px;
+  height: 96px;
+  border-radius: 999px;
+  padding: 7px;
+
+  background:
+    conic-gradient(
+      from -90deg,
+      var(--pg-ring-accent, #55dfff) 0 var(--pg-ring-progress, 0deg),
+      rgba(255,255,255,.09) var(--pg-ring-progress, 0deg) 360deg
+    );
+
+  box-shadow:
+    0 0 34px color-mix(in srgb, var(--pg-ring-accent, #55dfff) 42%, transparent),
+    0 18px 40px rgba(0,0,0,.34);
+}
+
+.pg-hud-xp-ring__core {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  display: grid;
+  place-content: center;
+  text-align: center;
+
+  background:
+    radial-gradient(circle at 50% 10%, rgba(255,255,255,.14), transparent 42%),
+    linear-gradient(180deg, rgba(24,37,95,.98), rgba(7,15,48,.98));
+
+  border: 1px solid rgba(255,255,255,.12);
+}
+
+.pg-hud-xp-ring__core strong {
+  color: #f4f7ff;
+  font-size: 24px;
+  line-height: 1;
+  font-weight: 1000;
+}
+
+.pg-hud-xp-ring__core span {
+  margin-top: 3px;
+  color: #b7c7ff;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+/* щоб HUD не затирав центральну картку */
+.pg-stage {
+  padding-top: 34px !important;
+}
+
+/* адаптація під нижчий екран */
+@media (max-height: 820px) {
+  .pg-game-hud {
+    inset: 54px 0 auto 0;
+    width: min(900px, 68vw);
+    transform: scale(.92);
+    transform-origin: top center;
+  }
+
+  .pg-stage {
+    padding-top: 24px !important;
+  }
+}
