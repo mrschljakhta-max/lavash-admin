@@ -431,38 +431,19 @@
   function renderGameHud() {
     const progress = getXpProgress();
     const dash = Math.round((progress / 100) * 360);
-    const leftXp = Math.max(0, state.xpMax - state.xp);
 
     return `
-      <aside class="pg-game-hud" aria-label="Гейміфікація оператора">
-        <div class="pg-rank-ring" style="--pg-ring-progress:${dash}deg;">
-          <div class="pg-rank-ring__core">
-            <span>Ранг</span>
-            <b>${getChevron(state.level)}</b>
-            <strong>${state.rank}</strong>
-          </div>
+      <aside class="pg-game-hud" aria-label="Ранг оператора">
+        <div class="pg-hud-rank-label">
+          <span>Ранг</span>
+          <strong>${state.rank}</strong>
+          <em>Рівень ${state.level}</em>
         </div>
 
-        <div class="pg-hud-stack">
-          <div class="pg-hud-pill pg-hud-pill--xp">
+        <div class="pg-rank-ring" style="--pg-ring-progress:${dash}deg;">
+          <div class="pg-rank-ring__core">
+            <strong>${state.xp}</strong>
             <span>XP</span>
-            <strong>${state.xp} / ${state.xpMax}</strong>
-            <small>до наступного: ${leftXp} XP</small>
-          </div>
-
-          <div class="pg-hud-grid">
-            <div class="pg-hud-mini">
-              <span>сьогодні</span>
-              <strong>+${state.todayXp}</strong>
-            </div>
-            <div class="pg-hud-mini">
-              <span>streak</span>
-              <strong>${state.streak}</strong>
-            </div>
-            <div class="pg-hud-mini">
-              <span>combo</span>
-              <strong>x${Math.max(1, state.combo)}</strong>
-            </div>
           </div>
         </div>
       </aside>
@@ -470,18 +451,7 @@
   }
 
   function renderOperatorFooter() {
-    const accuracy = state.sessionTotal
-      ? Math.round((state.sessionCorrect / state.sessionTotal) * 100)
-      : state.accuracy;
-
-    return `
-      <section class="pg-operator-strip" aria-label="Поточна сесія">
-        <div><span>Оброблено</span><strong>${state.sessionTotal}</strong></div>
-        <div><span>Точність</span><strong>${accuracy}%</strong></div>
-        <div><span>Комбо</span><strong>x${Math.max(1, state.combo)}</strong></div>
-        <div><span>Найкраще</span><strong>x${Math.max(1, state.bestCombo)}</strong></div>
-      </section>
-    `;
+    return '';
   }
 
   function render() {
@@ -507,8 +477,6 @@
             </div>
           </section>
         </main>
-
-        ${renderOperatorFooter()}
 
         <div class="pg-xp-pop" id="pgXpPop">+10 XP</div>
       </section>
@@ -1306,18 +1274,57 @@
       .pg-game-hud {
         position: absolute;
         top: 8px;
-        right: clamp(120px, 8vw, 170px);
+        right: clamp(118px, 8vw, 168px);
         z-index: 60;
         display: flex;
         align-items: center;
-        gap: 18px;
+        gap: 16px;
         pointer-events: none;
+      }
+
+      .pg-hud-rank-label {
+        min-width: 164px;
+        padding: 14px 18px;
+        border-radius: 22px;
+        text-align: right;
+        background: rgba(8, 23, 63, .38);
+        border: 1px solid rgba(85, 223, 255, .13);
+        box-shadow: 0 18px 44px rgba(0,0,0,.16), inset 0 1px 0 rgba(255,255,255,.07);
+        backdrop-filter: blur(14px);
+      }
+
+      .pg-hud-rank-label span {
+        display: block;
+        color: rgba(223,233,255,.62);
+        font-size: 10px;
+        font-weight: 1000;
+        letter-spacing: .1em;
+        text-transform: uppercase;
+      }
+
+      .pg-hud-rank-label strong {
+        display: block;
+        margin-top: 5px;
+        color: #fff0a8;
+        font-size: 18px;
+        font-weight: 1000;
+        line-height: 1.05;
+        text-shadow: 0 0 18px rgba(255,209,102,.26);
+      }
+
+      .pg-hud-rank-label em {
+        display: block;
+        margin-top: 4px;
+        color: rgba(230,240,255,.62);
+        font-size: 12px;
+        font-style: normal;
+        font-weight: 800;
       }
 
       .pg-rank-ring {
         --pg-ring-progress: 0deg;
-        width: 138px;
-        height: 138px;
+        width: 126px;
+        height: 126px;
         border-radius: 50%;
         position: relative;
         display: grid;
@@ -1325,7 +1332,7 @@
         background:
           conic-gradient(from -90deg, #36e6ff 0deg, #8a5cff var(--pg-ring-progress), rgba(255,255,255,.08) var(--pg-ring-progress), rgba(255,255,255,.08) 360deg);
         box-shadow:
-          0 0 24px rgba(85,223,255,.26),
+          0 0 24px rgba(85,223,255,.24),
           0 0 46px rgba(141,88,255,.22);
         animation: pgRankBreathe 4.6s ease-in-out infinite;
       }
@@ -1346,124 +1353,32 @@
         place-items: center;
         text-align: center;
         color: #fff;
-        line-height: 1.05;
-      }
-
-      .pg-rank-ring__core span {
-        font-size: 11px;
-        font-weight: 900;
-        color: #58ddff;
-        text-transform: uppercase;
-      }
-
-      .pg-rank-ring__core b {
-        margin: 5px 0 4px;
-        color: #ffd166;
-        font-size: 18px;
-        text-shadow: 0 0 16px rgba(255,209,102,.42);
+        line-height: 1.02;
       }
 
       .pg-rank-ring__core strong {
-        max-width: 94px;
-        color: #fff0a8;
-        font-size: 13px;
+        color: #fff;
+        font-size: 26px;
         font-weight: 1000;
+        letter-spacing: -.04em;
+        text-shadow: 0 0 18px rgba(85,223,255,.28);
       }
 
-      .pg-hud-stack {
-        display: grid;
-        gap: 10px;
-        min-width: 190px;
-      }
-
-      .pg-hud-pill,
-      .pg-hud-mini,
-      .pg-operator-strip {
-        background: rgba(8, 23, 63, .58);
-        border: 1px solid rgba(85, 223, 255, .16);
-        box-shadow: 0 18px 44px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.08);
-        backdrop-filter: blur(16px);
-      }
-
-      .pg-hud-pill {
-        padding: 14px 16px;
-        border-radius: 22px;
-      }
-
-      .pg-hud-pill span,
-      .pg-hud-mini span,
-      .pg-operator-strip span {
-        display: block;
-        color: rgba(223,233,255,.62);
+      .pg-rank-ring__core span {
+        margin-top: 2px;
+        color: #58ddff;
         font-size: 11px;
-        font-weight: 900;
-        letter-spacing: .06em;
+        font-weight: 1000;
+        letter-spacing: .12em;
         text-transform: uppercase;
       }
 
-      .pg-hud-pill strong {
-        display: block;
-        margin-top: 4px;
-        color: #fff;
-        font-size: 20px;
-        font-weight: 1000;
-      }
-
-      .pg-hud-pill small {
-        display: block;
-        margin-top: 4px;
-        color: rgba(230,240,255,.62);
-        font-size: 12px;
-        font-weight: 800;
-      }
-
-      .pg-hud-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 8px;
-      }
-
-      .pg-hud-mini {
-        min-height: 66px;
-        border-radius: 18px;
-        display: grid;
-        place-items: center;
-        text-align: center;
-        padding: 8px;
-      }
-
-      .pg-hud-mini strong {
-        color: #33ffd1;
-        font-size: 18px;
-        font-weight: 1000;
-      }
-
+      .pg-hud-stack,
+      .pg-hud-pill,
+      .pg-hud-grid,
+      .pg-hud-mini,
       .pg-operator-strip {
-        position: absolute;
-        left: 50%;
-        bottom: 22px;
-        transform: translateX(-50%);
-        z-index: 55;
-        min-width: min(760px, 66vw);
-        height: 64px;
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        align-items: center;
-        gap: 8px;
-        padding: 0 18px;
-        border-radius: 26px;
-      }
-
-      .pg-operator-strip div {
-        text-align: center;
-      }
-
-      .pg-operator-strip strong {
-        display: block;
-        margin-top: 3px;
-        color: #fff;
-        font-size: 18px;
-        font-weight: 1000;
+        display: none !important;
       }
 
       #pendingGamePage[data-action-flash]::after {
