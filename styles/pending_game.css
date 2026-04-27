@@ -2640,3 +2640,51 @@
 .pg-card[data-unknown-type="record"] {
   --pg-card-accent: #d8dfff;
 }
+.pg-card[data-unknown-type="uav"] {
+  --pg-card-accent: #38dfff;
+  --pg-card-bg-1: rgba(18, 78, 190, .92);
+  --pg-card-bg-2: rgba(8, 28, 82, .96);
+}
+
+.pg-card[data-unknown-type="settlement"] {
+  --pg-card-accent: #f5b84b;
+  --pg-card-bg-1: rgba(128, 86, 8, .92);
+  --pg-card-bg-2: rgba(54, 38, 13, .96);
+}
+
+.pg-card[data-unknown-type="unit"] {
+  --pg-card-accent: #ff5f7e;
+  --pg-card-bg-1: rgba(112, 22, 50, .92);
+  --pg-card-bg-2: rgba(55, 14, 34, .96);
+}
+
+.pg-card[data-unknown-type="station"] {
+  --pg-card-accent: #37e6b2;
+  --pg-card-bg-1: rgba(8, 96, 84, .92);
+  --pg-card-bg-2: rgba(6, 44, 54, .96);
+}
+
+.pg-card[data-unknown-type="object"] {
+  --pg-card-accent: #9b7cff;
+  --pg-card-bg-1: rgba(76, 45, 158, .92);
+  --pg-card-bg-2: rgba(34, 24, 76, .96);
+}
+
+.pg-card[data-unknown-type="record"] {
+  --pg-card-accent: #d8dfff;
+  --pg-card-bg-1: rgba(72, 80, 110, .88);
+  --pg-card-bg-2: rgba(22, 28, 48, .96);
+}
+
+.pg-card .pg-card__front,
+.pg-card .pg-card__back {
+  background:
+    radial-gradient(circle at 70% 45%, color-mix(in srgb, var(--pg-card-accent), transparent 76%), transparent 42%),
+    linear-gradient(135deg, var(--pg-card-bg-1), var(--pg-card-bg-2)) !important;
+
+  border-color: color-mix(in srgb, var(--pg-card-accent), transparent 20%) !important;
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--pg-card-accent), transparent 55%) inset,
+    0 0 44px color-mix(in srgb, var(--pg-card-accent), transparent 62%),
+    0 34px 90px rgba(0,0,0,.48) !important;
+}
