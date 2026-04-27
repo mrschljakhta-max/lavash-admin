@@ -252,26 +252,51 @@
     bind();
   }
 
-  function getUnknownLabel(type) {
+  function getUnknownConfig(type) {
     return {
-      uav: 'Невідомий БПЛА',
-      settlement: 'Невідомий населений пункт',
-      unit: 'Невідомий підрозділ',
-      station: 'Невідома станція',
-      object: 'Невідомий об’єкт прикриття',
-      record: 'Невідомий запис'
-    }[type] || 'Невідомий запис';
+      uav: {
+        label: 'Невідомий БПЛА',
+        icon: '✈',
+        color: '#55dfff'
+      },
+      settlement: {
+        label: 'Невідомий населений пункт',
+        icon: '⌖',
+        color: '#f5a524'
+      },
+      unit: {
+        label: 'Невідомий підрозділ',
+        icon: '▰',
+        color: '#ff4d6d'
+      },
+      station: {
+        label: 'Невідома станція',
+        icon: '⌁',
+        color: '#37e6b2'
+      },
+      object: {
+        label: 'Невідомий об’єкт прикриття',
+        icon: '◎',
+        color: '#ffd166'
+      },
+      record: {
+        label: 'Невідомий запис',
+        icon: '◇',
+        color: '#8d58ff'
+      }
+    }[type] || {
+      label: 'Невідомий запис',
+      icon: '◇',
+      color: '#8d58ff'
+    };
+  }
+
+  function getUnknownLabel(type) {
+    return getUnknownConfig(type).label;
   }
 
   function getDataIcon(type) {
-    return {
-      uav: '✈',
-      settlement: '⌖',
-      unit: '▣',
-      station: '⌁',
-      object: '◎',
-      record: '◇'
-    }[type] || '◇';
+    return getUnknownConfig(type).icon;
   }
 
   function safeValue(value, fallback = '—') {
@@ -281,6 +306,7 @@
   function renderCard(record, index, slot) {
     const active = slot === 0 ? 'is-active' : '';
     const unknownType = record.unknownType || 'record';
+    const unknownConfig = getUnknownConfig(unknownType);
     const dataType = record.dataType || record.type || 'Запис';
     const mainValue = record.mainValue || record.model || record.settlement || record.title || 'Невідоме значення';
     const confidence = Number(record.confidence || 0);
@@ -290,23 +316,29 @@
         class="pg-card ${active} pg-card--${record.status}"
         data-index="${index}"
         data-slot="${slot}"
-        data-status="${record.status || 'new'}"
+        data-status="${record.status || 'unknown'}"
         data-unknown-type="${unknownType}"
+        style="--pg-card-accent:${unknownConfig.color};"
       >
         <div class="pg-card__inner">
           <div class="pg-card__face pg-card__front">
             <div class="pg-card__topline">
               <div class="pg-card__status">
                 <span class="pg-status-dot"></span>
-                ${getUnknownLabel(unknownType)}
+                ${unknownConfig.label}
               </div>
               <button class="pg-card__star" type="button" aria-label="Позначити">☆</button>
+            </div>
+
+            <div class="pg-unknown-badge">
+              <span>${unknownConfig.icon}</span>
+              <strong>${unknownConfig.label}</strong>
             </div>
 
             <div class="pg-card__content pg-card__content--new">
               <section class="pg-data">
                 <div class="pg-data__type">
-                  <span class="pg-data__icon">${getDataIcon(unknownType)}</span>
+                  <span class="pg-data__icon">${unknownConfig.icon}</span>
                   <span>${dataType}</span>
                 </div>
 
