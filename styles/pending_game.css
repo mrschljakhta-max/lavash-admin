@@ -2688,3 +2688,53 @@
     0 0 44px color-mix(in srgb, var(--pg-card-accent), transparent 62%),
     0 34px 90px rgba(0,0,0,.48) !important;
 }
+/* =========================================================
+   CARD TYPE BACKGROUND — фон картки під тип невідомого запису
+========================================================= */
+
+.pg-card[data-unknown-type="uav"] {
+  --pg-card-bg-main: rgba(12, 70, 180, .94);
+  --pg-card-bg-deep: rgba(5, 24, 78, .96);
+}
+
+.pg-card[data-unknown-type="settlement"] {
+  --pg-card-bg-main: rgba(118, 78, 10, .92);
+  --pg-card-bg-deep: rgba(48, 34, 12, .96);
+}
+
+.pg-card[data-unknown-type="unit"] {
+  --pg-card-bg-main: rgba(105, 22, 54, .92);
+  --pg-card-bg-deep: rgba(42, 12, 32, .96);
+}
+
+.pg-card[data-unknown-type="station"] {
+  --pg-card-bg-main: rgba(7, 95, 84, .92);
+  --pg-card-bg-deep: rgba(4, 38, 48, .96);
+}
+
+.pg-card[data-unknown-type="object"] {
+  --pg-card-bg-main: rgba(74, 44, 150, .92);
+  --pg-card-bg-deep: rgba(28, 20, 72, .96);
+}
+
+.pg-card[data-unknown-type="record"] {
+  --pg-card-bg-main: rgba(70, 78, 104, .88);
+  --pg-card-bg-deep: rgba(18, 24, 42, .96);
+}
+
+/* саме це перебиває старий синій фон */
+.pg-card[data-unknown-type] .pg-card__front,
+.pg-card[data-unknown-type] .pg-card__back,
+.pg-card[data-unknown-type] .pg-card__face {
+  background:
+    radial-gradient(
+      circle at 72% 46%,
+      color-mix(in srgb, var(--pg-card-accent), transparent 76%),
+      transparent 44%
+    ),
+    linear-gradient(
+      135deg,
+      var(--pg-card-bg-main),
+      var(--pg-card-bg-deep)
+    ) !important;
+}
