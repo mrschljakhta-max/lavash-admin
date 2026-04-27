@@ -3,7 +3,10 @@
     {
       id: '98a7f2e1',
       title: 'БПЛА Shahed-136',
-      status: 'new',
+      status: 'unknown',
+      dataType: 'БПЛА',
+      mainValue: 'Shahed-136',
+      unknownType: 'uav',
       createdAt: '08.05.2024 10:24',
       station: 'Radar_01',
       settlement: 'с. Гора',
@@ -41,8 +44,9 @@
   function getStatusLabel(status) {
     return {
       new: 'Новий',
+      unknown: 'Невідомий',
       warning: 'Сумнівний',
-      error: 'Помилка',
+      error: 'Невідомий запис',
       valid: 'Валідний',
       skipped: 'Пропущений',
       fixed: 'Виправлений'
@@ -51,9 +55,10 @@
 
   function getStatusColor(status) {
     return {
-      new: '#37e6b2',
+      new: '#55dfff',
+      unknown: '#f5a524',
       warning: '#f5a524',
-      error: '#ff4d6d',
+      error: '#f5a524',
       valid: '#25d889',
       skipped: '#8d58ff',
       fixed: '#55dfff'
@@ -247,37 +252,116 @@
     bind();
   }
 
+  function getUnknownLabel(type) {
+    return {
+      uav: 'Невідомий БПЛА',
+      settlement: 'Невідомий населений пункт',
+      unit: 'Невідомий підрозділ',
+      station: 'Невідома станція',
+      object: 'Невідомий об’єкт прикриття',
+      record: 'Невідомий запис'
+    }[type] || 'Невідомий запис';
+  }
+
+  function getDataIcon(type) {
+    return {
+      uav: '✈',
+      settlement: '⌖',
+      unit: '▣',
+      station: '⌁',
+      object: '◎',
+      record: '◇'
+    }[type] || '◇';
+  }
+
+  function safeValue(value, fallback = '—') {
+    return value === undefined || value === null || value === '' ? fallback : value;
+  }
+
   function renderCard(record, index, slot) {
     const active = slot === 0 ? 'is-active' : '';
+    const unknownType = record.unknownType || 'record';
+    const dataType = record.dataType || record.type || 'Запис';
+    const mainValue = record.mainValue || record.model || record.settlement || record.title || 'Невідоме значення';
+    const confidence = Number(record.confidence || 0);
 
     return `
-      <article class="pg-card ${active} pg-card--${record.status}" data-index="${index}" data-slot="${slot}">
+      <article
+        class="pg-card ${active} pg-card--${record.status}"
+        data-index="${index}"
+        data-slot="${slot}"
+        data-status="${record.status || 'new'}"
+        data-unknown-type="${unknownType}"
+      >
         <div class="pg-card__inner">
           <div class="pg-card__face pg-card__front">
             <div class="pg-card__topline">
-              <div class="pg-card__status">${getStatusLabel(record.status)}</div>
+              <div class="pg-card__status">
+                <span class="pg-status-dot"></span>
+                ${getUnknownLabel(unknownType)}
+              </div>
               <button class="pg-card__star" type="button" aria-label="Позначити">☆</button>
             </div>
 
-            <div class="pg-card__content">
-              <div>
-                <h2>${record.title}</h2>
-                <p class="pg-card__date">${record.createdAt}</p>
-                <div class="pg-card__meta">
-                  <span>📡 ${record.station}</span>
-                  <span>📍 ${record.settlement}</span>
+            <div class="pg-card__content pg-card__content--new">
+              <section class="pg-data">
+                <div class="pg-data__type">
+                  <span class="pg-data__icon">${getDataIcon(unknownType)}</span>
+                  <span>${dataType}</span>
                 </div>
-                <div class="pg-card__chip">${record.type}</div>
-              </div>
 
-              <div class="pg-visual pg-visual--uav">
+                <h2 class="pg-data__value">${mainValue}</h2>
+
+                <p class="pg-data__hint">
+                  Значення потребує підтвердження оператором
+                </p>
+
+                <div class="pg-context">
+                  <div class="pg-context__row">
+                    <span>Час</span>
+                    <strong>${safeValue(record.createdAt)}</strong>
+                  </div>
+
+                  <div class="pg-context__row">
+                    <span>Джерело</span>
+                    <strong>${safeValue(record.source)}</strong>
+                  </div>
+
+                  <div class="pg-context__row">
+                    <span>Станція</span>
+                    <strong>${safeValue(record.station)}</strong>
+                  </div>
+
+                  <div class="pg-context__row">
+                    <span>НП</span>
+                    <strong>${safeValue(record.settlement)}</strong>
+                  </div>
+                </div>
+
+                <div class="pg-confidence">
+                  <span>Впевненість</span>
+                  <div class="pg-confidence__bar">
+                    <i style="width:${Math.max(0, Math.min(100, confidence))}%"></i>
+                  </div>
+                  <b>${confidence}%</b>
+                </div>
+              </section>
+
+              <section class="pg-visual pg-visual--${unknownType}">
+                <div class="pg-radar-core"></div>
+
                 <img
                   class="pg-uav-img"
                   src="../assets/img/uav/shahed-136.png"
-                  alt="${record.model || record.title}"
+                  alt="${mainValue}"
                   loading="lazy"
                 />
-              </div>
+
+                <div class="pg-visual-label">
+                  <span>${dataType}</span>
+                  <strong>${mainValue}</strong>
+                </div>
+              </section>
             </div>
 
             <small>Клік — редагувати / Space — flip</small>
@@ -286,23 +370,23 @@
           <div class="pg-card__face pg-card__back">
             <div class="pg-edit-head">
               <h3>Редагування запису</h3>
-              <span>${record.source}</span>
+              <span>${safeValue(record.source, 'unknown_source')}</span>
             </div>
 
             <div class="pg-edit-grid">
-              <label><span>Модель</span><input value="${record.model}" /></label>
-              <label><span>Тип</span><input value="${record.type}" /></label>
-              <label><span>Дата / час</span><input value="${record.createdAt}" /></label>
-              <label><span>Станція</span><input value="${record.station}" /></label>
-              <label><span>Населений пункт</span><input value="${record.settlement}" /></label>
-              <label><span>Координати</span><input value="${record.coordinates}" /></label>
-              <label><span>Висота</span><input value="${record.altitude}" /></label>
-              <label><span>Швидкість</span><input value="${record.speed}" /></label>
+              <label><span>Тип даних</span><input value="${dataType}" /></label>
+              <label><span>Значення</span><input value="${mainValue}" /></label>
+              <label><span>Дата / час</span><input value="${safeValue(record.createdAt, '')}" /></label>
+              <label><span>Станція</span><input value="${safeValue(record.station, '')}" /></label>
+              <label><span>Населений пункт</span><input value="${safeValue(record.settlement, '')}" /></label>
+              <label><span>Координати</span><input value="${safeValue(record.coordinates, '')}" /></label>
+              <label><span>Модель</span><input value="${safeValue(record.model, '')}" /></label>
+              <label><span>Впевненість</span><input value="${confidence}%" /></label>
             </div>
 
             <label class="pg-edit-note">
               <span>Примітка</span>
-              <textarea>Система пропонує: ${record.model}. Confidence: ${record.confidence}%</textarea>
+              <textarea>Система не впевнена у значенні: ${mainValue}</textarea>
             </label>
 
             <button class="pg-save-btn" type="button">Зберегти зміни</button>
