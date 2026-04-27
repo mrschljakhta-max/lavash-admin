@@ -3319,3 +3319,150 @@
     padding-top: 24px !important;
   }
 }
+/* =========================================================
+   Lavash Pending — restore side rank card + circular XP HUD
+   Додати в кінець pending_game.css
+========================================================= */
+
+#pendingGamePage .pg-rankbar {
+  display: none !important;
+}
+
+#pendingGamePage .pg-game-hud {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 80 !important;
+  pointer-events: none !important;
+  display: block !important;
+  width: auto !important;
+  height: auto !important;
+  margin: 0 !important;
+}
+
+#pendingGamePage .pg-hud-rank-card {
+  position: absolute !important;
+  left: clamp(175px, 18vw, 330px) !important;
+  top: clamp(130px, 18vh, 210px) !important;
+  width: 210px !important;
+  min-height: 82px !important;
+  padding: 14px 18px !important;
+  border-radius: 22px !important;
+
+  display: grid !important;
+  align-content: center !important;
+  justify-items: end !important;
+
+  background:
+    radial-gradient(circle at 50% 0%, rgba(85,223,255,.14), transparent 55%),
+    linear-gradient(180deg, rgba(11,31,84,.86), rgba(5,16,48,.78)) !important;
+
+  border: 1px solid rgba(85,223,255,.20) !important;
+  box-shadow:
+    0 0 30px rgba(85,223,255,.12),
+    0 18px 45px rgba(0,0,0,.28),
+    inset 0 1px 0 rgba(255,255,255,.08) !important;
+
+  backdrop-filter: blur(16px) !important;
+}
+
+#pendingGamePage .pg-hud-rank-card__kicker {
+  display: block !important;
+  margin: 0 0 4px !important;
+  color: rgba(215,228,255,.58) !important;
+  font-size: 12px !important;
+  line-height: 1 !important;
+  font-weight: 950 !important;
+  text-transform: uppercase !important;
+  letter-spacing: .04em !important;
+}
+
+#pendingGamePage .pg-hud-rank-card strong {
+  display: block !important;
+  color: #fff1a8 !important;
+  font-size: 19px !important;
+  line-height: 1.05 !important;
+  font-weight: 1000 !important;
+  text-align: right !important;
+  text-shadow: 0 0 18px rgba(255,220,90,.25) !important;
+}
+
+#pendingGamePage .pg-hud-rank-card small {
+  display: block !important;
+  margin-top: 5px !important;
+  color: rgba(230,240,255,.72) !important;
+  font-size: 11px !important;
+  line-height: 1 !important;
+  font-weight: 850 !important;
+  text-align: right !important;
+}
+
+#pendingGamePage .pg-hud-xp-ring {
+  position: absolute !important;
+  right: clamp(170px, 17vw, 320px) !important;
+  top: clamp(120px, 17vh, 196px) !important;
+
+  width: 124px !important;
+  height: 124px !important;
+  padding: 10px !important;
+  border-radius: 999px !important;
+
+  display: grid !important;
+  place-items: center !important;
+
+  background:
+    conic-gradient(
+      from -90deg,
+      var(--pg-ring-accent, #55dfff) 0 var(--pg-ring-progress, 0deg),
+      rgba(255,255,255,.12) var(--pg-ring-progress, 0deg) 360deg
+    ) !important;
+
+  box-shadow:
+    0 0 34px color-mix(in srgb, var(--pg-ring-accent, #55dfff) 46%, transparent),
+    0 18px 45px rgba(0,0,0,.34) !important;
+}
+
+#pendingGamePage .pg-hud-xp-ring__core {
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: inherit !important;
+  display: grid !important;
+  place-content: center !important;
+  text-align: center !important;
+
+  background:
+    radial-gradient(circle at 45% 30%, rgba(85,223,255,.24), transparent 48%),
+    linear-gradient(180deg, rgba(13,31,82,.98), rgba(3,10,30,.98)) !important;
+
+  border: 1px solid rgba(255,255,255,.11) !important;
+  box-shadow: inset 0 0 30px rgba(0,0,0,.42) !important;
+}
+
+#pendingGamePage .pg-hud-xp-ring__core strong {
+  color: #fff !important;
+  font-size: 30px !important;
+  line-height: .95 !important;
+  font-weight: 1000 !important;
+}
+
+#pendingGamePage .pg-hud-xp-ring__core span {
+  margin-top: 3px !important;
+  color: var(--pg-ring-accent, #55dfff) !important;
+  font-size: 10px !important;
+  font-weight: 1000 !important;
+  text-transform: uppercase !important;
+}
+
+@media (max-width: 1450px) {
+  #pendingGamePage .pg-hud-rank-card {
+    left: clamp(135px, 12vw, 210px) !important;
+    top: clamp(125px, 18vh, 200px) !important;
+    width: 185px !important;
+  }
+
+  #pendingGamePage .pg-hud-xp-ring {
+    right: clamp(135px, 11vw, 210px) !important;
+    top: clamp(116px, 17vh, 190px) !important;
+    width: 112px !important;
+    height: 112px !important;
+  }
+}
