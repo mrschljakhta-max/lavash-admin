@@ -299,7 +299,7 @@
   width: clamp(430px, 36vw, 650px);
   height: clamp(410px, 56vh, 570px);
   opacity: 1;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -74%);
   filter: saturate(1.12) brightness(1.08);
   z-index: 10;
 }
