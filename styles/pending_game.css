@@ -685,7 +685,7 @@
 /* Game-style rank badge: icon + title. Safe final override for current clean HUD. */
 
 #pendingGamePage .pg-hud-rank-card {
-  left: clamp(110px, 10vw, 210px);
+  left: 64px;
   top: 18px;
   width: 290px;
   min-height: 96px;
