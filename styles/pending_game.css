@@ -1,6 +1,9 @@
 /* =========================================================
-   Lavash Pending Game — CLEAN VERSION
-   Єдина геометрія: HUD / сцена / карусель / картка / edit form
+   Lavash Pending Game — CLEAN ARCHITECTURE v2
+   Правильна геометрія: HUD / Stage / Background carousel
+   - HUD не залежить від картки
+   - центральна картка не впливає на rank / XP
+   - бокові картки лише атмосфера
 ========================================================= */
 
 #pendingGamePage.pg-page {
@@ -18,7 +21,7 @@
   min-height: 680px;
   overflow: hidden;
   isolation: isolate;
-  padding: 0 20px 18px;
+  padding: 0;
 }
 
 /* ================= BACKGROUND ================= */
@@ -31,84 +34,155 @@
   filter: blur(92px);
   opacity: .24;
   pointer-events: none;
-  z-index: -1;
+  z-index: 0;
 }
 
 #pendingGamePage .pg-bg-orb--left {
-  left: 12%;
+  left: 10%;
   top: 42%;
   background: var(--pg-cyan);
 }
 
 #pendingGamePage .pg-bg-orb--right {
-  right: 14%;
-  top: 36%;
+  right: 12%;
+  top: 38%;
   background: var(--pg-violet);
 }
 
-/* ================= HUD ================= */
+/* =========================================================
+   LAYER 1 — HUD
+   Ранг і XP живуть окремо від картки.
+========================================================= */
 
 #pendingGamePage .pg-game-hud {
   position: absolute;
-  top: 54px;
-  left: 0;
-  right: 0;
-  height: 128px;
-  z-index: 30;
+  inset: 0;
+  z-index: 40;
   pointer-events: none;
 }
 
+/* лівий rank — прив’язаний до лівого navbar */
 #pendingGamePage .pg-hud-rank-card {
   position: absolute;
-  left: clamp(108px, 13vw, 285px);
-  top: 18px;
-  width: 230px;
-  min-height: 84px;
-  padding: 18px 22px;
-  border-radius: 22px;
-  display: grid;
-  align-content: center;
-  justify-items: end;
-  text-align: right;
+  top: 118px;
+  left: 76px;
+
+  width: 320px;
+  min-height: 96px;
+  padding: 14px 18px 14px 14px;
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 15px;
+
+  text-align: left;
+  overflow: visible;
+  border-radius: 24px;
 
   background:
-    radial-gradient(circle at 20% 0%, rgba(85, 223, 255, .12), transparent 46%),
-    linear-gradient(180deg, rgba(12, 31, 86, .88), rgba(4, 14, 44, .82));
-  border: 1px solid rgba(85, 223, 255, .18);
+    radial-gradient(circle at 18% 0%, rgba(255, 214, 99, .16), transparent 34%),
+    radial-gradient(circle at 84% 72%, rgba(85, 223, 255, .10), transparent 38%),
+    linear-gradient(180deg, rgba(14, 34, 88, .92), rgba(4, 14, 44, .86));
+  border: 1px solid rgba(255, 214, 99, .24);
   box-shadow:
-    0 18px 48px rgba(0, 0, 0, .28),
-    inset 0 1px 0 rgba(255,255,255,.08);
+    0 18px 50px rgba(0, 0, 0, .30),
+    0 0 26px rgba(255, 190, 82, .13),
+    inset 0 1px 0 rgba(255,255,255,.09);
   backdrop-filter: blur(14px);
 }
 
-#pendingGamePage .pg-hud-rank-card span {
-  color: rgba(213, 224, 255, .66);
-  font-size: 12px;
+#pendingGamePage .pg-hud-rank-card::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(255,222,130,.55), rgba(85,223,255,.20), rgba(255,255,255,.03));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  pointer-events: none;
+  opacity: .72;
+}
+
+#pendingGamePage .pg-rank-emblem {
+  width: 74px;
+  height: 74px;
+  flex: 0 0 74px;
+  position: relative;
+  display: grid;
+  place-items: center;
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 50% 28%, rgba(255,255,255,.13), transparent 45%),
+    linear-gradient(180deg, rgba(255, 214, 99, .12), rgba(255, 214, 99, .03));
+  border: 1px solid rgba(255, 214, 99, .22);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.10),
+    0 0 28px rgba(255, 190, 82, .18);
+}
+
+#pendingGamePage .pg-rank-emblem::after {
+  content: "";
+  position: absolute;
+  inset: 10px;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(255,214,99,.14), transparent 62%);
+  filter: blur(8px);
+  z-index: 0;
+}
+
+#pendingGamePage .pg-rank-emblem img {
+  width: 66px;
+  height: 66px;
+  object-fit: contain;
+  position: relative;
+  z-index: 1;
+  filter:
+    drop-shadow(0 6px 10px rgba(0,0,0,.42))
+    drop-shadow(0 0 10px rgba(255,214,99,.42));
+}
+
+#pendingGamePage .pg-rank-info {
+  min-width: 0;
+  display: grid;
+  align-content: center;
+}
+
+#pendingGamePage .pg-rank-info .pg-hud-rank-card__kicker,
+#pendingGamePage .pg-hud-rank-card > span {
+  color: rgba(213, 224, 255, .62);
+  font-size: 11px;
   font-weight: 950;
   text-transform: uppercase;
-  letter-spacing: .06em;
+  letter-spacing: .08em;
 }
 
-#pendingGamePage .pg-hud-rank-card strong {
-  margin-top: 3px;
+#pendingGamePage .pg-rank-info strong,
+#pendingGamePage .pg-hud-rank-card > strong {
+  margin-top: 4px;
   color: #fff1a7;
-  font-size: 21px;
+  font-size: 23px;
   line-height: 1;
   font-weight: 1000;
-  text-shadow: 0 0 12px rgba(255, 214, 99, .25);
+  text-shadow: 0 0 12px rgba(255, 214, 99, .28);
 }
 
-#pendingGamePage .pg-hud-rank-card small {
-  margin-top: 6px;
-  color: rgba(226, 236, 255, .76);
+#pendingGamePage .pg-rank-info small,
+#pendingGamePage .pg-hud-rank-card > small {
+  margin-top: 7px;
+  color: rgba(226, 236, 255, .78);
   font-size: 11px;
   font-weight: 900;
 }
 
+/* правий XP — прив’язаний до правого navbar */
 #pendingGamePage .pg-hud-xp-ring {
   position: absolute;
-  right: clamp(150px, 15vw, 330px);
-  top: 20px;
+  top: 118px;
+  right: 126px;
+
   width: 132px;
   height: 132px;
   padding: 10px;
@@ -152,12 +226,19 @@
   font-weight: 1000;
 }
 
-/* ================= STAGE / CAROUSEL ================= */
+/* =========================================================
+   LAYER 2 — STAGE
+   Центральна область. Тут живе карусель, але HUD сюди не входить.
+========================================================= */
 
 #pendingGamePage .pg-stage {
   position: absolute;
-  inset: 122px 0 54px 0;
-  z-index: 5;
+  left: 0;
+  right: 0;
+  top: 138px;
+  bottom: 42px;
+  z-index: 10;
+
   display: grid;
   place-items: center;
   overflow: hidden;
@@ -177,40 +258,53 @@
 }
 
 #pendingGamePage .pg-carousel {
+  position: relative;
   width: 100%;
   height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: clamp(32px, 4.5vw, 92px);
+  display: grid;
+  place-items: center;
   perspective: 1500px;
   overflow: hidden;
 }
 
-/* ================= CARD GEOMETRY ================= */
+/* =========================================================
+   LAYER 3 — CARDS
+   Бокові картки абсолютні. Вони НЕ впливають на розмір сцени.
+========================================================= */
 
 #pendingGamePage .pg-card {
-  flex: 0 0 auto;
-  width: clamp(330px, 26vw, 520px);
-  height: clamp(380px, 56vh, 610px);
+  position: absolute;
+  width: clamp(330px, 25vw, 500px);
+  height: clamp(360px, 52vh, 580px);
   opacity: .20;
-  transform: scale(.58) rotateY(var(--pg-card-rotate, 0deg)) translateY(14px);
   transform-origin: center center;
   transition: transform .34s ease, opacity .34s ease, filter .34s ease;
   perspective: 1300px;
   filter: saturate(.62) brightness(.66);
 }
 
-#pendingGamePage .pg-card[data-slot="-2"] { --pg-card-rotate: 10deg; }
-#pendingGamePage .pg-card[data-slot="-1"] { --pg-card-rotate: 6deg; }
-#pendingGamePage .pg-card[data-slot="1"] { --pg-card-rotate: -6deg; }
-#pendingGamePage .pg-card[data-slot="2"] { --pg-card-rotate: -10deg; }
+#pendingGamePage .pg-card[data-slot="-2"] {
+  transform: translateX(-48vw) scale(.54) rotateY(10deg);
+}
+
+#pendingGamePage .pg-card[data-slot="-1"] {
+  transform: translateX(-34vw) scale(.60) rotateY(6deg);
+}
+
+#pendingGamePage .pg-card[data-slot="1"] {
+  transform: translateX(34vw) scale(.60) rotateY(-6deg);
+}
+
+#pendingGamePage .pg-card[data-slot="2"] {
+  transform: translateX(48vw) scale(.54) rotateY(-10deg);
+}
 
 #pendingGamePage .pg-card.is-active {
-  width: clamp(390px, 31vw, 560px);
-  height: clamp(460px, 64vh, 660px);
+  position: relative;
+  width: clamp(440px, 36vw, 650px);
+  height: clamp(440px, 60vh, 620px);
   opacity: 1;
-  transform: rotateY(0deg) translateY(0);
+  transform: translateY(0);
   filter: saturate(1.12) brightness(1.08);
   z-index: 10;
 }
@@ -629,12 +723,13 @@
   }
 
   #pendingGamePage .pg-stage {
-    inset: 100px 0 44px 0;
+    top: 104px;
+    bottom: 36px;
   }
 
   #pendingGamePage .pg-card.is-active {
-    width: clamp(360px, 28vw, 500px);
-    height: clamp(410px, 60vh, 560px);
+    width: clamp(400px, 33vw, 560px);
+    height: clamp(400px, 58vh, 560px);
   }
 
   #pendingGamePage .pg-hud-xp-ring {
@@ -642,157 +737,6 @@
     height: 108px;
   }
 
-  #pendingGamePage .pg-hud-rank-card {
-    width: 210px;
-    min-height: 72px;
-  }
-}
-
-@media (max-width: 1400px) {
-  #pendingGamePage .pg-hud-rank-card {
-    left: 110px;
-  }
-
-  #pendingGamePage .pg-hud-xp-ring {
-    right: 150px;
-  }
-
-  #pendingGamePage .pg-card.is-active {
-    width: clamp(360px, 34vw, 520px);
-  }
-
-  #pendingGamePage .pg-hotkey-strip {
-    max-width: 54vw;
-  }
-}
-
-@media (max-width: 1100px) {
-  #pendingGamePage .pg-hud-rank-card,
-  #pendingGamePage .pg-hud-xp-ring {
-    display: none;
-  }
-
-  #pendingGamePage .pg-card.is-active {
-    width: min(470px, 72vw);
-  }
-
-  #pendingGamePage .pg-card:not(.is-active) {
-    display: none;
-  }
-}
-
-/* ================= RANK EMBLEM UPGRADE ================= */
-/* Game-style rank badge: icon + title. Safe final override for current clean HUD. */
-
-#pendingGamePage .pg-hud-rank-card {
-  left: 64px;
-  top: 18px;
-  width: 290px;
-  min-height: 96px;
-  padding: 14px 18px 14px 14px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 15px;
-  text-align: left;
-  justify-items: initial;
-  overflow: visible;
-  border-radius: 24px;
-  background:
-    radial-gradient(circle at 18% 0%, rgba(255, 214, 99, .16), transparent 34%),
-    radial-gradient(circle at 84% 72%, rgba(85, 223, 255, .10), transparent 38%),
-    linear-gradient(180deg, rgba(14, 34, 88, .92), rgba(4, 14, 44, .86));
-  border: 1px solid rgba(255, 214, 99, .24);
-  box-shadow:
-    0 18px 50px rgba(0, 0, 0, .30),
-    0 0 26px rgba(255, 190, 82, .13),
-    inset 0 1px 0 rgba(255,255,255,.09);
-}
-
-#pendingGamePage .pg-hud-rank-card::before {
-  content: "";
-  position: absolute;
-  inset: -1px;
-  border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(135deg, rgba(255,222,130,.55), rgba(85,223,255,.20), rgba(255,255,255,.03));
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-          mask-composite: exclude;
-  pointer-events: none;
-  opacity: .72;
-}
-
-#pendingGamePage .pg-rank-emblem {
-  width: 74px;
-  height: 74px;
-  flex: 0 0 74px;
-  position: relative;
-  display: grid;
-  place-items: center;
-  border-radius: 20px;
-  background:
-    radial-gradient(circle at 50% 28%, rgba(255,255,255,.13), transparent 45%),
-    linear-gradient(180deg, rgba(255, 214, 99, .12), rgba(255, 214, 99, .03));
-  border: 1px solid rgba(255, 214, 99, .22);
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.10),
-    0 0 28px rgba(255, 190, 82, .18);
-}
-
-#pendingGamePage .pg-rank-emblem::after {
-  content: "";
-  position: absolute;
-  inset: 10px;
-  border-radius: 999px;
-  background: radial-gradient(circle, rgba(255,214,99,.14), transparent 62%);
-  filter: blur(8px);
-  z-index: 0;
-}
-
-#pendingGamePage .pg-rank-emblem img {
-  width: 66px;
-  height: 66px;
-  object-fit: contain;
-  position: relative;
-  z-index: 1;
-  filter:
-    drop-shadow(0 6px 10px rgba(0,0,0,.42))
-    drop-shadow(0 0 10px rgba(255,214,99,.42));
-}
-
-#pendingGamePage .pg-rank-info {
-  min-width: 0;
-  display: grid;
-  align-content: center;
-}
-
-#pendingGamePage .pg-rank-info .pg-hud-rank-card__kicker {
-  color: rgba(213, 224, 255, .62);
-  font-size: 11px;
-  font-weight: 950;
-  text-transform: uppercase;
-  letter-spacing: .08em;
-}
-
-#pendingGamePage .pg-rank-info strong {
-  margin-top: 4px;
-  color: #fff1a7;
-  font-size: 23px;
-  line-height: 1;
-  font-weight: 1000;
-  text-shadow: 0 0 12px rgba(255, 214, 99, .28);
-}
-
-#pendingGamePage .pg-rank-info small {
-  margin-top: 7px;
-  color: rgba(226, 236, 255, .78);
-  font-size: 11px;
-  font-weight: 900;
-}
-
-/* Small screens */
-@media (max-height: 820px) {
   #pendingGamePage .pg-hud-rank-card {
     width: 262px;
     min-height: 82px;
@@ -814,5 +758,38 @@
 
   #pendingGamePage .pg-rank-info strong {
     font-size: 20px;
+  }
+}
+
+@media (max-width: 1400px) {
+  #pendingGamePage .pg-hud-rank-card {
+    left: 74px;
+  }
+
+  #pendingGamePage .pg-hud-xp-ring {
+    right: 112px;
+  }
+
+  #pendingGamePage .pg-card.is-active {
+    width: clamp(410px, 38vw, 610px);
+  }
+
+  #pendingGamePage .pg-hotkey-strip {
+    max-width: 58vw;
+  }
+}
+
+@media (max-width: 1100px) {
+  #pendingGamePage .pg-hud-rank-card,
+  #pendingGamePage .pg-hud-xp-ring {
+    display: none;
+  }
+
+  #pendingGamePage .pg-card.is-active {
+    width: min(470px, 72vw);
+  }
+
+  #pendingGamePage .pg-card:not(.is-active) {
+    display: none;
   }
 }
