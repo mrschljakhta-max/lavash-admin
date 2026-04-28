@@ -52,11 +52,11 @@ body {
   min-height: 100vh;
   font-family: Inter, "Segoe UI", Arial, sans-serif;
   color: var(--text-main);
-  background:
-    radial-gradient(circle at 50% 0%, rgba(72, 116, 255, 0.22), transparent 24%),
+  background: radial-gradient(circle at 50% 0%, rgba(72, 116, 255, 0.22), transparent 24%),
     radial-gradient(circle at 0% 100%, rgba(104, 77, 255, 0.12), transparent 20%),
     linear-gradient(180deg, #031132 0%, #020d28 30%, #02091e 100%);
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 img {
