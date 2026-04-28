@@ -1,8 +1,9 @@
 /* =========================================================
-   Lavash Pending Game — clean stable CSS
+   Lavash Pending Game — corrected full CSS
    One coordinate system: page -> stage -> carousel -> cards.
 ========================================================= */
 
+/* Pending page should not inherit scroll/padding clipping from layout shell */
 .main-workspace:has(#pendingGamePage),
 .workspace-body:has(#pendingGamePage),
 .workspace-body--page:has(#pendingGamePage) {
@@ -32,10 +33,16 @@ body:has(#pendingGamePage) {
   --pg-orange: #f5b84b;
   --pg-line: rgba(118, 150, 236, .18);
 
+  --pg-side-gap: 86px;
+  --pg-hud-top: 72px;
+  --pg-card-center-x: 50%;
+  --pg-card-center-y: 51%;
+  --pg-side-card-y: 54%;
+
   position: relative;
   width: 100%;
-  min-height: calc(100vh - 120px);
-  height: auto;
+  min-height: calc(100vh - 110px);
+  height: calc(100vh - 110px);
   overflow: visible;
   isolation: isolate;
   padding: 0;
@@ -77,8 +84,8 @@ body:has(#pendingGamePage) {
 
 #pendingGamePage .pg-hud-rank-card {
   position: absolute;
-  top: 54px;
-  left: 86px;
+  top: var(--pg-hud-top);
+  left: var(--pg-side-gap);
   width: 320px;
   min-height: 96px;
   padding: 14px 18px 14px 14px;
@@ -153,7 +160,7 @@ body:has(#pendingGamePage) {
 
 #pendingGamePage .pg-hud-xp-ring {
   position: absolute;
-  top: 54px;
+  top: var(--pg-hud-top);
   right: 126px;
   width: 132px;
   height: 132px;
@@ -200,18 +207,18 @@ body:has(#pendingGamePage) {
 /* ================= STAGE ================= */
 
 #pendingGamePage .pg-stage {
-  position: relative;
+  position: absolute;
+  inset: 0;
   z-index: 10;
   width: 100%;
-  height: calc(100vh - 185px);
-  min-height: 560px;
-  display: grid;
-  place-items: center;
+  height: 100%;
+  display: block;
   overflow: visible;
 }
 
 #pendingGamePage .pg-carousel-wrap {
-  position: relative;
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   overflow: visible;
@@ -223,7 +230,8 @@ body:has(#pendingGamePage) {
 }
 
 #pendingGamePage .pg-carousel {
-  position: relative;
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   overflow: visible;
@@ -234,10 +242,10 @@ body:has(#pendingGamePage) {
 
 #pendingGamePage .pg-card {
   position: absolute;
-  left: 50%;
-  top: 47%;
-  width: clamp(360px, 31vw, 620px);
-  height: clamp(420px, 58vh, 610px);
+  left: var(--pg-card-center-x);
+  top: var(--pg-side-card-y);
+  width: clamp(330px, 25vw, 500px);
+  height: clamp(340px, 50vh, 540px);
   opacity: .20;
   transform-origin: center center;
   transition: transform .34s ease, opacity .34s ease, filter .34s ease;
@@ -262,10 +270,11 @@ body:has(#pendingGamePage) {
 }
 
 #pendingGamePage .pg-card.is-active {
-  width: min(700px, 42vw);
-  height: min(610px, 62vh);
+  top: var(--pg-card-center-y);
+  width: min(760px, 38vw);
+  height: min(590px, 64vh);
   opacity: 1;
-  transform: translate(-50%, -50%) scale(1) rotateY(0deg);
+  transform: translate(-50%, -50%) scale(.92) rotateY(0deg);
   transform-origin: center center;
   filter: saturate(1.12) brightness(1.08);
   z-index: 10;
@@ -666,32 +675,25 @@ body:has(#pendingGamePage) {
 
 @media (max-height: 820px) {
   #pendingGamePage.pg-page {
-    min-height: 590px;
-  }
-
-  #pendingGamePage .pg-stage {
+    --pg-hud-top: 58px;
+    --pg-card-center-y: 50%;
+    --pg-side-card-y: 53%;
     min-height: 590px;
   }
 
   #pendingGamePage .pg-hud-rank-card {
-    top: 42px;
     width: 262px;
     min-height: 82px;
   }
 
   #pendingGamePage .pg-hud-xp-ring {
-    top: 42px;
     width: 108px;
     height: 108px;
   }
 
-  #pendingGamePage .pg-card {
-    top: 48%;
-  }
-
   #pendingGamePage .pg-card.is-active {
-    width: min(640px, 42vw);
-    height: min(540px, 62vh);
+    width: min(640px, 38vw);
+    height: min(520px, 60vh);
   }
 }
 
