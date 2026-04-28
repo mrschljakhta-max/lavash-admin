@@ -742,3 +742,28 @@ body:has(#pendingGamePage) {
 #pendingGamePage .pg-card.is-active {
   transform: translate(-50%, -50%) scale(.92) rotateY(0deg) !important;
 }
+/* ===== FINAL STABLE CARD POSITION ===== */
+
+#pendingGamePage .pg-stage {
+  position: relative !important;
+  height: calc(100vh - 110px) !important;
+  min-height: 634px !important;
+  overflow: visible !important;
+}
+
+#pendingGamePage .pg-carousel,
+#pendingGamePage .pg-carousel-wrap {
+  position: absolute !important;
+  inset: 0 !important;
+  overflow: visible !important;
+}
+
+#pendingGamePage .pg-card {
+  position: absolute !important;
+  left: 50% !important;
+  top: 58% !important;
+}
+
+#pendingGamePage .pg-card.is-active {
+  transform: translate(-50%, -50%) scale(.92) rotateY(0deg) !important;
+}
