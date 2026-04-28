@@ -235,8 +235,8 @@
   position: absolute;
   left: 0;
   right: 0;
-  top: 138px;
-  bottom: 42px;
+  top: 110px;
+   bottom: 42px;
   z-index: 10;
 
   display: grid;
@@ -284,19 +284,19 @@
 }
 
 #pendingGamePage .pg-card[data-slot="-2"] {
-  transform: translateX(-48vw) scale(.54) rotateY(10deg);
+  transform: translateX(-36vw) scale(.50) rotateY(10deg);
 }
 
 #pendingGamePage .pg-card[data-slot="-1"] {
-  transform: translateX(-34vw) scale(.60) rotateY(6deg);
+  transform: translateX(-24vw) scale(.58) rotateY(6deg);
 }
 
 #pendingGamePage .pg-card[data-slot="1"] {
-  transform: translateX(34vw) scale(.60) rotateY(-6deg);
+  transform: translateX(24vw) scale(.58) rotateY(-6deg);
 }
 
 #pendingGamePage .pg-card[data-slot="2"] {
-  transform: translateX(48vw) scale(.54) rotateY(-10deg);
+  transform: translateX(36vw) scale(.50) rotateY(-10deg);
 }
 
 #pendingGamePage .pg-card.is-active {
