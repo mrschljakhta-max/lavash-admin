@@ -57,7 +57,7 @@ body {
     linear-gradient(180deg, #031132 0%, #020d28 30%, #02091e 100%);
   overflow-x: hidden;
   overflow-y: auto;
-}
+} 
 
 img {
   display: block;
