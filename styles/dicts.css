@@ -1679,3 +1679,30 @@
 .dict-card.is-level-2 .dict-card__icon-img {
   opacity: .48 !important;
 }
+/* ===== FIX: card scale so bottom block fits ===== */
+
+#pendingGamePage .pg-card.is-active {
+  width: min(760px, 38vw) !important;
+  height: min(590px, 64vh) !important;
+  transform: scale(.92) rotateY(0deg) translateY(0) !important;
+  transform-origin: center center !important;
+}
+
+#pendingGamePage .pg-card:not(.is-active) {
+  width: min(520px, 28vw) !important;
+  height: min(360px, 42vh) !important;
+  transform: scale(.62) rotateY(var(--pg-card-rotate, 0deg)) translateY(10px) !important;
+}
+
+#pendingGamePage .pg-stage {
+  padding-top: 8px !important;
+  padding-bottom: 56px !important;
+}
+
+#pendingGamePage .pg-hotkey-strip {
+  position: absolute !important;
+  left: 50% !important;
+  bottom: 28px !important;
+  transform: translateX(-50%) !important;
+  z-index: 35 !important;
+}
