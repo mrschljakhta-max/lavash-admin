@@ -717,3 +717,28 @@ body:has(#pendingGamePage) {
   overflow-x: hidden !important;
   overflow-y: auto !important;
 }
+#pendingGamePage .pg-stage,
+#pendingGamePage .pg-carousel-wrap,
+#pendingGamePage .pg-carousel {
+  position: fixed !important;
+  left: 94px !important;
+  right: 94px !important;
+  top: 96px !important;
+  bottom: 0 !important;
+  width: auto !important;
+  height: auto !important;
+  min-height: 0 !important;
+  overflow: visible !important;
+  transform: none !important;
+  perspective: none !important;
+}
+
+#pendingGamePage .pg-card {
+  position: absolute !important;
+  left: 50% !important;
+  top: 58% !important;
+}
+
+#pendingGamePage .pg-card.is-active {
+  transform: translate(-50%, -50%) scale(.92) rotateY(0deg) !important;
+}
