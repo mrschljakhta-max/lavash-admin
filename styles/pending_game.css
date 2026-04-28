@@ -680,3 +680,139 @@
     display: none;
   }
 }
+
+/* ================= RANK EMBLEM UPGRADE ================= */
+/* Game-style rank badge: icon + title. Safe final override for current clean HUD. */
+
+#pendingGamePage .pg-hud-rank-card {
+  left: clamp(110px, 10vw, 210px);
+  top: 18px;
+  width: 290px;
+  min-height: 96px;
+  padding: 14px 18px 14px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 15px;
+  text-align: left;
+  justify-items: initial;
+  overflow: visible;
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(255, 214, 99, .16), transparent 34%),
+    radial-gradient(circle at 84% 72%, rgba(85, 223, 255, .10), transparent 38%),
+    linear-gradient(180deg, rgba(14, 34, 88, .92), rgba(4, 14, 44, .86));
+  border: 1px solid rgba(255, 214, 99, .24);
+  box-shadow:
+    0 18px 50px rgba(0, 0, 0, .30),
+    0 0 26px rgba(255, 190, 82, .13),
+    inset 0 1px 0 rgba(255,255,255,.09);
+}
+
+#pendingGamePage .pg-hud-rank-card::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(255,222,130,.55), rgba(85,223,255,.20), rgba(255,255,255,.03));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  pointer-events: none;
+  opacity: .72;
+}
+
+#pendingGamePage .pg-rank-emblem {
+  width: 74px;
+  height: 74px;
+  flex: 0 0 74px;
+  position: relative;
+  display: grid;
+  place-items: center;
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 50% 28%, rgba(255,255,255,.13), transparent 45%),
+    linear-gradient(180deg, rgba(255, 214, 99, .12), rgba(255, 214, 99, .03));
+  border: 1px solid rgba(255, 214, 99, .22);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.10),
+    0 0 28px rgba(255, 190, 82, .18);
+}
+
+#pendingGamePage .pg-rank-emblem::after {
+  content: "";
+  position: absolute;
+  inset: 10px;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(255,214,99,.14), transparent 62%);
+  filter: blur(8px);
+  z-index: 0;
+}
+
+#pendingGamePage .pg-rank-emblem img {
+  width: 66px;
+  height: 66px;
+  object-fit: contain;
+  position: relative;
+  z-index: 1;
+  filter:
+    drop-shadow(0 6px 10px rgba(0,0,0,.42))
+    drop-shadow(0 0 10px rgba(255,214,99,.42));
+}
+
+#pendingGamePage .pg-rank-info {
+  min-width: 0;
+  display: grid;
+  align-content: center;
+}
+
+#pendingGamePage .pg-rank-info .pg-hud-rank-card__kicker {
+  color: rgba(213, 224, 255, .62);
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+#pendingGamePage .pg-rank-info strong {
+  margin-top: 4px;
+  color: #fff1a7;
+  font-size: 23px;
+  line-height: 1;
+  font-weight: 1000;
+  text-shadow: 0 0 12px rgba(255, 214, 99, .28);
+}
+
+#pendingGamePage .pg-rank-info small {
+  margin-top: 7px;
+  color: rgba(226, 236, 255, .78);
+  font-size: 11px;
+  font-weight: 900;
+}
+
+/* Small screens */
+@media (max-height: 820px) {
+  #pendingGamePage .pg-hud-rank-card {
+    width: 262px;
+    min-height: 82px;
+    padding: 12px 16px 12px 12px;
+    gap: 12px;
+  }
+
+  #pendingGamePage .pg-rank-emblem {
+    width: 62px;
+    height: 62px;
+    flex-basis: 62px;
+    border-radius: 18px;
+  }
+
+  #pendingGamePage .pg-rank-emblem img {
+    width: 56px;
+    height: 56px;
+  }
+
+  #pendingGamePage .pg-rank-info strong {
+    font-size: 20px;
+  }
+}
