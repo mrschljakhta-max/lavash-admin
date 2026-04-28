@@ -3514,7 +3514,7 @@
   top: 0 !important;
 
   /* трохи піджати по вертикалі */
-  transform: translateY(5px) !important;
+  transform: translateY(15px) !important;
 }
 
 /* 👉 ПРАВЕ XP КОЛО */
@@ -3523,5 +3523,5 @@
   right: 110px !important;
   top: 0 !important;
 
-  transform: translateY(-5px) !important;
+  transform: translateY(-15px) !important;
 }
