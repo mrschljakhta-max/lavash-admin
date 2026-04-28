@@ -603,9 +603,14 @@
 
         <div class="pg-game-hud" aria-hidden="true">
           <aside class="pg-hud-rank-card">
-            <span>Ранг</span>
-            <strong>${state.rank}</strong>
-            <small>Рівень ${state.level}</small>
+            <div class="pg-rank-emblem" aria-hidden="true">
+              <img src="../assets/ranks/rank-analyst-ii.svg" alt="">
+            </div>
+            <div class="pg-rank-info">
+              <span class="pg-hud-rank-card__kicker">Ранг</span>
+              <strong>${state.rank}</strong>
+              <small>Рівень ${state.level}</small>
+            </div>
           </aside>
 
           <aside class="pg-hud-xp-ring" style="--pg-ring-progress:${progress * 3.6}deg; --pg-ring-accent:${config.color};">
@@ -635,6 +640,13 @@
         <div class="pg-xp-pop" id="pgXpPop">+10 XP</div>
       </section>
     `;
+    requestAnimationFrame(() => {
+      const page = document.getElementById('pendingGamePage');
+      const host = page?.parentElement;
+      if (page && host) {
+        page.style.setProperty('--pg-host-height', `${host.clientHeight}px`);
+      }
+    });
 
     bind();
   }
