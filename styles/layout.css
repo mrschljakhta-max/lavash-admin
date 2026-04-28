@@ -726,3 +726,14 @@ body.lavash-modal-open {
     font-size: 16px;
   }
 }
+/* ===== Pending game workspace mode ===== */
+
+.main-workspace:has(#pendingGamePage) {
+  overflow: visible;
+}
+
+.workspace-body:has(#pendingGamePage) {
+  padding: 0;
+  min-height: calc(100vh - 104px);
+  overflow: visible;
+}
