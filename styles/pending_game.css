@@ -287,11 +287,16 @@ body:has(#pendingGamePage) {
 
 #pendingGamePage .pg-card.is-active {
   top: var(--pg-card-center-y);
-  width: clamp(520px, 36vw, 650px);
-  height: clamp(430px, 58vh, 560px);
+
+  /* 🔥 нові пропорції */
+  width: clamp(420px, 28vw, 520px);
+  height: clamp(560px, 72vh, 720px);
+
   opacity: 1;
+
   transform: translate(-50%, -50%) scale(.92) rotateY(0deg);
   transform-origin: center center;
+
   filter: saturate(1.12) brightness(1.08);
   z-index: 10;
 }
@@ -766,8 +771,8 @@ body:has(#pendingGamePage) {
 
 #pendingGamePage .pg-card {
   position: absolute !important;
-  left: var(--pg-card-center-x) !important;
-  top: var(--pg-side-card-y) !important;
+  width: clamp(300px, 22vw, 420px);
+  height: clamp(420px, 60vh, 580px);
 }
 
 #pendingGamePage .pg-card.is-active {
