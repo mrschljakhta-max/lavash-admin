@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Analyst II rank emblem">
+  <defs>
+    <linearGradient id="gold" x1="20" y1="18" x2="138" y2="148" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fff1b8"/>
+      <stop offset=".24" stop-color="#ffc65e"/>
+      <stop offset=".52" stop-color="#9a5a21"/>
+      <stop offset=".76" stop-color="#ffd98b"/>
+      <stop offset="1" stop-color="#7c3f18"/>
+    </linearGradient>
+    <linearGradient id="silver" x1="34" y1="28" x2="132" y2="148" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset=".45" stop-color="#c9d5de"/>
+      <stop offset="1" stop-color="#6f7d87"/>
+    </linearGradient>
+    <filter id="glow" x="-35%" y="-35%" width="170%" height="170%">
+      <feGaussianBlur stdDeviation="3.2" result="blur"/>
+      <feColorMatrix in="blur" type="matrix" values="1 0 0 0 1  0 .72 0 0 .52  0 0 .25 0 .05  0 0 0 .75 0" result="goldGlow"/>
+      <feMerge>
+        <feMergeNode in="goldGlow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <g filter="url(#glow)">
+    <path d="M80 16 145 75h-26L80 40 41 75H15L80 16Z" fill="url(#gold)"/>
+    <path d="M80 30 130 75h-16L80 46 46 75H30L80 30Z" fill="#2b1709" opacity=".52"/>
+    <path d="M80 46 115 78H99L80 62 61 78H45L80 46Z" fill="url(#gold)"/>
+
+    <path d="M80 70 132 112 80 154 28 112 80 70Z" fill="url(#gold)"/>
+    <path d="M80 85 113 112 80 139 47 112 80 85Z" fill="#1c2031"/>
+    <path d="M80 94 102 112 80 130 58 112 80 94Z" fill="url(#silver)"/>
+    <path d="M80 102 92 112 80 122 68 112 80 102Z" fill="#fff7dc"/>
+
+    <path d="M24 112 80 154 136 112" fill="none" stroke="#fff1b8" stroke-width="4" opacity=".58"/>
+    <path d="M18 75 80 18 142 75" fill="none" stroke="#fff4cd" stroke-width="4" opacity=".58"/>
+  </g>
+</svg>
