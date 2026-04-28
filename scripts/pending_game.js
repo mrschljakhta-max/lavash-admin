@@ -526,15 +526,7 @@
           </section>
         </main>
 
-        <div class="pg-hotkey-strip">
-          <span>← → перемотка</span>
-          <span>A ігнор</span>
-          <span>S пропуск</span>
-          <span>D підтвердити</span>
-          <span>Space редагувати</span>
-        </div>
-
-        <div class="pg-xp-pop" id="pgXpPop">+10 XP</div>
+       <div class="pg-xp-pop" id="pgXpPop">+10 XP</div>
       </section>
     `;
 
