@@ -671,13 +671,13 @@
   }
 
   #pendingGamePage .pg-hud-rank-card {
-    top: 74px;
+    top: 64px;
     width: 262px;
     min-height: 82px;
   }
 
   #pendingGamePage .pg-hud-xp-ring {
-    top: 74px;
+    top: 64px;
     width: 108px;
     height: 108px;
   }
@@ -761,7 +761,7 @@ body:has(#pendingGamePage) {
 #pendingGamePage .pg-card {
   position: absolute !important;
   left: 50% !important;
-  top: 58% !important;
+  top: 48% !important;
 }
 
 #pendingGamePage .pg-card.is-active {
