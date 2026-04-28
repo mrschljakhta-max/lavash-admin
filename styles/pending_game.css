@@ -33,11 +33,20 @@ body:has(#pendingGamePage) {
   --pg-orange: #f5b84b;
   --pg-line: rgba(118, 150, 236, .18);
 
-  --pg-side-gap: 86px;
-  --pg-hud-top: 72px;
+  /* Головні ручки керування сценою */
+  --pg-side-gap: 130px;
+  --pg-hud-top: 212px;
+  --pg-xp-right: 150px;
+
+  /* Сцена прив'язана до видимого вікна, а не до випадкової висоти контейнера */
+  --pg-stage-left: 94px;
+  --pg-stage-right: 94px;
+  --pg-stage-top: 185px;
+  --pg-stage-bottom: 28px;
+
   --pg-card-center-x: 50%;
-  --pg-card-center-y: 51%;
-  --pg-side-card-y: 54%;
+  --pg-card-center-y: 54%;
+  --pg-side-card-y: 56%;
 
   position: relative;
   width: 100%;
@@ -76,10 +85,14 @@ body:has(#pendingGamePage) {
 /* ================= HUD ================= */
 
 #pendingGamePage .pg-game-hud {
-  position: absolute;
-  inset: 0;
+  position: fixed;
+  left: var(--pg-stage-left);
+  right: var(--pg-stage-right);
+  top: 0;
+  bottom: 0;
   z-index: 40;
   pointer-events: none;
+  overflow: visible;
 }
 
 #pendingGamePage .pg-hud-rank-card {
@@ -161,7 +174,7 @@ body:has(#pendingGamePage) {
 #pendingGamePage .pg-hud-xp-ring {
   position: absolute;
   top: var(--pg-hud-top);
-  right: 126px;
+  right: var(--pg-xp-right);
   width: 132px;
   height: 132px;
   padding: 10px;
@@ -207,11 +220,14 @@ body:has(#pendingGamePage) {
 /* ================= STAGE ================= */
 
 #pendingGamePage .pg-stage {
-  position: absolute;
-  inset: 0;
+  position: fixed;
+  left: var(--pg-stage-left);
+  right: var(--pg-stage-right);
+  top: var(--pg-stage-top);
+  bottom: var(--pg-stage-bottom);
   z-index: 10;
-  width: 100%;
-  height: 100%;
+  width: auto;
+  height: auto;
   display: block;
   overflow: visible;
 }
@@ -244,8 +260,8 @@ body:has(#pendingGamePage) {
   position: absolute;
   left: var(--pg-card-center-x);
   top: var(--pg-side-card-y);
-  width: clamp(330px, 25vw, 500px);
-  height: clamp(340px, 50vh, 540px);
+  width: clamp(330px, 24vw, 480px);
+  height: clamp(340px, 48vh, 520px);
   opacity: .20;
   transform-origin: center center;
   transition: transform .34s ease, opacity .34s ease, filter .34s ease;
@@ -271,8 +287,8 @@ body:has(#pendingGamePage) {
 
 #pendingGamePage .pg-card.is-active {
   top: var(--pg-card-center-y);
-  width: min(760px, 38vw);
-  height: min(590px, 64vh);
+  width: clamp(520px, 36vw, 650px);
+  height: clamp(430px, 58vh, 560px);
   opacity: 1;
   transform: translate(-50%, -50%) scale(.92) rotateY(0deg);
   transform-origin: center center;
@@ -675,9 +691,11 @@ body:has(#pendingGamePage) {
 
 @media (max-height: 820px) {
   #pendingGamePage.pg-page {
-    --pg-hud-top: 58px;
-    --pg-card-center-y: 50%;
-    --pg-side-card-y: 53%;
+    --pg-hud-top: 178px;
+    --pg-stage-top: 158px;
+    --pg-stage-bottom: 20px;
+    --pg-card-center-y: 53%;
+    --pg-side-card-y: 55%;
     min-height: 590px;
   }
 
@@ -710,4 +728,49 @@ body:has(#pendingGamePage) {
   #pendingGamePage .pg-card:not(.is-active) {
     display: none;
   }
+}
+
+/* =========================================================
+   FINAL SCENE ANCHOR GUARD
+   Рухаємо всю композицію тільки через змінні вище.
+========================================================= */
+
+#pendingGamePage .pg-game-hud {
+  position: fixed !important;
+  left: var(--pg-stage-left) !important;
+  right: var(--pg-stage-right) !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  overflow: visible !important;
+}
+
+#pendingGamePage .pg-stage {
+  position: fixed !important;
+  left: var(--pg-stage-left) !important;
+  right: var(--pg-stage-right) !important;
+  top: var(--pg-stage-top) !important;
+  bottom: var(--pg-stage-bottom) !important;
+  width: auto !important;
+  height: auto !important;
+  overflow: visible !important;
+}
+
+#pendingGamePage .pg-carousel-wrap,
+#pendingGamePage .pg-carousel {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  overflow: visible !important;
+}
+
+#pendingGamePage .pg-card {
+  position: absolute !important;
+  left: var(--pg-card-center-x) !important;
+  top: var(--pg-side-card-y) !important;
+}
+
+#pendingGamePage .pg-card.is-active {
+  top: var(--pg-card-center-y) !important;
+  transform: translate(-50%, -50%) scale(.92) rotateY(0deg) !important;
 }
