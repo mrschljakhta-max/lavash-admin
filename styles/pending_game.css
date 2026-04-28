@@ -3490,3 +3490,29 @@
   right: clamp(260px, 23vw, 420px) !important;
   top: 0 !important;
 }
+/* ===== FIX: прив’язка HUD до сайдбарів ===== */
+
+#pendingGamePage .pg-game-hud {
+  position: absolute !important;
+  top: 140px !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  height: 120px !important;
+  pointer-events: none !important;
+  z-index: 40 !important;
+}
+
+/* 👈 ЛІВИЙ РАНГ — від лівого navbar */
+#pendingGamePage .pg-hud-rank-card {
+  position: absolute !important;
+  left: 110px !important; /* ширина лівого сайдбару + відступ */
+  top: 20px !important;
+}
+
+/* 👉 ПРАВЕ КОЛО XP — від правого navbar */
+#pendingGamePage .pg-hud-xp-ring {
+  position: absolute !important;
+  right: 110px !important; /* ширина правого сайдбару + відступ */
+  top: 0 !important;
+}
