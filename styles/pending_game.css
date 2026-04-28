@@ -1,5 +1,5 @@
 /* =========================================================
-   Lavash Pending Game — corrected full CSS
+   Lavash Pending Game — clean stable CSS
    One coordinate system: page -> stage -> carousel -> cards.
 ========================================================= */
 
@@ -15,6 +15,12 @@
 .workspace-body:has(#pendingGamePage),
 .workspace-body--page:has(#pendingGamePage) {
   padding: 0 !important;
+}
+
+html:has(#pendingGamePage),
+body:has(#pendingGamePage) {
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
 }
 
 /* ================= PAGE ================= */
@@ -72,7 +78,7 @@
 
 #pendingGamePage .pg-hud-rank-card {
   position: absolute;
-  top: 104px;
+  top: 82px;
   left: 86px;
   width: 320px;
   min-height: 96px;
@@ -148,7 +154,7 @@
 
 #pendingGamePage .pg-hud-xp-ring {
   position: absolute;
-  top: 104px;
+  top: 82px;
   right: 126px;
   width: 132px;
   height: 132px;
@@ -199,7 +205,7 @@
   z-index: 10;
   width: 100%;
   height: calc(100vh - 110px);
-  min-height: 680px;
+  min-height: 634px;
   display: grid;
   place-items: center;
   overflow: visible;
@@ -232,7 +238,7 @@
 #pendingGamePage .pg-card {
   position: absolute;
   left: 50%;
-  top: 58%;
+  top: 53%;
   width: clamp(330px, 25vw, 500px);
   height: clamp(340px, 50vh, 540px);
   opacity: .20;
@@ -671,15 +677,19 @@
   }
 
   #pendingGamePage .pg-hud-rank-card {
-    top: 64px;
+    top: 58px;
     width: 262px;
     min-height: 82px;
   }
 
   #pendingGamePage .pg-hud-xp-ring {
-    top: 64px;
+    top: 58px;
     width: 108px;
     height: 108px;
+  }
+
+  #pendingGamePage .pg-card {
+    top: 51%;
   }
 
   #pendingGamePage .pg-card.is-active {
@@ -701,69 +711,4 @@
   #pendingGamePage .pg-card:not(.is-active) {
     display: none;
   }
-}
-
-/* ================= FINAL CENTER FIX ================= */
-/* Картку опускаємо через anchor top, а не через злам transform-центрування. */
-#pendingGamePage .pg-card {
-  top: 58% !important;
-}
-
-#pendingGamePage .pg-card.is-active {
-  transform: translate(-50%, -50%) scale(.92) rotateY(0deg) !important;
-}
-html:has(#pendingGamePage),
-body:has(#pendingGamePage) {
-  overflow-x: hidden !important;
-  overflow-y: auto !important;
-}
-#pendingGamePage .pg-stage,
-#pendingGamePage .pg-carousel-wrap,
-#pendingGamePage .pg-carousel {
-  position: fixed !important;
-  left: 94px !important;
-  right: 94px !important;
-  top: 96px !important;
-  bottom: 0 !important;
-  width: auto !important;
-  height: auto !important;
-  min-height: 0 !important;
-  overflow: visible !important;
-  transform: none !important;
-  perspective: none !important;
-}
-
-#pendingGamePage .pg-card {
-  position: absolute !important;
-  left: 50% !important;
-  top: 58% !important;
-}
-
-#pendingGamePage .pg-card.is-active {
-  transform: translate(-50%, -50%) scale(.92) rotateY(0deg) !important;
-}
-/* ===== FINAL STABLE CARD POSITION ===== */
-
-#pendingGamePage .pg-stage {
-  position: relative !important;
-  height: calc(100vh - 110px) !important;
-  min-height: 634px !important;
-  overflow: visible !important;
-}
-
-#pendingGamePage .pg-carousel,
-#pendingGamePage .pg-carousel-wrap {
-  position: absolute !important;
-  inset: 0 !important;
-  overflow: visible !important;
-}
-
-#pendingGamePage .pg-card {
-  position: absolute !important;
-  left: 50% !important;
-  top: 48% !important;
-}
-
-#pendingGamePage .pg-card.is-active {
-  transform: translate(-50%, -50%) scale(.92) rotateY(0deg) !important;
 }
