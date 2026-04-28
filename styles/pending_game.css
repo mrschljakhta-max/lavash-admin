@@ -258,14 +258,22 @@
   transform: translate(-50%, -50%) translateX(42vw) translateY(18px) scale(.58) rotateY(-10deg);
 }
 
+/* Fixed transform conflict */
 #pendingGamePage .pg-card.is-active {
-  width: clamp(430px, 36vw, 650px);
-  height: clamp(410px, 56vh, 570px);
-  opacity: 1;
-  transform: translate(-50%, -50%);
-  filter: saturate(1.12) brightness(1.08);
-  z-index: 10;
+  width: min(760px, 38vw) !important;
+  height: min(590px, 64vh) !important;
+  transform: translate(-50%, -50%) scale(.92) rotateY(0deg) !important;
+  transform-origin: center center !important;
 }
+
+/* Ensure base centering exists */
+#pendingGamePage .pg-card {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
 
 #pendingGamePage .pg-card__inner {
   width: 100%;
