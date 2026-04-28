@@ -309,7 +309,6 @@
     }
   ];
 
-
   const state = {
     active: 0,
     xp: 842,
@@ -317,83 +316,41 @@
     todayXp: 222,
     level: 12,
     rank: 'Аналітик II',
+    streak: 7,
+    accuracy: 92,
     isResolving: false
   };
 
-  const unknownConfigs = {
-    uav: {
-      label: 'Невідомий БПЛА',
-      shortLabel: 'БПЛА',
-      iconUrl: '../assets/icons/unknown/uav.svg',
-      visualUrl: '../assets/img/uav/shahed-136.png',
-      color: '#38dfff',
-      bg1: 'rgba(18, 78, 190, .94)',
-      bg2: 'rgba(6, 26, 80, .98)'
-    },
-    settlement: {
-      label: 'Невідомий населений пункт',
-      shortLabel: 'НП',
-      iconUrl: '../assets/icons/unknown/settlement.svg',
-      color: '#f5b84b',
-      bg1: 'rgba(128, 86, 8, .94)',
-      bg2: 'rgba(54, 38, 13, .98)'
-    },
-    unit: {
-      label: 'Невідомий підрозділ',
-      shortLabel: 'Підрозділ',
-      iconUrl: '../assets/icons/unknown/unit.svg',
-      color: '#ff5f7e',
-      bg1: 'rgba(112, 22, 50, .94)',
-      bg2: 'rgba(55, 14, 34, .98)'
-    },
-    station: {
-      label: 'Невідома станція',
-      shortLabel: 'Станція',
-      iconUrl: '../assets/icons/unknown/station.svg',
-      color: '#37e6b2',
-      bg1: 'rgba(8, 96, 84, .94)',
-      bg2: 'rgba(6, 44, 54, .98)'
-    },
-    object: {
-      label: 'Невідомий об’єкт прикриття',
-      shortLabel: 'Об’єкт',
-      iconUrl: '../assets/icons/unknown/object.svg',
-      color: '#9b7cff',
-      bg1: 'rgba(76, 45, 158, .94)',
-      bg2: 'rgba(34, 24, 76, .98)'
-    },
-    record: {
-      label: 'Невідомий запис',
-      shortLabel: 'Запис',
-      iconUrl: '../assets/icons/unknown/record.svg',
-      color: '#d8dfff',
-      bg1: 'rgba(72, 80, 110, .90)',
-      bg2: 'rgba(22, 28, 48, .98)'
-    }
-  };
-
-  function qs(selector, root = document) {
-    return root.querySelector(selector);
-  }
-
-  function qsa(selector, root = document) {
-    return Array.from(root.querySelectorAll(selector));
+  function qs(selector) {
+    return document.querySelector(selector);
   }
 
   function getRoot() {
     return qs('.workspace-body') || qs('.workspace-body--page') || qs('#app');
   }
 
-  function safeValue(value, fallback = '—') {
-    return value === undefined || value === null || value === '' ? fallback : value;
+  function getStatusLabel(status) {
+    return {
+      new: 'Новий',
+      unknown: 'Невідомий',
+      warning: 'Сумнівний',
+      error: 'Невідомий запис',
+      valid: 'Валідний',
+      skipped: 'Пропущений',
+      fixed: 'Виправлений'
+    }[status] || 'Новий';
   }
 
-  function escapeAttr(value) {
-    return String(value ?? '')
-      .replace(/&/g, '&amp;')
-      .replace(/"/g, '&quot;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;');
+  function getStatusColor(status) {
+    return {
+      new: '#55dfff',
+      unknown: '#f5a524',
+      warning: '#f5a524',
+      error: '#f5a524',
+      valid: '#25d889',
+      skipped: '#8d58ff',
+      fixed: '#55dfff'
+    }[status] || '#55dfff';
   }
 
   function getChevron(level) {
@@ -404,197 +361,139 @@
     return '⚡';
   }
 
-  function getConfig(type) {
-    return unknownConfigs[type] || unknownConfigs.record;
+  function getTier(level) {
+    if (level <= 10) return 'blue';
+    if (level <= 20) return 'green';
+    if (level <= 30) return 'orange';
+    if (level <= 40) return 'red';
+    return 'violet';
   }
 
   function getVisibleRecords() {
-    return [-2, -1, 0, 1, 2].map((slot) => {
-      const index = (state.active + slot + records.length) % records.length;
-      return { record: records[index], index, slot };
+    const total = records.length;
+
+    return [-2, -1, 0, 1, 2].map((offset) => {
+      const index = (state.active + offset + total) % total;
+      return {
+        record: records[index],
+        index,
+        slot: offset
+      };
     });
   }
 
-  function getOptions(name, includeEmpty = false) {
-    const options = {
-      unknownType: [
-        ['uav', 'БПЛА'],
-        ['settlement', 'Населений пункт'],
-        ['object', 'Обʼєкт прикриття'],
-        ['unit', 'Підрозділ'],
-        ['station', 'Станція'],
-        ['record', 'Невідомий запис']
-      ],
-      ownership: [
-        ['ворожий', 'Ворожий'],
-        ['україна', 'Україна'],
-        ['спільний', 'Спільний']
-      ],
-      unit: [
-        ['45 оабр', '45 оабр'],
-        ['служба РЕБ', 'служба РЕБ'],
-        ['1 АДн', '1 АДн'],
-        ['2 АДн', '2 АДн'],
-        ['3 АДн', '3 АДн'],
-        ['1 батарея', '1 батарея'],
-        ['2 батарея', '2 батарея'],
-        ['РЕБ-група', 'РЕБ-група']
-      ]
-    }[name] || [];
+  function renderRightRankList() {
+    const ranks = [
+      { level: 10, title: 'Ведучий оператор' },
+      { level: 11, title: 'Спеціаліст' },
+      { level: 12, title: 'Аналітик II' },
+      { level: 13, title: 'Аналітик III рівня' },
+      { level: 14, title: 'Аналітик II рівня' }
+    ];
 
-    return includeEmpty ? [['', 'Не обрано'], ...options] : options;
-  }
-
-  function renderCustomSelect(field, options, selectedValue, placeholder = 'Не обрано') {
-    const selected = options.find(([value]) => value === selectedValue);
-    const currentValue = selected ? selected[0] : '';
-    const currentLabel = selected ? selected[1] : placeholder;
-
-    return `
-      <div class="pg-select" data-field="${field}" data-value="${escapeAttr(currentValue)}" tabindex="0" role="button">
-        <div class="pg-select__head">
-          <span>${currentLabel}</span>
-          <b>⌄</b>
-        </div>
-        <div class="pg-select__dropdown">
-          ${options.map(([value, label]) => `
-            <button type="button" class="pg-select__item ${value === currentValue ? 'is-selected' : ''}" data-value="${escapeAttr(value)}">
-              ${label}
-            </button>
-          `).join('')}
-        </div>
+    return ranks.map((rank) => `
+      <div class="pg-right-rank-row ${rank.level === state.level ? 'is-current' : ''}">
+        <span>${getChevron(rank.level)}</span>
+        <b>${rank.level}</b>
+        <em>${rank.title}</em>
       </div>
-    `;
+    `).join('');
   }
 
-  function renderTypeFields(record, type) {
-    if (type === 'uav') {
-      return `
-        <label>
-          <span>Приналежність</span>
-          ${renderCustomSelect('ownership', getOptions('ownership'), record.ownership || 'ворожий')}
-        </label>
-      `;
-    }
+  function renderRightPanel() {
+    const rightTools =
+      document.querySelector('.right-tools__inner') ||
+      document.querySelector('.right-tools');
 
-    if (type === 'settlement') {
-      return `
-        <label><span>Громада</span><input data-field="hromada" value="${escapeAttr(safeValue(record.hromada, ''))}"></label>
-        <label><span>Район</span><input data-field="district" value="${escapeAttr(safeValue(record.district, ''))}"></label>
-        <label><span>Область</span><input data-field="region" value="${escapeAttr(safeValue(record.region, ''))}"></label>
-        <label><span>Lat</span><input data-field="lat" value="${escapeAttr(safeValue(record.lat, ''))}"></label>
-        <label><span>Lon</span><input data-field="lon" value="${escapeAttr(safeValue(record.lon, ''))}"></label>
-      `;
-    }
+    if (!rightTools) return;
 
-    if (type === 'object') {
-      return `
-        <label>
-          <span>Підрозділ-власник</span>
-          ${renderCustomSelect('unitOwner', getOptions('unit', true), record.unitOwner || '')}
-        </label>
-      `;
-    }
+    const progress = Math.round((state.xp / state.xpMax) * 100);
+    const oldPanel = document.getElementById('pendingGameRightPanel');
+    if (oldPanel) oldPanel.remove();
 
-    if (type === 'unit') {
-      return `
-        <label>
-          <span>Батьківський підрозділ</span>
-          ${renderCustomSelect('parentUnit', getOptions('unit', true), record.parentUnit || '')}
-        </label>
-      `;
-    }
+    const panel = document.createElement('div');
+    panel.id = 'pendingGameRightPanel';
+    panel.className = 'pg-right-panel';
 
-    return '';
-  }
+    panel.innerHTML = `
+      <section class="pg-right-card">
+        <h3>Ваш прогрес</h3>
 
-  function getVisualUrl(record, config) {
-    if (record.unknownType === 'uav') return config.visualUrl;
-    return config.iconUrl;
-  }
-
-  function renderCard(record, index, slot) {
-    const type = record.unknownType || 'record';
-    const config = getConfig(type);
-    const activeClass = slot === 0 ? 'is-active' : '';
-    const mainValue = record.mainValue || record.model || record.settlement || record.title || 'Невідоме значення';
-    const dataType = record.dataType || config.shortLabel;
-    const visualUrl = getVisualUrl(record, config);
-
-    return `
-      <article
-        class="pg-card ${activeClass}"
-        data-index="${index}"
-        data-slot="${slot}"
-        data-unknown-type="${type}"
-        style="--pg-card-accent:${config.color}; --pg-card-bg-1:${config.bg1}; --pg-card-bg-2:${config.bg2};"
-      >
-        <div class="pg-card__inner">
-          <section class="pg-card__face pg-card__front">
-            <header class="pg-card__top">
-              <span class="pg-card__status">
-                <img src="${config.iconUrl}" alt="" loading="lazy">
-                ${config.label}
-              </span>
-              <button class="pg-card__star" type="button" aria-label="Позначити">☆</button>
-            </header>
-
-            <div class="pg-card__body">
-              <div class="pg-data">
-                <span class="pg-data__type">${dataType}</span>
-                <h2>${mainValue}</h2>
-              </div>
-
-              <figure class="pg-visual pg-visual--${type}">
-                <div class="pg-radar-core"></div>
-                <img class="pg-visual__img" src="${visualUrl}" alt="${escapeAttr(mainValue)}" loading="lazy">
-              </figure>
-            </div>
-
-            <small class="pg-card__hint">Клік — редагувати / Space — flip</small>
-          </section>
-
-          <section class="pg-card__face pg-card__back">
-            <header class="pg-edit-head">
-              <h3>Редагування запису</h3>
-              <span>${safeValue(record.source, 'unknown_source')}</span>
-            </header>
-
-            <div class="pg-edit-grid">
-              <label>
-                <span>Тип обʼєкта</span>
-                ${renderCustomSelect('unknownType', getOptions('unknownType'), type)}
-              </label>
-
-              <div class="pg-readonly-field">
-                <span>Поточне значення</span>
-                <strong>${mainValue}</strong>
-              </div>
-
-              <label class="pg-edit-wide">
-                <span>Правильна назва</span>
-                <input data-field="mainValue" value="${escapeAttr(mainValue)}" placeholder="Введи правильну назву">
-              </label>
-
-              ${renderTypeFields(record, type)}
-            </div>
-
-            <button class="pg-save-btn" type="button">Зберегти зміни</button>
-          </section>
+        <div class="pg-right-user">
+          <div class="pg-right-avatar">OP</div>
+          <div>
+            <strong>Operator_07</strong>
+            <span>ID: OP-7721</span>
+          </div>
         </div>
-      </article>
+
+        <div class="pg-right-rank">
+          <span>${getChevron(state.level)}</span>
+          <strong>${state.rank}</strong>
+        </div>
+
+        <div class="pg-right-track">
+          <div style="width:${progress}%"></div>
+        </div>
+
+        <div class="pg-right-stats">
+          <div><b>+${state.todayXp}</b><span>XP сьогодні</span></div>
+          <div><b>${state.accuracy}%</b><span>точність</span></div>
+          <div><b>${state.streak}</b><span>streak</span></div>
+        </div>
+      </section>
+
+      <section class="pg-right-card">
+        <h3>Обробка</h3>
+        <div class="pg-right-counter">
+          <strong>${state.active + 1}</strong>
+          <span>/</span>
+          <strong>${records.length}</strong>
+        </div>
+        <p class="pg-right-note">Поточний запис / всього у черзі</p>
+      </section>
+
+      <section class="pg-right-card">
+        <h3>Гарячі клавіші</h3>
+        <div class="pg-right-hotkeys">
+          <span>← →</span><p>перемотка карток</p>
+          <span>Shift+A</span><p>ігнор</p>
+          <span>Shift+S</span><p>пропуск</p>
+          <span>Shift+D</span><p>підтвердити</p>
+          <span>Space</span><p>flip / edit</p>
+          <span>Esc</span><p>скасувати</p>
+        </div>
+      </section>
+
+      <section class="pg-right-card">
+        <h3>Ранги</h3>
+        <div class="pg-right-ranks">
+          ${renderRightRankList()}
+        </div>
+      </section>
+
+      <section class="pg-right-card">
+        <h3>Досягнення</h3>
+        <div class="pg-right-achievements">
+          <p>✅ 10 записів без помилки</p>
+          <p>✅ 100 підтверджених записів</p>
+          <p>✅ 5 виправлень підряд</p>
+          <p>✅ Точність понад 90%</p>
+        </div>
+      </section>
     `;
+
+    rightTools.appendChild(panel);
   }
 
   function render() {
     const root = getRoot();
     if (!root) return;
 
-    const activeRecord = records[state.active];
-    const config = getConfig(activeRecord.unknownType || 'record');
     const progress = Math.round((state.xp / state.xpMax) * 100);
-
-    document.documentElement.style.setProperty('--pg-accent-status', config.color);
+    const activeRecord = records[state.active];
+    const activeUnknownConfig = getUnknownConfig(activeRecord.unknownType || 'record');
+    document.documentElement.style.setProperty('--pg-accent-status', activeUnknownConfig.color || getStatusColor(activeRecord.status));
 
     root.innerHTML = `
       <section class="pg-page pg-page--game" id="pendingGamePage">
@@ -613,7 +512,10 @@
             </div>
           </aside>
 
-          <aside class="pg-hud-xp-ring" style="--pg-ring-progress:${progress * 3.6}deg; --pg-ring-accent:${config.color};">
+          <aside
+            class="pg-hud-xp-ring"
+            style="--pg-ring-progress:${progress * 3.6}deg; --pg-ring-accent:${activeUnknownConfig.color};"
+          >
             <div class="pg-hud-xp-ring__core">
               <strong>${state.xp}</strong>
               <span>XP</span>
@@ -629,85 +531,496 @@
           </section>
         </main>
 
-        <div class="pg-hotkey-strip">
-          <span>← → перемотка</span>
-          <span>A ігнор</span>
-          <span>S пропуск</span>
-          <span>D підтвердити</span>
-          <span>Space редагувати</span>
-        </div>
-
-        <div class="pg-xp-pop" id="pgXpPop">+10 XP</div>
+       <div class="pg-xp-pop" id="pgXpPop">+10 XP</div>
       </section>
     `;
-    requestAnimationFrame(() => {
-      const page = document.getElementById('pendingGamePage');
-      const host = page?.parentElement;
-      if (page && host) {
-        page.style.setProperty('--pg-host-height', `${host.clientHeight}px`);
-      }
-    });
 
     bind();
   }
 
-  function updateActiveType(value) {
+  function getUnknownConfig(type) {
+    const configs = {
+      uav: {
+        label: 'Невідомий БПЛА',
+        shortLabel: 'БПЛА',
+        iconUrl: '../assets/icons/unknown/uav.svg',
+        color: '#38dfff',
+        bg1: 'rgba(18, 78, 190, .92)',
+        bg2: 'rgba(8, 28, 82, .96)'
+      },
+      settlement: {
+        label: 'Невідомий населений пункт',
+        shortLabel: 'НП',
+        iconUrl: '../assets/icons/unknown/settlement.svg',
+        color: '#f5b84b',
+        bg1: 'rgba(128, 86, 8, .92)',
+        bg2: 'rgba(54, 38, 13, .96)'
+      },
+      unit: {
+        label: 'Невідомий підрозділ',
+        shortLabel: 'Підрозділ',
+        iconUrl: '../assets/icons/unknown/unit.svg',
+        color: '#ff5f7e',
+        bg1: 'rgba(112, 22, 50, .92)',
+        bg2: 'rgba(55, 14, 34, .96)'
+      },
+      station: {
+        label: 'Невідома станція',
+        shortLabel: 'Станція',
+        iconUrl: '../assets/icons/unknown/station.svg',
+        color: '#37e6b2',
+        bg1: 'rgba(8, 96, 84, .92)',
+        bg2: 'rgba(6, 44, 54, .96)'
+      },
+      object: {
+        label: 'Невідомий об’єкт прикриття',
+        shortLabel: 'Об’єкт',
+        iconUrl: '../assets/icons/unknown/object.svg',
+        color: '#9b7cff',
+        bg1: 'rgba(76, 45, 158, .92)',
+        bg2: 'rgba(34, 24, 76, .96)'
+      },
+      record: {
+        label: 'Невідомий запис',
+        shortLabel: 'Запис',
+        iconUrl: '../assets/icons/unknown/record.svg',
+        color: '#d8dfff',
+        bg1: 'rgba(72, 80, 110, .88)',
+        bg2: 'rgba(22, 28, 48, .96)'
+      }
+    };
+
+    return configs[type] || configs.record;
+  }
+
+  function getUnknownIconUrl(type) {
+    return getUnknownConfig(type).iconUrl;
+  }
+
+  function getUnknownLabel(type) {
+    return getUnknownConfig(type).label;
+  }
+
+  function getDataIcon(type) {
+    return getUnknownConfig(type).shortLabel;
+  }
+
+  function safeValue(value, fallback = '—') {
+    return value === undefined || value === null || value === '' ? fallback : value;
+  }
+
+  function escapeAttr(value) {
+    return String(value ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/"/g, '&quot;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+  }
+
+  function renderCustomSelect(field, options, selectedValue, placeholder = 'Не обрано') {
+    const normalizedOptions = options || [];
+    const selected = normalizedOptions.find(([value]) => value === selectedValue);
+    const currentValue = selected ? selected[0] : '';
+    const currentLabel = selected ? selected[1] : placeholder;
+
+    return `
+      <div
+        class="pg-select"
+        data-field="${field}"
+        data-value="${escapeAttr(currentValue)}"
+        tabindex="0"
+        role="button"
+        aria-label="${escapeAttr(currentLabel)}"
+      >
+        <div class="pg-select__head">
+          <span>${currentLabel}</span>
+          <b>⌄</b>
+        </div>
+
+        <div class="pg-select__dropdown">
+          ${normalizedOptions.map(([value, label]) => `
+            <button
+              type="button"
+              class="pg-select__item ${value === currentValue ? 'is-selected' : ''}"
+              data-value="${escapeAttr(value)}"
+            >${label}</button>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  function getUnknownTypeOptionList() {
+    return [
+      ['uav', 'БПЛА'],
+      ['settlement', 'Населений пункт'],
+      ['object', 'Обʼєкт прикриття'],
+      ['unit', 'Підрозділ'],
+      ['station', 'Станція'],
+      ['record', 'Невідомий запис']
+    ];
+  }
+
+  function getOwnershipOptionList() {
+    return [
+      ['ворожий', 'Ворожий'],
+      ['україна', 'Україна'],
+      ['спільний', 'Спільний']
+    ];
+  }
+
+  function getUnitOptionList(includeEmpty = true) {
+    const values = [
+      '45 оабр',
+      'служба РЕБ',
+      '1 АДн',
+      '2 АДн',
+      '3 АДн',
+      '1 батарея',
+      '2 батарея',
+      'РЕБ-група'
+    ].map((value) => [value, value]);
+
+    return includeEmpty ? [['', 'Не обрано'], ...values] : values;
+  }
+
+  function getUnknownTypeOptions(selectedType) {
+    const types = [
+      ['uav', 'БПЛА'],
+      ['settlement', 'Населений пункт'],
+      ['object', 'Обʼєкт прикриття'],
+      ['unit', 'Підрозділ'],
+      ['station', 'Станція'],
+      ['record', 'Невідомий запис']
+    ];
+
+    return types.map(([value, label]) => `
+      <option value="${value}" ${value === selectedType ? 'selected' : ''}>${label}</option>
+    `).join('');
+  }
+
+  function renderOwnershipOptions(selectedValue) {
+    const values = [
+      ['ворожий', 'Ворожий'],
+      ['україна', 'Україна'],
+      ['спільний', 'Спільний']
+    ];
+
+    return values.map(([value, label]) => `
+      <option value="${value}" ${value === selectedValue ? 'selected' : ''}>${label}</option>
+    `).join('');
+  }
+
+  function renderUnitOptions(selectedValue) {
+    const values = [
+      '45 оабр',
+      'служба РЕБ',
+      '1 АДн',
+      '2 АДн',
+      '3 АДн',
+      '1 батарея',
+      '2 батарея',
+      'РЕБ-група'
+    ];
+
+    const selected = selectedValue || '';
+    const options = values.map((value) => `
+      <option value="${value}" ${value === selected ? 'selected' : ''}>${value}</option>
+    `).join('');
+
+    return `<option value="" ${!selected ? 'selected' : ''}>Не обрано</option>${options}`;
+  }
+
+  function renderTypeSpecificEditFields(record, unknownType) {
+    if (unknownType === 'uav') {
+      return `
+        <label>
+          <span>Приналежність</span>
+          ${renderCustomSelect('ownership', getOwnershipOptionList(), record.ownership || 'ворожий')}
+        </label>
+      `;
+    }
+
+    if (unknownType === 'settlement') {
+      return `
+        <label><span>Громада</span><input data-field="hromada" value="${safeValue(record.hromada, '')}" /></label>
+        <label><span>Район</span><input data-field="district" value="${safeValue(record.district, '')}" /></label>
+        <label><span>Область</span><input data-field="region" value="${safeValue(record.region, '')}" /></label>
+        <label><span>Lat</span><input data-field="lat" value="${safeValue(record.lat, '')}" /></label>
+        <label><span>Lon</span><input data-field="lon" value="${safeValue(record.lon, '')}" /></label>
+      `;
+    }
+
+    if (unknownType === 'object') {
+      return `
+        <label>
+          <span>Підрозділ, до якого належить</span>
+          ${renderCustomSelect('unitOwner', getUnitOptionList(), record.unitOwner || '')}
+        </label>
+      `;
+    }
+
+    if (unknownType === 'unit') {
+      return `
+        <label>
+          <span>Батьківський підрозділ</span>
+          ${renderCustomSelect('parentUnit', getUnitOptionList(), record.parentUnit || '')}
+        </label>
+      `;
+    }
+
+    return '';
+  }
+
+  function getVisualImage(record, unknownType) {
+    if (unknownType === 'uav') return '../assets/img/uav/shahed-136.png';
+    return getUnknownIconUrl(unknownType);
+  }
+
+  function renderCard(record, index, slot) {
+    const active = slot === 0 ? 'is-active' : '';
+    const unknownType = record.unknownType || 'record';
+    const unknownConfig = getUnknownConfig(unknownType);
+    const dataType = record.dataType || record.type || unknownConfig.shortLabel || 'Запис';
+    const mainValue = record.mainValue || record.model || record.settlement || record.title || 'Невідоме значення';
+    const visualImage = getVisualImage(record, unknownType);
+
+    return `
+      <article
+        class="pg-card ${active} pg-card--${record.status}"
+        data-index="${index}"
+        data-slot="${slot}"
+        data-status="${record.status || 'unknown'}"
+        data-unknown-type="${unknownType}"
+        style="--pg-card-accent:${unknownConfig.color}; --pg-card-bg-1:${unknownConfig.bg1}; --pg-card-bg-2:${unknownConfig.bg2};"
+      >
+        <div class="pg-card__inner">
+          <div class="pg-card__face pg-card__front">
+            <div class="pg-card__topline">
+              <div class="pg-card__status">
+                <span class="pg-status-dot"></span>
+                ${unknownConfig.label}
+              </div>
+              <button class="pg-card__star" type="button" aria-label="Позначити">☆</button>
+            </div>
+
+            <div class="pg-unknown-badge">
+              <span class="pg-unknown-badge__icon">
+                <img src="${unknownConfig.iconUrl}" alt="${unknownConfig.label}" loading="lazy">
+              </span>
+              <strong>${unknownConfig.label}</strong>
+            </div>
+
+            <div class="pg-card__content pg-card__content--new">
+              <section class="pg-data">
+                <div class="pg-data__type">
+                  <span class="pg-data__icon">
+                    <img src="${unknownConfig.iconUrl}" alt="${dataType}" loading="lazy">
+                  </span>
+                  <span>${dataType}</span>
+                </div>
+
+                <h2 class="pg-data__value">${mainValue}</h2>
+              </section>
+
+              <section class="pg-visual pg-visual--${unknownType}">
+                <div class="pg-radar-core"></div>
+
+                <img
+                  class="pg-uav-img pg-unknown-visual-img"
+                  src="${visualImage}"
+                  alt="${mainValue}"
+                  loading="lazy"
+                />
+              </section>
+            </div>
+
+            <small>Клік — редагувати / Space — flip</small>
+          </div>
+
+          <div class="pg-card__face pg-card__back">
+            <div class="pg-edit-head">
+              <h3>Редагування запису</h3>
+              <span>${safeValue(record.source, 'unknown_source')}</span>
+            </div>
+
+            <div class="pg-edit-grid pg-edit-grid--clean">
+              <label>
+                <span>Тип обʼєкта</span>
+                ${renderCustomSelect('unknownType', getUnknownTypeOptionList(), unknownType)}
+              </label>
+
+              <div class="pg-readonly-field">
+                <span>Теперішнє значення</span>
+                <strong>${mainValue}</strong>
+              </div>
+
+              <label class="pg-edit-wide">
+                <span>Редагування назви</span>
+                <input data-field="mainValue" value="${mainValue}" placeholder="Введи правильну назву" />
+              </label>
+
+              ${renderTypeSpecificEditFields(record, unknownType)}
+            </div>
+
+
+            <button class="pg-save-btn" type="button">Зберегти зміни</button>
+          </div>
+        </div>
+      </article>
+    `;
+  }
+
+  function updateActiveRecordField(field, value) {
     const record = records[state.active];
     if (!record) return;
 
-    const config = getConfig(value);
-    record.unknownType = value;
-    record.dataType = config.shortLabel;
-    record.status = 'unknown';
+    record[field] = value;
+
+    if (field === 'unknownType') {
+      const config = getUnknownConfig(value);
+      record.dataType = config.shortLabel;
+      record.status = 'unknown';
+    }
   }
 
   function saveActiveCardEdits(card) {
     const record = records[state.active];
     if (!record) return;
 
-    qsa('[data-field]', card).forEach((field) => {
+    card.querySelectorAll('[data-field]').forEach((field) => {
       const key = field.dataset.field;
+      if (!key) return;
+
       record[key] = field.dataset.value !== undefined ? field.dataset.value : field.value;
     });
 
     if (record.mainValue) {
-      record.title = `${record.dataType || getConfig(record.unknownType).shortLabel} ${record.mainValue}`;
+      record.title = `${record.dataType || getUnknownConfig(record.unknownType).shortLabel} ${record.mainValue}`;
       if (record.unknownType === 'uav') record.model = record.mainValue;
       if (record.unknownType === 'settlement') record.settlement = record.mainValue;
       if (record.unknownType === 'station') record.station = record.mainValue;
     }
 
+    showSavePulse(card);
+  }
+
+  function showSavePulse(card) {
     card.classList.remove('is-saved-pulse');
     void card.offsetWidth;
     card.classList.add('is-saved-pulse');
   }
 
-  function bindCustomSelects(card) {
-    qsa('.pg-select', card).forEach((select) => {
-      const head = qs('.pg-select__head', select);
-      const label = qs('.pg-select__head span', select);
-      const items = qsa('.pg-select__item', select);
+  function bindCardDrag(card) {
+    let startX = 0;
+    let startY = 0;
+    let currentX = 0;
+    let currentY = 0;
+    let isDragging = false;
 
-      const closeAll = () => qsa('.pg-select.is-open', card).forEach((node) => {
-        if (node !== select) node.classList.remove('is-open');
-      });
+    card.addEventListener('pointerdown', (event) => {
+      if (event.target.closest('input, textarea, select, option, button, label, .pg-select')) return;
+      if (card.classList.contains('is-flipped')) return;
+
+      isDragging = true;
+      startX = event.clientX;
+      startY = event.clientY;
+      currentX = 0;
+      currentY = 0;
+
+      card.dataset.dragAction = '';
+      card.setPointerCapture(event.pointerId);
+      card.classList.add('is-dragging');
+    });
+
+    card.addEventListener('pointermove', (event) => {
+      if (!isDragging) return;
+
+      currentX = event.clientX - startX;
+      currentY = event.clientY - startY;
+
+      const rotate = currentX / 28;
+      card.style.transform = `translate(-50%, -50%) translate(${currentX}px, ${currentY}px) rotate(${rotate}deg) scale(1)`;
+
+      if (currentX > 120) {
+        card.dataset.dragAction = 'confirm';
+      } else if (currentX < -120) {
+        card.dataset.dragAction = 'ignore';
+      } else if (currentY > 110) {
+        card.dataset.dragAction = 'skip';
+      } else {
+        card.dataset.dragAction = '';
+      }
+    });
+
+    card.addEventListener('pointerup', (event) => {
+      if (!isDragging) return;
+
+      isDragging = false;
+      card.releasePointerCapture(event.pointerId);
+      card.classList.remove('is-dragging');
+
+      const dragAction = card.dataset.dragAction;
+      card.dataset.dragAction = '';
+
+      if (currentX > 160 || dragAction === 'confirm') {
+        handleAction('confirm');
+        return;
+      }
+
+      if (currentX < -160 || dragAction === 'ignore') {
+        handleAction('ignore');
+        return;
+      }
+
+      if (currentY > 140 || dragAction === 'skip') {
+        handleAction('skip');
+        return;
+      }
+
+      card.style.transform = '';
+      currentX = 0;
+      currentY = 0;
+    });
+
+    card.addEventListener('pointercancel', () => {
+      isDragging = false;
+      card.classList.remove('is-dragging');
+      card.dataset.dragAction = '';
+      card.style.transform = '';
+    });
+  }
+
+  function bindCustomSelects(card) {
+    card.querySelectorAll('.pg-select').forEach((select) => {
+      const head = select.querySelector('.pg-select__head');
+      const label = select.querySelector('.pg-select__head span');
+      const items = select.querySelectorAll('.pg-select__item');
+
+      const closeOthers = () => {
+        card.querySelectorAll('.pg-select.is-open').forEach((opened) => {
+          if (opened !== select) opened.classList.remove('is-open');
+        });
+      };
 
       head?.addEventListener('click', (event) => {
         event.preventDefault();
         event.stopPropagation();
-        closeAll();
+        closeOthers();
         select.classList.toggle('is-open');
       });
 
       select.addEventListener('keydown', (event) => {
         if (event.code === 'Enter' || event.code === 'Space') {
           event.preventDefault();
-          closeAll();
+          event.stopPropagation();
+          closeOthers();
           select.classList.toggle('is-open');
         }
 
         if (event.code === 'Escape') {
           event.preventDefault();
+          event.stopPropagation();
           select.classList.remove('is-open');
         }
       });
@@ -736,104 +1049,51 @@
     });
   }
 
-  function bindCardDrag(card) {
-    let startX = 0;
-    let startY = 0;
-    let currentX = 0;
-    let currentY = 0;
-    let dragging = false;
-
-    card.addEventListener('pointerdown', (event) => {
-      if (event.target.closest('input, textarea, button, label, .pg-select')) return;
-      if (card.classList.contains('is-flipped')) return;
-
-      dragging = true;
-      startX = event.clientX;
-      startY = event.clientY;
-      currentX = 0;
-      currentY = 0;
-      card.dataset.dragAction = '';
-      card.setPointerCapture(event.pointerId);
-      card.classList.add('is-dragging');
-    });
-
-    card.addEventListener('pointermove', (event) => {
-      if (!dragging) return;
-
-      currentX = event.clientX - startX;
-      currentY = event.clientY - startY;
-
-      const rotate = currentX / 28;
-      card.style.transform = `translate(${currentX}px, ${currentY}px) rotate(${rotate}deg)`;
-
-      if (currentX > 120) card.dataset.dragAction = 'confirm';
-      else if (currentX < -120) card.dataset.dragAction = 'ignore';
-      else if (currentY > 110) card.dataset.dragAction = 'skip';
-      else card.dataset.dragAction = '';
-    });
-
-    card.addEventListener('pointerup', (event) => {
-      if (!dragging) return;
-
-      dragging = false;
-      card.releasePointerCapture(event.pointerId);
-      card.classList.remove('is-dragging');
-
-      const action = card.dataset.dragAction;
-      card.dataset.dragAction = '';
-
-      if (currentX > 160 || action === 'confirm') return handleAction('confirm');
-      if (currentX < -160 || action === 'ignore') return handleAction('ignore');
-      if (currentY > 140 || action === 'skip') return handleAction('skip');
-
-      card.style.transform = '';
-    });
-
-    card.addEventListener('pointercancel', () => {
-      dragging = false;
-      card.classList.remove('is-dragging');
-      card.dataset.dragAction = '';
-      card.style.transform = '';
-    });
-  }
-
   function bind() {
-    const card = qs('.pg-card.is-active');
-    if (!card) return;
+    document.querySelectorAll('.pg-card.is-active').forEach((card) => {
+      bindCardDrag(card);
+      bindCustomSelects(card);
 
-    bindCardDrag(card);
-    bindCustomSelects(card);
+      card.addEventListener('click', (event) => {
+        if (event.target.closest('input, textarea, select, option, button, label, .pg-select')) return;
+        if (card.classList.contains('is-dragging')) return;
+        card.classList.toggle('is-flipped');
+      });
 
-    card.addEventListener('click', (event) => {
-      if (event.target.closest('input, textarea, button, label, .pg-select')) return;
-      if (card.classList.contains('is-dragging')) return;
-      card.classList.toggle('is-flipped');
-    });
+      card.querySelector('[data-field="unknownType"]')?.addEventListener('pg-select-change', (event) => {
+        event.stopPropagation();
+        updateActiveRecordField('unknownType', event.detail.value);
+        render();
+        qs('.pg-card.is-active')?.classList.add('is-flipped');
+      });
 
-    qs('[data-field="unknownType"]', card)?.addEventListener('pg-select-change', (event) => {
-      event.stopPropagation();
-      updateActiveType(event.detail.value);
-      render();
-      qs('.pg-card.is-active')?.classList.add('is-flipped');
-    });
-
-    qs('.pg-save-btn', card)?.addEventListener('click', (event) => {
-      event.stopPropagation();
-      saveActiveCardEdits(card);
+      card.querySelector('.pg-save-btn')?.addEventListener('click', (event) => {
+        event.stopPropagation();
+        saveActiveCardEdits(card);
+      });
     });
 
     const carousel = qs('[data-pg-carousel-wrap]');
-    if (!carousel) return;
+    if (carousel) {
+      let wheelLock = false;
 
-    let wheelLock = false;
-    carousel.addEventListener('wheel', (event) => {
-      event.preventDefault();
-      if (wheelLock || state.isResolving) return;
+      carousel.addEventListener('wheel', (event) => {
+        event.preventDefault();
 
-      wheelLock = true;
-      event.deltaY > 0 || event.deltaX > 0 ? next() : prev();
-      setTimeout(() => { wheelLock = false; }, 360);
-    }, { passive: false });
+        if (wheelLock || state.isResolving) return;
+        wheelLock = true;
+
+        if (event.deltaY > 0 || event.deltaX > 0) {
+          next();
+        } else {
+          prev();
+        }
+
+        setTimeout(() => {
+          wheelLock = false;
+        }, 360);
+      }, { passive: false });
+    }
   }
 
   function prev() {
@@ -848,24 +1108,65 @@
     render();
   }
 
+  function getActionLabel(action) {
+    return {
+      ignore: 'ПРОІГНОРОВАНО',
+      confirm: 'ПОГОДЖЕНО',
+      skip: 'ПРОПУСКАЄМО'
+    }[action] || '';
+  }
+
   function handleAction(action) {
     if (state.isResolving) return;
 
-    const xp = { ignore: 8, confirm: 10, skip: 5 }[action] || 5;
-    const card = qs('.pg-card.is-active');
+    const xpMap = {
+      ignore: 8,
+      confirm: 10,
+      skip: 5
+    };
+
+    const xp = xpMap[action] || 5;
+    const activeCard = qs('.pg-card.is-active');
+    const page = qs('#pendingGamePage');
 
     state.isResolving = true;
     state.xp = Math.min(state.xpMax, state.xp + xp);
     state.todayXp += xp;
 
-    card?.classList.add(`is-key-${action}`);
+    if (page) {
+      page.dataset.actionFlash = action;
+      page.dataset.actionLabel = getActionLabel(action);
+    }
+
+    if (activeCard) {
+      activeCard.style.transform = '';
+      
+      activeCard.classList.remove(
+        'is-key-ignore',
+        'is-key-confirm',
+        'is-key-skip',
+        'is-resolving-ignore',
+        'is-resolving-confirm',
+        'is-resolving-skip'
+      );
+
+      void activeCard.offsetWidth;
+      activeCard.classList.add(`is-key-${action}`);
+    }
+
     showXpPop(xp);
 
     setTimeout(() => {
       state.active = (state.active + 1) % records.length;
       state.isResolving = false;
+
+      if (page) {
+        page.dataset.actionFlash = '';
+        page.dataset.actionLabel = '';
+      }
+
       render();
-    }, 560);
+    }, 620);
   }
 
   function showXpPop(xp) {
@@ -879,27 +1180,61 @@
   }
 
   function bindHotkeys() {
-    document.addEventListener('keydown', (event) => {
-      if (!qs('#pendingGamePage')) return;
+  document.addEventListener('keydown', (event) => {
+    if (!qs('#pendingGamePage')) return;
 
-      const typing = event.target?.closest?.('input, textarea, .pg-select');
-      if (typing) {
-        if (event.key === 'Escape') {
-          event.preventDefault();
-          qs('.pg-card.is-active')?.classList.remove('is-flipped');
-        }
-        return;
+    const isTyping = event.target?.closest?.('input, textarea, select, option, .pg-select');
+
+    if (isTyping) {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        qs('.pg-card.is-active')?.classList.remove('is-flipped');
       }
+      return;
+    }
 
-      if (event.code === 'ArrowLeft') return event.preventDefault(), prev();
-      if (event.code === 'ArrowRight') return event.preventDefault(), next();
-      if (event.code === 'KeyA' && !event.shiftKey && !event.ctrlKey && !event.altKey) return event.preventDefault(), handleAction('ignore');
-      if (event.code === 'KeyS' && !event.shiftKey && !event.ctrlKey && !event.altKey) return event.preventDefault(), handleAction('skip');
-      if (event.code === 'KeyD' && !event.shiftKey && !event.ctrlKey && !event.altKey) return event.preventDefault(), handleAction('confirm');
-      if (event.code === 'Space') return event.preventDefault(), qs('.pg-card.is-active')?.classList.toggle('is-flipped');
-      if (event.code === 'Escape') return event.preventDefault(), qs('.pg-card.is-active')?.classList.remove('is-flipped');
-    });
-  }
+    if (event.code === 'ArrowLeft') {
+      event.preventDefault();
+      prev();
+      return;
+    }
+
+    if (event.code === 'ArrowRight') {
+      event.preventDefault();
+      next();
+      return;
+    }
+
+    if (!event.shiftKey && !event.ctrlKey && !event.altKey && event.code === 'KeyA') {
+      event.preventDefault();
+      handleAction('ignore');
+      return;
+    }
+
+    if (!event.shiftKey && !event.ctrlKey && !event.altKey && event.code === 'KeyS') {
+      event.preventDefault();
+      handleAction('skip');
+      return;
+    }
+
+    if (!event.shiftKey && !event.ctrlKey && !event.altKey && event.code === 'KeyD') {
+      event.preventDefault();
+      handleAction('confirm');
+      return;
+    }
+
+    if (event.code === 'Space') {
+      event.preventDefault();
+      qs('.pg-card.is-active')?.classList.toggle('is-flipped');
+      return;
+    }
+
+    if (event.code === 'Escape') {
+      event.preventDefault();
+      qs('.pg-card.is-active')?.classList.remove('is-flipped');
+    }
+  });
+}
 
   function init() {
     render();
@@ -912,10 +1247,14 @@
     if (!window.__LAVASH_PENDING_SELECT_CLOSE_BOUND__) {
       window.__LAVASH_PENDING_SELECT_CLOSE_BOUND__ = true;
       document.addEventListener('click', () => {
-        qsa('.pg-select.is-open').forEach((select) => select.classList.remove('is-open'));
+        document.querySelectorAll('.pg-select.is-open').forEach((select) => {
+          select.classList.remove('is-open');
+        });
       });
     }
   }
 
-  window.LAVASH_PENDING_GAME = { init };
+  window.LAVASH_PENDING_GAME = {
+    init
+  };
 })();
