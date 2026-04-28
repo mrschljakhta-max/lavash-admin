@@ -107,8 +107,8 @@
 
 #pendingGamePage .pg-hud-xp-ring {
   position: absolute;
-  right: clamp(108px, 13vw, 285px);
-  top: 0;
+  right: clamp(150px, 15vw, 330px);
+  top: 20px;
   width: 132px;
   height: 132px;
   padding: 10px;
@@ -654,7 +654,7 @@
   }
 
   #pendingGamePage .pg-hud-xp-ring {
-    right: 110px;
+    right: 150px;
   }
 
   #pendingGamePage .pg-card.is-active {
@@ -679,30 +679,4 @@
   #pendingGamePage .pg-card:not(.is-active) {
     display: none;
   }
-}
-#pendingGamePage .pg-game-hud {
-  position: absolute !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  width: 100% !important;
-  height: 120px !important;
-  pointer-events: none !important;
-  z-index: 40 !important;
-}
-
-/* 👈 РАНГ — максимально вліво */
-#pendingGamePage .pg-hud-rank-card {
-  position: absolute !important;
-  left: 24px !important; /* відступ від краю */
-  top: 0 !important;
-  transform: translateY(10px) !important;
-}
-
-/* 👉 XP — максимально вправо */
-#pendingGamePage .pg-hud-xp-ring {
-  position: absolute !important;
-  right: 24px !important; /* відступ від краю */
-  top: 0 !important;
-  transform: translateY(-5px) !important;
 }
