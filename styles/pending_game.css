@@ -232,7 +232,7 @@
 #pendingGamePage .pg-card {
   position: absolute;
   left: 50%;
-  top: 50%;
+  top: 58%;
   width: clamp(330px, 25vw, 500px);
   height: clamp(340px, 50vh, 540px);
   opacity: .20;
@@ -703,8 +703,12 @@
   }
 }
 
-/* ================= FINAL CONFLICT GUARD ================= */
-/* Тримати в самому кінці файлу. Це прибирає старий transform-конфлікт активної картки. */
+/* ================= FINAL CENTER FIX ================= */
+/* Картку опускаємо через anchor top, а не через злам transform-центрування. */
+#pendingGamePage .pg-card {
+  top: 58% !important;
+}
+
 #pendingGamePage .pg-card.is-active {
   transform: translate(-50%, -50%) scale(.92) rotateY(0deg) !important;
 }
