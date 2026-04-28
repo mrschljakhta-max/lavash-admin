@@ -1,16 +1,23 @@
-/* cleaned layout version */
+/* ============================= */
+/* ROOT PAGE                     */
+/* ============================= */
 
 #pendingGamePage.pg-page {
   position: relative;
   width: 100%;
   height: calc(100vh - 104px);
   min-height: 720px;
+
   overflow: visible;
   isolation: isolate;
   padding: 0;
 }
 
-/* HUD */
+
+/* ============================= */
+/* HUD (верхні елементи)         */
+/* ============================= */
+
 #pendingGamePage .pg-game-hud {
   position: absolute;
   inset: 0;
@@ -18,29 +25,40 @@
   pointer-events: none;
 }
 
+/* ЛІВИЙ РАНК */
 #pendingGamePage .pg-hud-rank-card {
   position: absolute;
-  top: 86px;
-  left: 74px;
+  top: 90px;
+  left: 90px;
 }
 
+/* ПРАВИЙ XP */
 #pendingGamePage .pg-hud-xp-ring {
   position: absolute;
-  top: 88px;
-  right: 118px;
+  top: 95px;
+  right: 120px;
 }
 
-/* STAGE */
+
+/* ============================= */
+/* STAGE (ЦЕНТР СЦЕНИ)           */
+/* ============================= */
+
 #pendingGamePage .pg-stage {
   position: absolute;
-  left: 0;
-  right: 0;
-  top: 92px;
-  bottom: 52px;
-  display: grid;
-  place-items: center;
+  inset: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   overflow: visible;
 }
+
+
+/* ============================= */
+/* CAROUSEL                      */
+/* ============================= */
 
 #pendingGamePage .pg-carousel-wrap,
 #pendingGamePage .pg-carousel {
@@ -50,35 +68,92 @@
   overflow: visible;
 }
 
-/* CARDS */
+
+/* ============================= */
+/* CARDS (БАЗА)                  */
+/* ============================= */
+
 #pendingGamePage .pg-card {
   position: absolute;
+
   left: 50%;
   top: 50%;
+
   width: clamp(330px, 25vw, 500px);
   height: clamp(340px, 50vh, 540px);
-  opacity: .18;
+
+  opacity: 0.18;
+
   transform: translate(-50%, -50%);
+  transition: transform 0.4s ease, opacity 0.4s ease;
 }
 
-#pendingGamePage .pg-card[data-slot="-1"] {
-  transform: translate(-50%, -50%) translateX(-27vw) scale(.66);
-}
 
-#pendingGamePage .pg-card[data-slot="1"] {
-  transform: translate(-50%, -50%) translateX(27vw) scale(.66);
-}
+/* ============================= */
+/* ACTIVE CARD (ЦЕНТР)           */
+/* ============================= */
 
 #pendingGamePage .pg-card.is-active {
   width: clamp(430px, 36vw, 650px);
   height: clamp(410px, 56vh, 570px);
+
   opacity: 1;
+
+  transform: translate(-50%, -50%);
 }
 
-/* CONTROLS */
+
+/* ============================= */
+/* LEFT CARD                     */
+/* ============================= */
+
+#pendingGamePage .pg-card[data-slot="-1"] {
+  transform:
+    translate(-50%, -50%)
+    translateX(-28vw)
+    scale(0.7);
+
+  opacity: 0.25;
+}
+
+
+/* ============================= */
+/* RIGHT CARD                    */
+/* ============================= */
+
+#pendingGamePage .pg-card[data-slot="1"] {
+  transform:
+    translate(-50%, -50%)
+    translateX(28vw)
+    scale(0.7);
+
+  opacity: 0.25;
+}
+
+
+/* ============================= */
+/* HOTKEY PANEL                  */
+/* ============================= */
+
 #pendingGamePage .pg-hotkey-strip {
   position: absolute;
+
   left: 50%;
-  bottom: 18px;
+  bottom: 20px;
+
   transform: translateX(-50%);
+}
+
+
+/* ============================= */
+/* FIX: щоб нічого не обрізалось */
+/* ============================= */
+
+.main-workspace:has(#pendingGamePage) {
+  overflow: visible !important;
+}
+
+.workspace-body:has(#pendingGamePage) {
+  padding: 0 !important;
+  overflow: visible !important;
 }
