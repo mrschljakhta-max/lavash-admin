@@ -789,7 +789,6 @@
     const active = slot === 0 ? 'is-active' : '';
     const unknownType = record.unknownType || 'record';
     const unknownConfig = getUnknownConfig(unknownType);
-    const dataType = record.dataType || record.type || unknownConfig.shortLabel || 'Запис';
     const mainValue = record.mainValue || record.model || record.settlement || record.title || 'Невідоме значення';
     const visualImage = getVisualImage(record, unknownType);
 
@@ -812,26 +811,12 @@
               <button class="pg-card__star" type="button" aria-label="Позначити">☆</button>
             </div>
 
-            <div class="pg-unknown-badge">
-              <span class="pg-unknown-badge__icon">
-                <img src="${unknownConfig.iconUrl}" alt="${unknownConfig.label}" loading="lazy">
-              </span>
-              <strong>${unknownConfig.label}</strong>
-            </div>
+            <div class="pg-card__content">
+              <div class="pg-data">
+                <div class="pg-data__value">${mainValue}</div>
+              </div>
 
-            <div class="pg-card__content pg-card__content--new">
-              <section class="pg-data">
-                <div class="pg-data__type">
-                  <span class="pg-data__icon">
-                    <img src="${unknownConfig.iconUrl}" alt="${dataType}" loading="lazy">
-                  </span>
-                  <span>${dataType}</span>
-                </div>
-
-                <h2 class="pg-data__value">${mainValue}</h2>
-              </section>
-
-              <section class="pg-visual pg-visual--${unknownType}">
+              <div class="pg-visual pg-visual--${unknownType}">
                 <div class="pg-radar-core"></div>
 
                 <img
@@ -840,7 +825,7 @@
                   alt="${mainValue}"
                   loading="lazy"
                 />
-              </section>
+              </div>
             </div>
 
             <small>Клік — редагувати / Space — flip</small>
@@ -870,7 +855,6 @@
 
               ${renderTypeSpecificEditFields(record, unknownType)}
             </div>
-
 
             <button class="pg-save-btn" type="button">Зберегти зміни</button>
           </div>
