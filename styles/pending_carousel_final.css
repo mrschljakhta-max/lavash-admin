@@ -1,0 +1,247 @@
+/* =====================================================
+   PENDING CAROUSEL + CARD — Figma final layout
+===================================================== */
+
+:root {
+  --pg-left-bar: 104px;
+  --pg-right-bar: 110px;
+  --pg-top-area: 120px;
+
+  --pg-card-w: clamp(300px, 18vw, 360px);
+  --pg-card-h: clamp(500px, 66vh, 650px);
+
+  --pg-card-y: 57%;
+}
+
+/* page */
+.pg-page--game {
+  position: relative !important;
+  min-height: calc(100vh - var(--pg-top-area)) !important;
+  overflow: hidden !important;
+}
+
+/* stage */
+.pg-stage {
+  position: fixed !important;
+  left: var(--pg-left-bar) !important;
+  right: var(--pg-right-bar) !important;
+  top: var(--pg-top-area) !important;
+  bottom: 24px !important;
+
+  z-index: 10 !important;
+  overflow: hidden !important;
+}
+
+/* carousel area */
+.pg-carousel-wrap,
+.pg-carousel {
+  position: absolute !important;
+  inset: 0 !important;
+}
+
+/* base card */
+.pg-card {
+  position: absolute !important;
+
+  width: var(--pg-card-w) !important;
+  height: var(--pg-card-h) !important;
+
+  top: var(--pg-card-y) !important;
+  left: 50% !important;
+
+  margin: 0 !important;
+  transform-origin: center center !important;
+
+  transition:
+    transform 280ms ease,
+    opacity 280ms ease,
+    left 280ms ease !important;
+}
+
+/* active */
+.pg-card[data-slot="0"] {
+  left: 50% !important;
+  transform: translate(-50%, -50%) scale(1) !important;
+  opacity: 1 !important;
+  z-index: 50 !important;
+}
+
+/* near left */
+.pg-card[data-slot="-1"] {
+  left: calc(50% - clamp(300px, 22vw, 420px)) !important;
+  transform: translate(-50%, -50%) scale(0.9) !important;
+  opacity: 0.32 !important;
+  z-index: 24 !important;
+}
+
+/* near right */
+.pg-card[data-slot="1"] {
+  left: calc(50% + clamp(300px, 22vw, 420px)) !important;
+  transform: translate(-50%, -50%) scale(0.9) !important;
+  opacity: 0.32 !important;
+  z-index: 24 !important;
+}
+
+/* far left */
+.pg-card[data-slot="-2"] {
+  left: calc(50% - clamp(520px, 36vw, 640px)) !important;
+  transform: translate(-50%, -50%) scale(0.76) !important;
+  opacity: 0.18 !important;
+  z-index: 12 !important;
+}
+
+/* far right */
+.pg-card[data-slot="2"] {
+  left: calc(50% + clamp(520px, 36vw, 640px)) !important;
+  transform: translate(-50%, -50%) scale(0.76) !important;
+  opacity: 0.18 !important;
+  z-index: 12 !important;
+}
+
+/* card internals */
+.pg-card__inner,
+.pg-card__face {
+  height: 100% !important;
+}
+
+.pg-card__front {
+  position: relative !important;
+
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+
+  padding: 20px !important;
+  overflow: hidden !important;
+}
+
+.pg-card__topline {
+  min-height: 40px !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+
+  flex-shrink: 0 !important;
+  z-index: 4 !important;
+}
+
+.pg-unknown-badge {
+  display: none !important;
+}
+
+.pg-card__content {
+  flex: 1 !important;
+  min-height: 0 !important;
+
+  display: grid !important;
+  grid-template-rows: auto 1fr !important;
+  gap: 12px !important;
+}
+
+.pg-data {
+  position: relative !important;
+  z-index: 3 !important;
+}
+
+.pg-data__type {
+  display: none !important;
+}
+
+.pg-data__value {
+  max-width: 92% !important;
+  margin: 28px auto 0 !important;
+
+  text-align: center !important;
+  font-size: clamp(30px, 2.5vw, 46px) !important;
+  line-height: 1.02 !important;
+  font-weight: 900 !important;
+}
+
+/* visual center */
+.pg-visual {
+  position: relative !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  min-height: 0 !important;
+  transform: translateY(10px) !important;
+}
+
+.pg-radar-core {
+  width: clamp(150px, 12vw, 210px) !important;
+  aspect-ratio: 1 !important;
+  border-radius: 999px !important;
+}
+
+.pg-unknown-visual-img,
+.pg-uav-img {
+  max-width: clamp(110px, 10vw, 170px) !important;
+  max-height: clamp(110px, 10vw, 170px) !important;
+  object-fit: contain !important;
+}
+
+/* footer */
+.pg-card__front small {
+  position: absolute !important;
+  left: 20px !important;
+  right: 20px !important;
+  bottom: 18px !important;
+
+  text-align: center !important;
+  font-size: 12px !important;
+  opacity: 0.78 !important;
+}
+
+/* arrows */
+.pg-carousel__arrow,
+.pg-arrow,
+.pg-nav-arrow {
+  position: fixed !important;
+  top: 66% !important;
+  z-index: 90 !important;
+}
+
+.pg-carousel__arrow--prev,
+.pg-arrow--prev,
+.pg-nav-arrow--prev {
+  left: calc(var(--pg-left-bar) + 42px) !important;
+}
+
+.pg-carousel__arrow--next,
+.pg-arrow--next,
+.pg-nav-arrow--next {
+  right: calc(var(--pg-right-bar) + 42px) !important;
+}
+
+/* dots */
+.pg-carousel__dots,
+.pg-dots {
+  position: fixed !important;
+  left: 50% !important;
+  bottom: clamp(58px, 8vh, 90px) !important;
+  transform: translateX(-50%) !important;
+  z-index: 80 !important;
+}
+
+/* responsive */
+@media (max-width: 1300px) {
+  :root {
+    --pg-card-w: clamp(270px, 22vw, 330px);
+    --pg-card-h: clamp(460px, 62vh, 600px);
+  }
+
+  .pg-game-hud {
+    width: min(760px, 62vw) !important;
+  }
+
+  .pg-card[data-slot="-1"] {
+    left: calc(50% - clamp(250px, 24vw, 360px)) !important;
+  }
+
+  .pg-card[data-slot="1"] {
+    left: calc(50% + clamp(250px, 24vw, 360px)) !important;
+  }
+}
