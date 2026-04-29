@@ -1071,3 +1071,68 @@ body::before {
   font-weight: 950 !important;
   margin-top: auto !important;
 }
+/* ===== FRONT CARD VERTICAL LAYOUT — text separate from radar ===== */
+
+.pg-card[data-slot="0"] .pg-card__front {
+  padding: 24px !important;
+  display: grid !important;
+  grid-template-rows: 46px auto 1fr 44px !important;
+  gap: 14px !important;
+  overflow: hidden !important;
+}
+
+.pg-card[data-slot="0"] .pg-card__content {
+  display: contents !important;
+}
+
+.pg-card[data-slot="0"] .pg-data {
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: flex-start !important;
+  min-width: 0 !important;
+  z-index: 8 !important;
+}
+
+.pg-card[data-slot="0"] .pg-data__value {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 6px 0 0 !important;
+
+  font-size: clamp(30px, 2.3vw, 42px) !important;
+  line-height: 0.95 !important;
+  font-weight: 950 !important;
+  letter-spacing: -0.04em !important;
+  text-align: left !important;
+
+  white-space: normal !important;
+  overflow-wrap: anywhere !important;
+
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
+}
+
+.pg-card[data-slot="0"] .pg-visual {
+  display: grid !important;
+  place-items: center !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  transform: none !important;
+  z-index: 6 !important;
+}
+
+.pg-card[data-slot="0"] .pg-radar-core {
+  width: clamp(180px, 14vw, 250px) !important;
+  aspect-ratio: 1 !important;
+}
+
+.pg-card[data-slot="0"] .pg-uav-img,
+.pg-card[data-slot="0"] .pg-unknown-visual-img {
+  max-width: clamp(82px, 7vw, 135px) !important;
+  max-height: clamp(82px, 7vw, 135px) !important;
+}
+
+.pg-card[data-slot="0"] .pg-card__front small {
+  align-self: end !important;
+}
