@@ -518,3 +518,80 @@ body::before {
   position: relative;
   overflow: hidden;
 }
+/* ===== FIX: EFFECTS ABOVE CARD BACKGROUND ===== */
+
+.pg-card[data-slot="0"] {
+  position: absolute !important;
+  isolation: isolate;
+  overflow: hidden !important;
+}
+
+.pg-card[data-slot="0"]::before {
+  z-index: 1 !important;
+  pointer-events: none !important;
+}
+
+.pg-card[data-slot="0"]::after {
+  z-index: 2 !important;
+  pointer-events: none !important;
+}
+
+.pg-card[data-slot="0"] .pg-card__inner {
+  position: relative !important;
+  z-index: 3 !important;
+}
+
+.pg-card[data-slot="0"] .pg-card__front {
+  position: relative !important;
+  z-index: 4 !important;
+  overflow: hidden !important;
+}
+
+/* light sweep має бути поверх фону */
+.pg-card[data-slot="0"] .pg-card__front::before {
+  content: "";
+  position: absolute;
+  top: -40%;
+  left: -70%;
+  width: 220%;
+  height: 220%;
+  z-index: 2;
+  pointer-events: none;
+
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    rgba(255,255,255,0.04) 35%,
+    rgba(255,255,255,0.20) 48%,
+    rgba(255,255,255,0.04) 62%,
+    transparent 100%
+  );
+
+  transform: translateX(-70%) rotate(12deg);
+  animation: pgSweepMove 4.8s ease-in-out infinite;
+}
+
+.pg-card[data-slot="0"] .pg-card__topline,
+.pg-card[data-slot="0"] .pg-card__content,
+.pg-card[data-slot="0"] .pg-card__front small {
+  position: relative !important;
+  z-index: 5 !important;
+}
+
+@keyframes pgSweepMove {
+  0% {
+    transform: translateX(-70%) rotate(12deg);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  55% {
+    transform: translateX(35%) rotate(12deg);
+    opacity: 0.75;
+  }
+  100% {
+    transform: translateX(120%) rotate(12deg);
+    opacity: 0;
+  }
+}
