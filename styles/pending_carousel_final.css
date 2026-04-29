@@ -821,3 +821,83 @@ body::before {
     opacity: 1;
   }
 }
+/* ===== ACTIVE CARD SCANLINES / HUD NOISE ===== */
+
+.pg-card[data-slot="0"] .pg-card__front::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  pointer-events: none;
+  border-radius: inherit;
+
+  background:
+    repeating-linear-gradient(
+      180deg,
+      rgba(255,255,255,0.035) 0px,
+      rgba(255,255,255,0.035) 1px,
+      transparent 1px,
+      transparent 5px
+    ),
+    radial-gradient(
+      circle at var(--pg-scan-x, 50%) var(--pg-scan-y, 50%),
+      rgba(56, 223, 255, 0.12),
+      transparent 34%
+    );
+
+  mix-blend-mode: screen;
+  opacity: 0.42;
+  animation: pgScanlineDrift 7s linear infinite;
+}
+
+.pg-card[data-slot="0"].is-tilting .pg-card__front::after {
+  --pg-scan-x: 54%;
+  --pg-scan-y: 42%;
+  opacity: 0.58;
+}
+
+@keyframes pgScanlineDrift {
+  0% {
+    background-position: 0 0, center;
+  }
+  100% {
+    background-position: 0 32px, center;
+  }
+}
+
+/* ===== STATUS PILL MICRO PULSE ===== */
+
+.pg-card[data-slot="0"] .pg-card__status {
+  position: relative;
+  overflow: hidden;
+}
+
+.pg-card[data-slot="0"] .pg-card__status::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -60%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,0.22),
+    transparent
+  );
+  animation: pgStatusSweep 3.8s ease-in-out infinite;
+}
+
+@keyframes pgStatusSweep {
+  0%, 45% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+  55% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(280%);
+    opacity: 0;
+  }
+}
