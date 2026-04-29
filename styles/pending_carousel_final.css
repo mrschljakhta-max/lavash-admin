@@ -422,3 +422,99 @@ body::before {
     opacity: 1;
   }
 }
+/* ===== CARD GLOW EDGE ===== */
+
+.pg-card[data-slot="0"] {
+  position: relative;
+  overflow: hidden;
+}
+
+.pg-card[data-slot="0"]::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    rgba(56, 223, 255, 0.6) 40%,
+    rgba(56, 223, 255, 0.9) 50%,
+    rgba(56, 223, 255, 0.6) 60%,
+    transparent 100%
+  );
+
+  opacity: 0.5;
+  filter: blur(12px);
+
+  animation: pgGlowFlow 6s linear infinite;
+  z-index: 0;
+}
+
+.pg-card[data-slot="0"]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+
+  box-shadow:
+    0 0 18px rgba(56, 223, 255, 0.4),
+    0 0 42px rgba(56, 223, 255, 0.2);
+
+  pointer-events: none;
+}
+
+@keyframes pgGlowFlow {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+/* ===== LIGHT SWEEP ===== */
+
+.pg-card[data-slot="0"] .pg-card_content::after {
+  content: "";
+  position: absolute;
+  top: -40%;
+  left: -60%;
+
+  width: 200%;
+  height: 200%;
+
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    rgba(255,255,255,0.05) 30%,
+    rgba(255,255,255,0.18) 45%,
+    rgba(255,255,255,0.05) 60%,
+    transparent 100%
+  );
+
+  transform: rotate(12deg);
+
+  animation: pgSweepMove 4.5s ease-in-out infinite;
+}
+
+@keyframes pgSweepMove {
+  0% {
+    transform: translateX(-60%) rotate(12deg);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  50% {
+    transform: translateX(60%) rotate(12deg);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateX(120%) rotate(12deg);
+    opacity: 0;
+  }
+}
+.pg-card_content {
+  position: relative;
+  overflow: hidden;
+}
