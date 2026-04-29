@@ -983,6 +983,30 @@
     });
   }
 
+  function bindCardTilt(card) {
+    card.addEventListener('pointermove', (event) => {
+      if (card.classList.contains('is-dragging')) return;
+      if (card.classList.contains('is-flipped')) return;
+
+      const rect = card.getBoundingClientRect();
+      const x = (event.clientX - rect.left) / rect.width - 0.5;
+      const y = (event.clientY - rect.top) / rect.height - 0.5;
+
+      const rotateX = y * -8;
+      const rotateY = x * 10;
+
+      card.style.setProperty('--pg-tilt-x', `${rotateX}deg`);
+      card.style.setProperty('--pg-tilt-y', `${rotateY}deg`);
+      card.classList.add('is-tilting');
+    });
+
+    card.addEventListener('pointerleave', () => {
+      card.classList.remove('is-tilting');
+      card.style.removeProperty('--pg-tilt-x');
+      card.style.removeProperty('--pg-tilt-y');
+    });
+  }
+
   function bindCustomSelects(card) {
     card.querySelectorAll('.pg-select').forEach((select) => {
       const head = select.querySelector('.pg-select__head');
@@ -1044,6 +1068,7 @@
   function bind() {
     document.querySelectorAll('.pg-card.is-active').forEach((card) => {
       bindCardDrag(card);
+      bindCardTilt(card);
       bindCustomSelects(card);
 
       card.addEventListener('click', (event) => {
