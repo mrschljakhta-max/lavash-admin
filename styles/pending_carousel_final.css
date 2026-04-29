@@ -626,3 +626,106 @@ body::before {
     scale(1.035) !important;
   transition: transform 80ms linear !important;
 }
+/* ===== ACTION FLASH STATES ===== */
+
+#pendingGamePage[data-action-flash="confirm"] .pg-card[data-slot="0"] {
+  box-shadow:
+    0 0 40px rgba(37, 216, 137, 0.55),
+    0 0 90px rgba(37, 216, 137, 0.28) !important;
+}
+
+#pendingGamePage[data-action-flash="ignore"] .pg-card[data-slot="0"] {
+  box-shadow:
+    0 0 40px rgba(255, 76, 120, 0.55),
+    0 0 90px rgba(255, 76, 120, 0.28) !important;
+}
+
+#pendingGamePage[data-action-flash="skip"] .pg-card[data-slot="0"] {
+  box-shadow:
+    0 0 40px rgba(141, 88, 255, 0.55),
+    0 0 90px rgba(141, 88, 255, 0.28) !important;
+}
+
+#pendingGamePage::after {
+  content: attr(data-action-label);
+  position: fixed;
+  left: 50%;
+  top: 48%;
+  transform: translate(-50%, -50%) scale(0.96);
+  z-index: 9999;
+
+  font-size: clamp(42px, 5vw, 86px);
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+
+  color: rgba(255,255,255,0.94);
+  text-shadow:
+    0 0 18px rgba(255,255,255,0.4),
+    0 0 50px var(--pg-accent-status);
+
+  opacity: 0;
+  pointer-events: none;
+}
+
+#pendingGamePage[data-action-flash="confirm"]::after,
+#pendingGamePage[data-action-flash="ignore"]::after,
+#pendingGamePage[data-action-flash="skip"]::after {
+  animation: pgActionText 620ms ease both;
+}
+
+@keyframes pgActionText {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.85);
+    filter: blur(8px);
+  }
+  28% {
+    opacity: 1;
+    filter: blur(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -62%) scale(1.08);
+    filter: blur(3px);
+  }
+}
+
+/* XP pop upgrade */
+.pg-xp-pop {
+  position: fixed !important;
+  left: 50% !important;
+  top: 38% !important;
+  z-index: 9999 !important;
+
+  transform: translate(-50%, 0) scale(0.9) !important;
+  font-size: 28px !important;
+  font-weight: 950 !important;
+  color: #ffe8a3 !important;
+
+  text-shadow:
+    0 0 12px rgba(255, 220, 120, 0.9),
+    0 0 34px rgba(255, 180, 60, 0.45) !important;
+
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.pg-xp-pop.is-visible {
+  animation: pgXpFly 760ms cubic-bezier(.2,.9,.2,1) both !important;
+}
+
+@keyframes pgXpFly {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 20px) scale(0.75);
+  }
+  20% {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1.05);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -80px) scale(1.18);
+  }
+}
