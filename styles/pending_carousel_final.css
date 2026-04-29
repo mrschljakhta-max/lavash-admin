@@ -611,3 +611,18 @@ body::before {
     inset 0 0 60px rgba(255,255,255,0.06),
     0 0 45px color-mix(in srgb, var(--pg-card-accent) 45%, transparent) !important;
 }
+/* ===== RADAR CURSOR TRACKING ADDON ===== */
+/* Додай у кінець pending_carousel_final.css */
+
+.pg-card[data-slot="0"] .pg-radar-core.is-tracking::before {
+  transform: rotate(var(--pg-radar-angle)) !important;
+  animation-play-state: paused !important;
+}
+
+.pg-card[data-slot="0"] .pg-uav-img.is-parallax,
+.pg-card[data-slot="0"] .pg-unknown-visual-img.is-parallax {
+  transform:
+    translate(var(--pg-uav-x), var(--pg-uav-y))
+    scale(1.035) !important;
+  transition: transform 80ms linear !important;
+}
