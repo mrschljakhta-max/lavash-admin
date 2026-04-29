@@ -513,12 +513,20 @@
           </aside>
 
           <aside
-            class="pg-hud-xp-ring"
-            style="--pg-ring-progress:${progress * 3.6}deg; --pg-ring-accent:${activeUnknownConfig.color};"
+            class="pg-hud-xp-card"
+            style="--pg-ring-progress:${progress * 3.6}deg; --pg-xp-progress:${progress}%; --pg-ring-accent:${activeUnknownConfig.color};"
           >
-            <div class="pg-hud-xp-ring__core">
-              <strong>${state.xp}</strong>
+            <div class="pg-hud-xp-ring">
+              <div class="pg-hud-xp-ring__core">
+                <strong>${state.xp}</strong>
+                <span>XP</span>
+              </div>
+            </div>
+            <div class="pg-hud-xp-info">
               <span>XP</span>
+              <strong>${state.xp.toLocaleString('uk-UA')}</strong>
+              <div class="pg-hud-xp-bar"><i></i></div>
+              <small>${state.xpMax.toLocaleString('uk-UA')} до наступного рівня</small>
             </div>
           </aside>
         </div>
