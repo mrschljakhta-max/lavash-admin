@@ -595,3 +595,19 @@ body::before {
     opacity: 0;
   }
 }
+/* ===== CARD HOVER TILT ===== */
+
+.pg-card[data-slot="0"].is-tilting {
+  transform:
+    translate(-50%, -50%)
+    perspective(900px)
+    rotateX(var(--pg-tilt-x))
+    rotateY(var(--pg-tilt-y))
+    scale(1.015) !important;
+}
+
+.pg-card[data-slot="0"].is-tilting .pg-card__front {
+  box-shadow:
+    inset 0 0 60px rgba(255,255,255,0.06),
+    0 0 45px color-mix(in srgb, var(--pg-card-accent) 45%, transparent) !important;
+}
