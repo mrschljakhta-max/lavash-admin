@@ -1,0 +1,54 @@
+/* ===== HUD CONTAINER ===== */
+
+.pg-hud {
+  position: absolute;
+  top: 140px;
+
+  left: 0;
+  right: 0;
+
+  display: flex;
+  justify-content: space-between;
+
+  padding: 0 80px;
+
+  pointer-events: none;
+}
+
+/* ===== RANK ===== */
+
+.pg-hud__rank {
+  pointer-events: auto;
+
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  padding: 16px 24px;
+  border-radius: 20px;
+
+  background: rgba(20, 30, 60, 0.7);
+
+  backdrop-filter: blur(12px);
+
+  box-shadow: 0 0 20px rgba(255, 200, 80, 0.3);
+}
+
+/* ===== XP ===== */
+
+.pg-hud__xp {
+  pointer-events: auto;
+
+  display: flex;
+  align-items: center;
+  gap: 20px;
+
+  padding: 16px 24px;
+  border-radius: 20px;
+
+  background: rgba(20, 30, 60, 0.7);
+
+  backdrop-filter: blur(12px);
+
+  box-shadow: 0 0 20px rgba(120, 80, 255, 0.3);
+}
