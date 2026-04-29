@@ -335,3 +335,90 @@ body::before {
   font-size: 18px;
   font-weight: 900;
 }
+/* ===== RADAR ANIMATION ===== */
+
+.pg-card[data-slot="0"] .pg-radar-core {
+  position: absolute !important;
+  overflow: hidden !important;
+
+  background:
+    radial-gradient(circle, rgba(56, 223, 255, 0.16) 0 8%, transparent 9%),
+    repeating-radial-gradient(
+      circle,
+      rgba(56, 223, 255, 0.22) 0 1px,
+      transparent 1px 38px
+    ) !important;
+
+  box-shadow:
+    0 0 26px rgba(56, 223, 255, 0.28),
+    inset 0 0 26px rgba(56, 223, 255, 0.18) !important;
+
+  animation: pgRadarPulse 2.8s ease-in-out infinite;
+}
+
+.pg-card[data-slot="0"] .pg-radar-core::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+
+  background: conic-gradient(
+    from 0deg,
+    rgba(56, 223, 255, 0.0) 0deg,
+    rgba(56, 223, 255, 0.06) 35deg,
+    rgba(56, 223, 255, 0.45) 58deg,
+    rgba(56, 223, 255, 0.0) 82deg,
+    rgba(56, 223, 255, 0.0) 360deg
+  );
+
+  animation: pgRadarSweep 3.2s linear infinite;
+  filter: blur(0.4px);
+}
+
+.pg-card[data-slot="0"] .pg-radar-core::after {
+  content: "";
+  position: absolute;
+  inset: 50%;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+
+  background: rgba(180, 255, 245, 0.95);
+  box-shadow:
+    0 0 12px rgba(180, 255, 245, 0.9),
+    42px -34px 0 -2px rgba(180, 255, 245, 0.75),
+    -54px 26px 0 -2px rgba(180, 255, 245, 0.55),
+    62px 48px 0 -3px rgba(180, 255, 245, 0.45);
+
+  animation: pgRadarDots 1.8s ease-in-out infinite;
+}
+
+@keyframes pgRadarSweep {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pgRadarPulse {
+  0%, 100% {
+    opacity: 0.82;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.035);
+  }
+}
+
+@keyframes pgRadarDots {
+  0%, 100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 1;
+  }
+}
