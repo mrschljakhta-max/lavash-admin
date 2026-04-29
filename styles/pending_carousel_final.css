@@ -968,3 +968,106 @@ body::before {
     transform: translate(-50%, -50%) scale(0.2);
   }
 }
+/* ===== BACK CARD CLEAN EDIT LAYOUT ===== */
+
+.pg-card[data-slot="0"] .pg-card__back {
+  padding: 28px !important;
+  display: grid !important;
+  grid-template-rows: auto auto 1fr auto !important;
+  gap: 22px !important;
+  overflow: hidden !important;
+}
+
+.pg-card[data-slot="0"] .pg-edit-head {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: flex-start !important;
+  gap: 14px !important;
+}
+
+.pg-card[data-slot="0"] .pg-edit-head h3 {
+  margin: 0 !important;
+  font-size: clamp(24px, 2vw, 34px) !important;
+  line-height: 1.05 !important;
+  color: #fff !important;
+}
+
+.pg-card[data-slot="0"] .pg-edit-head span {
+  margin-top: 6px !important;
+  font-size: 11px !important;
+  opacity: 0.72 !important;
+  white-space: nowrap !important;
+}
+
+.pg-card[data-slot="0"] .pg-edit-grid {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 16px !important;
+  align-content: start !important;
+}
+
+.pg-card[data-slot="0"] .pg-edit-wide {
+  grid-column: 1 / -1 !important;
+}
+
+.pg-card[data-slot="0"] .pg-edit-grid label,
+.pg-card[data-slot="0"] .pg-readonly-field {
+  min-height: 74px !important;
+  padding: 14px !important;
+  border-radius: 18px !important;
+  background: rgba(255,255,255,0.07) !important;
+  border: 1px solid rgba(255,255,255,0.10) !important;
+
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+}
+
+.pg-card[data-slot="0"] .pg-edit-grid label span,
+.pg-card[data-slot="0"] .pg-readonly-field span {
+  font-size: 11px !important;
+  line-height: 1 !important;
+  opacity: 0.72 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+}
+
+.pg-card[data-slot="0"] .pg-readonly-field strong {
+  font-size: 15px !important;
+  line-height: 1.1 !important;
+  color: #fff !important;
+}
+
+.pg-card[data-slot="0"] .pg-edit-grid input {
+  width: 100% !important;
+  min-height: 44px !important;
+  border: 0 !important;
+  outline: 0 !important;
+  border-radius: 14px !important;
+  padding: 0 14px !important;
+
+  background: rgba(255,255,255,0.08) !important;
+  color: #fff !important;
+  font-size: 15px !important;
+  font-weight: 800 !important;
+}
+
+.pg-card[data-slot="0"] .pg-select {
+  width: 100% !important;
+}
+
+.pg-card[data-slot="0"] .pg-select__head {
+  min-height: 44px !important;
+  padding: 0 14px !important;
+  border-radius: 14px !important;
+  background: rgba(255,255,255,0.09) !important;
+}
+
+.pg-card[data-slot="0"] .pg-save-btn {
+  width: 100% !important;
+  min-height: 58px !important;
+  border-radius: 999px !important;
+  font-size: 16px !important;
+  font-weight: 950 !important;
+  margin-top: auto !important;
+}
