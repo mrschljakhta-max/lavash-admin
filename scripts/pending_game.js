@@ -1007,6 +1007,52 @@
     });
   }
 
+
+  function bindRadarInteraction(card) {
+    const radar = card.querySelector('.pg-radar-core');
+    const uav = card.querySelector('.pg-uav-img');
+
+    if (!radar) return;
+
+    card.addEventListener('pointermove', (event) => {
+      if (card.classList.contains('is-dragging')) return;
+      if (card.classList.contains('is-flipped')) return;
+
+      const rect = card.getBoundingClientRect();
+
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+
+      const dx = event.clientX - cx;
+      const dy = event.clientY - cy;
+
+      const angle = Math.atan2(dy, dx) * (180 / Math.PI) + 90;
+
+      radar.style.setProperty('--pg-radar-angle', `${angle}deg`);
+      radar.classList.add('is-tracking');
+
+      if (uav) {
+        const px = dx * 0.018;
+        const py = dy * 0.018;
+
+        uav.style.setProperty('--pg-uav-x', `${px}px`);
+        uav.style.setProperty('--pg-uav-y', `${py}px`);
+        uav.classList.add('is-parallax');
+      }
+    });
+
+    card.addEventListener('pointerleave', () => {
+      radar.classList.remove('is-tracking');
+      radar.style.removeProperty('--pg-radar-angle');
+
+      if (uav) {
+        uav.classList.remove('is-parallax');
+        uav.style.removeProperty('--pg-uav-x');
+        uav.style.removeProperty('--pg-uav-y');
+      }
+    });
+  }
+
   function bindCustomSelects(card) {
     card.querySelectorAll('.pg-select').forEach((select) => {
       const head = select.querySelector('.pg-select__head');
@@ -1069,6 +1115,7 @@
     document.querySelectorAll('.pg-card.is-active').forEach((card) => {
       bindCardDrag(card);
       bindCardTilt(card);
+      bindRadarInteraction(card);
       bindCustomSelects(card);
 
       card.addEventListener('click', (event) => {
