@@ -1053,6 +1053,36 @@
     });
   }
 
+
+  function bindRadarLock(card) {
+    let lockTimer = null;
+
+    const clearLock = () => {
+      if (lockTimer) {
+        clearTimeout(lockTimer);
+        lockTimer = null;
+      }
+      card.classList.remove('is-locked');
+    };
+
+    card.addEventListener('pointerenter', () => {
+      clearLock();
+
+      lockTimer = setTimeout(() => {
+        if (!card.classList.contains('is-dragging') && !card.classList.contains('is-flipped')) {
+          card.classList.add('is-locked');
+        }
+      }, 420);
+    });
+
+    card.addEventListener('pointerleave', clearLock);
+
+    card.addEventListener('pointerdown', () => {
+      if (card.classList.contains('is-flipped')) return;
+      card.classList.remove('is-locked');
+    });
+  }
+
   function bindCustomSelects(card) {
     card.querySelectorAll('.pg-select').forEach((select) => {
       const head = select.querySelector('.pg-select__head');
@@ -1116,6 +1146,7 @@
       bindCardDrag(card);
       bindCardTilt(card);
       bindRadarInteraction(card);
+      bindRadarLock(card);
       bindCustomSelects(card);
 
       card.addEventListener('click', (event) => {
