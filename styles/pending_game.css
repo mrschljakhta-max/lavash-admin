@@ -783,5 +783,10 @@ body:has(#pendingGamePage) {
 #pendingGamePage .pg-rank-emblem { width:74px !important; height:74px !important; min-width:74px !important; max-width:74px !important; flex:0 0 74px !important; display:grid !important; place-items:center !important; overflow:hidden !important; transform:none !important; }
 #pendingGamePage .pg-rank-emblem img, #pendingGamePage .pg-hud-rank-card img { width:66px !important; height:66px !important; min-width:66px !important; max-width:66px !important; min-height:66px !important; max-height:66px !important; object-fit:contain !important; transform:none !important; }
 #pendingGamePage .pg-rank-info { min-width:0 !important; max-width:calc(100% - 92px) !important; overflow:hidden !important; }
-#pendingGamePage .pg-card.is-active { width:clamp(460px, 32vw, 560px) !important; height:clamp(520px, 66vh, 660px) !important; top:var(--pg-card-center-y) !important; transform:translate(-50%, -50%) scale(.92) rotateY(0deg) !important; }
-@media (max-height:820px){ #pendingGamePage .pg-hud-rank-card{width:262px !important;min-height:82px !important;max-height:92px !important;} #pendingGamePage .pg-rank-emblem{width:62px !important;height:62px !important;min-width:62px !important;max-width:62px !important;flex-basis:62px !important;} #pendingGamePage .pg-rank-emblem img,#pendingGamePage .pg-hud-rank-card img{width:56px !important;height:56px !important;min-width:56px !important;max-width:56px !important;min-height:56px !important;max-height:56px !important;} #pendingGamePage .pg-card.is-active{width:clamp(420px, 32vw, 520px) !important;height:clamp(500px, 66vh, 620px) !important;} }
+#pendingGamePage .pg-card.is-active {
+  width: clamp(360px, 22vw, 420px);
+  height: clamp(640px, 80vh, 820px);
+
+  top: var(--pg-card-center-y);
+  transform: translate(-50%, -50%) scale(1) rotateY(0deg);
+}
