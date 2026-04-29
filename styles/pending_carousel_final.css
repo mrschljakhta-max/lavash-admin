@@ -729,3 +729,50 @@ body::before {
     transform: translate(-50%, -80px) scale(1.18);
   }
 }
+/* ===== TARGET LOCK SYSTEM ===== */
+
+.pg-radar-core::after {
+  content: "";
+  position: absolute;
+  inset: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.pg-card[data-slot="0"].is-locked .pg-radar-core::after {
+  width: 80%;
+  height: 80%;
+
+  border: 1px solid rgba(56, 223, 255, 0.6);
+
+  box-shadow:
+    0 0 12px rgba(56, 223, 255, 0.7),
+    inset 0 0 12px rgba(56, 223, 255, 0.3);
+
+  animation: pgLockPulse 1.2s ease-in-out infinite;
+}
+
+@keyframes pgLockPulse {
+  0% {
+    transform: translate(-50%, -50%) scale(0.92);
+    opacity: 0.4;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(0.92);
+    opacity: 0.4;
+  }
+}
+
+/* легке затемнення навколо */
+.pg-card[data-slot="0"].is-locked {
+  box-shadow:
+    0 0 40px rgba(56, 223, 255, 0.4),
+    0 0 90px rgba(56, 223, 255, 0.2) !important;
+}
