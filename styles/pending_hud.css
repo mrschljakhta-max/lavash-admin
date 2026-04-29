@@ -1,54 +1,31 @@
-/* ===== HUD CONTAINER ===== */
-
 .pg-hud {
   position: absolute;
-  top: 140px;
-
+  top: clamp(145px, 17vh, 190px);
   left: 0;
   right: 0;
+  z-index: 30;
 
   display: flex;
+  align-items: center;
   justify-content: space-between;
 
-  padding: 0 80px;
+  padding-left: clamp(170px, 16vw, 280px);
+  padding-right: clamp(150px, 15vw, 260px);
 
   pointer-events: none;
 }
 
-/* ===== RANK ===== */
-
-.pg-hud__rank {
-  pointer-events: auto;
-
-  display: flex;
-  align-items: center;
-  gap: 16px;
-
-  padding: 16px 24px;
-  border-radius: 20px;
-
-  background: rgba(20, 30, 60, 0.7);
-
-  backdrop-filter: blur(12px);
-
-  box-shadow: 0 0 20px rgba(255, 200, 80, 0.3);
-}
-
-/* ===== XP ===== */
-
+.pg-hud__rank,
 .pg-hud__xp {
   pointer-events: auto;
+  min-width: clamp(330px, 25vw, 440px);
+  max-width: 440px;
+}
 
-  display: flex;
-  align-items: center;
-  gap: 20px;
+.pg-hud__rank {
+  transform: translateX(-40px);
+}
 
-  padding: 16px 24px;
-  border-radius: 20px;
-
-  background: rgba(20, 30, 60, 0.7);
-
-  backdrop-filter: blur(12px);
-
-  box-shadow: 0 0 20px rgba(120, 80, 255, 0.3);
+.pg-hud__xp {
+  transform: translateX(40px);
 }
