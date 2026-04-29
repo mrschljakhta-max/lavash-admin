@@ -709,10 +709,13 @@ body:has(#pendingGamePage) {
     height: 108px;
   }
 
-  #pendingGamePage .pg-card.is-active {
-    width: clamp(420px, 32vw, 520px);
-    height: clamp(500px, 66vh, 620px);
-  }
+     #pendingGamePage .pg-card.is-active {
+     width: clamp(360px, 22vw, 420px) !important;
+     height: clamp(640px, 80vh, 820px) !important;
+   
+     top: var(--pg-card-center-y) !important;
+     transform: translate(-50%, -50%) scale(1) rotateY(0deg) !important;
+   }
 }
 
 @media (max-width: 1100px) {
