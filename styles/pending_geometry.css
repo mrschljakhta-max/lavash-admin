@@ -619,3 +619,10 @@ button[aria-label*="Next"] {
   display: none !important;
   content: none !important;
 }
+.pg-card {
+  background: none !important;
+}
+
+.pg-card__front {
+  background: linear-gradient(180deg, #1d4ed8, #0f172a) !important;
+}
