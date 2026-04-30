@@ -291,14 +291,20 @@
 }
 
 /* =====================================================
-   FINAL OVERRIDE — SINGLE CARD + BIGGER CARD
+   FINAL CLEAN GEOMETRY — SINGLE CARD / BIGGER / HIGHER
+   Підключати ОСТАННІМ після pending_carousel_final.css
 ===================================================== */
 
 :root {
+  /* КАРТКА: розмір */
   --pg-geo-card-w: clamp(340px, 22vw, 430px);
   --pg-geo-card-h: clamp(560px, 70vh, 720px);
-  --pg-geo-card-y: 25%;
 
+  /* КАРТКА: позиція */
+  --pg-geo-card-x: 50%;
+  --pg-geo-card-y: 48%;
+
+  /* ЗОНИ ВСЕРЕДИНІ */
   --pg-geo-pad: 26px;
   --pg-geo-header-h: 48px;
   --pg-geo-title-h: 104px;
@@ -309,7 +315,52 @@
   --pg-geo-radar-shift-y: 12px;
 }
 
-/* ===== clean single-card mode ===== */
+/* =====================================================
+   1. TRUE LAYER MODEL — фон окремо, картка зверху
+===================================================== */
+
+.pg-page--game,
+.pg-stage {
+  position: relative !important;
+  isolation: isolate !important;
+}
+
+.pg-stage {
+  overflow: visible !important;
+}
+
+/* фон сцени позаду картки */
+.pg-stage::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 0 !important;
+  pointer-events: none !important;
+
+  background:
+    radial-gradient(circle at 30% 75%, rgba(28, 176, 190, 0.26), transparent 36%),
+    radial-gradient(circle at 70% 72%, rgba(100, 62, 210, 0.28), transparent 38%) !important;
+}
+
+/* обгортки сцени */
+.pg-carousel-wrap,
+.pg-carousel {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 1 !important;
+
+  display: block !important;
+
+  background: transparent !important;
+  box-shadow: none !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+  overflow: visible !important;
+}
+
+/* =====================================================
+   2. CLEAN SINGLE CARD MODE — без каруселі, HUD і шуму
+===================================================== */
 
 .pg-card:not([data-slot="0"]),
 .pg-card[data-slot="-2"],
@@ -375,7 +426,9 @@ button[aria-label*="Next"] {
   display: none !important;
 }
 
-/* ===== active card position and size ===== */
+/* =====================================================
+   3. ACTIVE CARD — позиція, розмір, 3D-зона
+===================================================== */
 
 .pg-card {
   width: var(--pg-geo-card-w) !important;
@@ -385,11 +438,28 @@ button[aria-label*="Next"] {
 }
 
 .pg-card[data-slot="0"] {
-  left: 50% !important;
+  position: absolute !important;
+  left: var(--pg-geo-card-x) !important;
   top: var(--pg-geo-card-y) !important;
+
+  width: var(--pg-geo-card-w) !important;
+  height: var(--pg-geo-card-h) !important;
+
   opacity: 1 !important;
-  z-index: 50 !important;
+  z-index: 20 !important;
+  isolation: isolate !important;
+
+  background: transparent !important;
+  box-shadow: none !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+
+  overflow: visible !important;
+  padding: 10px !important;
+
   transform: translate(-50%, -50%) scale(1) !important;
+  transform-style: preserve-3d !important;
+  perspective: 1200px !important;
 }
 
 .pg-card[data-slot="0"].is-tilting {
@@ -401,13 +471,83 @@ button[aria-label*="Next"] {
     scale(1.015) !important;
 }
 
-/* ===== front layout ===== */
+/* прибираємо псевдо-шари картки, які давали прямокутну "дірку" */
+.pg-card[data-slot="0"]::before,
+.pg-card[data-slot="0"]::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* =====================================================
+   4. FLIP STRUCTURE — щоб не ховалась при обертанні
+===================================================== */
+
+.pg-card[data-slot="0"] .pg-card__inner {
+  position: absolute !important;
+  inset: 10px !important;
+  width: auto !important;
+  height: auto !important;
+
+  z-index: 25 !important;
+  overflow: visible !important;
+  transform-style: preserve-3d !important;
+
+  background: transparent !important;
+  box-shadow: none !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+}
+
+.pg-card[data-slot="0"] .pg-card__face,
+.pg-card[data-slot="0"] .pg-card__front,
+.pg-card[data-slot="0"] .pg-card__back {
+  position: absolute !important;
+  inset: 0 !important;
+
+  width: 100% !important;
+  height: 100% !important;
+
+  border-radius: inherit !important;
+  backface-visibility: hidden !important;
+  -webkit-backface-visibility: hidden !important;
+  transform-style: preserve-3d !important;
+  background-clip: padding-box !important;
+
+  z-index: 30 !important;
+}
+
+.pg-card[data-slot="0"] .pg-card__front,
+.pg-card[data-slot="0"] .pg-card__back {
+  overflow: hidden !important;
+
+  background:
+    radial-gradient(circle at 45% 18%, rgba(80, 200, 255, 0.22), transparent 40%),
+    linear-gradient(160deg, var(--pg-card-bg-1), var(--pg-card-bg-2)) !important;
+
+  box-shadow:
+    0 0 26px color-mix(in srgb, var(--pg-card-accent) 38%, transparent),
+    inset 0 0 34px rgba(255,255,255,0.045) !important;
+}
 
 .pg-card[data-slot="0"] .pg-card__front {
-  position: relative !important;
-  height: 100% !important;
+  transform: rotateY(0deg) !important;
+}
+
+.pg-card[data-slot="0"] .pg-card__back {
+  transform: rotateY(180deg) !important;
+}
+
+.pg-card[data-slot="0"].is-flipped .pg-card__inner,
+.pg-card[data-slot="0"] .pg-card__inner.is-flipped {
+  transform: rotateY(180deg) !important;
+}
+
+/* =====================================================
+   5. FRONT LAYOUT — header / title / radar / hint
+===================================================== */
+
+.pg-card[data-slot="0"] .pg-card__front {
   padding: var(--pg-geo-pad) !important;
-  overflow: hidden !important;
 
   display: grid !important;
   grid-template-rows:
@@ -423,15 +563,17 @@ button[aria-label*="Next"] {
   display: contents !important;
 }
 
-/* header */
+/* HEADER */
 .pg-card[data-slot="0"] .pg-card__topline {
   grid-row: 1 !important;
   min-height: var(--pg-geo-header-h) !important;
+
   display: grid !important;
   grid-template-columns: 1fr 36px !important;
   align-items: start !important;
   gap: 12px !important;
-  z-index: 20 !important;
+
+  z-index: 40 !important;
 }
 
 .pg-card[data-slot="0"] .pg-card__status {
@@ -458,21 +600,24 @@ button[aria-label*="Next"] {
   height: 36px !important;
   display: grid !important;
   place-items: center !important;
-  z-index: 22 !important;
+  z-index: 42 !important;
 }
 
-/* title */
+/* TITLE */
 .pg-card[data-slot="0"] .pg-data {
   grid-row: 2 !important;
   position: relative !important;
+
   display: block !important;
   min-width: 0 !important;
   width: 100% !important;
   max-width: none !important;
   height: 100% !important;
+
   padding: var(--pg-geo-title-top) 0 0 !important;
   margin: 0 !important;
-  z-index: 18 !important;
+
+  z-index: 38 !important;
 }
 
 .pg-card[data-slot="0"] .pg-data__value {
@@ -495,10 +640,11 @@ button[aria-label*="Next"] {
   text-overflow: clip !important;
 }
 
-/* radar */
+/* RADAR */
 .pg-card[data-slot="0"] .pg-visual {
   grid-row: 3 !important;
   position: relative !important;
+
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -509,7 +655,7 @@ button[aria-label*="Next"] {
   padding: 0 !important;
 
   transform: translateY(var(--pg-geo-radar-shift-y)) !important;
-  z-index: 10 !important;
+  z-index: 35 !important;
 }
 
 .pg-card[data-slot="0"] .pg-radar-core {
@@ -518,49 +664,6 @@ button[aria-label*="Next"] {
   height: auto !important;
   aspect-ratio: 1 !important;
   margin: 0 auto !important;
-}
-
-.pg-card[data-slot="0"] .pg-uav-img,
-.pg-card[data-slot="0"] .pg-unknown-visual-img {
-  position: absolute !important;
-  left: 50% !important;
-  top: 50% !important;
-  transform: translate(-50%, -50%) !important;
-
-  max-width: clamp(86px, 7vw, 138px) !important;
-  max-height: clamp(86px, 7vw, 138px) !important;
-  object-fit: contain !important;
-  z-index: 14 !important;
-}
-
-.pg-card[data-slot="0"] .pg-uav-img.is-parallax,
-.pg-card[data-slot="0"] .pg-unknown-visual-img.is-parallax {
-  transform:
-    translate(-50%, -50%)
-    translate(var(--pg-uav-x), var(--pg-uav-y))
-    scale(1.035) !important;
-}
-
-/* footer */
-.pg-card[data-slot="0"] .pg-card__front small {
-  grid-row: 4 !important;
-  align-self: end !important;
-  min-height: 38px !important;
-  max-height: 42px !important;
-  width: 100% !important;
-  margin: 0 !important;
-  padding: 0 16px !important;
-  border-radius: 999px !important;
-
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-
-  text-align: center !important;
-  font-size: 11.5px !important;
-  line-height: 1.05 !important;
-  opacity: 0.84 !important;
-  z-index: 18 !important;
 }
 
 .pg-card[data-slot="0"] .pg-radar-core::after {
@@ -575,7 +678,25 @@ button[aria-label*="Next"] {
 
 .pg-card[data-slot="0"] .pg-uav-img,
 .pg-card[data-slot="0"] .pg-unknown-visual-img {
+  position: absolute !important;
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) !important;
+
+  max-width: clamp(86px, 7vw, 138px) !important;
+  max-height: clamp(86px, 7vw, 138px) !important;
+  object-fit: contain !important;
+  z-index: 38 !important;
+
   animation: pgGeoUavPulse 2.5s infinite ease-in-out;
+}
+
+.pg-card[data-slot="0"] .pg-uav-img.is-parallax,
+.pg-card[data-slot="0"] .pg-unknown-visual-img.is-parallax {
+  transform:
+    translate(-50%, -50%)
+    translate(var(--pg-uav-x), var(--pg-uav-y))
+    scale(1.035) !important;
 }
 
 @keyframes pgGeoUavPulse {
@@ -583,7 +704,43 @@ button[aria-label*="Next"] {
   50% { transform: translate(-50%, -50%) scale(1.08); }
 }
 
-/* height-safe scaling */
+/* FOOTER */
+.pg-card[data-slot="0"] .pg-card__front small {
+  grid-row: 4 !important;
+  align-self: end !important;
+
+  min-height: 38px !important;
+  max-height: 42px !important;
+  width: 100% !important;
+
+  margin: 0 !important;
+  padding: 0 16px !important;
+  border-radius: 999px !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  text-align: center !important;
+  font-size: 11.5px !important;
+  line-height: 1.05 !important;
+  opacity: 0.84 !important;
+
+  z-index: 38 !important;
+}
+
+/* =====================================================
+   6. BACK SIDE — не обрізається і лишається поверх фону
+===================================================== */
+
+.pg-card[data-slot="0"] .pg-card__back {
+  padding: var(--pg-geo-pad) !important;
+}
+
+/* =====================================================
+   7. RESPONSIVE HEIGHT MODES
+===================================================== */
+
 @media (max-height: 820px) {
   :root {
     --pg-geo-card-w: clamp(320px, 20vw, 400px);
@@ -606,328 +763,4 @@ button[aria-label*="Next"] {
     --pg-geo-radar-size: 180px;
     --pg-geo-pad: 22px;
   }
-}
-/* 🚫 УБИВАЄМО ВСІ ЗАЙВІ ШАРИ ПОЗАДУ КАРТКИ */
-
-.pg-card::before,
-.pg-card::after,
-.pg-card__front::before,
-.pg-card__front::after,
-.pg-card__bg,
-.pg-card__glow,
-.pg-card__backdrop {
-  display: none !important;
-  content: none !important;
-}
-.pg-card {
-  background: none !important;
-}
-
-.pg-card__front {
-  background: linear-gradient(180deg, #1d4ed8, #0f172a) !important;
-}
-.pg-card {
-  box-shadow:
-    0 0 40px rgba(0, 255, 255, 0.15),
-    inset 0 0 20px rgba(255,255,255,0.05);
-}
-/* ===== REMOVE RECTANGLE BACKDROP UNDER CARD ===== */
-
-.pg-card[data-slot="0"] {
-  background: transparent !important;
-  filter: none !important;
-  backdrop-filter: none !important;
-}
-
-.pg-card[data-slot="0"] .pg-card__inner {
-  background: transparent !important;
-  box-shadow: none !important;
-  filter: none !important;
-  backdrop-filter: none !important;
-}
-
-.pg-card[data-slot="0"] .pg-card__face {
-  box-shadow: none !important;
-  filter: none !important;
-  backdrop-filter: none !important;
-}
-
-.pg-card[data-slot="0"] .pg-card__front {
-  background:
-    radial-gradient(circle at 45% 20%, rgba(65, 190, 255, 0.22), transparent 42%),
-    linear-gradient(160deg, var(--pg-card-bg-1), var(--pg-card-bg-2)) !important;
-
-  box-shadow:
-    0 0 22px color-mix(in srgb, var(--pg-card-accent) 42%, transparent),
-    inset 0 0 32px rgba(255,255,255,0.05) !important;
-}
-
-/* прибираємо квадратну підкладку, але лишаємо саму картку */
-.pg-card[data-slot="0"]::before,
-.pg-card[data-slot="0"]::after,
-.pg-card[data-slot="0"] .pg-card__inner::before,
-.pg-card[data-slot="0"] .pg-card__inner::after {
-  display: none !important;
-  content: none !important;
-}
-.pg-carousel,
-.pg-carousel-wrap,
-.pg-stage {
-  background: transparent !important;
-  box-shadow: none !important;
-  filter: none !important;
-  backdrop-filter: none !important;
-}
-/* ===== LAYER FIX — card above scene effects ===== */
-
-.pg-stage {
-  isolation: isolate !important;
-}
-
-.pg-carousel-wrap,
-.pg-carousel {
-  position: absolute !important;
-  inset: 0 !important;
-  z-index: 1 !important;
-  overflow: visible !important;
-}
-
-.pg-card[data-slot="0"] {
-  z-index: 999 !important;
-  isolation: isolate !important;
-}
-
-.pg-card[data-slot="0"] .pg-card__inner,
-.pg-card[data-slot="0"] .pg-card__face,
-.pg-card[data-slot="0"] .pg-card__front,
-.pg-card[data-slot="0"] .pg-card__back {
-  position: relative !important;
-  z-index: 1000 !important;
-}
-
-/* фон/орби/ефекти сцени лишаються позаду */
-.pg-bg-orb,
-.pg-page--game::before,
-.pg-page--game::after,
-.pg-stage::before,
-.pg-stage::after,
-.pg-carousel-wrap::before,
-.pg-carousel-wrap::after,
-.pg-carousel::before,
-.pg-carousel::after {
-  z-index: 0 !important;
-  pointer-events: none !important;
-}
-/* ===== FIX FLIP VISIBILITY ===== */
-
-.pg-card[data-slot="0"] {
-  z-index: 99999 !important;
-  transform-style: preserve-3d !important;
-  perspective: 1200px !important;
-}
-
-.pg-card[data-slot="0"] .pg-card__inner {
-  position: relative !important;
-  z-index: 99999 !important;
-  width: 100% !important;
-  height: 100% !important;
-
-  transform-style: preserve-3d !important;
-}
-
-.pg-card[data-slot="0"] .pg-card__face,
-.pg-card[data-slot="0"] .pg-card__front,
-.pg-card[data-slot="0"] .pg-card__back {
-  position: absolute !important;
-  inset: 0 !important;
-
-  width: 100% !important;
-  height: 100% !important;
-
-  backface-visibility: hidden !important;
-  -webkit-backface-visibility: hidden !important;
-
-  z-index: 99999 !important;
-}
-
-.pg-card[data-slot="0"] .pg-card__front {
-  transform: rotateY(0deg) !important;
-}
-
-.pg-card[data-slot="0"] .pg-card__back {
-  transform: rotateY(180deg) !important;
-}
-
-/* якщо клас flipped вішається на card */
-.pg-card[data-slot="0"].is-flipped .pg-card__inner {
-  transform: rotateY(180deg) !important;
-}
-
-/* якщо клас flipped вішається на inner */
-.pg-card[data-slot="0"] .pg-card__inner.is-flipped {
-  transform: rotateY(180deg) !important;
-}
-/* ===== FIX FLIP VISIBILITY ===== */
-
-.pg-card[data-slot="0"] {
-  z-index: 99999 !important;
-  transform-style: preserve-3d !important;
-  perspective: 1200px !important;
-}
-
-.pg-card[data-slot="0"] .pg-card__inner {
-  position: relative !important;
-  z-index: 99999 !important;
-  width: 100% !important;
-  height: 100% !important;
-
-  transform-style: preserve-3d !important;
-}
-
-.pg-card[data-slot="0"] .pg-card__face,
-.pg-card[data-slot="0"] .pg-card__front,
-.pg-card[data-slot="0"] .pg-card__back {
-  position: absolute !important;
-  inset: 0 !important;
-
-  width: 100% !important;
-  height: 100% !important;
-
-  backface-visibility: hidden !important;
-  -webkit-backface-visibility: hidden !important;
-
-  z-index: 99999 !important;
-}
-
-.pg-card[data-slot="0"] .pg-card__front {
-  transform: rotateY(0deg) !important;
-}
-
-.pg-card[data-slot="0"] .pg-card__back {
-  transform: rotateY(180deg) !important;
-}
-
-/* якщо клас flipped вішається на card */
-.pg-card[data-slot="0"].is-flipped .pg-card__inner {
-  transform: rotateY(180deg) !important;
-}
-
-/* якщо клас flipped вішається на inner */
-.pg-card[data-slot="0"] .pg-card__inner.is-flipped {
-  transform: rotateY(180deg) !important;
-}
-/* ===== TRUE LAYER MODEL: background below, card above ===== */
-
-.pg-page--game,
-.pg-stage {
-  position: relative !important;
-  isolation: isolate !important;
-}
-
-/* фон сцени — тільки позаду */
-.pg-stage::before,
-.pg-carousel-wrap::before {
-  content: "" !important;
-  position: absolute !important;
-  inset: 0 !important;
-  z-index: 0 !important;
-  pointer-events: none !important;
-
-  background:
-    radial-gradient(circle at 30% 75%, rgba(28, 176, 190, 0.26), transparent 36%),
-    radial-gradient(circle at 70% 72%, rgba(100, 62, 210, 0.28), transparent 38%) !important;
-}
-
-/* усі сценічні обгортки — прозорі */
-.pg-carousel-wrap,
-.pg-carousel {
-  position: absolute !important;
-  inset: 0 !important;
-  z-index: 1 !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  filter: none !important;
-  backdrop-filter: none !important;
-  overflow: visible !important;
-}
-
-/* картка — над фоном */
-.pg-card[data-slot="0"] {
-  position: absolute !important;
-  z-index: 20 !important;
-  isolation: isolate !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  filter: none !important;
-  backdrop-filter: none !important;
-}
-
-/* прибираємо псевдо-шари саме з КАРТКИ */
-.pg-card[data-slot="0"]::before,
-.pg-card[data-slot="0"]::after {
-  display: none !important;
-  content: none !important;
-}
-
-/* тіло картки — єдиний видимий прямокутник */
-.pg-card[data-slot="0"] .pg-card__inner,
-.pg-card[data-slot="0"] .pg-card__face,
-.pg-card[data-slot="0"] .pg-card__front,
-.pg-card[data-slot="0"] .pg-card__back {
-  position: absolute !important;
-  inset: 0 !important;
-  z-index: 25 !important;
-  background-clip: padding-box !important;
-}
-
-/* фон самої картки */
-.pg-card[data-slot="0"] .pg-card__front,
-.pg-card[data-slot="0"] .pg-card__back {
-  background:
-    radial-gradient(circle at 45% 18%, rgba(80, 200, 255, 0.22), transparent 40%),
-    linear-gradient(160deg, var(--pg-card-bg-1), var(--pg-card-bg-2)) !important;
-
-  box-shadow:
-    0 0 26px color-mix(in srgb, var(--pg-card-accent) 38%, transparent),
-    inset 0 0 34px rgba(255,255,255,0.045) !important;
-}
-/* ===== FIX FLIP CORNER CLIPPING ===== */
-
-.pg-stage,
-.pg-carousel-wrap,
-.pg-carousel {
-  overflow: visible !important;
-}
-
-.pg-card[data-slot="0"] {
-  overflow: visible !important;
-  transform-style: preserve-3d !important;
-  perspective: 1200px !important;
-}
-
-.pg-card[data-slot="0"] .pg-card__inner {
-  overflow: visible !important;
-  transform-style: preserve-3d !important;
-}
-
-.pg-card[data-slot="0"] .pg-card__face {
-  overflow: visible !important;
-  transform-style: preserve-3d !important;
-}
-
-.pg-card[data-slot="0"] .pg-card__front,
-.pg-card[data-slot="0"] .pg-card__back {
-  overflow: hidden !important;
-  border-radius: inherit !important;
-  backface-visibility: hidden !important;
-  -webkit-backface-visibility: hidden !important;
-}
-
-/* трохи більша зона для 3D-обертання */
-.pg-card[data-slot="0"] {
-  padding: 10px !important;
-}
-
-.pg-card[data-slot="0"] .pg-card__inner {
-  inset: 10px !important;
 }
