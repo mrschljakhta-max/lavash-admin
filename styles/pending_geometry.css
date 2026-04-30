@@ -373,3 +373,16 @@
   opacity: 1 !important;
   z-index: 50 !important;
 }
+.pg-carousel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* центральна картка */
+.pg-card[data-slot="0"] {
+  left: 50% !important;
+  transform: translate(-50%, -50%) scale(1) !important;
+  opacity: 1 !important;
+  z-index: 50 !important;
+}
