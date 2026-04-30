@@ -326,3 +326,37 @@
 .pg-card[data-slot="0"] .pg-data__value {
   text-align: center !important;
 }
+/* ===== FIX TITLE WIDTH — force full card row ===== */
+
+.pg-card[data-slot="0"] .pg-card__content {
+  display: block !important;
+  position: static !important;
+}
+
+.pg-card[data-slot="0"] .pg-data {
+  grid-row: 2 !important;
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+
+  display: block !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.pg-card[data-slot="0"] .pg-data__value {
+  display: block !important;
+  width: 100% !important;
+  max-width: none !important;
+
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+
+  font-size: clamp(28px, 2.2vw, 42px) !important;
+  line-height: 0.95 !important;
+  text-align: left !important;
+
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
