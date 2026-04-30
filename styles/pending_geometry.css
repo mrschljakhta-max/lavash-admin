@@ -289,168 +289,60 @@
     --pg-geo-pad: 20px;
   }
 }
+
+/* =====================================================
+   FINAL OVERRIDE — SINGLE CARD + BIGGER CARD
+===================================================== */
+
 :root {
-  --pg-geo-radar-shift-y: 20px;
-}.pg-radar-core::after {
-  content: "";
-  position: absolute;
-  inset: -20%;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(0,255,255,0.15), transparent 70%);
-  filter: blur(25px);
-  z-index: 0;
+  --pg-geo-card-w: clamp(340px, 22vw, 430px);
+  --pg-geo-card-h: clamp(560px, 70vh, 720px);
+  --pg-geo-card-y: 55%;
+
+  --pg-geo-pad: 26px;
+  --pg-geo-header-h: 48px;
+  --pg-geo-title-h: 104px;
+  --pg-geo-footer-h: 46px;
+
+  --pg-geo-title-top: 0px;
+  --pg-geo-radar-size: clamp(190px, 15vw, 270px);
+  --pg-geo-radar-shift-y: 12px;
 }
 
-.pg-uav-img {
-  animation: pgPulse 2.5s infinite ease-in-out;
-}
+/* ===== clean single-card mode ===== */
 
-@keyframes pgPulse {
-  0%,100% { transform: translate(-50%, -50%) scale(1); }
-  50% { transform: translate(-50%, -50%) scale(1.08); }
-}
-.pg-card[data-slot="0"] .pg-data {
-  width: 100% !important;
-  padding-left: 28px !important;
-  padding-right: 28px !important;
-}
-
-.pg-card[data-slot="0"] .pg-data__value {
-  max-width: 100% !important;
-}
-
-.pg-card[data-slot="0"] .pg-data {
-  justify-content: center !important;
-}
-
-.pg-card[data-slot="0"] .pg-data__value {
-  text-align: center !important;
-}
-/* ===== FIX TITLE WIDTH — force full card row ===== */
-
-.pg-card[data-slot="0"] .pg-card__content {
-  display: block !important;
-  position: static !important;
-}
-
-.pg-card[data-slot="0"] .pg-data {
-  grid-row: 2 !important;
-  width: 100% !important;
-  max-width: none !important;
-  min-width: 0 !important;
-
-  display: block !important;
-  padding: 0 !important;
-  margin: 0 !important;
-}
-
-.pg-card[data-slot="0"] .pg-data__value {
-  display: block !important;
-  width: 100% !important;
-  max-width: none !important;
-
-  white-space: normal !important;
-  overflow: visible !important;
-  text-overflow: clip !important;
-
-  font-size: clamp(28px, 2.2vw, 42px) !important;
-  line-height: 0.95 !important;
-  text-align: left !important;
-
-  padding-left: 0 !important;
-  padding-right: 0 !important;
-}
-.pg-carousel {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-/* центральна картка */
-.pg-card[data-slot="0"] {
-  left: 50% !important;
-  transform: translate(-50%, -50%) scale(1) !important;
-  opacity: 1 !important;
-  z-index: 50 !important;
-}
-.pg-carousel {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-/* центральна картка */
-.pg-card[data-slot="0"] {
-  left: 50% !important;
-  transform: translate(-50%, -50%) scale(1) !important;
-  opacity: 1 !important;
-  z-index: 50 !important;
-}
-/* ===== SINGLE CARD MODE — hide carousel neighbors ===== */
-
+.pg-card:not([data-slot="0"]),
 .pg-card[data-slot="-2"],
 .pg-card[data-slot="-1"],
 .pg-card[data-slot="1"],
 .pg-card[data-slot="2"] {
   display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
 }
 
-.pg-carousel::before,
-.pg-carousel::after {
-  display: none !important;
-}
-
-.pg-card[data-slot="0"] {
-  left: 50% !important;
-  top: var(--pg-geo-card-y) !important;
-  transform: translate(-50%, -50%) scale(1) !important;
-}
-/* ===== CLEAN UI MODE ===== */
-
-/* ліва велика іконка (ранк) */
-.pg-rank,
-.pg-rank-wrap,
-.pg-rank-icon {
-  display: none !important;
-}
-
-/* правий круг (декор/плейсхолдер) */
-.pg-decor,
-.pg-circle,
-.pg-floating-circle {
-  display: none !important;
-}
-
-/* стрілки каруселі */
-.pg-arrow,
-.pg-nav,
-.pg-carousel-arrow,
-.pg-carousel__arrow {
-  display: none !important;
-}
-
-/* маленькі бокові кружки */
-.pg-dot,
-.pg-side-dot,
-.pg-indicator {
-  display: none !important;
-}
-/* ===== HARD CLEAN MODE — remove all side UI noise ===== */
-
-/* HUD rank / XP / decorative cards */
 .pg-game-hud,
 .pg-hud-rank-card,
 .pg-hud-xp-card,
 .pg-rank-emblem,
 .pg-rank-info,
 .pg-right-panel,
-#pendingGameRightPanel {
-  display: none !important;
-  visibility: hidden !important;
-  pointer-events: none !important;
-}
-
-/* carousel arrows / nav buttons */
+#pendingGameRightPanel,
+.pg-rank,
+.pg-rank-wrap,
+.pg-rank-icon,
+.pg-decor,
+.pg-circle,
+.pg-floating-circle,
+.pg-orb,
+.pg-orbit,
+.pg-avatar,
+.pg-avatar-ring,
+.pg-profile,
+.pg-profile-orb,
+.pg-side-dot,
+.pg-dot,
+.pg-indicator,
 .pg-arrow,
 .pg-nav,
 .pg-carousel-arrow,
@@ -470,45 +362,248 @@ button[aria-label*="Next"] {
   pointer-events: none !important;
 }
 
-/* decorative/floating circles */
-.pg-decor,
-.pg-circle,
-.pg-floating-circle,
-.pg-orb,
-.pg-orbit,
-.pg-avatar,
-.pg-avatar-ring,
-.pg-profile,
-.pg-profile-orb,
-.pg-side-dot,
-.pg-dot,
-.pg-indicator {
-  display: none !important;
-  visibility: hidden !important;
-  pointer-events: none !important;
-}
-
-/* if purple circle has no class but is img/svg inside stage and not card */
 .pg-stage > img,
 .pg-stage > svg,
 .pg-carousel-wrap > img,
 .pg-carousel-wrap > svg,
 .pg-page--game > img,
-.pg-page--game > svg {
-  display: none !important;
-}
-
-/* keep only active card */
-.pg-card:not([data-slot="0"]) {
-  display: none !important;
-  visibility: hidden !important;
-  pointer-events: none !important;
-}
-
-/* disable carousel background overlays if any */
+.pg-page--game > svg,
 .pg-carousel::before,
 .pg-carousel::after,
 .pg-carousel-wrap::before,
 .pg-carousel-wrap::after {
   display: none !important;
+}
+
+/* ===== active card position and size ===== */
+
+.pg-card {
+  width: var(--pg-geo-card-w) !important;
+  height: var(--pg-geo-card-h) !important;
+  max-width: var(--pg-geo-card-w) !important;
+  max-height: var(--pg-geo-card-h) !important;
+}
+
+.pg-card[data-slot="0"] {
+  left: 50% !important;
+  top: var(--pg-geo-card-y) !important;
+  opacity: 1 !important;
+  z-index: 50 !important;
+  transform: translate(-50%, -50%) scale(1) !important;
+}
+
+.pg-card[data-slot="0"].is-tilting {
+  transform:
+    translate(-50%, -50%)
+    perspective(900px)
+    rotateX(var(--pg-tilt-x))
+    rotateY(var(--pg-tilt-y))
+    scale(1.015) !important;
+}
+
+/* ===== front layout ===== */
+
+.pg-card[data-slot="0"] .pg-card__front {
+  position: relative !important;
+  height: 100% !important;
+  padding: var(--pg-geo-pad) !important;
+  overflow: hidden !important;
+
+  display: grid !important;
+  grid-template-rows:
+    var(--pg-geo-header-h)
+    var(--pg-geo-title-h)
+    minmax(0, 1fr)
+    var(--pg-geo-footer-h) !important;
+
+  gap: 0 !important;
+}
+
+.pg-card[data-slot="0"] .pg-card__content {
+  display: contents !important;
+}
+
+/* header */
+.pg-card[data-slot="0"] .pg-card__topline {
+  grid-row: 1 !important;
+  min-height: var(--pg-geo-header-h) !important;
+  display: grid !important;
+  grid-template-columns: 1fr 36px !important;
+  align-items: start !important;
+  gap: 12px !important;
+  z-index: 20 !important;
+}
+
+.pg-card[data-slot="0"] .pg-card__status {
+  width: fit-content !important;
+  max-width: 86% !important;
+  min-height: 36px !important;
+  height: 36px !important;
+  padding: 0 18px !important;
+  border-radius: 999px !important;
+
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  font-size: 12px !important;
+  line-height: 1.05 !important;
+  font-weight: 900 !important;
+  white-space: normal !important;
+  overflow: hidden !important;
+}
+
+.pg-card[data-slot="0"] .pg-card__star {
+  width: 36px !important;
+  height: 36px !important;
+  display: grid !important;
+  place-items: center !important;
+  z-index: 22 !important;
+}
+
+/* title */
+.pg-card[data-slot="0"] .pg-data {
+  grid-row: 2 !important;
+  position: relative !important;
+  display: block !important;
+  min-width: 0 !important;
+  width: 100% !important;
+  max-width: none !important;
+  height: 100% !important;
+  padding: var(--pg-geo-title-top) 0 0 !important;
+  margin: 0 !important;
+  z-index: 18 !important;
+}
+
+.pg-card[data-slot="0"] .pg-data__value {
+  display: block !important;
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+
+  font-size: clamp(32px, 2.45vw, 48px) !important;
+  line-height: 0.95 !important;
+  font-weight: 950 !important;
+  letter-spacing: -0.045em !important;
+  text-align: left !important;
+
+  white-space: normal !important;
+  overflow: visible !important;
+  overflow-wrap: anywhere !important;
+  word-break: normal !important;
+  text-overflow: clip !important;
+}
+
+/* radar */
+.pg-card[data-slot="0"] .pg-visual {
+  grid-row: 3 !important;
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  min-height: 0 !important;
+  height: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+
+  transform: translateY(var(--pg-geo-radar-shift-y)) !important;
+  z-index: 10 !important;
+}
+
+.pg-card[data-slot="0"] .pg-radar-core {
+  position: relative !important;
+  width: var(--pg-geo-radar-size) !important;
+  height: auto !important;
+  aspect-ratio: 1 !important;
+  margin: 0 auto !important;
+}
+
+.pg-card[data-slot="0"] .pg-uav-img,
+.pg-card[data-slot="0"] .pg-unknown-visual-img {
+  position: absolute !important;
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) !important;
+
+  max-width: clamp(86px, 7vw, 138px) !important;
+  max-height: clamp(86px, 7vw, 138px) !important;
+  object-fit: contain !important;
+  z-index: 14 !important;
+}
+
+.pg-card[data-slot="0"] .pg-uav-img.is-parallax,
+.pg-card[data-slot="0"] .pg-unknown-visual-img.is-parallax {
+  transform:
+    translate(-50%, -50%)
+    translate(var(--pg-uav-x), var(--pg-uav-y))
+    scale(1.035) !important;
+}
+
+/* footer */
+.pg-card[data-slot="0"] .pg-card__front small {
+  grid-row: 4 !important;
+  align-self: end !important;
+  min-height: 38px !important;
+  max-height: 42px !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 16px !important;
+  border-radius: 999px !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  text-align: center !important;
+  font-size: 11.5px !important;
+  line-height: 1.05 !important;
+  opacity: 0.84 !important;
+  z-index: 18 !important;
+}
+
+.pg-card[data-slot="0"] .pg-radar-core::after {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,255,255,0.15), transparent 70%);
+  filter: blur(25px);
+  z-index: 0;
+}
+
+.pg-card[data-slot="0"] .pg-uav-img,
+.pg-card[data-slot="0"] .pg-unknown-visual-img {
+  animation: pgGeoUavPulse 2.5s infinite ease-in-out;
+}
+
+@keyframes pgGeoUavPulse {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); }
+  50% { transform: translate(-50%, -50%) scale(1.08); }
+}
+
+/* height-safe scaling */
+@media (max-height: 820px) {
+  :root {
+    --pg-geo-card-w: clamp(320px, 20vw, 400px);
+    --pg-geo-card-h: clamp(520px, 66vh, 660px);
+    --pg-geo-title-h: 94px;
+    --pg-geo-radar-size: clamp(175px, 13.5vw, 240px);
+    --pg-geo-radar-shift-y: 8px;
+  }
+
+  .pg-card[data-slot="0"] .pg-data__value {
+    font-size: clamp(30px, 2.2vw, 42px) !important;
+  }
+}
+
+@media (max-height: 720px) {
+  :root {
+    --pg-geo-card-w: 340px;
+    --pg-geo-card-h: 540px;
+    --pg-geo-title-h: 84px;
+    --pg-geo-radar-size: 180px;
+    --pg-geo-pad: 22px;
+  }
 }
