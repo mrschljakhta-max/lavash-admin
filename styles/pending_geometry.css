@@ -435,3 +435,80 @@
 .pg-indicator {
   display: none !important;
 }
+/* ===== HARD CLEAN MODE — remove all side UI noise ===== */
+
+/* HUD rank / XP / decorative cards */
+.pg-game-hud,
+.pg-hud-rank-card,
+.pg-hud-xp-card,
+.pg-rank-emblem,
+.pg-rank-info,
+.pg-right-panel,
+#pendingGameRightPanel {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* carousel arrows / nav buttons */
+.pg-arrow,
+.pg-nav,
+.pg-carousel-arrow,
+.pg-carousel__arrow,
+.pg-carousel-nav,
+.pg-carousel-btn,
+.pg-btn-prev,
+.pg-btn-next,
+[data-pg-prev],
+[data-pg-next],
+button[aria-label*="Назад"],
+button[aria-label*="Вперед"],
+button[aria-label*="Previous"],
+button[aria-label*="Next"] {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* decorative/floating circles */
+.pg-decor,
+.pg-circle,
+.pg-floating-circle,
+.pg-orb,
+.pg-orbit,
+.pg-avatar,
+.pg-avatar-ring,
+.pg-profile,
+.pg-profile-orb,
+.pg-side-dot,
+.pg-dot,
+.pg-indicator {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* if purple circle has no class but is img/svg inside stage and not card */
+.pg-stage > img,
+.pg-stage > svg,
+.pg-carousel-wrap > img,
+.pg-carousel-wrap > svg,
+.pg-page--game > img,
+.pg-page--game > svg {
+  display: none !important;
+}
+
+/* keep only active card */
+.pg-card:not([data-slot="0"]) {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* disable carousel background overlays if any */
+.pg-carousel::before,
+.pg-carousel::after,
+.pg-carousel-wrap::before,
+.pg-carousel-wrap::after {
+  display: none !important;
+}
