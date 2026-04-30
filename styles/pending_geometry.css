@@ -386,3 +386,22 @@
   opacity: 1 !important;
   z-index: 50 !important;
 }
+/* ===== SINGLE CARD MODE — hide carousel neighbors ===== */
+
+.pg-card[data-slot="-2"],
+.pg-card[data-slot="-1"],
+.pg-card[data-slot="1"],
+.pg-card[data-slot="2"] {
+  display: none !important;
+}
+
+.pg-carousel::before,
+.pg-carousel::after {
+  display: none !important;
+}
+
+.pg-card[data-slot="0"] {
+  left: 50% !important;
+  top: var(--pg-geo-card-y) !important;
+  transform: translate(-50%, -50%) scale(1) !important;
+}
