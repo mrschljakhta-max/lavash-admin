@@ -607,3 +607,15 @@ button[aria-label*="Next"] {
     --pg-geo-pad: 22px;
   }
 }
+/* 🚫 УБИВАЄМО ВСІ ЗАЙВІ ШАРИ ПОЗАДУ КАРТКИ */
+
+.pg-card::before,
+.pg-card::after,
+.pg-card__front::before,
+.pg-card__front::after,
+.pg-card__bg,
+.pg-card__glow,
+.pg-card__backdrop {
+  display: none !important;
+  content: none !important;
+}
