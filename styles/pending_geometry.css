@@ -626,3 +626,8 @@ button[aria-label*="Next"] {
 .pg-card__front {
   background: linear-gradient(180deg, #1d4ed8, #0f172a) !important;
 }
+.pg-card {
+  box-shadow:
+    0 0 40px rgba(0, 255, 255, 0.15),
+    inset 0 0 20px rgba(255,255,255,0.05);
+}
