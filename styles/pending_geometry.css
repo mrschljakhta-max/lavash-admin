@@ -767,3 +767,52 @@ button[aria-label*="Next"] {
 .pg-card[data-slot="0"] .pg-card__inner.is-flipped {
   transform: rotateY(180deg) !important;
 }
+/* ===== FIX FLIP VISIBILITY ===== */
+
+.pg-card[data-slot="0"] {
+  z-index: 99999 !important;
+  transform-style: preserve-3d !important;
+  perspective: 1200px !important;
+}
+
+.pg-card[data-slot="0"] .pg-card__inner {
+  position: relative !important;
+  z-index: 99999 !important;
+  width: 100% !important;
+  height: 100% !important;
+
+  transform-style: preserve-3d !important;
+}
+
+.pg-card[data-slot="0"] .pg-card__face,
+.pg-card[data-slot="0"] .pg-card__front,
+.pg-card[data-slot="0"] .pg-card__back {
+  position: absolute !important;
+  inset: 0 !important;
+
+  width: 100% !important;
+  height: 100% !important;
+
+  backface-visibility: hidden !important;
+  -webkit-backface-visibility: hidden !important;
+
+  z-index: 99999 !important;
+}
+
+.pg-card[data-slot="0"] .pg-card__front {
+  transform: rotateY(0deg) !important;
+}
+
+.pg-card[data-slot="0"] .pg-card__back {
+  transform: rotateY(180deg) !important;
+}
+
+/* якщо клас flipped вішається на card */
+.pg-card[data-slot="0"].is-flipped .pg-card__inner {
+  transform: rotateY(180deg) !important;
+}
+
+/* якщо клас flipped вішається на inner */
+.pg-card[data-slot="0"] .pg-card__inner.is-flipped {
+  transform: rotateY(180deg) !important;
+}
