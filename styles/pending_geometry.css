@@ -891,3 +891,43 @@ button[aria-label*="Next"] {
     0 0 26px color-mix(in srgb, var(--pg-card-accent) 38%, transparent),
     inset 0 0 34px rgba(255,255,255,0.045) !important;
 }
+/* ===== FIX FLIP CORNER CLIPPING ===== */
+
+.pg-stage,
+.pg-carousel-wrap,
+.pg-carousel {
+  overflow: visible !important;
+}
+
+.pg-card[data-slot="0"] {
+  overflow: visible !important;
+  transform-style: preserve-3d !important;
+  perspective: 1200px !important;
+}
+
+.pg-card[data-slot="0"] .pg-card__inner {
+  overflow: visible !important;
+  transform-style: preserve-3d !important;
+}
+
+.pg-card[data-slot="0"] .pg-card__face {
+  overflow: visible !important;
+  transform-style: preserve-3d !important;
+}
+
+.pg-card[data-slot="0"] .pg-card__front,
+.pg-card[data-slot="0"] .pg-card__back {
+  overflow: hidden !important;
+  border-radius: inherit !important;
+  backface-visibility: hidden !important;
+  -webkit-backface-visibility: hidden !important;
+}
+
+/* трохи більша зона для 3D-обертання */
+.pg-card[data-slot="0"] {
+  padding: 10px !important;
+}
+
+.pg-card[data-slot="0"] .pg-card__inner {
+  inset: 10px !important;
+}
