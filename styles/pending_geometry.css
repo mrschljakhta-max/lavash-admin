@@ -678,3 +678,43 @@ button[aria-label*="Next"] {
   filter: none !important;
   backdrop-filter: none !important;
 }
+/* ===== LAYER FIX — card above scene effects ===== */
+
+.pg-stage {
+  isolation: isolate !important;
+}
+
+.pg-carousel-wrap,
+.pg-carousel {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 1 !important;
+  overflow: visible !important;
+}
+
+.pg-card[data-slot="0"] {
+  z-index: 999 !important;
+  isolation: isolate !important;
+}
+
+.pg-card[data-slot="0"] .pg-card__inner,
+.pg-card[data-slot="0"] .pg-card__face,
+.pg-card[data-slot="0"] .pg-card__front,
+.pg-card[data-slot="0"] .pg-card__back {
+  position: relative !important;
+  z-index: 1000 !important;
+}
+
+/* фон/орби/ефекти сцени лишаються позаду */
+.pg-bg-orb,
+.pg-page--game::before,
+.pg-page--game::after,
+.pg-stage::before,
+.pg-stage::after,
+.pg-carousel-wrap::before,
+.pg-carousel-wrap::after,
+.pg-carousel::before,
+.pg-carousel::after {
+  z-index: 0 !important;
+  pointer-events: none !important;
+}
