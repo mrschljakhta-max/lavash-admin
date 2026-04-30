@@ -631,3 +631,42 @@ button[aria-label*="Next"] {
     0 0 40px rgba(0, 255, 255, 0.15),
     inset 0 0 20px rgba(255,255,255,0.05);
 }
+/* ===== REMOVE RECTANGLE BACKDROP UNDER CARD ===== */
+
+.pg-card[data-slot="0"] {
+  background: transparent !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+}
+
+.pg-card[data-slot="0"] .pg-card__inner {
+  background: transparent !important;
+  box-shadow: none !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+}
+
+.pg-card[data-slot="0"] .pg-card__face {
+  box-shadow: none !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+}
+
+.pg-card[data-slot="0"] .pg-card__front {
+  background:
+    radial-gradient(circle at 45% 20%, rgba(65, 190, 255, 0.22), transparent 42%),
+    linear-gradient(160deg, var(--pg-card-bg-1), var(--pg-card-bg-2)) !important;
+
+  box-shadow:
+    0 0 22px color-mix(in srgb, var(--pg-card-accent) 42%, transparent),
+    inset 0 0 32px rgba(255,255,255,0.05) !important;
+}
+
+/* прибираємо квадратну підкладку, але лишаємо саму картку */
+.pg-card[data-slot="0"]::before,
+.pg-card[data-slot="0"]::after,
+.pg-card[data-slot="0"] .pg-card__inner::before,
+.pg-card[data-slot="0"] .pg-card__inner::after {
+  display: none !important;
+  content: none !important;
+}
