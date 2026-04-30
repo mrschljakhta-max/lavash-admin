@@ -670,3 +670,11 @@ button[aria-label*="Next"] {
   display: none !important;
   content: none !important;
 }
+.pg-carousel,
+.pg-carousel-wrap,
+.pg-stage {
+  background: transparent !important;
+  box-shadow: none !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+}
