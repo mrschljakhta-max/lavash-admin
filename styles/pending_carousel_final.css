@@ -323,18 +323,6 @@
   justify-content: center !important;
   align-items: center !important;
 }
-body::before {
-  content: "CSS ПІДКЛЮЧЕНО";
-  position: fixed;
-  top: 100px;
-  left: 140px;
-  z-index: 999999;
-  background: red;
-  color: white;
-  padding: 10px 16px;
-  font-size: 18px;
-  font-weight: 900;
-}
 /* ===== RADAR ANIMATION ===== */
 
 .pg-card[data-slot="0"] .pg-radar-core {
@@ -1114,12 +1102,16 @@ body::before {
 }
 
 .pg-card[data-slot="0"] .pg-visual {
-  display: grid !important;
-  place-items: center !important;
-  height: 100% !important;
-  min-height: 0 !important;
-  transform: none !important;
-  z-index: 6 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  /* КЛЮЧОВЕ */
+  margin-top: 10px !important;
+  margin-bottom: 10px !important;
+
+  height: auto !important;
+  flex: 1 !important;
 }
 
 .pg-card[data-slot="0"] .pg-radar-core {
@@ -1135,4 +1127,115 @@ body::before {
 
 .pg-card[data-slot="0"] .pg-card__front small {
   align-self: end !important;
+}
+
+/* =====================================================
+   FINAL FRONT CARD LAYOUT FIX — separate title + lower radar
+===================================================== */
+
+.pg-card[data-slot="0"] .pg-card__front {
+  padding: 24px !important;
+  display: grid !important;
+
+  /* header / title / radar / hint */
+  grid-template-rows:
+    46px
+    minmax(64px, auto)
+    minmax(0, 1fr)
+    44px !important;
+
+  gap: 12px !important;
+  overflow: hidden !important;
+}
+
+.pg-card[data-slot="0"] .pg-card__content {
+  display: contents !important;
+}
+
+.pg-card[data-slot="0"] .pg-data {
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: flex-start !important;
+  min-width: 0 !important;
+  height: auto !important;
+  z-index: 8 !important;
+}
+
+.pg-card[data-slot="0"] .pg-data__value {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 4px 0 0 !important;
+
+  font-size: clamp(28px, 2.15vw, 40px) !important;
+  line-height: 0.96 !important;
+  font-weight: 950 !important;
+  letter-spacing: -0.04em !important;
+  text-align: left !important;
+
+  white-space: normal !important;
+  overflow-wrap: anywhere !important;
+  word-break: normal !important;
+
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
+}
+
+.pg-card[data-slot="0"] .pg-visual {
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  min-height: 0 !important;
+  height: 100% !important;
+  flex: initial !important;
+
+  /* lower radar: more breathing room below the title */
+  padding-top: clamp(18px, 4vh, 46px) !important;
+  padding-bottom: clamp(8px, 2vh, 22px) !important;
+  margin: 0 !important;
+
+  transform: translateY(10px) !important;
+  z-index: 6 !important;
+}
+
+.pg-card[data-slot="0"] .pg-radar-core {
+  position: relative !important;
+  width: clamp(175px, 13.5vw, 238px) !important;
+  height: auto !important;
+  aspect-ratio: 1 !important;
+}
+
+.pg-card[data-slot="0"] .pg-uav-img,
+.pg-card[data-slot="0"] .pg-unknown-visual-img {
+  position: absolute !important;
+  left: 50% !important;
+  top: 50% !important;
+
+  transform: translate(-50%, -50%) !important;
+  max-width: clamp(78px, 6.4vw, 124px) !important;
+  max-height: clamp(78px, 6.4vw, 124px) !important;
+  object-fit: contain !important;
+  z-index: 9 !important;
+}
+
+.pg-card[data-slot="0"] .pg-uav-img.is-parallax,
+.pg-card[data-slot="0"] .pg-unknown-visual-img.is-parallax {
+  transform:
+    translate(-50%, -50%)
+    translate(var(--pg-uav-x), var(--pg-uav-y))
+    scale(1.035) !important;
+}
+
+.pg-card[data-slot="0"] .pg-card__front small {
+  align-self: end !important;
+  min-height: 36px !important;
+  padding: 0 16px !important;
+  border-radius: 999px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
 }
