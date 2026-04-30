@@ -816,3 +816,78 @@ button[aria-label*="Next"] {
 .pg-card[data-slot="0"] .pg-card__inner.is-flipped {
   transform: rotateY(180deg) !important;
 }
+/* ===== TRUE LAYER MODEL: background below, card above ===== */
+
+.pg-page--game,
+.pg-stage {
+  position: relative !important;
+  isolation: isolate !important;
+}
+
+/* фон сцени — тільки позаду */
+.pg-stage::before,
+.pg-carousel-wrap::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 0 !important;
+  pointer-events: none !important;
+
+  background:
+    radial-gradient(circle at 30% 75%, rgba(28, 176, 190, 0.26), transparent 36%),
+    radial-gradient(circle at 70% 72%, rgba(100, 62, 210, 0.28), transparent 38%) !important;
+}
+
+/* усі сценічні обгортки — прозорі */
+.pg-carousel-wrap,
+.pg-carousel {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 1 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+  overflow: visible !important;
+}
+
+/* картка — над фоном */
+.pg-card[data-slot="0"] {
+  position: absolute !important;
+  z-index: 20 !important;
+  isolation: isolate !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+}
+
+/* прибираємо псевдо-шари саме з КАРТКИ */
+.pg-card[data-slot="0"]::before,
+.pg-card[data-slot="0"]::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* тіло картки — єдиний видимий прямокутник */
+.pg-card[data-slot="0"] .pg-card__inner,
+.pg-card[data-slot="0"] .pg-card__face,
+.pg-card[data-slot="0"] .pg-card__front,
+.pg-card[data-slot="0"] .pg-card__back {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 25 !important;
+  background-clip: padding-box !important;
+}
+
+/* фон самої картки */
+.pg-card[data-slot="0"] .pg-card__front,
+.pg-card[data-slot="0"] .pg-card__back {
+  background:
+    radial-gradient(circle at 45% 18%, rgba(80, 200, 255, 0.22), transparent 40%),
+    linear-gradient(160deg, var(--pg-card-bg-1), var(--pg-card-bg-2)) !important;
+
+  box-shadow:
+    0 0 26px color-mix(in srgb, var(--pg-card-accent) 38%, transparent),
+    inset 0 0 34px rgba(255,255,255,0.045) !important;
+}
