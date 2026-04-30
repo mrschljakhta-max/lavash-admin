@@ -289,3 +289,23 @@
     --pg-geo-pad: 20px;
   }
 }
+:root {
+  --pg-geo-radar-shift-y: 20px;
+}.pg-radar-core::after {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,255,255,0.15), transparent 70%);
+  filter: blur(25px);
+  z-index: 0;
+}
+
+.pg-uav-img {
+  animation: pgPulse 2.5s infinite ease-in-out;
+}
+
+@keyframes pgPulse {
+  0%,100% { transform: translate(-50%, -50%) scale(1); }
+  50% { transform: translate(-50%, -50%) scale(1.08); }
+}
