@@ -8,7 +8,7 @@
   /* ===== SCENE / CARD POSITION ===== */
   --pg-geo-card-w: clamp(300px, 19vw, 360px);
   --pg-geo-card-h: clamp(500px, 62vh, 620px);
-  --pg-geo-card-y: 55%;
+  --pg-geo-card-y: 25%;
 
   /* ===== FRONT CARD ZONES ===== */
   --pg-geo-pad: 24px;
@@ -297,7 +297,7 @@
 :root {
   --pg-geo-card-w: clamp(340px, 22vw, 430px);
   --pg-geo-card-h: clamp(560px, 70vh, 720px);
-  --pg-geo-card-y: 55%;
+  --pg-geo-card-y: 25%;
 
   --pg-geo-pad: 26px;
   --pg-geo-header-h: 48px;
