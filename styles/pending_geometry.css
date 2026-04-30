@@ -309,3 +309,20 @@
   0%,100% { transform: translate(-50%, -50%) scale(1); }
   50% { transform: translate(-50%, -50%) scale(1.08); }
 }
+.pg-card[data-slot="0"] .pg-data {
+  width: 100% !important;
+  padding-left: 28px !important;
+  padding-right: 28px !important;
+}
+
+.pg-card[data-slot="0"] .pg-data__value {
+  max-width: 100% !important;
+}
+
+.pg-card[data-slot="0"] .pg-data {
+  justify-content: center !important;
+}
+
+.pg-card[data-slot="0"] .pg-data__value {
+  text-align: center !important;
+}
