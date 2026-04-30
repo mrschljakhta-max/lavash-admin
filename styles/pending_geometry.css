@@ -405,3 +405,33 @@
   top: var(--pg-geo-card-y) !important;
   transform: translate(-50%, -50%) scale(1) !important;
 }
+/* ===== CLEAN UI MODE ===== */
+
+/* ліва велика іконка (ранк) */
+.pg-rank,
+.pg-rank-wrap,
+.pg-rank-icon {
+  display: none !important;
+}
+
+/* правий круг (декор/плейсхолдер) */
+.pg-decor,
+.pg-circle,
+.pg-floating-circle {
+  display: none !important;
+}
+
+/* стрілки каруселі */
+.pg-arrow,
+.pg-nav,
+.pg-carousel-arrow,
+.pg-carousel__arrow {
+  display: none !important;
+}
+
+/* маленькі бокові кружки */
+.pg-dot,
+.pg-side-dot,
+.pg-indicator {
+  display: none !important;
+}
