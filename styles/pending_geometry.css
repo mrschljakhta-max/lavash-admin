@@ -1170,3 +1170,27 @@ button[aria-label*="Next"] {
   transform: translateX(-50%) rotateY(0deg) !important;
   transform-origin: center center !important;
 }
+/* ===== ОСНОВНА КАРТКА ===== */
+.pg-card[data-slot="0"] {
+  border-radius: 28px; /* ← можеш 24–32 тестити */
+  overflow: visible; /* важливо для glow */
+}
+
+/* ===== ОБИДВІ СТОРОНИ ===== */
+.pg-card[data-slot="0"] .pg-card__front,
+.pg-card[data-slot="0"] .pg-card__back {
+  border-radius: 28px;
+  overflow: hidden; /* щоб контент не вилазив */
+}
+
+/* ===== ВНУТРІШНІЙ КОНТЕЙНЕР (якщо є) ===== */
+.pg-card[data-slot="0"] .pg-card__inner {
+  border-radius: 28px;
+}
+
+.pg-card[data-slot="0"] .pg-card__front,
+.pg-card[data-slot="0"] .pg-card__back {
+  border-radius: 28px;
+  overflow: hidden;
+  backdrop-filter: blur(2px); /* легкий premium ефект */
+}
