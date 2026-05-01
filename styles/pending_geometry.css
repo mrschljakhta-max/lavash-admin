@@ -808,3 +808,33 @@ button[aria-label*="Next"] {
 .pg-card::after {
   display: none !important;
 }
+/* ===== REMOVE HOVER EMPTY RECTANGLE FRAME ===== */
+
+.pg-card[data-slot="0"] {
+  padding: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.pg-card[data-slot="0"] .pg-card__inner {
+  inset: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.pg-card[data-slot="0"]:hover,
+.pg-card[data-slot="0"].is-tilting {
+  background: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* glow тільки на самій видимій картці, не на зовнішньому контейнері */
+.pg-card[data-slot="0"] .pg-card__front,
+.pg-card[data-slot="0"] .pg-card__back {
+  box-shadow:
+    0 0 26px color-mix(in srgb, var(--pg-card-accent) 38%, transparent),
+    inset 0 0 34px rgba(255,255,255,0.045) !important;
+}
