@@ -794,11 +794,12 @@
 
     return `
       <article
-        class="pg-card ${active} pg-card--${record.status}"
+        class="pg-card ${active} pg-card--${record.status} pg-card--type-${unknownType}"
         data-index="${index}"
         data-slot="${slot}"
         data-status="${record.status || 'unknown'}"
         data-unknown-type="${unknownType}"
+        data-type="${unknownType}"
         style="--pg-card-accent:${unknownConfig.color}; --pg-card-bg-1:${unknownConfig.bg1}; --pg-card-bg-2:${unknownConfig.bg2};"
       >
         <div class="pg-card__inner">
@@ -983,6 +984,26 @@
     });
   }
 
+
+
+  function bindReactiveBeam(card) {
+    card.addEventListener('pointermove', (event) => {
+      const rect = card.getBoundingClientRect();
+      if (!rect.width || !rect.height) return;
+
+      const x = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
+      const y = Math.max(0, Math.min(1, (event.clientY - rect.top) / rect.height));
+
+      card.style.setProperty('--beam-x', x.toFixed(3));
+      card.style.setProperty('--beam-y', y.toFixed(3));
+    });
+
+    card.addEventListener('pointerleave', () => {
+      card.style.setProperty('--beam-x', '.50');
+      card.style.setProperty('--beam-y', '.50');
+    });
+  }
+
   function bindCardTilt(card) {
     card.addEventListener('pointermove', (event) => {
       if (card.classList.contains('is-dragging')) return;
@@ -1145,6 +1166,7 @@
     document.querySelectorAll('.pg-card.is-active').forEach((card) => {
       bindCardDrag(card);
       bindCardTilt(card);
+      bindReactiveBeam(card);
       bindRadarInteraction(card);
       bindRadarLock(card);
       bindCustomSelects(card);
