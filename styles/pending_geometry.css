@@ -302,7 +302,7 @@
 
   /* КАРТКА: позиція */
   --pg-geo-card-x: 50%;
-  --pg-geo-card-y: 36%;
+  --pg-geo-card-y: 48%;
 
   /* ЗОНИ ВСЕРЕДИНІ */
   --pg-geo-pad: 26px;
@@ -763,4 +763,40 @@ button[aria-label*="Next"] {
     --pg-geo-radar-size: 180px;
     --pg-geo-pad: 22px;
   }
+}
+
+/* =====================================================
+   FINAL POSITION LIFT FIX
+   Якщо --pg-geo-card-y не впливає через layout/parent,
+   піднімаємо активну картку через transform.
+===================================================== */
+
+:root {
+  --pg-geo-card-lift-y: 92px;
+}
+
+/* базовий стан */
+.pg-card[data-slot="0"] {
+  top: 50% !important;
+  left: 50% !important;
+  transform:
+    translate(-50%, calc(-50% - var(--pg-geo-card-lift-y)))
+    scale(1) !important;
+}
+
+/* hover / tilt стан */
+.pg-card[data-slot="0"].is-tilting {
+  transform:
+    translate(-50%, calc(-50% - var(--pg-geo-card-lift-y)))
+    perspective(900px)
+    rotateX(var(--pg-tilt-x))
+    rotateY(var(--pg-tilt-y))
+    scale(1.015) !important;
+}
+
+/* flipped не чіпаємо: обертається тільки inner */
+.pg-card[data-slot="0"].is-flipped {
+  transform:
+    translate(-50%, calc(-50% - var(--pg-geo-card-lift-y)))
+    scale(1) !important;
 }
