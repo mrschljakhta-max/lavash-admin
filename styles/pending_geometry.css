@@ -910,3 +910,6 @@ button[aria-label*="Next"] {
   border-radius: 999px !important;
   margin-top: 4px !important;
 }
+.pg-card[data-slot="0"] .pg-card__back * {
+  outline: 1px solid red !important;
+}
