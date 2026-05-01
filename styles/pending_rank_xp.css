@@ -209,3 +209,148 @@
     transform-origin: left center;
   }
 }
+/* =====================================================
+   RANKBAR VISUAL UPGRADE — TOTEM PANEL
+===================================================== */
+
+.pg-rank-xp__rank {
+  position: relative !important;
+  width: 330px !important;
+  min-height: 430px !important;
+
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+
+.pg-rank-xp__rank::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 36%;
+  width: 310px;
+  height: 310px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background:
+    repeating-radial-gradient(
+      circle,
+      rgba(56, 223, 255, 0.14) 0 1px,
+      transparent 1px 34px
+    );
+  opacity: 0.55;
+  filter: drop-shadow(0 0 22px rgba(56, 223, 255, 0.18));
+  animation: pgRankRadarSpin 22s linear infinite;
+  pointer-events: none;
+}
+
+.pg-rank-xp__rank::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 36%;
+  width: 190px;
+  height: 190px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, rgba(255, 211, 91, 0.20), transparent 62%);
+  filter: blur(8px);
+  animation: pgRankAuraPulse 3.4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.pg-rank-xp__emblem {
+  position: relative !important;
+  z-index: 3 !important;
+  width: 245px !important;
+  height: 245px !important;
+  margin: 0 auto !important;
+
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.pg-rank-xp__emblem img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+
+  filter:
+    drop-shadow(0 0 22px rgba(255, 213, 92, 0.58))
+    drop-shadow(0 0 42px rgba(56, 223, 255, 0.20))
+    drop-shadow(0 24px 36px rgba(0, 0, 0, 0.58)) !important;
+
+  animation: pgRankEmblemBreath 3.8s ease-in-out infinite;
+}
+
+.pg-rank-xp__level,
+.pg-rank-xp__title {
+  position: relative !important;
+  z-index: 4 !important;
+}
+
+.pg-rank-xp__level {
+  margin-top: 14px !important;
+  color: rgba(255, 232, 140, 0.86) !important;
+  text-shadow: 0 0 12px rgba(255, 211, 91, 0.38);
+}
+
+.pg-rank-xp__title {
+  position: relative !important;
+  max-width: 260px !important;
+  margin: 8px auto 0 !important;
+  padding: 14px 20px 18px !important;
+
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255,255,255,0.16), transparent 42%),
+    linear-gradient(180deg, rgba(8,18,38,0.34), rgba(2,8,18,0.12));
+  border: 1px solid rgba(255, 232, 140, 0.16);
+
+  color: #fff !important;
+  text-shadow:
+    0 2px 8px rgba(0,0,0,0.55),
+    0 0 18px rgba(255, 211, 91, 0.20);
+}
+
+.pg-rank-xp__title::after {
+  content: "РАНГ ОПЕРАТОРА";
+  position: absolute;
+  left: 50%;
+  bottom: -18px;
+  transform: translateX(-50%);
+  width: 210px;
+
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.18em;
+  color: rgba(168, 214, 255, 0.62);
+  text-align: center;
+}
+
+@keyframes pgRankRadarSpin {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@keyframes pgRankAuraPulse {
+  0%, 100% {
+    opacity: 0.56;
+    transform: translate(-50%, -50%) scale(0.96);
+  }
+  50% {
+    opacity: 0.95;
+    transform: translate(-50%, -50%) scale(1.08);
+  }
+}
+
+@keyframes pgRankEmblemBreath {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.025);
+  }
+}
