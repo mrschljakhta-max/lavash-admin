@@ -792,3 +792,57 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+/* ===== XP PULSE ===== */
+.xp-ring.pulse {
+  animation: xpPulse 0.6s ease-out;
+}
+
+@keyframes xpPulse {
+  0% { transform: scale(1); filter: brightness(1); }
+  50% { transform: scale(1.08); filter: brightness(1.5); }
+  100% { transform: scale(1); filter: brightness(1); }
+}
+
+/* ===== RANK FLASH ===== */
+.rank-card.flash {
+  animation: rankFlash 0.6s ease-out;
+}
+
+@keyframes rankFlash {
+  0% { box-shadow: 0 0 0 rgba(255,255,255,0); }
+  50% { box-shadow: 0 0 40px rgba(0,255,255,0.6); }
+  100% { box-shadow: 0 0 0 rgba(255,255,255,0); }
+}
+
+/* ===== XP FLY TEXT ===== */
+.xp-fly {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  font-weight: 700;
+  font-size: 18px;
+  color: #00eaff;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.xp-fly.show {
+  animation: xpFlyUp 1s ease-out forwards;
+}
+
+@keyframes xpFlyUp {
+  0% {
+    opacity: 0;
+    transform: translateY(0) scale(0.8);
+  }
+  30% {
+    opacity: 1;
+    transform: translateY(-10px) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-40px) scale(1.1);
+  }
+}
