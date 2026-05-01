@@ -804,3 +804,7 @@ button[aria-label*="Next"] {
 .pg-carousel {
   transform: translateY(-20px) !important;
 }
+.pg-card::before,
+.pg-card::after {
+  display: none !important;
+}
