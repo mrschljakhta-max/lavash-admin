@@ -1,5 +1,5 @@
 /* =====================================================
-   PENDING RANK + XP MODULE (AAA UPGRADED)
+   PENDING RANK + XP MODULE (AAA UPGRADED + MICRO XP FX)
    Файл: pending_rank_xp.js
 ===================================================== */
 
@@ -13,6 +13,7 @@
   function removeUI() {
     document.querySelector('.pg-rank-xp')?.remove();
     document.querySelector('.pg-rank-xp-pop')?.remove();
+    document.querySelectorAll('.pg-rank-xp-fly').forEach((el) => el.remove());
   }
 
   const RANKS = {
@@ -49,6 +50,26 @@
     13: 'Експерт',
     14: 'Командир',
     15: 'Еліта'
+  };
+
+  const XP_BY_ACTION = {
+    approve: 10,
+    approved: 10,
+    accept: 10,
+    accepted: 10,
+    confirm: 10,
+    confirmed: 10,
+    save: 10,
+
+    reject: 5,
+    rejected: 5,
+    decline: 5,
+    declined: 5,
+
+    ignore: 7,
+    ignored: 7,
+    skip: 7,
+    skipped: 7
   };
 
   let state = {
@@ -135,7 +156,8 @@
 
       <div class="pg-rank-xp__xp">
         <div class="pg-rank-xp__xp-energy"></div>
-           <div class="pg-rank-xp__xp-core">
+
+        <div class="pg-rank-xp__xp-core">
           <strong>0</strong>
           <span>XP</span>
           <small>0 / 0</small>
@@ -145,6 +167,38 @@
 
     document.body.appendChild(root);
     return root;
+  }
+
+  function restartAnimation(el, className) {
+    if (!el) return;
+
+    el.classList.remove(className);
+    void el.offsetWidth;
+    el.classList.add(className);
+  }
+
+  function playSuccessFX(amount) {
+    if (!isPendingPage()) return;
+
+    const root = createUI();
+    if (!root) return;
+
+    restartAnimation(root.querySelector('.pg-rank-xp__xp'), 'is-xp-pulse');
+    restartAnimation(root.querySelector('.pg-rank-xp__rank'), 'is-rank-flash');
+    restartAnimation(root.querySelector('.pg-rank-xp__bar-fill'), 'is-xp-bar-hit');
+
+    const xpRing = root.querySelector('.pg-rank-xp__xp');
+    if (!xpRing) return;
+
+    const fly = document.createElement('div');
+    fly.className = 'pg-rank-xp-fly';
+    fly.textContent = `+${Math.max(0, Number(amount) || 0)}`;
+
+    xpRing.appendChild(fly);
+
+    requestAnimationFrame(() => fly.classList.add('is-visible'));
+
+    setTimeout(() => fly.remove(), 1150);
   }
 
   function updateUI() {
@@ -276,7 +330,10 @@
     addXP(amount = 0) {
       if (!isPendingPage()) return;
 
-      state.xp += Number(amount) || 0;
+      const xpAmount = Math.max(0, Number(amount) || 0);
+      if (!xpAmount) return;
+
+      state.xp += xpAmount;
 
       while (state.xp >= state.xpMax && state.level < 15) {
         state.xp -= state.xpMax;
@@ -290,6 +347,22 @@
       }
 
       updateUI();
+      playSuccessFX(xpAmount);
+    },
+
+    addActionXP(action) {
+      if (!isPendingPage()) return;
+
+      const key = String(action || '').toLowerCase();
+      const xpAmount = XP_BY_ACTION[key] ?? 0;
+
+      if (xpAmount > 0) {
+        this.addXP(xpAmount);
+      }
+    },
+
+    playSuccessFX(amount = 0) {
+      playSuccessFX(amount);
     },
 
     destroy() {
