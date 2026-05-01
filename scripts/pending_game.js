@@ -1140,6 +1140,42 @@
     });
   }
 
+
+  function bindCardScrollLock(card) {
+    const back = card.querySelector('.pg-card__back');
+    const scrollable = card.querySelector('.pg-edit-grid, .pg-edit-grid--clean');
+
+    if (!back || !scrollable) return;
+
+    card.addEventListener('wheel', (event) => {
+      const isBack = event.target.closest('.pg-card__back');
+
+      // На front активної картки колесо не повинно випадково перемикати карусель.
+      if (!isBack) {
+        event.preventDefault();
+        event.stopPropagation();
+        return;
+      }
+
+      const canScroll = scrollable.scrollHeight > scrollable.clientHeight;
+
+      if (!canScroll) {
+        event.preventDefault();
+        event.stopPropagation();
+        return;
+      }
+
+      const maxScrollTop = scrollable.scrollHeight - scrollable.clientHeight;
+      const nextScrollTop = Math.max(0, Math.min(maxScrollTop, scrollable.scrollTop + event.deltaY));
+
+      scrollable.scrollTop = nextScrollTop;
+
+      // Головне: wheel не пробивається до carousel.
+      event.preventDefault();
+      event.stopPropagation();
+    }, { passive: false });
+  }
+
   function bind() {
     document.querySelectorAll('.pg-card.is-active').forEach((card) => {
       bindCardDrag(card);
@@ -1147,6 +1183,7 @@
       bindRadarInteraction(card);
       bindRadarLock(card);
       bindCustomSelects(card);
+      bindCardScrollLock(card);
 
       card.addEventListener('click', (event) => {
         if (event.target.closest('input, textarea, select, option, button, label, .pg-select')) return;
@@ -1172,6 +1209,14 @@
       let wheelLock = false;
 
       carousel.addEventListener('wheel', (event) => {
+        const activeCardUnderCursor = event.target.closest('.pg-card.is-active');
+
+        if (activeCardUnderCursor) {
+          event.preventDefault();
+          event.stopPropagation();
+          return;
+        }
+
         event.preventDefault();
 
         if (wheelLock || state.isResolving) return;
@@ -1351,33 +1396,4 @@
   window.LAVASH_PENDING_GAME = {
     init
   };
-})();
-/* ===== BACK CARD WHEEL LOCK ===== */
-
-(function lockBackCardWheel() {
-  document.addEventListener(
-    "wheel",
-    function (event) {
-      const backCard = event.target.closest(
-        '.pg-card[data-slot="0"] .pg-card__back'
-      );
-
-      if (!backCard) return;
-
-      const scrollable = event.target.closest(
-        '.pg-card__back, .pg-card__back form, .pg-card__back [class*="form"], .pg-card__back [class*="edit"]'
-      );
-
-      if (!scrollable) return;
-
-      const canScroll =
-        scrollable.scrollHeight > scrollable.clientHeight ||
-        backCard.scrollHeight > backCard.clientHeight;
-
-      if (canScroll) {
-        event.stopPropagation();
-      }
-    },
-    { capture: true, passive: false }
-  );
 })();
