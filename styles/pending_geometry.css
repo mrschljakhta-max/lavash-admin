@@ -800,3 +800,6 @@ button[aria-label*="Next"] {
     translate(-50%, calc(-50% - var(--pg-geo-card-lift-y)))
     scale(1) !important;
 }
+.pg-card[data-slot="0"] {
+  outline: 5px solid red !important;
+}
