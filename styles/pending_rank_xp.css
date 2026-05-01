@@ -591,3 +591,113 @@
     filter: brightness(1);
   }
 }
+/* =====================================================
+   AAA XP CIRCLE — ORBIT / CORE / ENERGY RING
+===================================================== */
+
+.pg-rank-xp__xp {
+  width: 260px !important;
+  height: 260px !important;
+
+  background:
+    conic-gradient(
+      from -90deg,
+      var(--pg-rank-tier, #38dfff) var(--pg-xp-deg, 0deg),
+      rgba(255,255,255,0.075) 0deg
+    ) !important;
+
+  box-shadow:
+    0 0 42px color-mix(in srgb, var(--pg-rank-tier) 34%, transparent),
+    0 0 110px color-mix(in srgb, var(--pg-rank-tier-2) 16%, transparent),
+    inset 0 0 34px rgba(255,255,255,0.06) !important;
+
+  animation: pgXpCircleBreath 3.8s ease-in-out infinite;
+}
+
+.pg-rank-xp__xp::before {
+  width: 198px !important;
+  height: 198px !important;
+
+  background:
+    radial-gradient(circle at 50% 26%, rgba(255,255,255,0.14), transparent 34%),
+    radial-gradient(circle at 50% 70%, color-mix(in srgb, var(--pg-rank-tier) 14%, transparent), transparent 54%),
+    linear-gradient(160deg, rgba(7,14,30,0.98), rgba(2,6,14,0.98)) !important;
+}
+
+.pg-rank-xp__xp::after {
+  content: "";
+  position: absolute;
+  inset: -18px;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--pg-rank-tier) 38%, transparent);
+
+  background:
+    repeating-conic-gradient(
+      from 0deg,
+      color-mix(in srgb, var(--pg-rank-tier) 28%, transparent) 0deg 2deg,
+      transparent 2deg 14deg
+    );
+
+  mask: radial-gradient(circle, transparent 64%, #000 65%);
+  opacity: 0.65;
+
+  animation: pgXpOrbitSpin 18s linear infinite;
+  pointer-events: none;
+}
+
+.pg-rank-xp__xp-core::before {
+  content: "ПРОГРЕС";
+  font-size: 11px;
+  font-weight: 950;
+  letter-spacing: 0.18em;
+  color: color-mix(in srgb, var(--pg-rank-tier-2) 62%, white);
+  text-shadow: 0 0 14px color-mix(in srgb, var(--pg-rank-tier-2) 34%, transparent);
+}
+
+.pg-rank-xp__xp-core strong {
+  font-size: 58px !important;
+  line-height: 0.95 !important;
+  text-shadow:
+    0 0 18px color-mix(in srgb, var(--pg-rank-tier) 44%, transparent),
+    0 6px 18px rgba(0,0,0,0.44);
+}
+
+.pg-rank-xp__xp-core span {
+  margin-top: -2px;
+  font-size: 14px !important;
+  color: color-mix(in srgb, var(--pg-rank-tier) 58%, white) !important;
+}
+
+.pg-rank-xp__xp-core small {
+  margin-top: 8px !important;
+  padding: 5px 11px;
+  border-radius: 999px;
+
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.10);
+
+  font-size: 11px !important;
+  color: rgba(255,255,255,0.68) !important;
+}
+
+.pg-rank-xp.is-levelup .pg-rank-xp__xp {
+  animation:
+    pgLevelFlash 0.85s ease both,
+    pgXpCircleBreath 3.8s ease-in-out infinite;
+}
+
+@keyframes pgXpOrbitSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pgXpCircleBreath {
+  0%, 100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  50% {
+    transform: scale(1.025);
+    filter: brightness(1.12);
+  }
+}
