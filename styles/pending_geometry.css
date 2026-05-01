@@ -998,3 +998,121 @@ button[aria-label*="Next"] {
 <div class="full">Редагування назви</div>
 <div class="full">Поле вводу</div>
 <div class="full">Кнопка</div>
+/* ===== BACK SIDE — EDITOR PANEL MODE ===== */
+
+.pg-card[data-slot="0"] .pg-card__back {
+  width: 560px !important;
+  max-width: 92vw !important;
+  padding: 28px !important;
+
+  display: grid !important;
+  grid-template-rows: auto 1fr auto !important;
+  gap: 18px !important;
+
+  overflow: hidden !important;
+}
+
+/* внутрішній скрол для полів */
+.pg-card[data-slot="0"] .pg-card__back form,
+.pg-card[data-slot="0"] .pg-card__back [class*="form"],
+.pg-card[data-slot="0"] .pg-card__back [class*="edit"] {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 14px 16px !important;
+
+  max-height: 100% !important;
+  overflow-y: auto !important;
+  padding-right: 6px !important;
+}
+
+/* заголовок */
+.pg-card[data-slot="0"] .pg-card__back h2,
+.pg-card[data-slot="0"] .pg-card__back .pg-edit-title,
+.pg-card[data-slot="0"] .pg-card__back .pg-back-title {
+  grid-column: 1 / -1 !important;
+  font-size: 34px !important;
+  line-height: 0.95 !important;
+  margin: 0 0 6px !important;
+}
+
+/* кожен блок поля */
+.pg-card[data-slot="0"] .pg-card__back .pg-field,
+.pg-card[data-slot="0"] .pg-card__back [class*="field"] {
+  min-width: 0 !important;
+  padding: 14px !important;
+  border-radius: 18px !important;
+  background: rgba(255,255,255,0.10) !important;
+  border: 1px solid rgba(255,255,255,0.14) !important;
+  box-sizing: border-box !important;
+}
+
+/* широкі поля */
+.pg-card[data-slot="0"] .pg-card__back .pg-field--wide,
+.pg-card[data-slot="0"] .pg-card__back .pg-field-full,
+.pg-card[data-slot="0"] .pg-card__back [class*="name"],
+.pg-card[data-slot="0"] .pg-card__back textarea {
+  grid-column: 1 / -1 !important;
+}
+
+/* labels */
+.pg-card[data-slot="0"] .pg-card__back label,
+.pg-card[data-slot="0"] .pg-card__back .pg-field-label,
+.pg-card[data-slot="0"] .pg-card__back [class*="label"] {
+  display: block !important;
+  margin-bottom: 8px !important;
+
+  font-size: 11px !important;
+  line-height: 1.1 !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.04em !important;
+  text-transform: uppercase !important;
+
+  opacity: 0.72 !important;
+}
+
+/* inputs/selects */
+.pg-card[data-slot="0"] .pg-card__back input,
+.pg-card[data-slot="0"] .pg-card__back select,
+.pg-card[data-slot="0"] .pg-card__back textarea {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+
+  height: 44px !important;
+  padding: 0 14px !important;
+
+  border-radius: 14px !important;
+  border: 1px solid rgba(255,255,255,0.12) !important;
+  background: rgba(255,255,255,0.12) !important;
+  color: #fff !important;
+
+  box-sizing: border-box !important;
+  font-size: 14px !important;
+  font-weight: 800 !important;
+}
+
+.pg-card[data-slot="0"] .pg-card__back textarea {
+  height: 72px !important;
+  padding-top: 12px !important;
+  resize: none !important;
+}
+
+/* save button */
+.pg-card[data-slot="0"] .pg-card__back button,
+.pg-card[data-slot="0"] .pg-card__back .pg-save,
+.pg-card[data-slot="0"] .pg-card__back .pg-save-btn {
+  grid-column: 1 / -1 !important;
+
+  width: 100% !important;
+  height: 58px !important;
+  margin-top: 8px !important;
+
+  border-radius: 999px !important;
+  font-size: 16px !important;
+  font-weight: 950 !important;
+}
+
+/* прибрати червоні debug outline */
+.pg-card[data-slot="0"] .pg-card__back * {
+  outline: none !important;
+}
