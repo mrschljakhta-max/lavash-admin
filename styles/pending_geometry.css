@@ -1154,3 +1154,19 @@ button[aria-label*="Next"] {
 .pg-card[data-slot="0"] .pg-card__back *::-webkit-scrollbar-thumb:hover {
   filter: brightness(1.25);
 }
+/* ===== BACK SIDE CENTER ANCHOR FIX ===== */
+
+.pg-card[data-slot="0"] .pg-card__back {
+  left: 50% !important;
+  right: auto !important;
+  transform: translateX(-50%) rotateY(180deg) !important;
+  transform-origin: center center !important;
+}
+
+/* front теж фіксуємо по центру */
+.pg-card[data-slot="0"] .pg-card__front {
+  left: 50% !important;
+  right: auto !important;
+  transform: translateX(-50%) rotateY(0deg) !important;
+  transform-origin: center center !important;
+}
