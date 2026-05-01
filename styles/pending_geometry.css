@@ -1319,52 +1319,45 @@ button[aria-label*="Next"] {
 }
 
 /* =====================================================
-   FINAL OVERRIDE — STAR OFF + TRUE CENTER FIX
-   Додавати останнім. Вирішує:
-   1) прибирає зірку зверху;
-   2) повертає активну картку в центр;
-   3) не ламає lift / tilt / flip;
-   4) страхує front/back від горизонтального зсуву.
+   FINAL OVERRIDE — CLEAN CENTERED FRONT/BACK + PREMIUM BACK
+   Останній блок. Не видаляти.
 ===================================================== */
 
 :root {
-  /* міняй тільки це число, якщо треба вище/нижче */
   --pg-geo-card-lift-y: 120px;
+  --pg-front-status-top: 28px;
+  --pg-front-title-top: 112px;
+  --pg-front-radar-y: 58%;
+  --pg-front-footer-bottom: 28px;
+  --pg-front-radar-size: clamp(190px, 15vw, 265px);
+  --pg-front-title-size: clamp(32px, 2.35vw, 46px);
+  --pg-card-radius: 30px;
+  --pg-back-w: clamp(520px, 33vw, 620px);
 }
 
-/* прибрати зірку на активній картці */
-.pg-card[data-slot="0"] .pg-card__star,
-.pg-card[data-slot="0"] button.pg-card__star {
-  display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
-}
-
-/* статус після видалення зірки залишається строго по центру */
-.pg-card[data-slot="0"] .pg-card__topline {
-  left: 50% !important;
-  right: auto !important;
-  transform: translateX(-50%) !important;
-  justify-content: center !important;
-  grid-template-columns: 1fr !important;
-}
-
-/* головний центр активної картки */
+/* CARD CENTER */
 .pg-card[data-slot="0"] {
   position: absolute !important;
   left: 50% !important;
   top: 50% !important;
-
+  width: var(--pg-geo-card-w) !important;
+  height: var(--pg-geo-card-h) !important;
+  padding: 0 !important;
+  overflow: visible !important;
+  isolation: isolate !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
   transform:
     translate(-50%, -50%)
     translateY(calc(-1 * var(--pg-geo-card-lift-y)))
     scale(1) !important;
-
   transform-origin: center center !important;
+  transform-style: preserve-3d !important;
+  perspective: 1200px !important;
+  border-radius: var(--pg-card-radius) !important;
 }
 
-/* hover / tilt — той самий центр + нахил */
 .pg-card[data-slot="0"].is-tilting {
   transform:
     translate(-50%, -50%)
@@ -1373,49 +1366,457 @@ button[aria-label*="Next"] {
     rotateX(var(--pg-tilt-x))
     rotateY(var(--pg-tilt-y))
     scale(1.015) !important;
-
   transform-origin: center center !important;
 }
 
-/* flipped — не рухаємо саму картку, обертається inner */
 .pg-card[data-slot="0"].is-flipped {
   transform:
     translate(-50%, -50%)
     translateY(calc(-1 * var(--pg-geo-card-lift-y)))
     scale(1) !important;
-
   transform-origin: center center !important;
 }
 
-/* front має бути рівно в межах картки */
-.pg-card[data-slot="0"] .pg-card__front {
-  left: 0 !important;
-  right: auto !important;
-  top: 0 !important;
-  bottom: auto !important;
+.pg-card[data-slot="0"]::before,
+.pg-card[data-slot="0"]::after,
+.pg-card::before,
+.pg-card::after {
+  display: none !important;
+  content: none !important;
+}
 
+/* FLIP STRUCTURE */
+.pg-card[data-slot="0"] .pg-card__inner {
+  position: absolute !important;
+  inset: 0 !important;
+  width: auto !important;
+  height: auto !important;
+  overflow: visible !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+  transform-style: preserve-3d !important;
+  border-radius: var(--pg-card-radius) !important;
+}
+
+.pg-card[data-slot="0"] .pg-card__face,
+.pg-card[data-slot="0"] .pg-card__front,
+.pg-card[data-slot="0"] .pg-card__back {
+  position: absolute !important;
+  inset: 0 !important;
   width: 100% !important;
   height: 100% !important;
-
-  transform: rotateY(0deg) !important;
-  transform-origin: center center !important;
-}
-
-/* back ширший, але якір по центру */
-.pg-card[data-slot="0"] .pg-card__back {
-  left: 50% !important;
   right: auto !important;
-  top: 0 !important;
+  top: auto !important;
   bottom: auto !important;
-
-  height: 100% !important;
-
-  transform: translateX(-50%) rotateY(180deg) !important;
+  border-radius: var(--pg-card-radius) !important;
+  overflow: hidden !important;
+  backface-visibility: hidden !important;
+  -webkit-backface-visibility: hidden !important;
+  transform-style: preserve-3d !important;
   transform-origin: center center !important;
+  background:
+    radial-gradient(circle at 45% 18%, rgba(255,255,255,0.16), transparent 40%),
+    linear-gradient(160deg, var(--pg-card-bg-1), var(--pg-card-bg-2)) !important;
+  box-shadow:
+    0 0 30px color-mix(in srgb, var(--pg-card-accent) 42%, transparent),
+    0 0 80px color-mix(in srgb, var(--pg-card-accent) 16%, transparent),
+    inset 0 0 38px rgba(255,255,255,0.06) !important;
 }
 
-/* light beam і контент не повинні створювати зсув */
-.pg-card[data-slot="0"] .pg-card__front::before,
-.pg-card[data-slot="0"] .pg-card__front::after {
+.pg-card[data-slot="0"] .pg-card__front {
+  left: 0 !important;
+  transform: rotateY(0deg) !important;
+}
+
+.pg-card[data-slot="0"] .pg-card__back {
+  width: var(--pg-back-w) !important;
+  max-width: 92vw !important;
+  left: 50% !important;
+  transform: translateX(-50%) rotateY(180deg) !important;
+}
+
+/* FRONT */
+.pg-card[data-slot="0"] .pg-card__front {
+  display: block !important;
+  padding: 0 !important;
+  text-align: center !important;
+}
+
+.pg-card[data-slot="0"] .pg-card__content {
+  display: contents !important;
+}
+
+.pg-card[data-slot="0"] .pg-card__star,
+.pg-card[data-slot="0"] button.pg-card__star {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
   pointer-events: none !important;
+}
+
+/* reactive light beam */
+.pg-card[data-slot="0"] .pg-card__front::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: -22% !important;
+  z-index: 1 !important;
+  pointer-events: none !important;
+  background:
+    radial-gradient(
+      circle at calc(var(--beam-x, .50) * 100%) calc(var(--beam-y, .50) * 100%),
+      rgba(255,255,255,0.18),
+      rgba(255,255,255,0.07) 18%,
+      transparent 42%
+    ),
+    linear-gradient(
+      108deg,
+      transparent 0%,
+      transparent 34%,
+      rgba(255,255,255,0.14) 43%,
+      rgba(255,255,255,0.055) 50%,
+      transparent 62%,
+      transparent 100%
+    ) !important;
+  opacity: 0.78 !important;
+  mix-blend-mode: screen !important;
+}
+
+.pg-card[data-slot="0"] .pg-card__front > * {
+  position: relative !important;
+  z-index: 5 !important;
+}
+
+/* floating badge */
+.pg-card[data-slot="0"] .pg-card__topline {
+  position: absolute !important;
+  left: 50% !important;
+  top: var(--pg-front-status-top) !important;
+  width: 86% !important;
+  min-height: 0 !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 0 !important;
+  transform: translateX(-50%) !important;
+  z-index: 20 !important;
+}
+
+.pg-card[data-slot="0"] .pg-card__status {
+  width: auto !important;
+  max-width: 92% !important;
+  min-height: 38px !important;
+  height: auto !important;
+  padding: 9px 20px !important;
+  margin: 0 auto !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 999px !important;
+  text-align: center !important;
+  font-size: 12px !important;
+  line-height: 1.05 !important;
+  font-weight: 950 !important;
+  background: color-mix(in srgb, var(--pg-card-accent) 26%, rgba(255,255,255,0.18)) !important;
+  border: 1px solid color-mix(in srgb, var(--pg-card-accent) 44%, rgba(255,255,255,0.18)) !important;
+  box-shadow:
+    0 0 18px color-mix(in srgb, var(--pg-card-accent) 22%, transparent),
+    inset 0 1px 0 rgba(255,255,255,0.22) !important;
+}
+
+/* title center */
+.pg-card[data-slot="0"] .pg-data {
+  position: absolute !important;
+  left: 50% !important;
+  top: var(--pg-front-title-top) !important;
+  width: 86% !important;
+  height: auto !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  transform: translateX(-50%) !important;
+  text-align: center !important;
+  z-index: 18 !important;
+}
+
+.pg-card[data-slot="0"] .pg-data__value {
+  display: -webkit-box !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  text-align: center !important;
+  font-size: var(--pg-front-title-size) !important;
+  line-height: 0.92 !important;
+  font-weight: 950 !important;
+  letter-spacing: -0.055em !important;
+  white-space: normal !important;
+  overflow: hidden !important;
+  overflow-wrap: anywhere !important;
+  word-break: normal !important;
+  -webkit-line-clamp: 3 !important;
+  -webkit-box-orient: vertical !important;
+}
+
+/* radar center */
+.pg-card[data-slot="0"] .pg-visual {
+  position: absolute !important;
+  left: 50% !important;
+  top: var(--pg-front-radar-y) !important;
+  width: var(--pg-front-radar-size) !important;
+  height: var(--pg-front-radar-size) !important;
+  display: grid !important;
+  place-items: center !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  transform: translate(-50%, -50%) !important;
+  z-index: 12 !important;
+}
+
+.pg-card[data-slot="0"] .pg-radar-core {
+  width: 100% !important;
+  height: 100% !important;
+  aspect-ratio: 1 !important;
+  margin: 0 !important;
+}
+
+.pg-card[data-slot="0"] .pg-uav-img,
+.pg-card[data-slot="0"] .pg-unknown-visual-img {
+  left: 50% !important;
+  top: 50% !important;
+  max-width: clamp(78px, 6.4vw, 122px) !important;
+  max-height: clamp(78px, 6.4vw, 122px) !important;
+  transform: translate(-50%, -50%) !important;
+}
+
+.pg-card[data-slot="0"] .pg-card__front small {
+  position: absolute !important;
+  left: 50% !important;
+  bottom: var(--pg-front-footer-bottom) !important;
+  width: min(72%, 240px) !important;
+  min-height: 40px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transform: translateX(-50%) !important;
+  margin: 0 !important;
+  padding: 0 16px !important;
+  border-radius: 999px !important;
+  text-align: center !important;
+  z-index: 18 !important;
+}
+
+.pg-card[data-slot="0"][data-unknown-type="settlement"] {
+  --pg-front-title-size: clamp(30px, 2.12vw, 42px);
+  --pg-front-title-top: 100px;
+  --pg-front-radar-y: 59%;
+}
+
+/* BACK */
+.pg-card[data-slot="0"] .pg-card__back {
+  padding: 28px !important;
+  display: grid !important;
+  grid-template-rows: auto minmax(0, 1fr) auto !important;
+  gap: 18px !important;
+  overflow: hidden !important;
+  scrollbar-width: thin;
+  scrollbar-color: var(--pg-card-accent) rgba(255,255,255,0.10);
+}
+
+.pg-card[data-slot="0"] .pg-edit-head {
+  grid-row: 1 !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: start !important;
+  gap: 14px !important;
+  min-width: 0 !important;
+  z-index: 10 !important;
+}
+
+.pg-card[data-slot="0"] .pg-edit-head h3 {
+  margin: 0 !important;
+  font-size: clamp(30px, 2vw, 38px) !important;
+  line-height: 0.95 !important;
+  font-weight: 950 !important;
+  letter-spacing: -0.05em !important;
+}
+
+.pg-card[data-slot="0"] .pg-edit-head > span {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  max-width: 180px !important;
+  min-height: 26px !important;
+  padding: 5px 10px !important;
+  border-radius: 999px !important;
+  background: rgba(255,255,255,0.12) !important;
+  border: 1px solid rgba(255,255,255,0.14) !important;
+  color: color-mix(in srgb, var(--pg-card-accent) 40%, white) !important;
+  font-size: 11px !important;
+  line-height: 1 !important;
+  font-weight: 900 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.pg-card[data-slot="0"] .pg-edit-grid,
+.pg-card[data-slot="0"] .pg-edit-grid--clean {
+  grid-row: 2 !important;
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 14px 16px !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  padding: 2px 8px 12px 0 !important;
+  scrollbar-width: thin;
+  scrollbar-color: var(--pg-card-accent) rgba(255,255,255,0.10);
+}
+
+.pg-card[data-slot="0"] .pg-edit-grid::-webkit-scrollbar,
+.pg-card[data-slot="0"] .pg-edit-grid--clean::-webkit-scrollbar {
+  width: 8px;
+}
+
+.pg-card[data-slot="0"] .pg-edit-grid::-webkit-scrollbar-track,
+.pg-card[data-slot="0"] .pg-edit-grid--clean::-webkit-scrollbar-track {
+  background: rgba(255,255,255,0.08);
+  border-radius: 999px;
+}
+
+.pg-card[data-slot="0"] .pg-edit-grid::-webkit-scrollbar-thumb,
+.pg-card[data-slot="0"] .pg-edit-grid--clean::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--pg-card-accent) 88%, white),
+    var(--pg-card-accent)
+  );
+  box-shadow: 0 0 12px color-mix(in srgb, var(--pg-card-accent) 60%, transparent);
+}
+
+.pg-card[data-slot="0"] .pg-edit-grid label,
+.pg-card[data-slot="0"] .pg-readonly-field,
+.pg-card[data-slot="0"] .pg-card__back [class*="field"] {
+  min-width: 0 !important;
+  padding: 14px !important;
+  border-radius: 18px !important;
+  background: rgba(255,255,255,0.105) !important;
+  border: 1px solid rgba(255,255,255,0.145) !important;
+  box-sizing: border-box !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.12),
+    0 10px 24px rgba(0,0,0,0.10) !important;
+}
+
+.pg-card[data-slot="0"] .pg-edit-wide,
+.pg-card[data-slot="0"] .pg-field--wide,
+.pg-card[data-slot="0"] .pg-field-full {
+  grid-column: 1 / -1 !important;
+}
+
+.pg-card[data-slot="0"] .pg-card__back label > span,
+.pg-card[data-slot="0"] .pg-readonly-field > span,
+.pg-card[data-slot="0"] .pg-field-label,
+.pg-card[data-slot="0"] .pg-card__back [class*="label"] {
+  display: block !important;
+  margin: 0 0 9px !important;
+  font-size: 11px !important;
+  line-height: 1.05 !important;
+  font-weight: 950 !important;
+  letter-spacing: 0.045em !important;
+  text-transform: uppercase !important;
+  color: rgba(255,255,255,0.66) !important;
+}
+
+.pg-card[data-slot="0"] .pg-card__back input,
+.pg-card[data-slot="0"] .pg-card__back select,
+.pg-card[data-slot="0"] .pg-card__back textarea,
+.pg-card[data-slot="0"] .pg-select__head,
+.pg-card[data-slot="0"] .pg-readonly-field strong {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  min-height: 46px !important;
+  padding: 0 14px !important;
+  display: flex !important;
+  align-items: center !important;
+  border-radius: 15px !important;
+  border: 1px solid rgba(255,255,255,0.12) !important;
+  background: rgba(255,255,255,0.12) !important;
+  color: #fff !important;
+  box-sizing: border-box !important;
+  font-size: 14px !important;
+  font-weight: 850 !important;
+  line-height: 1.1 !important;
+}
+
+.pg-card[data-slot="0"] .pg-select {
+  position: relative !important;
+  width: 100% !important;
+}
+
+.pg-card[data-slot="0"] .pg-select__head {
+  justify-content: space-between !important;
+}
+
+.pg-card[data-slot="0"] .pg-select__dropdown {
+  z-index: 999 !important;
+}
+
+.pg-card[data-slot="0"] .pg-card__back textarea {
+  height: 78px !important;
+  padding-top: 12px !important;
+  resize: none !important;
+}
+
+.pg-card[data-slot="0"] .pg-save-btn,
+.pg-card[data-slot="0"] .pg-card__back button.pg-save-btn {
+  grid-row: 3 !important;
+  width: 100% !important;
+  height: 62px !important;
+  margin: 0 !important;
+  border-radius: 999px !important;
+  border: 0 !important;
+  font-size: 17px !important;
+  font-weight: 950 !important;
+  box-shadow:
+    0 18px 38px rgba(0, 255, 230, 0.18),
+    inset 0 1px 0 rgba(255,255,255,0.26) !important;
+}
+
+.pg-card[data-slot="0"] .pg-card__back * {
+  outline: none !important;
+}
+
+/* RESPONSIVE */
+@media (max-height: 820px) {
+  :root {
+    --pg-front-status-top: 24px;
+    --pg-front-title-top: 96px;
+    --pg-front-radar-y: 58%;
+    --pg-front-footer-bottom: 24px;
+    --pg-front-radar-size: clamp(170px, 13.5vw, 235px);
+    --pg-front-title-size: clamp(29px, 2.05vw, 40px);
+    --pg-geo-card-lift-y: 120px;
+  }
+
+  .pg-card[data-slot="0"][data-unknown-type="settlement"] {
+    --pg-front-title-top: 92px;
+    --pg-front-title-size: clamp(28px, 1.95vw, 38px);
+  }
+}
+
+@media (max-width: 980px) {
+  :root {
+    --pg-back-w: min(92vw, 560px);
+  }
+
+  .pg-card[data-slot="0"] .pg-edit-grid,
+  .pg-card[data-slot="0"] .pg-edit-grid--clean {
+    grid-template-columns: 1fr !important;
+  }
 }
