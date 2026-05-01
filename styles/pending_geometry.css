@@ -802,5 +802,5 @@ button[aria-label*="Next"] {
 }
 .pg-carousel-wrap,
 .pg-carousel {
-  transform: translateY(-10px) !important;
+  transform: translateY(-20px) !important;
 }
