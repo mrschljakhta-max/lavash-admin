@@ -544,6 +544,14 @@
     `;
 
     bind();
+
+    window.LAVASH_PENDING_RANK_XP?.set({
+      level: state.level,
+      xp: state.xp,
+      xpMax: state.xpMax,
+      rank: state.rank,
+      accent: activeUnknownConfig.color
+    });
   }
 
   function getUnknownConfig(type) {
@@ -1272,6 +1280,8 @@
     state.xp = Math.min(state.xpMax, state.xp + xp);
     state.todayXp += xp;
 
+    window.LAVASH_PENDING_RANK_XP?.addXP(xp);
+
     if (page) {
       page.dataset.actionFlash = action;
       page.dataset.actionLabel = getActionLabel(action);
@@ -1377,6 +1387,13 @@
 
   function init() {
     render();
+
+    window.LAVASH_PENDING_RANK_XP?.init({
+      level: state.level,
+      xp: state.xp,
+      xpMax: state.xpMax,
+      rank: state.rank
+    });
 
     if (!window.__LAVASH_PENDING_GAME_HOTKEYS_BOUND__) {
       window.__LAVASH_PENDING_GAME_HOTKEYS_BOUND__ = true;
