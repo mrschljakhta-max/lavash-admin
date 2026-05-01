@@ -913,3 +913,44 @@ button[aria-label*="Next"] {
 .pg-card[data-slot="0"] .pg-card__back * {
   outline: 1px solid red !important;
 }
+/* ===== HARD BACK CARD FORM LAYOUT ===== */
+
+.pg-card[data-slot="0"] .pg-card__back {
+  padding: 26px !important;
+  overflow: hidden !important;
+}
+
+.pg-card[data-slot="0"] .pg-card__back > * {
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.pg-card[data-slot="0"] .pg-card__back form,
+.pg-card[data-slot="0"] .pg-card__back .form,
+.pg-card[data-slot="0"] .pg-card__back [class*="form"],
+.pg-card[data-slot="0"] .pg-card__back [class*="edit"] {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 14px !important;
+  width: 100% !important;
+}
+
+.pg-card[data-slot="0"] .pg-card__back input,
+.pg-card[data-slot="0"] .pg-card__back select,
+.pg-card[data-slot="0"] .pg-card__back textarea,
+.pg-card[data-slot="0"] .pg-card__back button {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.pg-card[data-slot="0"] .pg-card__back input,
+.pg-card[data-slot="0"] .pg-card__back select {
+  height: 44px !important;
+}
+
+.pg-card[data-slot="0"] .pg-card__back button {
+  grid-column: 1 / -1 !important;
+  height: 56px !important;
+  border-radius: 999px !important;
+}
