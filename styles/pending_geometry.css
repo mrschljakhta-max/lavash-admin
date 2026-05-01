@@ -1194,3 +1194,31 @@ button[aria-label*="Next"] {
   overflow: hidden;
   backdrop-filter: blur(2px); /* легкий premium ефект */
 }
+/* ===== GOLD THEME FOR UNKNOWN SETTLEMENT ===== */
+
+.pg-card[data-type="settlement"],
+.pg-card[data-kind="settlement"],
+.pg-card[data-object-type="settlement"],
+.pg-card[data-object-type="населений пункт"],
+.pg-card[data-label*="насел"] {
+  --pg-card-bg-1: #ffd45a;
+  --pg-card-bg-2: #a66a00;
+  --pg-card-accent: #ffd84d;
+}
+
+.pg-card[data-slot="0"][data-type="settlement"] .pg-card__front,
+.pg-card[data-slot="0"][data-kind="settlement"] .pg-card__front,
+.pg-card[data-slot="0"][data-object-type="settlement"] .pg-card__front,
+.pg-card[data-slot="0"][data-object-type="населений пункт"] .pg-card__front,
+.pg-card[data-slot="0"][data-label*="насел"] .pg-card__front {
+  background:
+    radial-gradient(circle at 35% 18%, rgba(255, 246, 180, 0.42), transparent 38%),
+    radial-gradient(circle at 80% 70%, rgba(255, 188, 37, 0.28), transparent 42%),
+    linear-gradient(160deg, #ffd45a 0%, #d99412 44%, #8a5200 100%) !important;
+
+  border-color: rgba(255, 225, 95, 0.95) !important;
+  box-shadow:
+    0 0 28px rgba(255, 206, 64, 0.42),
+    0 0 72px rgba(255, 166, 0, 0.20),
+    inset 0 0 36px rgba(255,255,255,0.10) !important;
+}
