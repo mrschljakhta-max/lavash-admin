@@ -4,8 +4,16 @@
 ===================================================== */
 
 (function () {
+  const PAGE_HASH = '#pending';
 
-  /* ===== CONFIG ===== */
+  function isPendingPage() {
+    return location.hash === PAGE_HASH;
+  }
+
+  function removeUI() {
+    document.querySelector('.pg-rank-xp')?.remove();
+    document.querySelector('.pg-rank-xp-pop')?.remove();
+  }
 
   const RANKS = {
     1: 'rank-01.png',
@@ -43,24 +51,34 @@
     15: 'Еліта'
   };
 
-  /* ===== STATE ===== */
-
   let state = {
     level: 1,
     xp: 0,
-    xpMax: 100
+    xpMax: 100,
+    rank: '',
+    accent: '#38dfff'
   };
 
-  /* ===== INIT UI ===== */
+  function clampLevel(level) {
+    return Math.max(1, Math.min(15, Number(level) || 1));
+  }
 
   function createUI() {
-    const root = document.createElement('div');
+    if (!isPendingPage()) {
+      removeUI();
+      return null;
+    }
+
+    let root = document.querySelector('.pg-rank-xp');
+    if (root) return root;
+
+    root = document.createElement('aside');
     root.className = 'pg-rank-xp';
 
     root.innerHTML = `
       <div class="pg-rank-xp__rank">
         <div class="pg-rank-xp__emblem">
-          <img src="" alt="rank">
+          <img src="../assets/ranks/rank-01.png" alt="rank">
         </div>
         <div class="pg-rank-xp__level">РІВЕНЬ</div>
         <div class="pg-rank-xp__title">—</div>
@@ -76,95 +94,123 @@
     `;
 
     document.body.appendChild(root);
+    return root;
   }
-
-  /* ===== UPDATE ===== */
 
   function updateUI() {
-
-    const percent = Math.min(1, state.xp / state.xpMax);
-    const deg = percent * 360;
-
-    document.documentElement.style.setProperty('--pg-xp-deg', deg + 'deg');
-
-    // XP text
-    const xpStrong = document.querySelector('.pg-rank-xp__xp-core strong');
-    const xpSmall = document.querySelector('.pg-rank-xp__xp-core small');
-
-    if (xpStrong) xpStrong.textContent = state.xp;
-    if (xpSmall) xpSmall.textContent = `${state.xp} / ${state.xpMax}`;
-
-    // Rank image
-    const img = document.querySelector('.pg-rank-xp__emblem img');
-    if (img && RANKS[state.level]) {
-      img.src = `../assets/ranks/${RANKS[state.level]}`;
+    if (!isPendingPage()) {
+      removeUI();
+      return;
     }
 
-    // Rank name
-    const title = document.querySelector('.pg-rank-xp__title');
-    if (title) {
-      title.textContent = RANK_NAMES[state.level] || '—';
+    const root = createUI();
+    if (!root) return;
+
+    const level = clampLevel(state.level);
+    const xp = Math.max(0, Number(state.xp) || 0);
+    const xpMax = Math.max(1, Number(state.xpMax) || 1);
+    const deg = Math.max(0, Math.min(1, xp / xpMax)) * 360;
+
+    root.style.setProperty('--pg-rank-accent', state.accent || '#38dfff');
+    document.documentElement.style.setProperty('--pg-xp-deg', `${deg}deg`);
+
+    const img = root.querySelector('.pg-rank-xp__emblem img');
+    if (img) {
+      img.src = `../assets/ranks/${RANKS[level] || RANKS[1]}`;
+      img.alt = `Рівень ${level}`;
     }
-  }
 
-  /* ===== LEVEL UP ===== */
+    const levelEl = root.querySelector('.pg-rank-xp__level');
+    if (levelEl) levelEl.textContent = `РІВЕНЬ ${level}`;
 
-  function checkLevelUp() {
-    if (state.xp >= state.xpMax) {
+    const titleEl = root.querySelector('.pg-rank-xp__title');
+    if (titleEl) titleEl.textContent = state.rank || RANK_NAMES[level] || '—';
 
-      state.xp -= state.xpMax;
-      state.level = Math.min(state.level + 1, 15);
+    const xpStrong = root.querySelector('.pg-rank-xp__xp-core strong');
+    if (xpStrong) xpStrong.textContent = xp.toLocaleString('uk-UA');
 
-      showLevelUp();
+    const xpSmall = root.querySelector('.pg-rank-xp__xp-core small');
+    if (xpSmall) {
+      xpSmall.textContent = `${xp.toLocaleString('uk-UA')} / ${xpMax.toLocaleString('uk-UA')}`;
     }
   }
 
   function showLevelUp() {
+    if (!isPendingPage()) return;
+
+    document.querySelector('.pg-rank-xp-pop')?.remove();
+
     const el = document.createElement('div');
     el.className = 'pg-rank-xp-pop';
-    el.textContent = `РІВЕНЬ ${state.level}`;
+    el.textContent = `РІВЕНЬ ${clampLevel(state.level)}`;
 
     document.body.appendChild(el);
-
-    requestAnimationFrame(() => {
-      el.classList.add('is-visible');
-    });
+    requestAnimationFrame(() => el.classList.add('is-visible'));
 
     setTimeout(() => {
       el.classList.remove('is-visible');
-      setTimeout(() => el.remove(), 300);
-    }, 2000);
+      setTimeout(() => el.remove(), 320);
+    }, 1900);
   }
 
-  /* ===== PUBLIC API ===== */
+  function normalize(next = {}) {
+    state = {
+      ...state,
+      ...next,
+      level: clampLevel(next.level ?? state.level),
+      xp: Math.max(0, Number(next.xp ?? state.xp) || 0),
+      xpMax: Math.max(1, Number(next.xpMax ?? state.xpMax) || 1)
+    };
+  }
 
   window.LAVASH_PENDING_RANK_XP = {
+    init(initialState = {}) {
+      if (!isPendingPage()) {
+        removeUI();
+        return;
+      }
 
-    init(initialState) {
-      state = { ...state, ...initialState };
-      createUI();
+      normalize(initialState);
       updateUI();
     },
 
-    addXP(amount) {
-      state.xp += amount;
-      checkLevelUp();
+    set(nextState = {}) {
+      if (!isPendingPage()) {
+        removeUI();
+        return;
+      }
+
+      normalize(nextState);
       updateUI();
     },
 
-    set(stateUpdate) {
-      state = { ...state, ...stateUpdate };
+    addXP(amount = 0) {
+      if (!isPendingPage()) return;
+
+      state.xp += Number(amount) || 0;
+
+      while (state.xp >= state.xpMax && state.level < 15) {
+        state.xp -= state.xpMax;
+        state.level += 1;
+        showLevelUp();
+      }
+
+      if (state.level >= 15) {
+        state.level = 15;
+        state.xp = Math.min(state.xp, state.xpMax);
+      }
+
       updateUI();
     },
 
-    updateFromGame(gameState) {
-      state.level = gameState.level || state.level;
-      state.xp = gameState.xp || state.xp;
-      state.xpMax = gameState.xpMax || state.xpMax;
-
-      updateUI();
+    destroy() {
+      removeUI();
     }
-
   };
 
+  window.addEventListener('hashchange', () => {
+    if (!isPendingPage()) {
+      removeUI();
+    }
+  });
 })();
