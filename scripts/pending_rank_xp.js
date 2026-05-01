@@ -1,6 +1,5 @@
 /* =====================================================
-   PENDING RANK + XP MODULE
-   Файл: pending_rank_xp.js
+   PENDING RANK + XP MODULE (UPGRADED)
 ===================================================== */
 
 (function () {
@@ -77,11 +76,21 @@
 
     root.innerHTML = `
       <div class="pg-rank-xp__rank">
+
         <div class="pg-rank-xp__emblem">
           <img src="../assets/ranks/rank-01.png" alt="rank">
         </div>
+
         <div class="pg-rank-xp__level">РІВЕНЬ</div>
+
         <div class="pg-rank-xp__title">—</div>
+
+        <!-- 🔥 MINI XP BAR -->
+        <div class="pg-rank-xp__bar">
+          <div class="pg-rank-xp__bar-fill"></div>
+          <div class="pg-rank-xp__bar-text">0 / 0 XP</div>
+        </div>
+
       </div>
 
       <div class="pg-rank-xp__xp">
@@ -109,30 +118,43 @@
     const level = clampLevel(state.level);
     const xp = Math.max(0, Number(state.xp) || 0);
     const xpMax = Math.max(1, Number(state.xpMax) || 1);
-    const deg = Math.max(0, Math.min(1, xp / xpMax)) * 360;
+    const percent = Math.max(0, Math.min(1, xp / xpMax)) * 100;
+
+    const deg = percent * 3.6;
 
     root.style.setProperty('--pg-rank-accent', state.accent || '#38dfff');
     document.documentElement.style.setProperty('--pg-xp-deg', `${deg}deg`);
 
+    // emblem
     const img = root.querySelector('.pg-rank-xp__emblem img');
     if (img) {
       img.src = `../assets/ranks/${RANKS[level] || RANKS[1]}`;
       img.alt = `Рівень ${level}`;
     }
 
+    // level text
     const levelEl = root.querySelector('.pg-rank-xp__level');
     if (levelEl) levelEl.textContent = `РІВЕНЬ ${level}`;
 
+    // rank name
     const titleEl = root.querySelector('.pg-rank-xp__title');
-    if (titleEl) titleEl.textContent = state.rank || RANK_NAMES[level] || '—';
+    if (titleEl) titleEl.textContent = state.rank || RANK_NAMES[level];
 
+    // xp circle
     const xpStrong = root.querySelector('.pg-rank-xp__xp-core strong');
     if (xpStrong) xpStrong.textContent = xp.toLocaleString('uk-UA');
 
     const xpSmall = root.querySelector('.pg-rank-xp__xp-core small');
     if (xpSmall) {
-      xpSmall.textContent = `${xp.toLocaleString('uk-UA')} / ${xpMax.toLocaleString('uk-UA')}`;
+      xpSmall.textContent = `${xp} / ${xpMax}`;
     }
+
+    // 🔥 MINI BAR UPDATE
+    const bar = root.querySelector('.pg-rank-xp__bar-fill');
+    const barText = root.querySelector('.pg-rank-xp__bar-text');
+
+    if (bar) bar.style.width = percent + '%';
+    if (barText) barText.textContent = `${xp} / ${xpMax} XP`;
   }
 
   function showLevelUp() {
@@ -142,15 +164,16 @@
 
     const el = document.createElement('div');
     el.className = 'pg-rank-xp-pop';
-    el.textContent = `РІВЕНЬ ${clampLevel(state.level)}`;
+    el.textContent = `РІВЕНЬ ${state.level}`;
 
     document.body.appendChild(el);
+
     requestAnimationFrame(() => el.classList.add('is-visible'));
 
     setTimeout(() => {
       el.classList.remove('is-visible');
-      setTimeout(() => el.remove(), 320);
-    }, 1900);
+      setTimeout(() => el.remove(), 300);
+    }, 1800);
   }
 
   function normalize(next = {}) {
@@ -164,22 +187,15 @@
   }
 
   window.LAVASH_PENDING_RANK_XP = {
-    init(initialState = {}) {
-      if (!isPendingPage()) {
-        removeUI();
-        return;
-      }
 
+    init(initialState = {}) {
+      if (!isPendingPage()) return;
       normalize(initialState);
       updateUI();
     },
 
     set(nextState = {}) {
-      if (!isPendingPage()) {
-        removeUI();
-        return;
-      }
-
+      if (!isPendingPage()) return;
       normalize(nextState);
       updateUI();
     },
@@ -209,8 +225,7 @@
   };
 
   window.addEventListener('hashchange', () => {
-    if (!isPendingPage()) {
-      removeUI();
-    }
+    if (!isPendingPage()) removeUI();
   });
+
 })();
