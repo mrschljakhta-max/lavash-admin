@@ -560,9 +560,9 @@
         label: 'Невідомий населений пункт',
         shortLabel: 'НП',
         iconUrl: '../assets/icons/unknown/settlement.svg',
-        color: '#f5b84b',
-        bg1: 'rgba(128, 86, 8, .92)',
-        bg2: 'rgba(54, 38, 13, .96)'
+        color: '#ffd84d',
+        bg1: 'rgba(255, 196, 45, .96)',
+        bg2: 'rgba(142, 86, 0, .96)'
       },
       unit: {
         label: 'Невідомий підрозділ',
