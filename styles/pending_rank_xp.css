@@ -701,3 +701,94 @@
     filter: brightness(1.12);
   }
 }
+/* =====================================================
+   XP CIRCLE — DOUBLE RING + ENERGY SWEEP
+===================================================== */
+
+.pg-rank-xp__xp {
+  position: relative !important;
+  isolation: isolate !important;
+}
+
+.pg-rank-xp__xp .pg-rank-xp__xp-core {
+  z-index: 5 !important;
+}
+
+.pg-rank-xp__xp-core::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+
+  width: 148px;
+  height: 148px;
+
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+
+  border: 1px solid color-mix(in srgb, var(--pg-rank-tier-2) 46%, transparent);
+
+  box-shadow:
+    0 0 18px color-mix(in srgb, var(--pg-rank-tier) 28%, transparent),
+    inset 0 0 18px color-mix(in srgb, var(--pg-rank-tier-2) 14%, transparent);
+
+  pointer-events: none;
+  z-index: -1;
+}
+
+.pg-rank-xp__xp > i {
+  display: none;
+}
+
+/* світловий пробіг поверх кільця */
+.pg-rank-xp__xp::before {
+  box-shadow:
+    inset 0 0 24px rgba(255,255,255,0.05),
+    0 0 0 1px rgba(255,255,255,0.08),
+    0 0 28px color-mix(in srgb, var(--pg-rank-tier) 18%, transparent) !important;
+}
+
+.pg-rank-xp__xp::after {
+  filter:
+    drop-shadow(0 0 12px color-mix(in srgb, var(--pg-rank-tier) 42%, transparent))
+    drop-shadow(0 0 28px color-mix(in srgb, var(--pg-rank-tier-2) 20%, transparent));
+}
+
+/* додатковий thin-ring через outline */
+.pg-rank-xp__xp {
+  outline: 1px solid color-mix(in srgb, var(--pg-rank-tier) 32%, transparent);
+  outline-offset: 9px;
+
+  border: 1px solid color-mix(in srgb, var(--pg-rank-tier-2) 24%, rgba(255,255,255,0.08));
+}
+
+/* енергетичний shimmer */
+.pg-rank-xp__xp-energy {
+  position: absolute;
+  inset: -7px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 4;
+
+  background:
+    conic-gradient(
+      from 0deg,
+      transparent 0deg,
+      transparent 245deg,
+      rgba(255,255,255,0.9) 258deg,
+      color-mix(in srgb, var(--pg-rank-tier-2) 80%, white) 268deg,
+      transparent 282deg,
+      transparent 360deg
+    );
+
+  mask: radial-gradient(circle, transparent 61%, #000 62%, #000 68%, transparent 69%);
+  filter: blur(1px);
+  opacity: 0.8;
+
+  animation: pgXpEnergySweep 3.6s linear infinite;
+}
+
+@keyframes pgXpEnergySweep {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
