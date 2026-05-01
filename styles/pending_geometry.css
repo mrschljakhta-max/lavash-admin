@@ -1222,3 +1222,101 @@ button[aria-label*="Next"] {
     0 0 72px rgba(255, 166, 0, 0.20),
     inset 0 0 36px rgba(255,255,255,0.10) !important;
 }
+/* ===== FRONT CARD — CENTERED APPLE / VISION LAYOUT ===== */
+
+:root {
+  --pg-front-status-top: 28px;
+  --pg-front-title-top: 112px;
+  --pg-front-radar-y: 58%;
+  --pg-front-footer-bottom: 28px;
+  --pg-front-radar-size: clamp(190px, 15vw, 265px);
+  --pg-front-title-size: clamp(32px, 2.35vw, 46px);
+}
+
+.pg-card[data-slot="0"] .pg-card__front {
+  position: absolute !important;
+  inset: 0 !important;
+  display: block !important;
+  text-align: center !important;
+  overflow: hidden !important;
+}
+
+.pg-card[data-slot="0"] .pg-card__topline {
+  position: absolute !important;
+  left: 50% !important;
+  top: var(--pg-front-status-top) !important;
+  transform: translateX(-50%) !important;
+  width: 86% !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 12px !important;
+}
+
+.pg-card[data-slot="0"] .pg-card__status {
+  margin: 0 !important;
+  text-align: center !important;
+  justify-content: center !important;
+}
+
+.pg-card[data-slot="0"] .pg-data {
+  position: absolute !important;
+  left: 50% !important;
+  top: var(--pg-front-title-top) !important;
+  transform: translateX(-50%) !important;
+  width: 86% !important;
+  display: flex !important;
+  justify-content: center !important;
+  text-align: center !important;
+}
+
+.pg-card[data-slot="0"] .pg-data__value {
+  text-align: center !important;
+  font-size: var(--pg-front-title-size) !important;
+  line-height: 0.92 !important;
+  margin: 0 auto !important;
+  overflow-wrap: anywhere !important;
+}
+
+.pg-card[data-slot="0"] .pg-visual {
+  position: absolute !important;
+  left: 50% !important;
+  top: var(--pg-front-radar-y) !important;
+  transform: translate(-50%, -50%) !important;
+  width: var(--pg-front-radar-size) !important;
+  height: var(--pg-front-radar-size) !important;
+  display: grid !important;
+  place-items: center !important;
+}
+
+.pg-card[data-slot="0"] .pg-radar-core {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.pg-card[data-slot="0"] .pg-card__front small {
+  position: absolute !important;
+  left: 50% !important;
+  bottom: var(--pg-front-footer-bottom) !important;
+  transform: translateX(-50%) !important;
+  width: min(72%, 240px) !important;
+  text-align: center !important;
+}
+
+/* light beam */
+.pg-card[data-slot="0"] .pg-card__front::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: -20% !important;
+  pointer-events: none !important;
+  background: linear-gradient(
+    108deg,
+    transparent 0%,
+    transparent 34%,
+    rgba(255,255,255,0.13) 43%,
+    rgba(255,255,255,0.055) 50%,
+    transparent 62%
+  ) !important;
+  opacity: 0.75 !important;
+  mix-blend-mode: screen !important;
+}
