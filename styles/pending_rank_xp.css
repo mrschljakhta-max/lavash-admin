@@ -405,3 +405,83 @@
 
   color: rgba(180,220,255,0.75);
 }
+/* =====================================================
+   AAA RANK XP BAR — GLOW / FLASH / LEVEL COLOR
+===================================================== */
+
+.pg-rank-xp {
+  --pg-rank-tier: #38dfff;
+  --pg-rank-tier-2: #ffd35b;
+}
+
+.pg-rank-xp__bar {
+  box-shadow:
+    0 0 12px color-mix(in srgb, var(--pg-rank-tier) 38%, transparent),
+    0 0 28px color-mix(in srgb, var(--pg-rank-tier-2) 16%, transparent),
+    inset 0 0 8px rgba(0,0,0,0.65) !important;
+}
+
+.pg-rank-xp__bar-fill {
+  position: relative;
+  background: linear-gradient(
+    90deg,
+    var(--pg-rank-tier),
+    #7ff4ff,
+    var(--pg-rank-tier-2)
+  ) !important;
+
+  box-shadow:
+    0 0 12px color-mix(in srgb, var(--pg-rank-tier) 70%, transparent),
+    0 0 26px color-mix(in srgb, var(--pg-rank-tier-2) 42%, transparent) !important;
+}
+
+.pg-rank-xp__bar-fill::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 46%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,0.86),
+    transparent
+  );
+  filter: blur(2px);
+  animation: pgXpBarSweep 2.2s linear infinite;
+}
+
+.pg-rank-xp.is-levelup .pg-rank-xp__rank,
+.pg-rank-xp.is-levelup .pg-rank-xp__xp {
+  animation: pgLevelFlash 0.85s ease both;
+}
+
+.pg-rank-xp.is-levelup .pg-rank-xp__bar-fill {
+  animation:
+    pgXpBarPulse 0.85s ease both,
+    pgXpBarSweep 2.2s linear infinite;
+}
+
+@keyframes pgXpBarSweep {
+  from { transform: translateX(-120%); }
+  to { transform: translateX(240%); }
+}
+
+@keyframes pgXpBarPulse {
+  0% { filter: brightness(1); }
+  35% { filter: brightness(2.2) saturate(1.8); }
+  100% { filter: brightness(1); }
+}
+
+@keyframes pgLevelFlash {
+  0% {
+    filter: brightness(1);
+  }
+  35% {
+    filter:
+      brightness(1.85)
+      drop-shadow(0 0 28px var(--pg-rank-tier-2));
+  }
+  100% {
+    filter: brightness(1);
+  }
+}
