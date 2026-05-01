@@ -995,9 +995,6 @@ button[aria-label*="Next"] {
   border-radius: 999px;
 }
 
-<div class="full">Редагування назви</div>
-<div class="full">Поле вводу</div>
-<div class="full">Кнопка</div>
 /* ===== BACK SIDE — EDITOR PANEL MODE ===== */
 
 .pg-card[data-slot="0"] .pg-card__back {
@@ -1319,4 +1316,106 @@ button[aria-label*="Next"] {
   ) !important;
   opacity: 0.75 !important;
   mix-blend-mode: screen !important;
+}
+
+/* =====================================================
+   FINAL OVERRIDE — STAR OFF + TRUE CENTER FIX
+   Додавати останнім. Вирішує:
+   1) прибирає зірку зверху;
+   2) повертає активну картку в центр;
+   3) не ламає lift / tilt / flip;
+   4) страхує front/back від горизонтального зсуву.
+===================================================== */
+
+:root {
+  /* міняй тільки це число, якщо треба вище/нижче */
+  --pg-geo-card-lift-y: 120px;
+}
+
+/* прибрати зірку на активній картці */
+.pg-card[data-slot="0"] .pg-card__star,
+.pg-card[data-slot="0"] button.pg-card__star {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* статус після видалення зірки залишається строго по центру */
+.pg-card[data-slot="0"] .pg-card__topline {
+  left: 50% !important;
+  right: auto !important;
+  transform: translateX(-50%) !important;
+  justify-content: center !important;
+  grid-template-columns: 1fr !important;
+}
+
+/* головний центр активної картки */
+.pg-card[data-slot="0"] {
+  position: absolute !important;
+  left: 50% !important;
+  top: 50% !important;
+
+  transform:
+    translate(-50%, -50%)
+    translateY(calc(-1 * var(--pg-geo-card-lift-y)))
+    scale(1) !important;
+
+  transform-origin: center center !important;
+}
+
+/* hover / tilt — той самий центр + нахил */
+.pg-card[data-slot="0"].is-tilting {
+  transform:
+    translate(-50%, -50%)
+    translateY(calc(-1 * var(--pg-geo-card-lift-y)))
+    perspective(900px)
+    rotateX(var(--pg-tilt-x))
+    rotateY(var(--pg-tilt-y))
+    scale(1.015) !important;
+
+  transform-origin: center center !important;
+}
+
+/* flipped — не рухаємо саму картку, обертається inner */
+.pg-card[data-slot="0"].is-flipped {
+  transform:
+    translate(-50%, -50%)
+    translateY(calc(-1 * var(--pg-geo-card-lift-y)))
+    scale(1) !important;
+
+  transform-origin: center center !important;
+}
+
+/* front має бути рівно в межах картки */
+.pg-card[data-slot="0"] .pg-card__front {
+  left: 0 !important;
+  right: auto !important;
+  top: 0 !important;
+  bottom: auto !important;
+
+  width: 100% !important;
+  height: 100% !important;
+
+  transform: rotateY(0deg) !important;
+  transform-origin: center center !important;
+}
+
+/* back ширший, але якір по центру */
+.pg-card[data-slot="0"] .pg-card__back {
+  left: 50% !important;
+  right: auto !important;
+  top: 0 !important;
+  bottom: auto !important;
+
+  height: 100% !important;
+
+  transform: translateX(-50%) rotateY(180deg) !important;
+  transform-origin: center center !important;
+}
+
+/* light beam і контент не повинні створювати зсув */
+.pg-card[data-slot="0"] .pg-card__front::before,
+.pg-card[data-slot="0"] .pg-card__front::after {
+  pointer-events: none !important;
 }
