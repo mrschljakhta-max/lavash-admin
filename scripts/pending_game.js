@@ -1353,3 +1353,32 @@
     init
   };
 })();
+/* ===== BACK CARD WHEEL LOCK ===== */
+
+(function lockBackCardWheel() {
+  document.addEventListener(
+    "wheel",
+    function (event) {
+      const backCard = event.target.closest(
+        '.pg-card[data-slot="0"] .pg-card__back'
+      );
+
+      if (!backCard) return;
+
+      const scrollable = event.target.closest(
+        '.pg-card__back, .pg-card__back form, .pg-card__back [class*="form"], .pg-card__back [class*="edit"]'
+      );
+
+      if (!scrollable) return;
+
+      const canScroll =
+        scrollable.scrollHeight > scrollable.clientHeight ||
+        backCard.scrollHeight > backCard.clientHeight;
+
+      if (canScroll) {
+        event.stopPropagation();
+      }
+    },
+    { capture: true, passive: false }
+  );
+})();
