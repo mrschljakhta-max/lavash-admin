@@ -66,3 +66,37 @@
 .pg-rank-xp__xp-core small {
   font-size: 12px;
 }
+.pg-rank-xp {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 35 !important;
+
+  display: grid !important;
+  grid-template-columns: 1fr 420px 1fr !important;
+  align-items: center !important;
+  justify-items: center !important;
+
+  pointer-events: none !important;
+}
+
+.pg-rank-xp__rank {
+  grid-column: 1 !important;
+  transform: translateX(72px) translateY(18px) scale(1.55) !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.pg-card[data-slot="0"] {
+  z-index: 50 !important;
+}
+
+.pg-rank-xp__xp {
+  grid-column: 3 !important;
+  transform: translateX(-78px) translateY(0) scale(1.55) !important;
+}
+
+.pg-rank-xp__rank,
+.pg-rank-xp__xp {
+  pointer-events: none !important;
+}
