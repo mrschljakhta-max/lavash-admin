@@ -772,7 +772,7 @@ button[aria-label*="Next"] {
 ===================================================== */
 
 :root {
-  --pg-geo-card-lift-y: 92px;
+  --pg-geo-card-lift-y: 120px;
 }
 
 /* базовий стан */
