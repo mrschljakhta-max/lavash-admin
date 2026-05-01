@@ -134,7 +134,8 @@
       </div>
 
       <div class="pg-rank-xp__xp">
-        <div class="pg-rank-xp__xp-core">
+        <div class="pg-rank-xp__xp-energy"></div>
+           <div class="pg-rank-xp__xp-core">
           <strong>0</strong>
           <span>XP</span>
           <small>0 / 0</small>
