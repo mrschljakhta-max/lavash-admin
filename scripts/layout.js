@@ -499,13 +499,21 @@
 
   function lavashBuildOperatorRanksModal() {
     const ranks = [
-      { icon: '☆', title: 'Стажер', level: 'Рівень 1–2', xp: '0–149 XP', note: 'Перші перевірки та знайомство з картками' },
-      { icon: '✦', title: 'Оператор', level: 'Рівень 3–5', xp: '150–399 XP', note: 'Стабільна обробка записів без помилок' },
-      { icon: '◆', title: 'Навідник', level: 'Рівень 6–8', xp: '400–649 XP', note: 'Швидке сортування та контроль якості' },
-      { icon: '★', title: 'Аналітик I', level: 'Рівень 9–11', xp: '650–849 XP', note: 'Висока точність рішень і темп роботи' },
-      { icon: '✪', title: 'Аналітик II', level: 'Рівень 12–14', xp: '850–1199 XP', note: 'Поточний преміум-ранг оператора' },
-      { icon: '✹', title: 'Старший аналітик', level: 'Рівень 15–19', xp: '1200–1799 XP', note: 'Ведення складних записів і перевірка інших' },
-      { icon: '✺', title: 'Майстер обробки', level: 'Рівень 20+', xp: '1800+ XP', note: 'Максимальна продуктивність і надійність' }
+      { title: 'Стажер', level: 'Рівень 1', xp: '0–99 XP', note: 'Перші перевірки та знайомство з картками' },
+      { title: 'Молодший оператор', level: 'Рівень 2', xp: '100–199 XP', note: 'Початкова стабільність у рішеннях' },
+      { title: 'Оператор', level: 'Рівень 3', xp: '200–349 XP', note: 'Стабільна обробка записів без помилок' },
+      { title: 'Навідник', level: 'Рівень 4', xp: '350–499 XP', note: 'Швидке сортування та контроль якості' },
+      { title: 'Аналітик I', level: 'Рівень 5', xp: '500–699 XP', note: 'Висока точність рішень і темп роботи' },
+      { title: 'Аналітик II', level: 'Рівень 6', xp: '700–899 XP', note: 'Поточний преміум-ранг оператора' },
+      { title: 'Старший аналітик', level: 'Рівень 7', xp: '900–1199 XP', note: 'Ведення складних записів і перевірка інших' },
+      { title: 'Майстер обробки', level: 'Рівень 8', xp: '1200–1499 XP', note: 'Максимальна продуктивність у зміні' },
+      { title: 'Експерт даних', level: 'Рівень 9', xp: '1500–1799 XP', note: 'Глибока перевірка й точність нормалізації' },
+      { title: 'Контролер якості', level: 'Рівень 10', xp: '1800–2199 XP', note: 'Контроль правильності рішень операторів' },
+      { title: 'Куратор системи', level: 'Рівень 11', xp: '2200–2599 XP', note: 'Кураторство процесу та стабільності обробки' },
+      { title: 'Архітектор даних', level: 'Рівень 12', xp: '2600–3199 XP', note: 'Складна логіка довідників і структури даних' },
+      { title: 'Командир аналітики', level: 'Рівень 13', xp: '3200–3999 XP', note: 'Керування темпом і якістю всієї зміни' },
+      { title: 'Легенда системи', level: 'Рівень 14', xp: '4000–4999 XP', note: 'Елітний рівень стабільності та продуктивності' },
+      { title: 'Верховний оператор', level: 'Рівень 15', xp: '5000+ XP', note: 'Найвищий ранг редактора Lavash Admin' }
     ];
 
     return `
@@ -516,7 +524,7 @@
           <div class="lavash-modal__header">
             <div>
               <h3 class="lavash-modal__title" id="operatorRanksModalTitle">Ранги оператора</h3>
-              <p class="lavash-modal__subtitle">Список рівнів, значків і XP для гейміфікації роботи редактора</p>
+              <p class="lavash-modal__subtitle">15 рівнів прогресу з готовими значками з assets/ranks</p>
             </div>
 
             <button class="lavash-modal__close" id="operatorRanksModalClose" type="button" aria-label="Закрити">
@@ -524,21 +532,28 @@
             </button>
           </div>
 
-          <div class="lavash-ranks-list">
-            ${ranks.map((rank, index) => `
-              <article class="lavash-rank-row ${rank.title === 'Аналітик II' ? 'is-current' : ''}">
-                <span class="lavash-rank-row__place">${String(index + 1).padStart(2, '0')}</span>
-                <span class="lavash-rank-row__badge">${rank.icon}</span>
-                <span class="lavash-rank-row__main">
-                  <strong>${rank.title}</strong>
-                  <small>${rank.note}</small>
-                </span>
-                <span class="lavash-rank-row__meta">
-                  <b>${rank.level}</b>
-                  <small>${rank.xp}</small>
-                </span>
-              </article>
-            `).join('')}
+          <div class="lavash-ranks-grid" aria-label="Список рангів оператора">
+            ${ranks.map((rank, index) => {
+              const rankNo = String(index + 1).padStart(2, '0');
+              const isCurrent = index === 5;
+
+              return `
+                <article class="lavash-rank-card ${isCurrent ? 'is-current' : ''}">
+                  <span class="lavash-rank-card__place">${rankNo}</span>
+                  <span class="lavash-rank-card__badge">
+                    <img src="/lavash-admin/assets/ranks/rank-${rankNo}.png?v=12" alt="${rank.title}" loading="lazy" />
+                  </span>
+                  <span class="lavash-rank-card__main">
+                    <strong>${rank.title}</strong>
+                    <small>${rank.note}</small>
+                  </span>
+                  <span class="lavash-rank-card__meta">
+                    <b>${rank.level}</b>
+                    <small>${rank.xp}</small>
+                  </span>
+                </article>
+              `;
+            }).join('')}
           </div>
         </div>
       </div>
