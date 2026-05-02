@@ -97,8 +97,9 @@
       state.width = Math.max(320, rect.width);
       state.height = Math.max(420, rect.height);
       state.cx = state.width / 2;
-      state.cy = state.height / 2 + 10;
-      state.scale = clamp(Math.min(state.width / 1180, state.height / 710), .58, 1.18);
+      state.cy = state.height / 2 + 8;
+      // Трохи стискаємо портал, щоб HUD-заголовки не налазили на зовнішні кільця.
+      state.scale = clamp(Math.min(state.width / 1320, state.height / 980), .46, .92);
       canvas.width = Math.floor(state.width * state.dpr);
       canvas.height = Math.floor(state.height * state.dpr);
       canvas.style.width = `${state.width}px`;
@@ -178,7 +179,7 @@
       if (ring.locked) return;
 
       const match = progressForRing(ring);
-      const isNear = shortestDeg(ring.angle, ring.target) < 7.5 && Math.abs(ring.velocity) < 1.1;
+      const isNear = (shortestDeg(ring.angle, ring.target) < 13.5 || match > .88) && Math.abs(ring.velocity) < 3.2;
       if (!isNear) return;
 
       const expectedIndex = state.requiredOrder[state.orderCursor];
@@ -255,10 +256,11 @@
           const match = progressForRing(ring);
           const diff = shortestDeg(ring.angle, ring.target);
 
-          if (match > .72 && Math.abs(ring.velocity) < 2.9) {
+          if (match > .66 && Math.abs(ring.velocity) < 4.2) {
             const direct = normDeg(ring.target) - normDeg(ring.angle);
             const shortest = ((direct + 540) % 360) - 180;
-            ring.velocity += shortest * .018 * match;
+            // Сильніше магнітне дотягування біля цілі, щоб останнє кільце не зависало на 90–92%.
+            ring.velocity += shortest * (.024 + match * .032) * match;
           }
 
           // Anti-bruteforce: надто різке крутіння трохи збиває вже зібране останнє кільце.
@@ -276,7 +278,7 @@
           ring.angle += ring.velocity * dt * 60;
           ring.velocity *= Math.pow(ring.drag, dt * 60);
 
-          if (diff < 7.5 && Math.abs(ring.velocity) < 1.1) tryLockRing(ring);
+          if ((diff < 13.5 || match > .88) && Math.abs(ring.velocity) < 3.2) tryLockRing(ring);
         } else {
           ring.angle = lerp(ring.angle, ring.target, .24);
           ring.lockFlash *= .88;
