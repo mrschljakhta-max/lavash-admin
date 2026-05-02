@@ -1,4 +1,5 @@
-(() => {
+(function bootLogsVortex() {
+  function start() {
   const page = document.getElementById("logsPage");
   const shell = document.getElementById("logsVortexShell");
   const canvas = document.getElementById("logsVortexCanvas");
@@ -696,5 +697,29 @@
   resize();
   bindEvents();
   updateHud();
-  requestAnimationFrame(draw);
+    requestAnimationFrame(draw);
+  }
+
+  let attempts = 0;
+
+  const timer = setInterval(() => {
+    attempts++;
+
+    const page = document.getElementById("logsPage");
+    const shell = document.getElementById("logsVortexShell");
+    const canvas = document.getElementById("logsVortexCanvas");
+
+    if (page && shell && canvas) {
+      clearInterval(timer);
+      start();
+    }
+
+    if (attempts > 80) {
+      clearInterval(timer);
+      console.warn("logs vortex: elements not found");
+    }
+  }, 100);
 })();
+
+
+
