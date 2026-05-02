@@ -309,17 +309,76 @@
     }
   ];
 
+  const OPERATOR_RANKS = [
+    { id: 1, title: 'Стажер', min: 0, max: 100, note: 'Перші перевірки та знайомство з картками' },
+    { id: 2, title: 'Молодший оператор', min: 100, max: 200, note: 'Початкова стабільність у рішеннях' },
+    { id: 3, title: 'Оператор', min: 200, max: 350, note: 'Стабільна обробка записів без помилок' },
+    { id: 4, title: 'Навідник', min: 350, max: 500, note: 'Швидке сортування та контроль якості' },
+    { id: 5, title: 'Аналітик I', min: 500, max: 700, note: 'Висока точність рішень і темп роботи' },
+    { id: 6, title: 'Аналітик II', min: 700, max: 900, note: 'Поточний преміум-ранг оператора' },
+    { id: 7, title: 'Старший аналітик', min: 900, max: 1500, note: 'Ведення складних записів і перевірка інших' },
+    { id: 8, title: 'Майстер обробки', min: 1500, max: 3000, note: 'Максимальна продуктивність у зміні' },
+    { id: 9, title: 'Експерт даних', min: 3000, max: 6000, note: 'Глибока перевірка й точність нормалізації' },
+    { id: 10, title: 'Контролер якості', min: 6000, max: 10000, note: 'Контроль правильності рішень операторів' },
+    { id: 11, title: 'Куратор системи', min: 10000, max: 20000, note: 'Кураторство процесу та стабільності обробки' },
+    { id: 12, title: 'Архітектор даних', min: 20000, max: 35000, note: 'Складна логіка довідників і структури даних' },
+    { id: 13, title: 'Командир аналітики', min: 35000, max: 60000, note: 'Керування темпом і якістю всієї зміни' },
+    { id: 14, title: 'Легенда системи', min: 60000, max: 100000, note: 'Елітний рівень стабільності та продуктивності' },
+    { id: 15, title: 'Верховний оператор', min: 100000, max: Infinity, note: 'Найвищий ранг редактора Lavash Admin' }
+  ];
+
   const state = {
     active: 0,
     xp: 842,
-    xpMax: 1000,
+    xpMax: 900,
     todayXp: 222,
-    level: 12,
+    level: 6,
     rank: 'Аналітик II',
     streak: 7,
     accuracy: 92,
     isResolving: false
   };
+
+  function formatXP(value) {
+    if (value === Infinity) return '100k+';
+    if (value >= 100000) return `${Math.round(value / 1000)}k+`;
+    if (value >= 10000) return `${Math.round(value / 1000)}k`;
+    if (value >= 1000) return `${(value / 1000).toFixed(value % 1000 === 0 ? 0 : 1)}k`;
+    return String(value);
+  }
+
+  function getRankByXp(xp) {
+    return OPERATOR_RANKS.find((rank) => xp >= rank.min && xp < rank.max) || OPERATOR_RANKS[OPERATOR_RANKS.length - 1];
+  }
+
+  function syncRankState() {
+    const currentRank = getRankByXp(state.xp);
+    state.level = currentRank.id;
+    state.rank = currentRank.title;
+    state.xpMax = currentRank.max;
+    return currentRank;
+  }
+
+  function getRankProgress() {
+    const currentRank = syncRankState();
+    if (currentRank.max === Infinity) return 100;
+
+    const range = currentRank.max - currentRank.min;
+    const value = state.xp - currentRank.min;
+    return Math.max(0, Math.min(100, Math.round((value / range) * 100)));
+  }
+
+  function getXpToNextLabel() {
+    const currentRank = syncRankState();
+    if (currentRank.max === Infinity) return 'максимальний ранг';
+
+    const left = Math.max(0, currentRank.max - state.xp);
+    return `${left.toLocaleString('uk-UA')} XP до наступного рангу`;
+  }
+
+  function getRankIconSrc(level = state.level) {
+    return `/lavash-admin/assets/ranks/rank-${String(level).padStart(2, '0')}.png?v=12`;
+  }
 
   function qs(selector) {
     return document.querySelector(selector);
@@ -383,18 +442,16 @@
   }
 
   function renderRightRankList() {
-    const ranks = [
-      { level: 10, title: 'Ведучий оператор' },
-      { level: 11, title: 'Спеціаліст' },
-      { level: 12, title: 'Аналітик II' },
-      { level: 13, title: 'Аналітик III рівня' },
-      { level: 14, title: 'Аналітик II рівня' }
-    ];
+    syncRankState();
+
+    const currentIndex = Math.max(0, OPERATOR_RANKS.findIndex((rank) => rank.id === state.level));
+    const from = Math.max(0, Math.min(OPERATOR_RANKS.length - 5, currentIndex - 2));
+    const ranks = OPERATOR_RANKS.slice(from, from + 5);
 
     return ranks.map((rank) => `
-      <div class="pg-right-rank-row ${rank.level === state.level ? 'is-current' : ''}">
-        <span>${getChevron(rank.level)}</span>
-        <b>${rank.level}</b>
+      <div class="pg-right-rank-row ${rank.id === state.level ? 'is-current' : ''}">
+        <span><img src="${getRankIconSrc(rank.id)}" alt="" loading="lazy"></span>
+        <b>${rank.id}</b>
         <em>${rank.title}</em>
       </div>
     `).join('');
@@ -407,7 +464,7 @@
 
     if (!rightTools) return;
 
-    const progress = Math.round((state.xp / state.xpMax) * 100);
+    const progress = getRankProgress();
     const oldPanel = document.getElementById('pendingGameRightPanel');
     if (oldPanel) oldPanel.remove();
 
@@ -490,7 +547,7 @@
     const root = getRoot();
     if (!root) return;
 
-    const progress = Math.round((state.xp / state.xpMax) * 100);
+    const progress = getRankProgress();
     const activeRecord = records[state.active];
     const activeUnknownConfig = getUnknownConfig(activeRecord.unknownType || 'record');
     document.documentElement.style.setProperty('--pg-accent-status', activeUnknownConfig.color || getStatusColor(activeRecord.status));
@@ -503,7 +560,7 @@
         <div class="pg-game-hud" aria-hidden="true">
           <aside class="pg-hud-rank-card">
             <div class="pg-rank-emblem" aria-hidden="true">
-              <img src="../assets/ranks/rank-analyst-ii.svg" alt="">
+              <img src="${getRankIconSrc()}" alt="">
             </div>
             <div class="pg-rank-info">
               <span class="pg-hud-rank-card__kicker">Ранг</span>
@@ -526,7 +583,7 @@
               <span>XP</span>
               <strong>${state.xp.toLocaleString('uk-UA')}</strong>
               <div class="pg-hud-xp-bar"><i></i></div>
-              <small>${state.xpMax.toLocaleString('uk-UA')} до наступного рівня</small>
+              <small>${getXpToNextLabel()}</small>
             </div>
           </aside>
         </div>
@@ -1277,7 +1334,8 @@
     const page = qs('#pendingGamePage');
 
     state.isResolving = true;
-    state.xp = Math.min(state.xpMax, state.xp + xp);
+    state.xp += xp;
+    syncRankState();
     state.todayXp += xp;
 
     window.LAVASH_PENDING_RANK_XP?.addXP(xp);
@@ -1386,6 +1444,7 @@
 }
 
   function init() {
+    syncRankState();
     render();
 
     window.LAVASH_PENDING_RANK_XP?.init({
