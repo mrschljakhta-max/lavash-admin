@@ -26,8 +26,8 @@
 .logs-vortex-shell {
   position: relative;
   width: 100%;
-  height: clamp(520px, calc(100vh - 245px), 660px);
-  min-height: 520px;
+  height: clamp(590px, calc(100vh - 205px), 760px);
+  min-height: 590px;
   overflow: hidden;
   border-radius: 28px;
   background:
@@ -99,7 +99,7 @@
 
 .logs-vortex-hud__top {
   position: absolute;
-  top: 12px;
+  top: 20px;
   left: 50%;
   transform: translateX(-50%);
   display: grid;
@@ -126,7 +126,7 @@
 .logs-vortex-hud__bottom {
   position: absolute;
   left: 50%;
-  bottom: 10px;
+  bottom: 22px;
   transform: translateX(-50%);
   width: min(880px, calc(100% - 56px));
   display: flex;
@@ -170,7 +170,7 @@
 .logs-vortex-reset {
   position: absolute;
   right: 26px;
-  top: 12px;
+  top: 20px;
   z-index: 5;
 }
 
@@ -277,9 +277,36 @@
 .logs-status--ok { color: var(--logs-green); }
 .logs-status--bad { color: var(--logs-red); }
 
+
+
+.logs-vortex-hud__top::before,
+.logs-vortex-hud__bottom::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(620px, 70vw);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(84,244,255,.34), transparent);
+  filter: drop-shadow(0 0 10px rgba(84,244,255,.45));
+}
+
+.logs-vortex-hud__top::before { bottom: -10px; }
+.logs-vortex-hud__bottom::before { top: -10px; }
+
+.logs-vortex-shell .logs-vortex-reset::after {
+  content: "";
+  position: absolute;
+  inset: -8px;
+  border-radius: 22px;
+  border: 1px solid rgba(84,244,255,.08);
+  opacity: .7;
+  pointer-events: none;
+}
+
 @media (max-width: 1100px) {
   .logs-vortex-shell {
-    height: 540px;
+    height: 620px;
   }
 
   .logs-vortex-reset {
@@ -295,7 +322,7 @@
 
 @media (max-width: 720px) {
   .logs-vortex-shell {
-    height: 520px;
+    height: 560px;
     border-radius: 22px;
   }
 
