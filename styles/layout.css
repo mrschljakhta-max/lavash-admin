@@ -1686,3 +1686,12 @@ body.lavash-modal-open {
   }
 }
 
+
+/* Patch: compact rank icons in the editor right XP panel */
+.pg-right-rank-row span img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 0 10px rgba(255, 238, 155, .35));
+}
