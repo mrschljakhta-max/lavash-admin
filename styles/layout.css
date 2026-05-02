@@ -1359,3 +1359,285 @@ body.lavash-modal-open {
   }
 }
 
+
+/* =====================================================
+   EDITOR RIGHT NAV PATCH — ranks modal + compact guide
+===================================================== */
+
+.lavash-modal__card--guide-pro {
+  width: min(820px, calc(100vw - 48px)) !important;
+  max-height: min(760px, calc(100vh - 44px)) !important;
+  overflow-y: auto !important;
+  padding: 22px 24px 18px !important;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(56,223,255,.45) rgba(255,255,255,.06);
+}
+
+.lavash-modal__card--guide-pro::-webkit-scrollbar {
+  width: 8px;
+}
+
+.lavash-modal__card--guide-pro::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(56,223,255,.42);
+}
+
+.lavash-modal__header--pro {
+  margin-bottom: 14px !important;
+}
+
+.lavash-modal__head-icon {
+  width: 56px !important;
+  height: 56px !important;
+  min-width: 56px !important;
+  border-radius: 20px !important;
+}
+
+.lavash-modal__head-icon svg {
+  width: 28px !important;
+  height: 28px !important;
+}
+
+.lavash-guide-pro {
+  gap: 12px !important;
+}
+
+.lavash-guide-flow {
+  gap: 10px !important;
+}
+
+.lavash-guide-step {
+  min-height: 76px !important;
+  grid-template-columns: 58px 1fr !important;
+  gap: 14px !important;
+  padding: 12px 16px !important;
+  border-radius: 22px !important;
+}
+
+.lavash-guide-step__icon {
+  width: 46px !important;
+  height: 46px !important;
+  border-radius: 17px !important;
+}
+
+.lavash-guide-step__icon svg {
+  width: 22px !important;
+  height: 22px !important;
+}
+
+.lavash-guide-step strong {
+  margin-bottom: 3px !important;
+  font-size: 15px !important;
+}
+
+.lavash-guide-step p {
+  font-size: 12px !important;
+  line-height: 1.34 !important;
+}
+
+.lavash-hotkeys-panel {
+  padding: 12px !important;
+  border-radius: 22px !important;
+}
+
+.lavash-hotkeys-panel__head {
+  margin-bottom: 10px !important;
+}
+
+.lavash-hotkeys-panel__head span {
+  font-size: 16px !important;
+}
+
+.lavash-hotkey {
+  min-height: 104px !important;
+  padding: 10px !important;
+  gap: 7px !important;
+  border-radius: 18px !important;
+}
+
+.lavash-hotkey kbd {
+  min-width: 36px !important;
+  height: 32px !important;
+  padding: 0 10px !important;
+  border-radius: 11px !important;
+  font-size: 13px !important;
+}
+
+.lavash-hotkey span {
+  font-size: 11px !important;
+  line-height: 1.26 !important;
+}
+
+.lavash-hotkey b {
+  padding: 5px 8px !important;
+  font-size: 10px !important;
+}
+
+.lavash-guide-tip {
+  grid-template-columns: 1fr 72px !important;
+  padding: 12px 16px !important;
+  border-radius: 22px !important;
+}
+
+.lavash-guide-tip strong {
+  margin-bottom: 3px !important;
+  font-size: 14px !important;
+}
+
+.lavash-guide-tip p {
+  font-size: 12px !important;
+  line-height: 1.34 !important;
+}
+
+.lavash-guide-tip__orb {
+  width: 58px !important;
+  height: 58px !important;
+  font-size: 28px !important;
+}
+
+.lavash-guide-footer {
+  margin-top: 12px !important;
+  padding-top: 12px !important;
+}
+
+.lavash-guide-ok {
+  height: 40px !important;
+  min-width: 132px !important;
+  border-radius: 13px !important;
+  font-size: 13px !important;
+}
+
+.lavash-modal__card--operator-ranks {
+  width: min(760px, calc(100vw - 48px)) !important;
+  max-height: min(760px, calc(100vh - 44px)) !important;
+  overflow: hidden;
+  padding: 26px !important;
+  border-radius: 32px !important;
+  border: 1px solid rgba(255,211,91,.22) !important;
+  background:
+    linear-gradient(115deg, rgba(255,255,255,.09), transparent 27%),
+    radial-gradient(circle at 16% 0%, rgba(255,211,91,.16), transparent 34%),
+    radial-gradient(circle at 90% 100%, rgba(124,92,255,.22), transparent 42%),
+    linear-gradient(180deg, rgba(9,23,68,.97), rgba(4,10,32,.99)) !important;
+  box-shadow:
+    0 46px 110px rgba(0,0,0,.52),
+    0 0 70px rgba(255,211,91,.10),
+    inset 0 0 38px rgba(255,255,255,.045) !important;
+  animation: lavashModalCardIn .28s cubic-bezier(.2,.9,.22,1.08) both;
+}
+
+.lavash-modal__card--operator-ranks::before {
+  content: "";
+  position: absolute;
+  inset: -45%;
+  background: conic-gradient(from 0deg, transparent, rgba(255,211,91,.16), transparent, rgba(56,223,255,.12), transparent);
+  opacity: .36;
+  animation: lavashModalHaloSpin 18s linear infinite;
+  pointer-events: none;
+}
+
+.lavash-modal__card--operator-ranks > * {
+  position: relative;
+  z-index: 2;
+}
+
+.lavash-ranks-list {
+  max-height: min(560px, calc(100vh - 210px));
+  overflow-y: auto;
+  display: grid;
+  gap: 10px;
+  padding-right: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,211,91,.45) rgba(255,255,255,.06);
+}
+
+.lavash-rank-row {
+  display: grid;
+  grid-template-columns: 44px 54px minmax(0, 1fr) 132px;
+  align-items: center;
+  gap: 12px;
+  min-height: 74px;
+  padding: 12px 14px;
+  border-radius: 22px;
+  background: linear-gradient(90deg, rgba(255,255,255,.075), rgba(255,255,255,.032));
+  border: 1px solid rgba(255,255,255,.085);
+  box-shadow: inset 0 0 22px rgba(255,255,255,.028);
+}
+
+.lavash-rank-row.is-current {
+  background:
+    linear-gradient(90deg, rgba(255,211,91,.16), rgba(56,223,255,.08)),
+    rgba(255,255,255,.04);
+  border-color: rgba(255,211,91,.28);
+  box-shadow:
+    0 0 26px rgba(255,211,91,.10),
+    inset 0 0 22px rgba(255,255,255,.04);
+}
+
+.lavash-rank-row__place {
+  color: rgba(173,210,255,.62);
+  font-size: 12px;
+  font-weight: 950;
+  letter-spacing: .14em;
+}
+
+.lavash-rank-row__badge {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 17px;
+  color: #fff4bd;
+  font-size: 24px;
+  background:
+    radial-gradient(circle at 50% 20%, rgba(255,255,255,.22), transparent 42%),
+    linear-gradient(135deg, rgba(255,211,91,.22), rgba(124,92,255,.34));
+  box-shadow: 0 0 20px rgba(255,211,91,.12), inset 0 0 18px rgba(255,255,255,.05);
+}
+
+.lavash-rank-row__main {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.lavash-rank-row__main strong {
+  color: #fff;
+  font-size: 15px;
+  font-weight: 950;
+}
+
+.lavash-rank-row__main small {
+  color: rgba(226,236,255,.62);
+  font-size: 12px;
+  line-height: 1.28;
+}
+
+.lavash-rank-row__meta {
+  display: grid;
+  justify-items: end;
+  gap: 4px;
+}
+
+.lavash-rank-row__meta b {
+  color: #9af4ff;
+  font-size: 12px;
+  font-weight: 950;
+}
+
+.lavash-rank-row__meta small {
+  color: #fff2a8;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+@media (max-width: 760px) {
+  .lavash-rank-row {
+    grid-template-columns: 34px 46px 1fr;
+  }
+
+  .lavash-rank-row__meta {
+    grid-column: 3;
+    justify-items: start;
+  }
+}
