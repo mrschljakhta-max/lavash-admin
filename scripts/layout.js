@@ -107,21 +107,32 @@
               </button>
             ` : ''}
 
-            <button class="tool-item" data-tool="search" type="button">
-              <span class="tool-item__icon-wrap">
-                <img src="/lavash-admin/assets/icons/tool-search.svg?v=12" alt="" class="tool-item__icon" />
+            <button class="tool-item" data-tool="rating" type="button" title="Рейтинг користувачів">
+              <span class="tool-item__icon-wrap tool-item__icon-wrap--svg">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M8 21h8"></path>
+                  <path d="M12 17v4"></path>
+                  <path d="M7 4h10v5a5 5 0 0 1-10 0V4Z"></path>
+                  <path d="M7 6H4a2 2 0 0 0 2 4h1"></path>
+                  <path d="M17 6h3a2 2 0 0 1-2 4h-1"></path>
+                </svg>
               </span>
-              <span class="tool-item__label">Пошук</span>
+              <span class="tool-item__label">Рейтинг</span>
             </button>
 
-            <button class="tool-item" data-tool="filters" type="button">
-              <span class="tool-item__icon-wrap">
-                <img src="/lavash-admin/assets/icons/tool-filter.svg?v=12" alt="" class="tool-item__icon" />
+            <button class="tool-item" data-tool="guide" type="button" title="Інструкція до роботи">
+              <span class="tool-item__icon-wrap tool-item__icon-wrap--svg">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                  <path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15Z"></path>
+                  <path d="M8 7h8"></path>
+                  <path d="M8 11h6"></path>
+                </svg>
               </span>
-              <span class="tool-item__label">Фільтри</span>
+              <span class="tool-item__label">Інструкція</span>
             </button>
 
-            <button class="tool-item" data-tool="refresh" type="button">
+            <button class="tool-item" data-tool="refresh" type="button" title="Оновити">
               <span class="tool-item__icon-wrap">
                 <img src="/lavash-admin/assets/icons/tool-refresh.svg?v=12" alt="" class="tool-item__icon" />
               </span>
@@ -252,6 +263,88 @@
     `;
   }
 
+  function lavashBuildRatingModal() {
+    return `
+      <div class="lavash-modal hidden" id="ratingModal" aria-hidden="true">
+        <div class="lavash-modal__backdrop" data-close="rating-modal"></div>
+
+        <div class="lavash-modal__card lavash-modal__card--rating" role="dialog" aria-modal="true" aria-labelledby="ratingModalTitle">
+          <div class="lavash-modal__header">
+            <div>
+              <h3 class="lavash-modal__title" id="ratingModalTitle">Рейтинг користувачів</h3>
+              <p class="lavash-modal__subtitle">Поточний прогрес операторів, XP та рівні обробки</p>
+            </div>
+
+            <button class="lavash-modal__close" id="ratingModalClose" type="button" aria-label="Закрити">
+              <span>✕</span>
+            </button>
+          </div>
+
+          <div class="lavash-rating-list" id="ratingModalList">
+            <div class="lavash-rating-row is-top">
+              <span class="lavash-rating-row__place">1</span>
+              <span class="lavash-rating-row__name">Оператор</span>
+              <span class="lavash-rating-row__level">Рівень 12</span>
+              <strong class="lavash-rating-row__xp">842 XP</strong>
+            </div>
+
+            <div class="lavash-rating-row">
+              <span class="lavash-rating-row__place">2</span>
+              <span class="lavash-rating-row__name">Аналітик</span>
+              <span class="lavash-rating-row__level">Рівень 9</span>
+              <strong class="lavash-rating-row__xp">680 XP</strong>
+            </div>
+
+            <div class="lavash-rating-row">
+              <span class="lavash-rating-row__place">3</span>
+              <span class="lavash-rating-row__name">Черговий</span>
+              <span class="lavash-rating-row__level">Рівень 7</span>
+              <strong class="lavash-rating-row__xp">515 XP</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function lavashBuildGuideModal() {
+    return `
+      <div class="lavash-modal hidden" id="guideModal" aria-hidden="true">
+        <div class="lavash-modal__backdrop" data-close="guide-modal"></div>
+
+        <div class="lavash-modal__card lavash-modal__card--guide" role="dialog" aria-modal="true" aria-labelledby="guideModalTitle">
+          <div class="lavash-modal__header">
+            <div>
+              <h3 class="lavash-modal__title" id="guideModalTitle">Інструкція до роботи</h3>
+              <p class="lavash-modal__subtitle">Коротка легенда для обробки карток у редакторі</p>
+            </div>
+
+            <button class="lavash-modal__close" id="guideModalClose" type="button" aria-label="Закрити">
+              <span>✕</span>
+            </button>
+          </div>
+
+          <div class="lavash-guide-list">
+            <div class="lavash-guide-item">
+              <strong>1. Переглянь картку</strong>
+              <span>Оціни тип обʼєкта, поточне значення та запропоноване редагування.</span>
+            </div>
+
+            <div class="lavash-guide-item">
+              <strong>2. Обери дію</strong>
+              <span>Погодь, відхили або проігноруй запис залежно від якості даних.</span>
+            </div>
+
+            <div class="lavash-guide-item">
+              <strong>3. Збережи зміни</strong>
+              <span>Після успішної обробки система нараховує XP та оновлює прогрес.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
   function lavashBuildHeader(title = 'Lavash Admin') {
   return `
     <header class="workspace-header">
@@ -333,6 +426,10 @@ badge.setAttribute('title', map[normalized]);
           : lavashBuildDefaultRightTools(pageKey));
 
     const dictsDialogHtml = pageKey === 'dicts' ? lavashBuildDictsModeDialog() : '';
+    const commonDialogsHtml = `
+      ${lavashBuildRatingModal()}
+      ${lavashBuildGuideModal()}
+    `;
 
     mount.innerHTML = `
       <div class="app-shell">
@@ -349,6 +446,7 @@ badge.setAttribute('title', map[normalized]);
       </div>
 
       ${dictsDialogHtml}
+      ${commonDialogsHtml}
     `;
 
     bindLavashLayoutEvents();
@@ -380,6 +478,81 @@ badge.setAttribute('title', map[normalized]);
     }
 
     bindDictsModeDialog();
+    bindRightToolsActions();
+  }
+
+  function lavashOpenModal(dialogId) {
+    const dialog = document.getElementById(dialogId);
+    if (!dialog) return;
+
+    dialog.classList.remove('hidden');
+    dialog.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('lavash-modal-open');
+  }
+
+  function lavashCloseModal(dialogId) {
+    const dialog = document.getElementById(dialogId);
+    if (!dialog) return;
+
+    dialog.classList.add('hidden');
+    dialog.setAttribute('aria-hidden', 'true');
+
+    const anyOpen = document.querySelector('.lavash-modal:not(.hidden)');
+    if (!anyOpen) {
+      document.body.classList.remove('lavash-modal-open');
+    }
+  }
+
+  function bindGenericModal(dialogId, closeId, closeDataName) {
+    const dialog = document.getElementById(dialogId);
+    if (!dialog || dialog.dataset.bound === 'true') return;
+
+    dialog.dataset.bound = 'true';
+
+    const closeBtn = document.getElementById(closeId);
+    const backdrop = dialog.querySelector(`[data-close="${closeDataName}"]`);
+
+    closeBtn?.addEventListener('click', () => lavashCloseModal(dialogId));
+    backdrop?.addEventListener('click', () => lavashCloseModal(dialogId));
+  }
+
+  function bindRightToolsActions() {
+    document.querySelectorAll('.right-tools .tool-item[data-tool]').forEach((btn) => {
+      if (btn.dataset.bound === 'true') return;
+      btn.dataset.bound = 'true';
+
+      btn.addEventListener('click', () => {
+        const tool = btn.dataset.tool;
+
+        if (tool === 'rating') {
+          lavashOpenModal('ratingModal');
+          return;
+        }
+
+        if (tool === 'guide') {
+          lavashOpenModal('guideModal');
+          return;
+        }
+
+        if (tool === 'refresh') {
+          window.location.reload();
+        }
+      });
+    });
+
+    bindGenericModal('ratingModal', 'ratingModalClose', 'rating-modal');
+    bindGenericModal('guideModal', 'guideModalClose', 'guide-modal');
+
+    if (window.__lavashRightToolsEscBound !== true) {
+      window.__lavashRightToolsEscBound = true;
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key !== 'Escape') return;
+
+        lavashCloseModal('ratingModal');
+        lavashCloseModal('guideModal');
+      });
+    }
   }
 
   function bindDictsModeDialog() {
