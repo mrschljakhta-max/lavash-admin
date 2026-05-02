@@ -1762,74 +1762,6 @@ body.lavash-modal-open {
   gap: 10px !important;
 }
 
-/* 3) Збереження: видимий знак, анімація і миттєве підтвердження */
-#pendingGamePage .pg-card.is-save-complete .pg-card__back::after,
-.pg-card.is-save-complete .pg-card__back::after {
-  content: "✓ ЗБЕРЕЖЕНО";
-  position: absolute;
-  right: 22px;
-  top: 22px;
-  z-index: 20;
-  padding: 9px 13px;
-  border-radius: 999px;
-  color: #05251e;
-  font-size: 12px;
-  font-weight: 1000;
-  letter-spacing: .08em;
-  background: linear-gradient(90deg, #34f5df, #fff2a8);
-  box-shadow:
-    0 0 26px rgba(52,245,223,.34),
-    0 10px 30px rgba(0,0,0,.28);
-  animation: lavashSavedChip .95s cubic-bezier(.18,.9,.2,1) both;
-  pointer-events: none;
-}
-
-#pendingGamePage .pg-card.is-saved-pulse .pg-card__inner,
-.pg-card.is-saved-pulse .pg-card__inner {
-  animation: lavashCardSavedPulse .75s cubic-bezier(.18,.9,.2,1) both;
-}
-
-#pendingGamePage .pg-card.is-save-complete .pg-card__front,
-.pg-card.is-save-complete .pg-card__front {
-  box-shadow:
-    0 0 0 1px rgba(52,245,223,.34),
-    0 0 38px rgba(52,245,223,.28),
-    inset 0 0 28px rgba(52,245,223,.08) !important;
-}
-
-#pendingGamePage .pg-save-btn:disabled,
-.pg-save-btn:disabled {
-  cursor: default !important;
-  filter: brightness(1.05) !important;
-  opacity: 1 !important;
-}
-
-#pendingGamePage .pg-save-btn__check,
-.pg-save-btn__check {
-  display: inline-grid;
-  place-items: center;
-  width: 24px;
-  height: 24px;
-  margin-right: 8px;
-  border-radius: 50%;
-  background: rgba(4,20,32,.28);
-  color: #ffffff;
-  box-shadow: inset 0 0 12px rgba(255,255,255,.14);
-}
-
-@keyframes lavashSavedChip {
-  0% { opacity: 0; transform: translateY(-10px) scale(.86); filter: blur(2px); }
-  22% { opacity: 1; transform: translateY(0) scale(1.04); filter: blur(0); }
-  78% { opacity: 1; transform: translateY(0) scale(1); }
-  100% { opacity: 0; transform: translateY(-6px) scale(.96); }
-}
-
-@keyframes lavashCardSavedPulse {
-  0% { transform: scale(1); }
-  38% { transform: scale(1.018); filter: brightness(1.13) saturate(1.12); }
-  100% { transform: scale(1); filter: none; }
-}
-
 @media (max-height: 820px) {
   .lavash-modal__card--guide-pro {
     transform: scale(.92) !important;
@@ -1841,4 +1773,155 @@ body.lavash-modal-open {
   .lavash-modal__card--guide-pro {
     transform: scale(.84) !important;
   }
+}
+
+/* =====================================================
+   EDITOR SAVE + FLIP FIX
+   - прибрано велику пляму після збереження
+   - відновлено акуратне обертання картки
+===================================================== */
+
+/* повністю нейтралізуємо старі save-класи, якщо вони залишилися в кеші */
+#pendingGamePage .pg-card.is-save-complete .pg-card__front,
+#pendingGamePage .pg-card.is-save-complete .pg-card__back,
+#pendingGamePage .pg-card.is-save-complete .pg-card__back::before,
+#pendingGamePage .pg-card.is-save-complete .pg-card__back::after,
+#pendingGamePage .pg-card.is-saved-pulse .pg-card__front,
+#pendingGamePage .pg-card.is-saved-pulse .pg-card__back,
+#pendingGamePage .pg-card.is-saved-pulse .pg-card__inner,
+.pg-card.is-save-complete .pg-card__front,
+.pg-card.is-save-complete .pg-card__back,
+.pg-card.is-save-complete .pg-card__back::before,
+.pg-card.is-save-complete .pg-card__back::after,
+.pg-card.is-saved-pulse .pg-card__front,
+.pg-card.is-saved-pulse .pg-card__back,
+.pg-card.is-saved-pulse .pg-card__inner {
+  animation: none !important;
+  filter: none !important;
+}
+
+/* flip-картка: повертаємо нормальну 3D-механіку */
+#pendingGamePage .pg-card,
+.pg-card {
+  perspective: 1400px !important;
+}
+
+#pendingGamePage .pg-card__inner,
+.pg-card__inner {
+  transform-style: preserve-3d !important;
+  transition: transform .72s cubic-bezier(.2,.85,.2,1), filter .3s ease, box-shadow .3s ease !important;
+  will-change: transform !important;
+}
+
+#pendingGamePage .pg-card.is-flipped .pg-card__inner,
+.pg-card.is-flipped .pg-card__inner {
+  transform: rotateY(180deg) !important;
+}
+
+#pendingGamePage .pg-card__face,
+.pg-card__face {
+  backface-visibility: hidden !important;
+  -webkit-backface-visibility: hidden !important;
+}
+
+#pendingGamePage .pg-card__back,
+.pg-card__back {
+  transform: rotateY(180deg) !important;
+}
+
+/* маленький бейдж збереження */
+#pendingGamePage .pg-card__back .pg-save-toast,
+.pg-card__back .pg-save-toast {
+  position: absolute;
+  right: 22px;
+  bottom: 78px;
+  z-index: 50;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  min-width: 134px;
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 999px;
+
+  color: #05251e;
+  font-size: 12px;
+  font-weight: 1000;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+
+  background: linear-gradient(90deg, #34f5df, #fff2a8);
+  border: 1px solid rgba(255,255,255,.54);
+  box-shadow:
+    0 0 18px rgba(52,245,223,.28),
+    0 10px 26px rgba(0,0,0,.28);
+
+  opacity: 0;
+  transform: translateY(8px) scale(.94);
+  animation: lavashSaveToastIn .22s ease-out forwards;
+  pointer-events: none;
+}
+
+#pendingGamePage .pg-card__back .pg-save-toast span,
+.pg-card__back .pg-save-toast span {
+  display: inline-grid;
+  place-items: center;
+  width: 19px;
+  height: 19px;
+  border-radius: 50%;
+  color: #05251e;
+  background: rgba(255,255,255,.58);
+  box-shadow: inset 0 0 8px rgba(255,255,255,.28);
+}
+
+#pendingGamePage .pg-card__back .pg-save-toast.is-hiding,
+.pg-card__back .pg-save-toast.is-hiding {
+  animation: lavashSaveToastOut .22s ease-in forwards;
+}
+
+@keyframes lavashSaveToastIn {
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes lavashSaveToastOut {
+  to {
+    opacity: 0;
+    transform: translateY(-7px) scale(.96);
+  }
+}
+
+/* легкий feedback рамкою, без величезних overlay */
+#pendingGamePage .pg-card.is-save-soft-pulse .pg-card__back,
+.pg-card.is-save-soft-pulse .pg-card__back {
+  box-shadow:
+    0 0 0 1px rgba(52,245,223,.45),
+    0 0 28px rgba(52,245,223,.18),
+    inset 0 0 22px rgba(52,245,223,.07) !important;
+}
+
+#pendingGamePage .pg-save-btn:disabled,
+.pg-save-btn:disabled {
+  cursor: default !important;
+  filter: brightness(1.04) !important;
+  opacity: 1 !important;
+}
+
+#pendingGamePage .pg-save-btn__check,
+.pg-save-btn__check {
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  margin-right: 8px;
+  border-radius: 50%;
+  background: rgba(4,20,32,.28);
+  color: #ffffff;
+  box-shadow: inset 0 0 12px rgba(255,255,255,.14);
 }
