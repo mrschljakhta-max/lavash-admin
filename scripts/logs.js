@@ -82,7 +82,7 @@
     rings.forEach((ring, ringIndex) => {
       ring.letters.length = 0;
 
-      const total = 26 + ringIndex * 4;
+      const total = 18 + ringIndex * 5;
       const keyChars = ring.word.split("");
 
       for (let i = 0; i < total; i++) {
@@ -92,7 +92,7 @@
           slot: i,
           key: useKey,
           jitter: Math.random() * Math.PI * 2,
-          size: useKey ? 28 : 18 + Math.random() * 8,
+          size: useKey ? 30 : 15 + Math.random() * 5,
           alpha: useKey ? 1 : 0.55 + Math.random() * 0.35
         });
       }
@@ -146,11 +146,11 @@
     cx = width / 2;
     cy = height / 2 + 18;
 
-    const maxRadius = Math.min(width * 0.32, height * 0.39);
-    const step = maxRadius / 5.4;
+    const maxRadius = Math.min(width * 0.38, height * 0.48);
+    const step = maxRadius / 4.7;
 
     rings.forEach((ring, i) => {
-      ring.radius = step * (1.25 + i * 0.92);
+      ring.radius = step * (1.05 + i * 0.78);
     });
   }
 
