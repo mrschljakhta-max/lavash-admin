@@ -1,14 +1,91 @@
-<!DOCTYPE html>
-<html lang="uk">
-<head>
-  <meta charset="UTF-8">
-  <title>Test Vortex</title>
-  <link rel="stylesheet" href="logs.css">
-</head>
-<body>
+<section class="logs-page" id="logsPage" aria-label="Сторінка логування">
+  <section class="logs-lock" id="logsLock" aria-label="Вихор доступу до логів">
+    <div class="logs-lock__bg" aria-hidden="true"></div>
 
-<canvas id="vortexCanvas"></canvas>
+    <div class="logs-lock__side-hint" aria-hidden="true">
+      <div class="logs-lock__mouse">⌁</div>
+      <div class="logs-lock__hint-title">Прокручуй колесо</div>
+      <div class="logs-lock__hint-text">щоб налаштувати вихор літер</div>
+    </div>
 
-<script src="logs.js"></script>
-</body>
-</html>
+    <div class="logs-vortex-shell" id="logsVortexShell">
+      <canvas class="logs-vortex-canvas" id="logsVortexCanvas"></canvas>
+
+      <div class="logs-vortex-core" id="logsVortexCore">
+        <div class="logs-vortex-core__label">ключ доступу</div>
+        <div class="logs-vortex-core__word" id="logsVortexWord">ЛОГУВАННЯ</div>
+        <div class="logs-vortex-core__status" id="logsVortexStatus">система заблокована</div>
+      </div>
+
+      <div class="logs-vortex-progress" aria-hidden="true">
+        <div class="logs-vortex-progress__bar" id="logsVortexProgress"></div>
+      </div>
+    </div>
+
+    <div class="logs-lock__footer">
+      <span>Порада:</span> злови момент, коли літери збираються у слово
+    </div>
+  </section>
+
+  <section class="logs-dashboard" id="logsDashboard" aria-label="Таблиця логування">
+    <div class="logs-dashboard__hero">
+      <div>
+        <div class="logs-dashboard__eyebrow">доступ розблоковано</div>
+        <h2>Таблиця логування</h2>
+        <p>Журнал системних подій, входів користувачів, дій операторів і результатів обробки.</p>
+      </div>
+      <button class="logs-dashboard__reset" id="logsLockReset" type="button">повернути замок</button>
+    </div>
+
+    <div class="logs-table-card">
+      <table class="logs-table">
+        <thead>
+          <tr>
+            <th>Дата / час</th>
+            <th>Оператор</th>
+            <th>Дія</th>
+            <th>Статус</th>
+            <th>IP-адреса</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>2026-05-02 09:14:22</td>
+            <td>root</td>
+            <td>Успішний вхід у систему</td>
+            <td><span class="logs-status logs-status--ok">успішно</span></td>
+            <td>192.168.1.12</td>
+          </tr>
+          <tr>
+            <td>2026-05-02 09:17:45</td>
+            <td>admin</td>
+            <td>Перегляд таблиці користувачів</td>
+            <td><span class="logs-status logs-status--ok">успішно</span></td>
+            <td>192.168.1.12</td>
+          </tr>
+          <tr>
+            <td>2026-05-02 09:21:03</td>
+            <td>operator_01</td>
+            <td>Експорт логів</td>
+            <td><span class="logs-status logs-status--ok">успішно</span></td>
+            <td>192.168.1.37</td>
+          </tr>
+          <tr>
+            <td>2026-05-02 09:23:19</td>
+            <td>guest</td>
+            <td>Спроба несанкціонованого доступу</td>
+            <td><span class="logs-status logs-status--bad">відмовлено</span></td>
+            <td>10.0.0.5</td>
+          </tr>
+          <tr>
+            <td>2026-05-02 09:25:47</td>
+            <td>operator_02</td>
+            <td>Зміна налаштувань системи</td>
+            <td><span class="logs-status logs-status--ok">успішно</span></td>
+            <td>192.168.1.15</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</section>
