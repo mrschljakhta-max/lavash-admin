@@ -991,26 +991,49 @@
   }
 
   function showSavePulse(card) {
+    const back = card.querySelector('.pg-card__back');
     const button = card.querySelector('.pg-save-btn');
+
+    // Старі класи прибираємо повністю — саме вони давали велику пляму
     card.classList.remove('is-saved-pulse');
     card.classList.remove('is-save-complete');
+
     if (button) {
-      button.classList.remove('is-saved');
       button.disabled = true;
+      button.classList.add('is-saved');
       button.innerHTML = '<span class="pg-save-btn__check">✓</span> Збережено';
     }
 
-    void card.offsetWidth;
-    card.classList.add('is-saved-pulse', 'is-save-complete');
+    // Маленький акуратний бейдж підтвердження
+    if (back) {
+      back.querySelector('.pg-save-toast')?.remove();
+
+      const toast = document.createElement('div');
+      toast.className = 'pg-save-toast';
+      toast.innerHTML = '<span>✓</span> Збережено';
+      back.appendChild(toast);
+
+      window.setTimeout(() => {
+        toast.classList.add('is-hiding');
+      }, 900);
+
+      window.setTimeout(() => {
+        toast.remove();
+      }, 1250);
+    }
+
+    // Легкий імпульс рамки без зміни transform, щоб не ламати flip
+    card.classList.add('is-save-soft-pulse');
 
     window.setTimeout(() => {
-      card.classList.remove('is-save-complete');
+      card.classList.remove('is-save-soft-pulse');
+
       if (button) {
         button.disabled = false;
         button.classList.remove('is-saved');
         button.textContent = 'Зберегти зміни';
       }
-    }, 1200);
+    }, 1250);
   }
 
   function bindCardDrag(card) {
