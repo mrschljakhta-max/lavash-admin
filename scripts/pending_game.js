@@ -958,13 +958,59 @@
       if (record.unknownType === 'station') record.station = record.mainValue;
     }
 
+    syncActiveCardFront(card, record);
     showSavePulse(card);
   }
 
+  function syncActiveCardFront(card, record) {
+    const unknownType = record.unknownType || 'uav';
+    const unknownConfig = getUnknownConfig(unknownType);
+    const mainValue = escapeHtml(record.mainValue || record.model || record.settlement || record.station || record.title || 'Невідомий запис');
+    const frontValue = card.querySelector('.pg-card__front .pg-data__value');
+    const frontStatus = card.querySelector('.pg-card__front .pg-card__status');
+    const visual = card.querySelector('.pg-card__front .pg-visual');
+    const image = card.querySelector('.pg-card__front .pg-unknown-visual-img');
+
+    card.dataset.unknownType = unknownType;
+    card.dataset.status = record.status || 'unknown';
+    card.style.setProperty('--pg-card-accent', unknownConfig.color);
+    card.style.setProperty('--pg-card-bg-1', unknownConfig.bg1);
+    card.style.setProperty('--pg-card-bg-2', unknownConfig.bg2);
+
+    if (frontValue) frontValue.textContent = mainValue;
+    if (frontStatus) {
+      frontStatus.innerHTML = `<span class="pg-status-dot"></span>${unknownConfig.label}`;
+    }
+    if (visual) {
+      visual.className = `pg-visual pg-visual--${unknownType}`;
+    }
+    if (image) {
+      image.src = getVisualImage(record, unknownType);
+      image.alt = mainValue;
+    }
+  }
+
   function showSavePulse(card) {
+    const button = card.querySelector('.pg-save-btn');
     card.classList.remove('is-saved-pulse');
+    card.classList.remove('is-save-complete');
+    if (button) {
+      button.classList.remove('is-saved');
+      button.disabled = true;
+      button.innerHTML = '<span class="pg-save-btn__check">✓</span> Збережено';
+    }
+
     void card.offsetWidth;
-    card.classList.add('is-saved-pulse');
+    card.classList.add('is-saved-pulse', 'is-save-complete');
+
+    window.setTimeout(() => {
+      card.classList.remove('is-save-complete');
+      if (button) {
+        button.disabled = false;
+        button.classList.remove('is-saved');
+        button.textContent = 'Зберегти зміни';
+      }
+    }, 1200);
   }
 
   function bindCardDrag(card) {
