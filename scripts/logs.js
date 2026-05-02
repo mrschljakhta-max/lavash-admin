@@ -1,7 +1,10 @@
 (() => {
   const KEY_WORD = 'ЛОГУВАННЯ';
-  const UNLOCK_ANGLE = Math.PI * 8;
-  const SNAP_ZONE = 0.34;
+  // ВАЖЛИВО: не ставимо Math.PI * 2 / 4 / 8, бо це дає фазу 0
+  // і замок одразу вважає себе зібраним при першому рендері.
+  const UNLOCK_PHASE = 4.35; // правильне положення вихору в радіанах
+  const SNAP_ZONE = 0.30;
+  const MIN_SCROLL_DELTA_TO_UNLOCK = 900; // користувач має реально докрутити замок
 
   let cleanup = null;
 
@@ -28,6 +31,8 @@
     let time = 0;
     let unlocked = false;
     let rafId = 0;
+    let userScrollPower = 0;
+    let hasInteracted = false;
 
     const letters = lettersPool.map((char, index) => ({
       char,
@@ -60,7 +65,7 @@
     function distanceToUnlock() {
       const cycle = Math.PI * 2;
       const normalized = ((angle % cycle) + cycle) % cycle;
-      const target = ((UNLOCK_ANGLE % cycle) + cycle) % cycle;
+      const target = ((UNLOCK_PHASE % cycle) + cycle) % cycle;
       return Math.min(Math.abs(normalized - target), cycle - Math.abs(normalized - target));
     }
 
@@ -90,7 +95,7 @@
       const snap = getSnap();
       if (!unlocked && snap > 0.08) {
         const cycle = Math.PI * 2;
-        const target = ((UNLOCK_ANGLE % cycle) + cycle) % cycle;
+        const target = ((UNLOCK_PHASE % cycle) + cycle) % cycle;
         const normalized = ((angle % cycle) + cycle) % cycle;
         let diff = target - normalized;
         if (diff > Math.PI) diff -= cycle;
@@ -144,7 +149,13 @@
         status.textContent = snap > 0.82 ? 'майже зібрано' : snap > 0.42 ? 'сигнал вирівнюється' : 'система заблокована';
       }
 
-      if (!unlocked && snap > 0.965 && Math.abs(velocity) < 0.45) {
+      if (
+        !unlocked &&
+        hasInteracted &&
+        userScrollPower >= MIN_SCROLL_DELTA_TO_UNLOCK &&
+        snap > 0.965 &&
+        Math.abs(velocity) < 0.45
+      ) {
         unlock();
       }
 
@@ -154,6 +165,8 @@
     function onWheel(event) {
       if (unlocked) return;
       event.preventDefault();
+      hasInteracted = true;
+      userScrollPower += Math.abs(event.deltaY);
       velocity += event.deltaY * 0.0009;
     }
 
@@ -172,6 +185,8 @@
       unlocked = false;
       angle = 0;
       velocity = 0;
+      userScrollPower = 0;
+      hasInteracted = false;
       page.classList.remove('is-unlocked');
       lock.classList.remove('is-unlocked');
       lock.scrollIntoView({ behavior: 'smooth', block: 'start' });
