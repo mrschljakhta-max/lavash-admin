@@ -846,3 +846,39 @@
     transform: translateY(-40px) scale(1.1);
   }
 }
+/* FIX: lock inner XP core exactly in the center */
+.pg-rank-xp__xp {
+  position: relative !important;
+}
+
+.pg-rank-xp__xp-core {
+  position: absolute !important;
+  left: 50% !important;
+  top: 50% !important;
+
+  width: 150px !important;
+  height: 150px !important;
+
+  transform: translate(-50%, -50%) !important;
+
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  animation: none !important;
+  will-change: auto !important;
+}
+
+.pg-rank-xp__xp-core::before,
+.pg-rank-xp__xp-core::after {
+  transform-origin: center center !important;
+}
+
+/* fly text не має впливати на центрування ядра */
+.pg-rank-xp-fly {
+  position: absolute !important;
+}
