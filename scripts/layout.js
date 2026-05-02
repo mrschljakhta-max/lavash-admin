@@ -72,11 +72,111 @@
     `;
   }
 
-  function lavashBuildDefaultRightTools(pageKey = lavashCurrentPageKey()) {
-    const isDictsPage = pageKey === 'dicts';
+  function lavashIconSvg(name) {
+    const icons = {
+      trophy: `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M8 21h8"></path>
+          <path d="M12 17v4"></path>
+          <path d="M7 4h10v5a5 5 0 0 1-10 0V4Z"></path>
+          <path d="M7 6H4a2 2 0 0 0 2 4h1"></path>
+          <path d="M17 6h3a2 2 0 0 1-2 4h-1"></path>
+        </svg>`,
+      guide: `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+          <path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15Z"></path>
+          <path d="M8 7h8"></path>
+          <path d="M8 11h6"></path>
+        </svg>`,
+      modes: `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3" y="4" width="7" height="7" rx="1.6"></rect>
+          <rect x="14" y="4" width="7" height="7" rx="1.6"></rect>
+          <rect x="3" y="15" width="7" height="6" rx="1.6"></rect>
+          <path d="M14 18h7"></path>
+          <path d="M17.5 15v6"></path>
+        </svg>`,
+      lock: `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="5" y="10" width="14" height="10" rx="2"></rect>
+          <path d="M8 10V7a4 4 0 0 1 8 0v3"></path>
+          <path d="M12 14v2"></path>
+        </svg>`
+    };
+
+    return icons[name] || icons.guide;
+  }
+
+  function lavashToolButton(tool) {
+    const extraClass = tool.className ? ` ${tool.className}` : '';
+    const attrs = [
+      `class="tool-item${extraClass}"`,
+      'type="button"',
+      `title="${tool.title}"`
+    ];
+
+    if (tool.id) attrs.push(`id="${tool.id}"`);
+    if (tool.action) attrs.push(`data-tool="${tool.action}"`);
+    if (tool.ariaHasPopup) attrs.push('aria-haspopup="dialog"');
+    if (tool.ariaControls) attrs.push(`aria-controls="${tool.ariaControls}"`);
+
+    const iconHtml = tool.img
+      ? `<span class="tool-item__icon-wrap"><img src="${tool.img}" alt="" class="tool-item__icon" /></span>`
+      : `<span class="tool-item__icon-wrap tool-item__icon-wrap--svg">${lavashIconSvg(tool.icon)}</span>`;
 
     return `
-      <aside class="right-tools" id="rightTools">
+      <button ${attrs.join(' ')}>
+        ${iconHtml}
+        <span class="tool-item__label">${tool.label}</span>
+      </button>
+    `;
+  }
+
+  function lavashGetRightToolsConfig(pageKey) {
+    const commonRefresh = {
+      action: 'refresh',
+      label: 'Оновити',
+      title: 'Оновити поточну сторінку',
+      img: '/lavash-admin/assets/icons/tool-refresh.svg?v=12'
+    };
+
+    const configs = {
+      pending: [
+        { action: 'rating', icon: 'trophy', label: 'Рейтинг', title: 'Рейтинг користувачів' },
+        { action: 'guide', icon: 'guide', label: 'Інструкція', title: 'Інструкція до роботи з картками' },
+        commonRefresh
+      ],
+      dicts: [
+        {
+          id: 'dictsModeTrigger',
+          icon: 'modes',
+          label: 'Режими',
+          title: 'Режими довідників',
+          className: 'tool-item--dicts-mode',
+          ariaHasPopup: true,
+          ariaControls: 'dictsModeDialog'
+        },
+        { action: 'rating', icon: 'trophy', label: 'Рейтинг', title: 'Рейтинг користувачів' },
+        { action: 'guide', icon: 'guide', label: 'Інструкція', title: 'Інструкція до роботи з довідниками' },
+        commonRefresh
+      ],
+      logs: [
+        { action: 'logs-lock', icon: 'lock', label: 'Замок', title: 'Повернути замок / скинути вихор доступу' },
+        { action: 'guide', icon: 'guide', label: 'Інструкція', title: 'Інструкція до логування' },
+        commonRefresh
+      ]
+    };
+
+    return configs[pageKey] || configs.pending;
+  }
+
+  function lavashBuildDefaultRightTools(pageKey = lavashCurrentPageKey()) {
+    const isDictsPage = pageKey === 'dicts';
+    const tools = lavashGetRightToolsConfig(pageKey);
+
+    return `
+      <aside class="right-tools" id="rightTools" data-page-tools="${pageKey}">
         <div class="right-tools__inner">
           <div class="right-tools__top">
             <div class="right-tools__title-wrap">
@@ -85,59 +185,7 @@
           </div>
 
           <div class="right-tools__menu" aria-label="Інструменти сторінки">
-            ${isDictsPage ? `
-              <button
-                class="tool-item tool-item--dicts-mode"
-                id="dictsModeTrigger"
-                type="button"
-                aria-haspopup="dialog"
-                aria-controls="dictsModeDialog"
-                title="Режими довідників"
-              >
-                <span class="tool-item__icon-wrap tool-item__icon-wrap--svg">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="3" y="4" width="7" height="7" rx="1.6"></rect>
-                    <rect x="14" y="4" width="7" height="7" rx="1.6"></rect>
-                    <rect x="3" y="15" width="7" height="6" rx="1.6"></rect>
-                    <path d="M14 18h7"></path>
-                    <path d="M17.5 15v6"></path>
-                  </svg>
-                </span>
-                <span class="tool-item__label">Режими</span>
-              </button>
-            ` : ''}
-
-            <button class="tool-item" data-tool="rating" type="button" title="Рейтинг користувачів">
-              <span class="tool-item__icon-wrap tool-item__icon-wrap--svg">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M8 21h8"></path>
-                  <path d="M12 17v4"></path>
-                  <path d="M7 4h10v5a5 5 0 0 1-10 0V4Z"></path>
-                  <path d="M7 6H4a2 2 0 0 0 2 4h1"></path>
-                  <path d="M17 6h3a2 2 0 0 1-2 4h-1"></path>
-                </svg>
-              </span>
-              <span class="tool-item__label">Рейтинг</span>
-            </button>
-
-            <button class="tool-item" data-tool="guide" type="button" title="Інструкція до роботи">
-              <span class="tool-item__icon-wrap tool-item__icon-wrap--svg">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-                  <path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15Z"></path>
-                  <path d="M8 7h8"></path>
-                  <path d="M8 11h6"></path>
-                </svg>
-              </span>
-              <span class="tool-item__label">Інструкція</span>
-            </button>
-
-            <button class="tool-item" data-tool="refresh" type="button" title="Оновити">
-              <span class="tool-item__icon-wrap">
-                <img src="/lavash-admin/assets/icons/tool-refresh.svg?v=12" alt="" class="tool-item__icon" />
-              </span>
-              <span class="tool-item__label">Оновити</span>
-            </button>
+            ${tools.map(lavashToolButton).join('')}
           </div>
 
           ${isDictsPage ? '' : '<div class="right-tools__panel" id="layoutRightPanel"></div>'}
@@ -631,7 +679,28 @@ badge.setAttribute('title', map[normalized]);
           return;
         }
 
+        if (tool === 'logs-lock') {
+          document.getElementById('logsLockAgainBtn')?.click();
+          document.getElementById('logsResetBtn')?.click();
+          return;
+        }
+
         if (tool === 'refresh') {
+          const refreshEvent = new CustomEvent('lavash:right-tools-refresh', {
+            bubbles: true,
+            cancelable: true,
+            detail: { pageKey: lavashCurrentPageKey() }
+          });
+
+          document.dispatchEvent(refreshEvent);
+
+          if (refreshEvent.defaultPrevented) return;
+
+          if (window.LAVASH_ROUTER?.loadLavashView) {
+            window.LAVASH_ROUTER.loadLavashView();
+            return;
+          }
+
           window.location.reload();
         }
       });
