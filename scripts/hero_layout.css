@@ -1,0 +1,101 @@
+/* =====================================================
+   HERO LAYOUT — STABLE POSITIONING
+===================================================== */
+
+.pg-rank-xp {
+  position: absolute !important;
+  left: 92px !important;
+  right: 92px !important;
+  top: 165px !important;
+  bottom: 48px !important;
+
+  z-index: 35 !important;
+
+  display: grid !important;
+  grid-template-columns: minmax(260px, 1fr) 420px minmax(260px, 1fr) !important;
+  align-items: center !important;
+  justify-items: center !important;
+
+  gap: 34px !important;
+  pointer-events: none !important;
+
+  transform: none !important;
+}
+
+/* ліва емблема */
+.pg-rank-xp__rank {
+  grid-column: 1 !important;
+
+  width: 300px !important;
+  height: 360px !important;
+
+  transform: translateX(12px) translateY(0) scale(1) !important;
+
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.pg-rank-xp__emblem {
+  width: 230px !important;
+  height: 230px !important;
+
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.pg-rank-xp__emblem img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+}
+
+/* права XP */
+.pg-rank-xp__xp {
+  grid-column: 3 !important;
+
+  width: 240px !important;
+  height: 240px !important;
+
+  transform: translateX(-10px) translateY(-8px) scale(1) !important;
+}
+
+/* карта має бути зверху */
+.pg-card[data-slot="0"] {
+  z-index: 50 !important;
+}
+
+/* текст рівня */
+.pg-rank-xp__level {
+  font-size: 14px !important;
+  letter-spacing: 0.2em !important;
+}
+
+.pg-rank-xp__title {
+  font-size: 34px !important;
+  font-weight: 950 !important;
+}
+
+/* XP текст */
+.pg-rank-xp__xp-core strong {
+  font-size: 52px !important;
+}
+
+.pg-rank-xp__xp-core span {
+  font-size: 14px !important;
+}
+
+.pg-rank-xp__xp-core small {
+  font-size: 12px !important;
+}
+
+
+/* =====================================================
+   HERO FIX — не анімувати позиційний XP-вузол
+===================================================== */
+
+.pg-rank-xp__xp {
+  transform: translateX(-10px) translateY(-8px) scale(1) !important;
+  transform-origin: center center !important;
+}
+

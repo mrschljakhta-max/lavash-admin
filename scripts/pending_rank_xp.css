@@ -1,0 +1,964 @@
+/* =====================================================
+   PENDING RANK + XP MODULE
+   Файл: pending_rank_xp.css
+===================================================== */
+
+.pg-rank-xp {
+  position: fixed;
+  left: clamp(22px, 3vw, 48px);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 80;
+
+  display: grid;
+  gap: 18px;
+  pointer-events: none;
+}
+
+/* ===== RANK EMBLEM ===== */
+
+.pg-rank-xp__rank {
+  width: 150px;
+  min-height: 190px;
+
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 10px;
+
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 50% 18%, rgba(255,255,255,0.16), transparent 42%),
+    linear-gradient(160deg, rgba(12,18,38,0.78), rgba(4,8,18,0.92));
+
+  border: 1px solid rgba(255,255,255,0.12);
+
+  box-shadow:
+    0 0 34px rgba(56,223,255,0.14),
+    inset 0 0 28px rgba(255,255,255,0.04);
+
+  backdrop-filter: blur(18px);
+}
+
+.pg-rank-xp__emblem {
+  width: 108px;
+  height: 108px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 24px;
+  background: rgba(255,255,255,0.06);
+
+  box-shadow:
+    0 0 24px color-mix(in srgb, var(--pg-rank-accent, #38dfff) 28%, transparent),
+    inset 0 0 22px rgba(255,255,255,0.04);
+}
+
+.pg-rank-xp__emblem img {
+  width: 92px;
+  height: 92px;
+  object-fit: contain;
+  filter:
+    drop-shadow(0 0 12px color-mix(in srgb, var(--pg-rank-accent, #38dfff) 46%, transparent))
+    drop-shadow(0 10px 18px rgba(0,0,0,0.35));
+}
+
+.pg-rank-xp__level {
+  font-size: 11px;
+  font-weight: 950;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.58);
+}
+
+.pg-rank-xp__title {
+  max-width: 120px;
+  text-align: center;
+
+  font-size: 15px;
+  line-height: 1.05;
+  font-weight: 950;
+
+  color: #fff;
+}
+
+/* ===== XP RING ===== */
+
+.pg-rank-xp__xp {
+  width: 150px;
+  height: 150px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 50%;
+  background:
+    conic-gradient(
+      var(--pg-rank-accent, #38dfff) var(--pg-xp-deg, 0deg),
+      rgba(255,255,255,0.08) 0deg
+    );
+
+  box-shadow:
+    0 0 34px color-mix(in srgb, var(--pg-rank-accent, #38dfff) 24%, transparent),
+    inset 0 0 26px rgba(255,255,255,0.05);
+}
+
+.pg-rank-xp__xp::before {
+  content: "";
+  position: absolute;
+  width: 118px;
+  height: 118px;
+  border-radius: 50%;
+
+  background:
+    radial-gradient(circle at 50% 28%, rgba(255,255,255,0.12), transparent 36%),
+    linear-gradient(160deg, rgba(9,15,32,0.98), rgba(3,7,16,0.98));
+
+  box-shadow:
+    inset 0 0 24px rgba(255,255,255,0.05),
+    0 0 0 1px rgba(255,255,255,0.08);
+}
+
+.pg-rank-xp__xp-core {
+  position: relative;
+  z-index: 2;
+
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+
+  color: #fff;
+}
+
+.pg-rank-xp__xp-core strong {
+  font-size: 28px;
+  line-height: 1;
+  font-weight: 950;
+  letter-spacing: -0.04em;
+}
+
+.pg-rank-xp__xp-core span {
+  font-size: 11px;
+  font-weight: 950;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--pg-rank-accent, #38dfff) 54%, white);
+}
+
+.pg-rank-xp__xp-core small {
+  margin-top: 4px;
+  font-size: 10px;
+  font-weight: 800;
+  color: rgba(255,255,255,0.54);
+}
+
+/* ===== LEVEL UP POPUP ===== */
+
+.pg-rank-xp-pop {
+  position: fixed;
+  left: 50%;
+  top: 42%;
+  transform: translate(-50%, -50%) scale(0.88);
+  z-index: 9999;
+
+  padding: 22px 36px;
+  border-radius: 28px;
+
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255,255,255,0.18), transparent 48%),
+    linear-gradient(160deg, rgba(10,18,38,0.94), rgba(4,8,18,0.96));
+
+  border: 1px solid rgba(255,255,255,0.16);
+
+  color: #fff;
+  font-size: 28px;
+  font-weight: 950;
+  letter-spacing: -0.04em;
+
+  opacity: 0;
+  pointer-events: none;
+
+  box-shadow:
+    0 0 60px color-mix(in srgb, var(--pg-rank-accent, #38dfff) 34%, transparent),
+    inset 0 0 32px rgba(255,255,255,0.06);
+
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
+}
+
+.pg-rank-xp-pop.is-visible {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media (max-width: 1100px) {
+  .pg-rank-xp {
+    left: 18px;
+    transform: translateY(-50%) scale(0.9);
+    transform-origin: left center;
+  }
+}
+
+@media (max-height: 760px) {
+  .pg-rank-xp {
+    transform: translateY(-50%) scale(0.86);
+    transform-origin: left center;
+  }
+}
+/* =====================================================
+   RANKBAR VISUAL UPGRADE — TOTEM PANEL
+===================================================== */
+
+.pg-rank-xp__rank {
+  position: relative !important;
+  width: 330px !important;
+  min-height: 430px !important;
+
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+
+.pg-rank-xp__rank::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 36%;
+  width: 310px;
+  height: 310px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background:
+    repeating-radial-gradient(
+      circle,
+      rgba(56, 223, 255, 0.14) 0 1px,
+      transparent 1px 34px
+    );
+  opacity: 0.55;
+  filter: drop-shadow(0 0 22px rgba(56, 223, 255, 0.18));
+  animation: pgRankRadarSpin 22s linear infinite;
+  pointer-events: none;
+}
+
+.pg-rank-xp__rank::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 36%;
+  width: 190px;
+  height: 190px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, rgba(255, 211, 91, 0.20), transparent 62%);
+  filter: blur(8px);
+  animation: pgRankAuraPulse 3.4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.pg-rank-xp__emblem {
+  position: relative !important;
+  z-index: 3 !important;
+  width: 245px !important;
+  height: 245px !important;
+  margin: 0 auto !important;
+
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.pg-rank-xp__emblem img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+
+  filter:
+    drop-shadow(0 0 22px rgba(255, 213, 92, 0.58))
+    drop-shadow(0 0 42px rgba(56, 223, 255, 0.20))
+    drop-shadow(0 24px 36px rgba(0, 0, 0, 0.58)) !important;
+
+  animation: pgRankEmblemBreath 3.8s ease-in-out infinite;
+}
+
+.pg-rank-xp__level,
+.pg-rank-xp__title {
+  position: relative !important;
+  z-index: 4 !important;
+}
+
+.pg-rank-xp__level {
+  margin-top: 14px !important;
+  color: rgba(255, 232, 140, 0.86) !important;
+  text-shadow: 0 0 12px rgba(255, 211, 91, 0.38);
+}
+
+.pg-rank-xp__title {
+  position: relative !important;
+  max-width: 260px !important;
+  margin: 8px auto 0 !important;
+  padding: 14px 20px 18px !important;
+
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255,255,255,0.16), transparent 42%),
+    linear-gradient(180deg, rgba(8,18,38,0.34), rgba(2,8,18,0.12));
+  border: 1px solid rgba(255, 232, 140, 0.16);
+
+  color: #fff !important;
+  text-shadow:
+    0 2px 8px rgba(0,0,0,0.55),
+    0 0 18px rgba(255, 211, 91, 0.20);
+}
+
+.pg-rank-xp__title::after {
+  content: "РАНГ ОПЕРАТОРА";
+  position: absolute;
+  left: 50%;
+  bottom: -18px;
+  transform: translateX(-50%);
+  width: 210px;
+
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.18em;
+  color: rgba(168, 214, 255, 0.62);
+  text-align: center;
+}
+
+@keyframes pgRankRadarSpin {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@keyframes pgRankAuraPulse {
+  0%, 100% {
+    opacity: 0.56;
+    transform: translate(-50%, -50%) scale(0.96);
+  }
+  50% {
+    opacity: 0.95;
+    transform: translate(-50%, -50%) scale(1.08);
+  }
+}
+
+@keyframes pgRankEmblemBreath {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.025);
+  }
+}
+/* =====================================================
+   MINI XP BAR UNDER RANK
+===================================================== */
+
+.pg-rank-xp__bar {
+  position: relative;
+  width: 240px;
+  height: 8px;
+  margin: 18px auto 0;
+
+  border-radius: 999px;
+  background: rgba(255,255,255,0.08);
+  overflow: hidden;
+
+  box-shadow:
+    inset 0 0 6px rgba(0,0,0,0.6),
+    0 0 10px rgba(56,223,255,0.15);
+}
+
+.pg-rank-xp__bar-fill {
+  height: 100%;
+  width: 0%;
+
+  background: linear-gradient(
+    90deg,
+    #38dfff,
+    #6af2ff,
+    #ffd35b
+  );
+
+  box-shadow:
+    0 0 10px rgba(56,223,255,0.5),
+    0 0 20px rgba(255,211,91,0.3);
+
+  border-radius: inherit;
+
+  transition: width 0.6s ease;
+}
+
+.pg-rank-xp__bar-text {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+
+  color: rgba(180,220,255,0.75);
+}
+/* =====================================================
+   AAA RANK XP BAR — GLOW / FLASH / LEVEL COLOR
+===================================================== */
+
+.pg-rank-xp {
+  --pg-rank-tier: #38dfff;
+  --pg-rank-tier-2: #ffd35b;
+}
+
+.pg-rank-xp__bar {
+  box-shadow:
+    0 0 12px color-mix(in srgb, var(--pg-rank-tier) 38%, transparent),
+    0 0 28px color-mix(in srgb, var(--pg-rank-tier-2) 16%, transparent),
+    inset 0 0 8px rgba(0,0,0,0.65) !important;
+}
+
+.pg-rank-xp__bar-fill {
+  position: relative;
+  background: linear-gradient(
+    90deg,
+    var(--pg-rank-tier),
+    #7ff4ff,
+    var(--pg-rank-tier-2)
+  ) !important;
+
+  box-shadow:
+    0 0 12px color-mix(in srgb, var(--pg-rank-tier) 70%, transparent),
+    0 0 26px color-mix(in srgb, var(--pg-rank-tier-2) 42%, transparent) !important;
+}
+
+.pg-rank-xp__bar-fill::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 46%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,0.86),
+    transparent
+  );
+  filter: blur(2px);
+  animation: pgXpBarSweep 2.2s linear infinite;
+}
+
+.pg-rank-xp.is-levelup .pg-rank-xp__rank,
+.pg-rank-xp.is-levelup .pg-rank-xp__xp {
+  animation: pgLevelFlash 0.85s ease both;
+}
+
+.pg-rank-xp.is-levelup .pg-rank-xp__bar-fill {
+  animation:
+    pgXpBarPulse 0.85s ease both,
+    pgXpBarSweep 2.2s linear infinite;
+}
+
+@keyframes pgXpBarSweep {
+  from { transform: translateX(-120%); }
+  to { transform: translateX(240%); }
+}
+
+@keyframes pgXpBarPulse {
+  0% { filter: brightness(1); }
+  35% { filter: brightness(2.2) saturate(1.8); }
+  100% { filter: brightness(1); }
+}
+
+@keyframes pgLevelFlash {
+  0% {
+    filter: brightness(1);
+  }
+  35% {
+    filter:
+      brightness(1.85)
+      drop-shadow(0 0 28px var(--pg-rank-tier-2));
+  }
+  100% {
+    filter: brightness(1);
+  }
+}
+/* =====================================================
+   AAA RANK XP BAR — GLOW / FLASH / LEVEL COLOR
+===================================================== */
+
+.pg-rank-xp {
+  --pg-rank-tier: #38dfff;
+  --pg-rank-tier-2: #ffd35b;
+  --pg-rank-glow: rgba(56, 223, 255, 0.38);
+}
+
+.pg-rank-xp__bar {
+  box-shadow:
+    0 0 12px color-mix(in srgb, var(--pg-rank-tier) 38%, transparent),
+    0 0 28px color-mix(in srgb, var(--pg-rank-tier-2) 16%, transparent),
+    inset 0 0 8px rgba(0,0,0,0.65) !important;
+}
+
+.pg-rank-xp__bar-fill {
+  position: relative;
+  background: linear-gradient(
+    90deg,
+    var(--pg-rank-tier),
+    #7ff4ff,
+    var(--pg-rank-tier-2)
+  ) !important;
+
+  box-shadow:
+    0 0 12px color-mix(in srgb, var(--pg-rank-tier) 70%, transparent),
+    0 0 26px color-mix(in srgb, var(--pg-rank-tier-2) 42%, transparent) !important;
+
+  overflow: hidden;
+}
+
+.pg-rank-xp__bar-fill::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 46%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,0.86),
+    transparent
+  );
+  filter: blur(2px);
+  animation: pgXpBarSweep 2.2s linear infinite;
+}
+
+.pg-rank-xp__emblem img {
+  filter:
+    drop-shadow(0 0 20px var(--pg-rank-glow))
+    drop-shadow(0 0 38px color-mix(in srgb, var(--pg-rank-tier-2) 34%, transparent))
+    drop-shadow(0 24px 36px rgba(0,0,0,0.58)) !important;
+}
+
+.pg-rank-xp__level {
+  color: color-mix(in srgb, var(--pg-rank-tier-2) 76%, white) !important;
+}
+
+.pg-rank-xp__title {
+  border-color: color-mix(in srgb, var(--pg-rank-tier) 22%, transparent) !important;
+  box-shadow:
+    0 0 18px color-mix(in srgb, var(--pg-rank-tier) 18%, transparent),
+    inset 0 0 16px rgba(255,255,255,0.04) !important;
+}
+
+.pg-rank-xp.is-levelup .pg-rank-xp__rank,
+.pg-rank-xp.is-levelup .pg-rank-xp__xp {
+  animation: pgLevelFlash 0.85s ease both;
+}
+
+.pg-rank-xp.is-levelup .pg-rank-xp__bar-fill {
+  animation: pgXpBarPulse 0.85s ease both;
+}
+
+.pg-rank-xp-pop {
+  box-shadow:
+    0 0 72px color-mix(in srgb, var(--pg-rank-tier) 44%, transparent),
+    0 0 120px color-mix(in srgb, var(--pg-rank-tier-2) 26%, transparent),
+    inset 0 0 32px rgba(255,255,255,0.08) !important;
+}
+
+@keyframes pgXpBarSweep {
+  from { transform: translateX(-120%); }
+  to { transform: translateX(240%); }
+}
+
+@keyframes pgXpBarPulse {
+  0% { filter: brightness(1); }
+  35% { filter: brightness(2.2) saturate(1.8); }
+  100% { filter: brightness(1); }
+}
+
+@keyframes pgLevelFlash {
+  0% {
+    filter: brightness(1);
+  }
+  35% {
+    filter:
+      brightness(1.85)
+      drop-shadow(0 0 28px var(--pg-rank-tier-2));
+  }
+  100% {
+    filter: brightness(1);
+  }
+}
+/* =====================================================
+   AAA XP CIRCLE — ORBIT / CORE / ENERGY RING
+===================================================== */
+
+.pg-rank-xp__xp {
+  width: 260px !important;
+  height: 260px !important;
+
+  background:
+    conic-gradient(
+      from -90deg,
+      var(--pg-rank-tier, #38dfff) var(--pg-xp-deg, 0deg),
+      rgba(255,255,255,0.075) 0deg
+    ) !important;
+
+  box-shadow:
+    0 0 42px color-mix(in srgb, var(--pg-rank-tier) 34%, transparent),
+    0 0 110px color-mix(in srgb, var(--pg-rank-tier-2) 16%, transparent),
+    inset 0 0 34px rgba(255,255,255,0.06) !important;
+
+  animation: pgXpCircleBreath 3.8s ease-in-out infinite;
+}
+
+.pg-rank-xp__xp::before {
+  width: 198px !important;
+  height: 198px !important;
+
+  background:
+    radial-gradient(circle at 50% 26%, rgba(255,255,255,0.14), transparent 34%),
+    radial-gradient(circle at 50% 70%, color-mix(in srgb, var(--pg-rank-tier) 14%, transparent), transparent 54%),
+    linear-gradient(160deg, rgba(7,14,30,0.98), rgba(2,6,14,0.98)) !important;
+}
+
+.pg-rank-xp__xp::after {
+  content: "";
+  position: absolute;
+  inset: -18px;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--pg-rank-tier) 38%, transparent);
+
+  background:
+    repeating-conic-gradient(
+      from 0deg,
+      color-mix(in srgb, var(--pg-rank-tier) 28%, transparent) 0deg 2deg,
+      transparent 2deg 14deg
+    );
+
+  mask: radial-gradient(circle, transparent 64%, #000 65%);
+  opacity: 0.65;
+
+  animation: pgXpOrbitSpin 18s linear infinite;
+  pointer-events: none;
+}
+
+.pg-rank-xp__xp-core::before {
+  content: "ПРОГРЕС";
+  font-size: 11px;
+  font-weight: 950;
+  letter-spacing: 0.18em;
+  color: color-mix(in srgb, var(--pg-rank-tier-2) 62%, white);
+  text-shadow: 0 0 14px color-mix(in srgb, var(--pg-rank-tier-2) 34%, transparent);
+}
+
+.pg-rank-xp__xp-core strong {
+  font-size: 58px !important;
+  line-height: 0.95 !important;
+  text-shadow:
+    0 0 18px color-mix(in srgb, var(--pg-rank-tier) 44%, transparent),
+    0 6px 18px rgba(0,0,0,0.44);
+}
+
+.pg-rank-xp__xp-core span {
+  margin-top: -2px;
+  font-size: 14px !important;
+  color: color-mix(in srgb, var(--pg-rank-tier) 58%, white) !important;
+}
+
+.pg-rank-xp__xp-core small {
+  margin-top: 8px !important;
+  padding: 5px 11px;
+  border-radius: 999px;
+
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.10);
+
+  font-size: 11px !important;
+  color: rgba(255,255,255,0.68) !important;
+}
+
+.pg-rank-xp.is-levelup .pg-rank-xp__xp {
+  animation:
+    pgLevelFlash 0.85s ease both,
+    pgXpCircleBreath 3.8s ease-in-out infinite;
+}
+
+@keyframes pgXpOrbitSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pgXpCircleBreath {
+  0%, 100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  50% {
+    transform: scale(1.025);
+    filter: brightness(1.12);
+  }
+}
+/* =====================================================
+   XP CIRCLE — DOUBLE RING + ENERGY SWEEP
+===================================================== */
+
+.pg-rank-xp__xp {
+  position: relative !important;
+  isolation: isolate !important;
+}
+
+.pg-rank-xp__xp .pg-rank-xp__xp-core {
+  z-index: 5 !important;
+}
+
+.pg-rank-xp__xp-core::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+
+  width: 148px;
+  height: 148px;
+
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+
+  border: 1px solid color-mix(in srgb, var(--pg-rank-tier-2) 46%, transparent);
+
+  box-shadow:
+    0 0 18px color-mix(in srgb, var(--pg-rank-tier) 28%, transparent),
+    inset 0 0 18px color-mix(in srgb, var(--pg-rank-tier-2) 14%, transparent);
+
+  pointer-events: none;
+  z-index: -1;
+}
+
+.pg-rank-xp__xp > i {
+  display: none;
+}
+
+/* світловий пробіг поверх кільця */
+.pg-rank-xp__xp::before {
+  box-shadow:
+    inset 0 0 24px rgba(255,255,255,0.05),
+    0 0 0 1px rgba(255,255,255,0.08),
+    0 0 28px color-mix(in srgb, var(--pg-rank-tier) 18%, transparent) !important;
+}
+
+.pg-rank-xp__xp::after {
+  filter:
+    drop-shadow(0 0 12px color-mix(in srgb, var(--pg-rank-tier) 42%, transparent))
+    drop-shadow(0 0 28px color-mix(in srgb, var(--pg-rank-tier-2) 20%, transparent));
+}
+
+/* додатковий thin-ring через outline */
+.pg-rank-xp__xp {
+  outline: 1px solid color-mix(in srgb, var(--pg-rank-tier) 32%, transparent);
+  outline-offset: 9px;
+
+  border: 1px solid color-mix(in srgb, var(--pg-rank-tier-2) 24%, rgba(255,255,255,0.08));
+}
+
+/* енергетичний shimmer */
+.pg-rank-xp__xp-energy {
+  position: absolute;
+  inset: -7px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 4;
+
+  background:
+    conic-gradient(
+      from 0deg,
+      transparent 0deg,
+      transparent 245deg,
+      rgba(255,255,255,0.9) 258deg,
+      color-mix(in srgb, var(--pg-rank-tier-2) 80%, white) 268deg,
+      transparent 282deg,
+      transparent 360deg
+    );
+
+  mask: radial-gradient(circle, transparent 61%, #000 62%, #000 68%, transparent 69%);
+  filter: blur(1px);
+  opacity: 0.8;
+
+  animation: pgXpEnergySweep 3.6s linear infinite;
+}
+
+@keyframes pgXpEnergySweep {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ===== XP PULSE ===== */
+.xp-ring.pulse {
+  animation: xpPulse 0.6s ease-out;
+}
+
+@keyframes xpPulse {
+  0% { transform: scale(1); filter: brightness(1); }
+  50% { transform: scale(1.08); filter: brightness(1.5); }
+  100% { transform: scale(1); filter: brightness(1); }
+}
+
+/* ===== RANK FLASH ===== */
+.rank-card.flash {
+  animation: rankFlash 0.6s ease-out;
+}
+
+@keyframes rankFlash {
+  0% { box-shadow: 0 0 0 rgba(255,255,255,0); }
+  50% { box-shadow: 0 0 40px rgba(0,255,255,0.6); }
+  100% { box-shadow: 0 0 0 rgba(255,255,255,0); }
+}
+
+/* ===== XP FLY TEXT ===== */
+.xp-fly {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  font-weight: 700;
+  font-size: 18px;
+  color: #00eaff;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.xp-fly.show {
+  animation: xpFlyUp 1s ease-out forwards;
+}
+
+@keyframes xpFlyUp {
+  0% {
+    opacity: 0;
+    transform: translateY(0) scale(0.8);
+  }
+  30% {
+    opacity: 1;
+    transform: translateY(-10px) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-40px) scale(1.1);
+  }
+}
+
+
+/* =====================================================
+   FIX — STABLE XP CENTER
+   Проблема була в transform/scale на .pg-rank-xp__xp.
+   Тепер позиційний елемент НЕ масштабується, а всі pulse/breath FX
+   живуть всередині .pg-rank-xp__xp-scale.
+===================================================== */
+
+.pg-rank-xp__xp {
+  position: relative !important;
+  display: grid !important;
+  place-items: center !important;
+  overflow: visible !important;
+  transform: translateX(-10px) translateY(-8px) scale(1) !important;
+  animation: none !important;
+  transform-origin: center center !important;
+  contain: layout paint;
+}
+
+.pg-rank-xp__xp-scale {
+  position: absolute !important;
+  inset: 0 !important;
+  display: grid !important;
+  place-items: center !important;
+  border-radius: 50% !important;
+  transform: scale(1) !important;
+  transform-origin: 50% 50% !important;
+  will-change: transform, filter;
+  pointer-events: none !important;
+}
+
+.pg-rank-xp__xp-scale > .pg-rank-xp__xp-energy,
+.pg-rank-xp__xp-scale > .pg-rank-xp__xp-core {
+  grid-area: 1 / 1 !important;
+}
+
+.pg-rank-xp__xp-scale > .pg-rank-xp__xp-energy {
+  position: absolute !important;
+}
+
+.pg-rank-xp__xp-scale > .pg-rank-xp__xp-core {
+  position: relative !important;
+}
+
+.pg-rank-xp__xp-scale.is-xp-pulse {
+  animation:
+    pgXpMicroPulseStable 0.62s ease-out,
+    pgXpCircleBreathStable 3.8s ease-in-out infinite !important;
+}
+
+.pg-rank-xp__xp.is-xp-pulse {
+  animation: none !important;
+}
+
+.pg-rank-xp.is-levelup .pg-rank-xp__xp {
+  animation: pgLevelFlashNoMove 0.85s ease both !important;
+}
+
+.pg-rank-xp__xp-scale {
+  animation: pgXpCircleBreathStable 3.8s ease-in-out infinite;
+}
+
+.pg-rank-xp-fly {
+  right: -22px !important;
+  top: 43% !important;
+}
+
+.xp-ring.pulse,
+.rank-card.flash,
+.xp-fly.show {
+  animation-name: none !important;
+}
+
+@keyframes pgXpMicroPulseStable {
+  0% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  34% {
+    transform: scale(1.065);
+    filter:
+      brightness(1.45)
+      drop-shadow(0 0 24px var(--pg-rank-tier));
+  }
+  100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+}
+
+@keyframes pgXpCircleBreathStable {
+  0%, 100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  50% {
+    transform: scale(1.018);
+    filter: brightness(1.08);
+  }
+}
+
+@keyframes pgLevelFlashNoMove {
+  0% {
+    filter: brightness(1);
+  }
+  35% {
+    filter:
+      brightness(1.55)
+      drop-shadow(0 0 28px var(--pg-rank-tier-2));
+  }
+  100% {
+    filter: brightness(1);
+  }
+}
+
