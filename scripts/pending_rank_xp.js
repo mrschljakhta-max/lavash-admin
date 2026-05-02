@@ -155,12 +155,14 @@
       </div>
 
       <div class="pg-rank-xp__xp">
-        <div class="pg-rank-xp__xp-energy"></div>
+        <div class="pg-rank-xp__xp-scale">
+          <div class="pg-rank-xp__xp-energy"></div>
 
-        <div class="pg-rank-xp__xp-core">
-          <strong>0</strong>
-          <span>XP</span>
-          <small>0 / 0</small>
+          <div class="pg-rank-xp__xp-core">
+            <strong>0</strong>
+            <span>XP</span>
+            <small>0 / 0</small>
+          </div>
         </div>
       </div>
     `;
@@ -183,11 +185,11 @@
     const root = createUI();
     if (!root) return;
 
-    restartAnimation(root.querySelector('.pg-rank-xp__xp'), 'is-xp-pulse');
+    restartAnimation(root.querySelector('.pg-rank-xp__xp-scale'), 'is-xp-pulse');
     restartAnimation(root.querySelector('.pg-rank-xp__rank'), 'is-rank-flash');
     restartAnimation(root.querySelector('.pg-rank-xp__bar-fill'), 'is-xp-bar-hit');
 
-    const xpRing = root.querySelector('.pg-rank-xp__xp');
+    const xpRing = root.querySelector('.pg-rank-xp__xp-scale') || root.querySelector('.pg-rank-xp__xp');
     if (!xpRing) return;
 
     const fly = document.createElement('div');
