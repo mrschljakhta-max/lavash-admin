@@ -102,6 +102,12 @@
           <rect x="5" y="10" width="14" height="10" rx="2"></rect>
           <path d="M8 10V7a4 4 0 0 1 8 0v3"></path>
           <path d="M12 14v2"></path>
+        </svg>`,
+      ranks: `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 3l2.35 4.76 5.25.76-3.8 3.7.9 5.23L12 14.98 7.3 17.45l.9-5.23-3.8-3.7 5.25-.76L12 3Z"></path>
+          <path d="M5 21h14"></path>
+          <path d="M8 18h8"></path>
         </svg>`
     };
 
@@ -145,6 +151,7 @@
       pending: [
         { action: 'rating', icon: 'trophy', label: 'Рейтинг', title: 'Рейтинг користувачів' },
         { action: 'guide', icon: 'guide', label: 'Інструкція', title: 'Інструкція до роботи з картками' },
+        { action: 'operator-ranks', icon: 'ranks', label: 'Ранги', title: 'Ранги оператора' },
         commonRefresh
       ],
       dicts: [
@@ -490,6 +497,54 @@
     `;
   }
 
+  function lavashBuildOperatorRanksModal() {
+    const ranks = [
+      { icon: '☆', title: 'Стажер', level: 'Рівень 1–2', xp: '0–149 XP', note: 'Перші перевірки та знайомство з картками' },
+      { icon: '✦', title: 'Оператор', level: 'Рівень 3–5', xp: '150–399 XP', note: 'Стабільна обробка записів без помилок' },
+      { icon: '◆', title: 'Навідник', level: 'Рівень 6–8', xp: '400–649 XP', note: 'Швидке сортування та контроль якості' },
+      { icon: '★', title: 'Аналітик I', level: 'Рівень 9–11', xp: '650–849 XP', note: 'Висока точність рішень і темп роботи' },
+      { icon: '✪', title: 'Аналітик II', level: 'Рівень 12–14', xp: '850–1199 XP', note: 'Поточний преміум-ранг оператора' },
+      { icon: '✹', title: 'Старший аналітик', level: 'Рівень 15–19', xp: '1200–1799 XP', note: 'Ведення складних записів і перевірка інших' },
+      { icon: '✺', title: 'Майстер обробки', level: 'Рівень 20+', xp: '1800+ XP', note: 'Максимальна продуктивність і надійність' }
+    ];
+
+    return `
+      <div class="lavash-modal hidden" id="operatorRanksModal" aria-hidden="true">
+        <div class="lavash-modal__backdrop" data-close="operator-ranks-modal"></div>
+
+        <div class="lavash-modal__card lavash-modal__card--operator-ranks" role="dialog" aria-modal="true" aria-labelledby="operatorRanksModalTitle">
+          <div class="lavash-modal__header">
+            <div>
+              <h3 class="lavash-modal__title" id="operatorRanksModalTitle">Ранги оператора</h3>
+              <p class="lavash-modal__subtitle">Список рівнів, значків і XP для гейміфікації роботи редактора</p>
+            </div>
+
+            <button class="lavash-modal__close" id="operatorRanksModalClose" type="button" aria-label="Закрити">
+              <span>✕</span>
+            </button>
+          </div>
+
+          <div class="lavash-ranks-list">
+            ${ranks.map((rank, index) => `
+              <article class="lavash-rank-row ${rank.title === 'Аналітик II' ? 'is-current' : ''}">
+                <span class="lavash-rank-row__place">${String(index + 1).padStart(2, '0')}</span>
+                <span class="lavash-rank-row__badge">${rank.icon}</span>
+                <span class="lavash-rank-row__main">
+                  <strong>${rank.title}</strong>
+                  <small>${rank.note}</small>
+                </span>
+                <span class="lavash-rank-row__meta">
+                  <b>${rank.level}</b>
+                  <small>${rank.xp}</small>
+                </span>
+              </article>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
   function lavashBuildHeader(title = 'Lavash Admin') {
   return `
     <header class="workspace-header">
@@ -574,6 +629,7 @@ badge.setAttribute('title', map[normalized]);
     const commonDialogsHtml = `
       ${lavashBuildRatingModal()}
       ${lavashBuildGuideModal()}
+      ${lavashBuildOperatorRanksModal()}
     `;
 
     mount.innerHTML = `
@@ -679,6 +735,11 @@ badge.setAttribute('title', map[normalized]);
           return;
         }
 
+        if (tool === 'operator-ranks') {
+          lavashOpenModal('operatorRanksModal');
+          return;
+        }
+
         if (tool === 'logs-lock') {
           document.getElementById('logsLockAgainBtn')?.click();
           document.getElementById('logsResetBtn')?.click();
@@ -708,6 +769,7 @@ badge.setAttribute('title', map[normalized]);
 
     bindGenericModal('ratingModal', 'ratingModalClose', 'rating-modal');
     bindGenericModal('guideModal', 'guideModalClose', 'guide-modal');
+    bindGenericModal('operatorRanksModal', 'operatorRanksModalClose', 'operator-ranks-modal');
 
     if (window.__lavashRightToolsEscBound !== true) {
       window.__lavashRightToolsEscBound = true;
@@ -717,6 +779,7 @@ badge.setAttribute('title', map[normalized]);
 
         lavashCloseModal('ratingModal');
         lavashCloseModal('guideModal');
+        lavashCloseModal('operatorRanksModal');
       });
     }
   }

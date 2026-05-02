@@ -1356,7 +1356,7 @@
 
     if (!event.shiftKey && !event.ctrlKey && !event.altKey && event.code === 'KeyA') {
       event.preventDefault();
-      handleAction('ignore');
+      handleAction('confirm');
       return;
     }
 
@@ -1368,7 +1368,7 @@
 
     if (!event.shiftKey && !event.ctrlKey && !event.altKey && event.code === 'KeyD') {
       event.preventDefault();
-      handleAction('confirm');
+      handleAction('ignore');
       return;
     }
 
