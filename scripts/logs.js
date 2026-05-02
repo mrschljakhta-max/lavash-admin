@@ -50,11 +50,11 @@
     const alphabet = 'АБВГДЕЄЖЗИІЇЙКЛМНОПРСТУФХЦЧШЩЬЮЯ0123456789';
 
     const rings = [
-      { id: 0, name: 'I', radius: 92,  letterCount: 18, target: 314, angle: rand(42, 270), velocity: 0, invert: false, drag: .86, power: .055, weight: 1.00, wobble: 1.2, locked: false, hover: 0, lockFlash: 0, letters: [] },
-      { id: 1, name: 'II', radius: 142, letterCount: 24, target: 128, angle: rand(30, 330), velocity: 0, invert: true,  drag: .88, power: .044, weight: 1.20, wobble: 1.9, locked: false, hover: 0, lockFlash: 0, letters: [] },
-      { id: 2, name: 'III', radius: 194, letterCount: 30, target: 246, angle: rand(20, 340), velocity: 0, invert: false, drag: .91, power: .036, weight: 1.55, wobble: 2.5, locked: false, hover: 0, lockFlash: 0, letters: [] },
-      { id: 3, name: 'IV', radius: 248, letterCount: 36, target: 68,  angle: rand(30, 300), velocity: 0, invert: true,  drag: .90, power: .030, weight: 1.80, wobble: 3.0, locked: false, hover: 0, lockFlash: 0, letters: [] },
-      { id: 4, name: 'V', radius: 306, letterCount: 42, target: 202, angle: rand(35, 320), velocity: 0, invert: false, drag: .93, power: .025, weight: 2.20, wobble: 3.8, locked: false, hover: 0, lockFlash: 0, letters: [] },
+      { id: 0, name: 'I', radius: 104,  letterCount: 18, target: 314, angle: rand(42, 270), velocity: 0, invert: false, drag: .86, power: .055, weight: 1.00, wobble: 1.2, locked: false, hover: 0, lockFlash: 0, letters: [] },
+      { id: 1, name: 'II', radius: 158, letterCount: 24, target: 128, angle: rand(30, 330), velocity: 0, invert: true,  drag: .88, power: .044, weight: 1.20, wobble: 1.9, locked: false, hover: 0, lockFlash: 0, letters: [] },
+      { id: 2, name: 'III', radius: 216, letterCount: 30, target: 246, angle: rand(20, 340), velocity: 0, invert: false, drag: .91, power: .036, weight: 1.55, wobble: 2.5, locked: false, hover: 0, lockFlash: 0, letters: [] },
+      { id: 3, name: 'IV', radius: 276, letterCount: 36, target: 68,  angle: rand(30, 300), velocity: 0, invert: true,  drag: .90, power: .030, weight: 1.80, wobble: 3.0, locked: false, hover: 0, lockFlash: 0, letters: [] },
+      { id: 4, name: 'V', radius: 338, letterCount: 42, target: 202, angle: rand(35, 320), velocity: 0, invert: false, drag: .93, power: .025, weight: 2.20, wobble: 3.8, locked: false, hover: 0, lockFlash: 0, letters: [] },
     ];
 
     const keySlots = [
@@ -97,9 +97,9 @@
       state.width = Math.max(320, rect.width);
       state.height = Math.max(420, rect.height);
       state.cx = state.width / 2;
-      state.cy = state.height / 2 + 8;
-      // Трохи стискаємо портал, щоб HUD-заголовки не налазили на зовнішні кільця.
-      state.scale = clamp(Math.min(state.width / 1320, state.height / 980), .46, .92);
+      state.cy = state.height / 2 + 12;
+      // v6: портал заповнює більшу частину сцени, але лишає повітря для HUD зверху/знизу.
+      state.scale = clamp(Math.min(state.width / 1120, state.height / 720), .58, .98);
       canvas.width = Math.floor(state.width * state.dpr);
       canvas.height = Math.floor(state.height * state.dpr);
       canvas.style.width = `${state.width}px`;
@@ -117,7 +117,7 @@
 
       rings.forEach((ring, index) => {
         const diff = Math.abs(distance - ring.radius);
-        if (diff < 24 && diff < bestDiff) {
+        if (diff < 34 && diff < bestDiff) {
           best = index;
           bestDiff = diff;
         }
@@ -128,7 +128,7 @@
 
     function progressForRing(ring) {
       const diff = shortestDeg(ring.angle, ring.target);
-      return clamp(1 - diff / 70, 0, 1);
+      return clamp(1 - diff / 82, 0, 1);
     }
 
     function createPulse(ring, color = 'cyan') {
@@ -179,7 +179,7 @@
       if (ring.locked) return;
 
       const match = progressForRing(ring);
-      const isNear = (shortestDeg(ring.angle, ring.target) < 13.5 || match > .88) && Math.abs(ring.velocity) < 3.2;
+      const isNear = (shortestDeg(ring.angle, ring.target) < 20 || match > .76) && Math.abs(ring.velocity) < 9.5;
       if (!isNear) return;
 
       const expectedIndex = state.requiredOrder[state.orderCursor];
@@ -256,29 +256,18 @@
           const match = progressForRing(ring);
           const diff = shortestDeg(ring.angle, ring.target);
 
-          if (match > .66 && Math.abs(ring.velocity) < 4.2) {
+          if (match > .58 && Math.abs(ring.velocity) < 8.8) {
             const direct = normDeg(ring.target) - normDeg(ring.angle);
             const shortest = ((direct + 540) % 360) - 180;
             // Сильніше магнітне дотягування біля цілі, щоб останнє кільце не зависало на 90–92%.
-            ring.velocity += shortest * (.024 + match * .032) * match;
+            ring.velocity += shortest * (.032 + match * .045) * match;
           }
 
-          // Anti-bruteforce: надто різке крутіння трохи збиває вже зібране останнє кільце.
-          if (Math.abs(ring.velocity) > 18 && Date.now() - state.lastWheelAt < 220) {
-            const locked = rings.filter(r => r.locked);
-            const victim = locked[locked.length - 1];
-            if (victim && Math.random() > .985) {
-              victim.locked = false;
-              victim.angle += rand(-22, 22);
-              state.orderCursor = Math.max(0, state.orderCursor - 1);
-              createPulse(victim, 'red');
-            }
-          }
-
+          // v6: прибрано випадкове розблокування кілець — замок має бути складним, але передбачуваним.
           ring.angle += ring.velocity * dt * 60;
           ring.velocity *= Math.pow(ring.drag, dt * 60);
 
-          if ((diff < 13.5 || match > .88) && Math.abs(ring.velocity) < 3.2) tryLockRing(ring);
+          if ((diff < 20 || match > .76) && Math.abs(ring.velocity) < 9.5) tryLockRing(ring);
         } else {
           ring.angle = lerp(ring.angle, ring.target, .24);
           ring.lockFlash *= .88;
@@ -336,6 +325,61 @@
         ctx.fillStyle = `rgba(141,239,255,${p.alpha})`;
         ctx.fill();
       });
+    }
+
+
+    function drawPortalOrnaments() {
+      const outer = 410 * state.scale;
+      const inner = 250 * state.scale;
+
+      ctx.save();
+      ctx.translate(state.cx, state.cy);
+
+      // Велике енергетичне поле, щоб не було порожніх зон навколо вихору.
+      for (let i = 0; i < 9; i++) {
+        const r = inner + i * 34 * state.scale;
+        const start = state.time * (.18 + i * .015) + i * .7;
+        ctx.beginPath();
+        ctx.arc(0, 0, r, start, start + Math.PI * (0.35 + (i % 3) * .08));
+        ctx.strokeStyle = `rgba(84,244,255,${.035 + (i % 2) * .018})`;
+        ctx.lineWidth = (i % 3 === 0 ? 2.1 : 1.05) * state.scale;
+        ctx.shadowColor = 'rgba(84,244,255,.35)';
+        ctx.shadowBlur = 16 * state.scale;
+        ctx.stroke();
+      }
+
+      // Два похилих “гравітаційних розрізи”, як у sci-fi інтерфейсі.
+      for (let side = -1; side <= 1; side += 2) {
+        ctx.save();
+        ctx.rotate(side * .42 + Math.sin(state.time * .22) * .025);
+        const g = ctx.createLinearGradient(-outer, 0, outer, 0);
+        g.addColorStop(0, 'rgba(84,244,255,0)');
+        g.addColorStop(.48, 'rgba(84,244,255,.075)');
+        g.addColorStop(.52, 'rgba(255,255,255,.10)');
+        g.addColorStop(1, 'rgba(84,244,255,0)');
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.moveTo(-outer, -18 * state.scale);
+        ctx.lineTo(outer, -42 * state.scale);
+        ctx.lineTo(outer, 42 * state.scale);
+        ctx.lineTo(-outer, 18 * state.scale);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+      }
+
+      // Точки-орієнтири по великому зовнішньому радарному колу.
+      for (let i = 0; i < 72; i++) {
+        const a = i * TAU / 72 + state.time * .05;
+        const r = outer + Math.sin(state.time + i) * 5 * state.scale;
+        const size = (i % 6 === 0 ? 2.3 : 1.05) * state.scale;
+        ctx.beginPath();
+        ctx.arc(Math.cos(a) * r, Math.sin(a) * r, size, 0, TAU);
+        ctx.fillStyle = `rgba(170,247,255,${i % 6 === 0 ? .32 : .12})`;
+        ctx.fill();
+      }
+
+      ctx.restore();
     }
 
     function drawRingRail(ring, index) {
@@ -519,6 +563,7 @@
 
       updatePhysics(dt);
       drawBackground();
+      drawPortalOrnaments();
 
       // back rings first
       rings.slice().reverse().forEach((ring, reverseIndex) => {
@@ -560,6 +605,11 @@
       const direction = ring.invert ? -1 : 1;
       const delta = clamp(event.deltaY, -140, 140);
       ring.velocity += direction * delta * ring.power / ring.weight;
+
+      // Якщо користувач уже підвів правильне кільце близько до цілі — одразу даємо замку клацнути.
+      if (state.requiredOrder[state.orderCursor] === ring.id && progressForRing(ring) > .74) {
+        tryLockRing(ring);
+      }
 
       if (Math.abs(ring.velocity) > 4.5) {
         createSparks(ring, 3);
