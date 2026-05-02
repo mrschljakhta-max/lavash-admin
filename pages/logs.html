@@ -1,35 +1,43 @@
-<section class="logs-page" id="logsPage" data-locked="true">
-  <div class="logs-vortex-shell" id="logsVortexShell" aria-label="Вихор доступу до логування">
-    <canvas id="logsVortexCanvas" class="logs-vortex-canvas"></canvas>
+<section class="logs-page" id="logsPage">
 
-    <div class="logs-vortex-hud" aria-hidden="true">
-      <div class="logs-vortex-hud__top">
-        <span class="logs-vortex-hud__eyebrow">Система захищена</span>
-        <strong class="logs-vortex-hud__title">Вихор доступу</strong>
-      </div>
-
-      <div class="logs-vortex-hud__bottom">
-        <span class="logs-vortex-hud__hint">Наведи на кільце · прокрути колесо · збери ключ</span>
-        <span class="logs-vortex-hud__status" id="logsRingStatus">Кільце не вибрано</span>
-      </div>
-    </div>
-
-    <button class="logs-vortex-reset" id="logsVortexReset" type="button">
-      Скинути ключ
+  <section class="logs-vortex-shell" id="logsVortexShell">
+    <button class="logs-reset-btn" id="logsResetBtn" type="button">
+      СКИНУТИ КЛЮЧ
     </button>
-  </div>
 
-  <section class="logs-unlock-panel" id="logsUnlockPanel" aria-label="Таблиця логування">
-    <div class="logs-unlock-hero">
-      <div>
-        <div class="logs-unlock-hero__eyebrow">Доступ розблоковано</div>
-        <h2 class="logs-unlock-hero__title">Таблиця логування</h2>
-        <p class="logs-unlock-hero__text">Журнал системних подій, входів користувачів, дій операторів і результатів обробки.</p>
-      </div>
-      <button class="logs-lock-btn" id="logsLockAgain" type="button">Повернути замок</button>
+    <div class="logs-vortex-title">
+      <span>СИСТЕМА ЗАХИЩЕНА</span>
+      <strong>ВИХОР ДОСТУПУ</strong>
     </div>
 
-    <div class="logs-table-card">
+    <canvas id="logsVortexCanvas"></canvas>
+
+    <div class="logs-vortex-hud" id="logsVortexHud">
+      <strong>НАВЕДИ НА КІЛЬЦЕ</strong>
+      <span>·</span>
+      <strong>ПРОКРУТИ КОЛЕСО</strong>
+      <span>·</span>
+      <strong>ЗБЕРИ КЛЮЧ</strong>
+      <em id="logsVortexStatus">КІЛЬЦЕ I · SIGNAL MATCH 0%</em>
+    </div>
+  </section>
+
+  <section class="logs-table-section" id="logsTableSection">
+    <div class="logs-hero-card">
+      <div>
+        <p class="logs-access">ДОСТУП РОЗБЛОКОВАНО</p>
+        <h2>Таблиця логування</h2>
+        <p>
+          Журнал системних подій, входів користувачів, дій операторів і результатів обробки.
+        </p>
+      </div>
+
+      <button class="logs-reset-btn logs-reset-btn-inside" id="logsLockAgainBtn" type="button">
+        ПОВЕРНУТИ ЗАМОК
+      </button>
+    </div>
+
+    <div class="logs-table-wrap">
       <table class="logs-table">
         <thead>
           <tr>
@@ -40,44 +48,46 @@
             <th>IP-адреса</th>
           </tr>
         </thead>
+
         <tbody>
           <tr>
             <td>2026-05-02 09:14:22</td>
             <td>root</td>
             <td>Успішний вхід у систему</td>
-            <td><span class="logs-status logs-status--ok">Успішно</span></td>
+            <td class="status-ok">УСПІШНО</td>
             <td>192.168.1.12</td>
           </tr>
           <tr>
             <td>2026-05-02 09:17:45</td>
             <td>admin</td>
             <td>Перегляд таблиці користувачів</td>
-            <td><span class="logs-status logs-status--ok">Успішно</span></td>
+            <td class="status-ok">УСПІШНО</td>
             <td>192.168.1.12</td>
           </tr>
           <tr>
             <td>2026-05-02 09:21:03</td>
             <td>operator_01</td>
             <td>Експорт логів</td>
-            <td><span class="logs-status logs-status--ok">Успішно</span></td>
+            <td class="status-ok">УСПІШНО</td>
             <td>192.168.1.37</td>
           </tr>
           <tr>
             <td>2026-05-02 09:23:19</td>
             <td>guest</td>
             <td>Спроба несанкціонованого доступу</td>
-            <td><span class="logs-status logs-status--bad">Відмовлено</span></td>
+            <td class="status-deny">ВІДМОВЛЕНО</td>
             <td>10.0.0.5</td>
           </tr>
           <tr>
             <td>2026-05-02 09:25:47</td>
             <td>operator_02</td>
             <td>Зміна налаштувань системи</td>
-            <td><span class="logs-status logs-status--ok">Успішно</span></td>
+            <td class="status-ok">УСПІШНО</td>
             <td>192.168.1.15</td>
           </tr>
         </tbody>
       </table>
     </div>
   </section>
+
 </section>
