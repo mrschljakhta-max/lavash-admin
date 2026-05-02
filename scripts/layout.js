@@ -280,25 +280,34 @@
             </button>
           </div>
 
+          <div class="lavash-rating-hero">
+            <div class="lavash-rating-hero__orb"><span>Ⅰ</span></div>
+            <div class="lavash-rating-hero__text">
+              <strong>Топ операторів</strong>
+              <span>XP, рівень і швидкість обробки записів</span>
+            </div>
+          </div>
+
           <div class="lavash-rating-list" id="ratingModalList">
             <div class="lavash-rating-row is-top">
-              <span class="lavash-rating-row__place">1</span>
-              <span class="lavash-rating-row__name">Оператор</span>
-              <span class="lavash-rating-row__level">Рівень 12</span>
+              <span class="lavash-rating-row__place">01</span>
+              <span class="lavash-rating-row__avatar">★</span>
+              <span class="lavash-rating-row__main"><strong>Оператор</strong><small>Рівень 12 · Аналітик II</small></span>
+              <span class="lavash-rating-row__bar"><i style="width:84%"></i></span>
               <strong class="lavash-rating-row__xp">842 XP</strong>
             </div>
-
             <div class="lavash-rating-row">
-              <span class="lavash-rating-row__place">2</span>
-              <span class="lavash-rating-row__name">Аналітик</span>
-              <span class="lavash-rating-row__level">Рівень 9</span>
+              <span class="lavash-rating-row__place">02</span>
+              <span class="lavash-rating-row__avatar">◆</span>
+              <span class="lavash-rating-row__main"><strong>Аналітик</strong><small>Рівень 9 · Контролер</small></span>
+              <span class="lavash-rating-row__bar"><i style="width:68%"></i></span>
               <strong class="lavash-rating-row__xp">680 XP</strong>
             </div>
-
             <div class="lavash-rating-row">
-              <span class="lavash-rating-row__place">3</span>
-              <span class="lavash-rating-row__name">Черговий</span>
-              <span class="lavash-rating-row__level">Рівень 7</span>
+              <span class="lavash-rating-row__place">03</span>
+              <span class="lavash-rating-row__avatar">◇</span>
+              <span class="lavash-rating-row__main"><strong>Черговий</strong><small>Рівень 7 · Навідник</small></span>
+              <span class="lavash-rating-row__bar"><i style="width:52%"></i></span>
               <strong class="lavash-rating-row__xp">515 XP</strong>
             </div>
           </div>
@@ -312,11 +321,20 @@
       <div class="lavash-modal hidden" id="guideModal" aria-hidden="true">
         <div class="lavash-modal__backdrop" data-close="guide-modal"></div>
 
-        <div class="lavash-modal__card lavash-modal__card--guide" role="dialog" aria-modal="true" aria-labelledby="guideModalTitle">
-          <div class="lavash-modal__header">
+        <div class="lavash-modal__card lavash-modal__card--guide lavash-modal__card--guide-pro" role="dialog" aria-modal="true" aria-labelledby="guideModalTitle">
+          <div class="lavash-modal__header lavash-modal__header--pro">
+            <div class="lavash-modal__head-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                <path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15Z"></path>
+                <path d="M8 7h8"></path>
+                <path d="M8 11h6"></path>
+              </svg>
+            </div>
+
             <div>
               <h3 class="lavash-modal__title" id="guideModalTitle">Інструкція до роботи</h3>
-              <p class="lavash-modal__subtitle">Коротка легенда для обробки карток у редакторі</p>
+              <p class="lavash-modal__subtitle">Коротка легенда обробки карток, дій оператора та гарячих клавіш</p>
             </div>
 
             <button class="lavash-modal__close" id="guideModalClose" type="button" aria-label="Закрити">
@@ -324,21 +342,100 @@
             </button>
           </div>
 
-          <div class="lavash-guide-list">
-            <div class="lavash-guide-item">
-              <strong>1. Переглянь картку</strong>
-              <span>Оціни тип обʼєкта, поточне значення та запропоноване редагування.</span>
-            </div>
+          <div class="lavash-guide-pro">
+            <section class="lavash-guide-flow" aria-label="Основний порядок роботи">
+              <article class="lavash-guide-step">
+                <span class="lavash-guide-step__icon">
+                  <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                </span>
+                <div>
+                  <strong>1. Переглянь картку</strong>
+                  <p>Перевір тип обʼєкта, поточне значення, запропоновану назву та додаткові поля.</p>
+                </div>
+              </article>
 
-            <div class="lavash-guide-item">
-              <strong>2. Обери дію</strong>
-              <span>Погодь, відхили або проігноруй запис залежно від якості даних.</span>
-            </div>
+              <article class="lavash-guide-step">
+                <span class="lavash-guide-step__icon">
+                  <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M20 6 9 17l-5-5"></path>
+                  </svg>
+                </span>
+                <div>
+                  <strong>2. Обери дію</strong>
+                  <p>Погодь, відхили або проігноруй запис. Якість рішення впливає на XP та рейтинг.</p>
+                </div>
+              </article>
 
-            <div class="lavash-guide-item">
-              <strong>3. Збережи зміни</strong>
-              <span>Після успішної обробки система нараховує XP та оновлює прогрес.</span>
-            </div>
+              <article class="lavash-guide-step">
+                <span class="lavash-guide-step__icon">
+                  <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M12 3v18"></path>
+                    <path d="m5 10 7-7 7 7"></path>
+                    <path d="M5 21h14"></path>
+                  </svg>
+                </span>
+                <div>
+                  <strong>3. Збережи зміни</strong>
+                  <p>Після успішної обробки система додає XP, оновлює прогрес і переходить до наступної картки.</p>
+                </div>
+              </article>
+            </section>
+
+            <section class="lavash-hotkeys-panel" aria-label="Гарячі клавіші">
+              <div class="lavash-hotkeys-panel__head">
+                <span>Гарячі клавіші</span>
+                <small>для швидкої роботи без миші</small>
+              </div>
+
+              <div class="lavash-hotkeys-grid">
+                <div class="lavash-hotkey">
+                  <kbd>A</kbd>
+                  <span>Погодити / прийняти запис</span>
+                  <b>+10 XP</b>
+                </div>
+
+                <div class="lavash-hotkey">
+                  <kbd>S</kbd>
+                  <span>Відхилити запис</span>
+                  <b>+5 XP</b>
+                </div>
+
+                <div class="lavash-hotkey">
+                  <kbd>D</kbd>
+                  <span>Проігнорувати / пропустити</span>
+                  <b>+7 XP</b>
+                </div>
+
+                <div class="lavash-hotkey">
+                  <kbd>Space</kbd>
+                  <span>Flip картки / перехід на бек</span>
+                  <b>перегляд</b>
+                </div>
+
+                <div class="lavash-hotkey">
+                  <kbd>Esc</kbd>
+                  <span>Закрити модалку або скасувати дію</span>
+                  <b>вихід</b>
+                </div>
+              </div>
+            </section>
+
+            <section class="lavash-guide-tip">
+              <div>
+                <strong>Порада</strong>
+                <p>Працюй клавішами A / S / D для швидкого сортування, Space — для перевірки деталей на звороті картки, Esc — для швидкого закриття вікон.</p>
+              </div>
+
+              <div class="lavash-guide-tip__orb" aria-hidden="true">★</div>
+            </section>
+          </div>
+
+          <div class="lavash-guide-footer">
+            <span>Дякуємо за якісну обробку!</span>
+            <button class="lavash-guide-ok" type="button" onclick="document.getElementById('guideModalClose')?.click()">Зрозуміло</button>
           </div>
         </div>
       </div>
