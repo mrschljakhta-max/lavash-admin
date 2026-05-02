@@ -9,6 +9,11 @@
 
   if (!page || !shell || !canvas) return;
 
+  // SPA-захист: коли сторінка Логування підвантажується повторно,
+  // не запускаємо другий вихор на тому самому canvas.
+  if (canvas.dataset.logsVortexBooted === "1") return;
+  canvas.dataset.logsVortexBooted = "1";
+
   const ctx = canvas.getContext("2d");
 
   const KEY_WORD = "ЛОГУВАННЯ";
@@ -594,6 +599,10 @@
   }
 
   function draw(time) {
+    // Якщо користувач перейшов на іншу SPA-сторінку і DOM Логування зник,
+    // зупиняємо старий animation frame. При поверненні boot нижче запустить новий.
+    if (!document.body.contains(shell) || !document.body.contains(canvas)) return;
+
     const dt = Math.min(32, time - lastTime);
     lastTime = time;
 
@@ -700,26 +709,44 @@
     requestAnimationFrame(draw);
   }
 
-  let attempts = 0;
-
-  const timer = setInterval(() => {
-    attempts++;
-
+  function tryStart() {
     const page = document.getElementById("logsPage");
     const shell = document.getElementById("logsVortexShell");
     const canvas = document.getElementById("logsVortexCanvas");
 
-    if (page && shell && canvas) {
-      clearInterval(timer);
+    if (page && shell && canvas && canvas.dataset.logsVortexBooted !== "1") {
       start();
     }
+  }
 
-    if (attempts > 80) {
+  // Перший запуск: HTML сторінки може зʼявитися не одразу.
+  let attempts = 0;
+  const timer = setInterval(() => {
+    attempts++;
+    tryStart();
+
+    if (document.getElementById("logsVortexCanvas")?.dataset.logsVortexBooted === "1" || attempts > 80) {
       clearInterval(timer);
-      console.warn("logs vortex: elements not found");
     }
   }, 100);
+
+  // Повторний запуск після переходів між SPA-сторінками.
+  window.addEventListener("hashchange", () => {
+    setTimeout(tryStart, 80);
+    setTimeout(tryStart, 250);
+  });
+
+  window.addEventListener("popstate", () => {
+    setTimeout(tryStart, 80);
+    setTimeout(tryStart, 250);
+  });
+
+  const observer = new MutationObserver(() => {
+    tryStart();
+  });
+
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true
+  });
 })();
-
-
-
