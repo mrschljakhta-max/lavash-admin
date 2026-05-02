@@ -1,0 +1,137 @@
+/* =========================================================
+   HOTFIX: Editor save success effect
+   Purpose: remove the oversized cyan/yellow blob after saving
+   and keep only a compact premium confirmation badge.
+   ========================================================= */
+
+/* Kill any huge radial/circle pseudo overlays that may be attached to the editor card
+   after the save action. These selectors are intentionally broad but scoped to the editor. */
+.pending-card.is-saved::before,
+.pending-card.is-saved::after,
+.pending-editor-card.is-saved::before,
+.pending-editor-card.is-saved::after,
+.editor-card.is-saved::before,
+.editor-card.is-saved::after,
+.card-back.is-saved::before,
+.card-back.is-saved::after,
+.flip-card-back.is-saved::before,
+.flip-card-back.is-saved::after,
+.record-edit-card.is-saved::before,
+.record-edit-card.is-saved::after,
+.editor-save-success-blob,
+.save-success-blob,
+.success-blob,
+.saved-blob,
+.save-burst,
+.success-burst,
+.editor-success-burst,
+.pending-save-burst {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  width: 0 !important;
+  height: 0 !important;
+  transform: none !important;
+  animation: none !important;
+  pointer-events: none !important;
+}
+
+/* Compact confirmation badge */
+.editor-save-toast,
+.save-success-toast,
+.pending-save-toast,
+.editor-saved-badge,
+.save-saved-badge,
+.pending-saved-badge {
+  position: absolute !important;
+  left: 50% !important;
+  bottom: 88px !important;
+  transform: translateX(-50%) !important;
+  z-index: 40 !important;
+
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+
+  min-width: 148px !important;
+  max-width: 220px !important;
+  height: 38px !important;
+  padding: 0 16px !important;
+  border-radius: 999px !important;
+
+  color: #071b22 !important;
+  font-weight: 900 !important;
+  font-size: 13px !important;
+  letter-spacing: .08em !important;
+  text-transform: uppercase !important;
+  white-space: nowrap !important;
+
+  background: linear-gradient(135deg, #55fff3, #a8ffcf) !important;
+  border: 1px solid rgba(255,255,255,.55) !important;
+  box-shadow:
+    0 0 18px rgba(80,255,235,.32),
+    0 8px 22px rgba(0,0,0,.25) !important;
+
+  animation: editorSavedBadgeIn .18s ease-out both,
+             editorSavedBadgeOut .25s ease-in 1.35s forwards !important;
+  pointer-events: none !important;
+}
+
+.editor-save-toast::before,
+.save-success-toast::before,
+.pending-save-toast::before,
+.editor-saved-badge::before,
+.save-saved-badge::before,
+.pending-saved-badge::before {
+  content: "✓";
+  display: inline-grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  color: #04242a;
+  background: rgba(255,255,255,.55);
+  box-shadow: inset 0 0 8px rgba(255,255,255,.3);
+}
+
+@keyframes editorSavedBadgeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(8px) scale(.94);
+    filter: blur(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes editorSavedBadgeOut {
+  to {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-6px) scale(.98);
+    filter: blur(2px);
+  }
+}
+
+/* A very subtle saved pulse on the card instead of the giant blob */
+.pending-card.is-saved,
+.pending-editor-card.is-saved,
+.editor-card.is-saved,
+.card-back.is-saved,
+.flip-card-back.is-saved,
+.record-edit-card.is-saved {
+  box-shadow:
+    0 0 0 1px rgba(89,255,235,.55),
+    0 0 26px rgba(89,255,235,.22),
+    0 18px 60px rgba(0,0,0,.35) !important;
+  animation: editorSavedCardPulse .7s ease-out 1 !important;
+}
+
+@keyframes editorSavedCardPulse {
+  0% { filter: brightness(1); }
+  38% { filter: brightness(1.08); }
+  100% { filter: brightness(1); }
+}
