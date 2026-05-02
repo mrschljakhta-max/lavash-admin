@@ -737,3 +737,625 @@ body.lavash-modal-open {
   min-height: calc(100vh - 104px);
   overflow: visible;
 }
+
+/* =====================================================
+   RIGHT NAV MODALS — PREMIUM GAME UI
+===================================================== */
+
+.lavash-modal__backdrop {
+  background:
+    radial-gradient(circle at 28% 58%, rgba(43, 227, 255, 0.12), transparent 28%),
+    radial-gradient(circle at 78% 54%, rgba(137, 92, 255, 0.18), transparent 34%),
+    rgba(2, 8, 28, 0.72) !important;
+  backdrop-filter: blur(14px) saturate(1.15) !important;
+}
+
+.lavash-modal__card--rating,
+.lavash-modal__card--guide {
+  width: min(780px, calc(100vw - 42px)) !important;
+  overflow: hidden;
+  padding: 28px !important;
+  border-radius: 34px !important;
+  border: 1px solid rgba(78, 223, 255, 0.22) !important;
+  background:
+    linear-gradient(115deg, rgba(255,255,255,0.10), transparent 26%),
+    radial-gradient(circle at 20% 0%, rgba(56, 223, 255, 0.18), transparent 36%),
+    radial-gradient(circle at 90% 100%, rgba(124, 92, 255, 0.22), transparent 42%),
+    linear-gradient(180deg, rgba(9, 23, 68, 0.96), rgba(4, 10, 32, 0.98)) !important;
+  box-shadow:
+    0 46px 110px rgba(0, 0, 0, 0.52),
+    0 0 70px rgba(56, 223, 255, 0.12),
+    inset 0 0 38px rgba(255,255,255,0.045) !important;
+  animation: lavashModalCardIn 0.28s cubic-bezier(.2,.9,.22,1.08) both;
+}
+
+.lavash-modal__card--rating::before,
+.lavash-modal__card--guide::before {
+  content: "";
+  position: absolute;
+  inset: -45%;
+  background: conic-gradient(from 0deg, transparent, rgba(56,223,255,.16), transparent, rgba(124,92,255,.15), transparent);
+  opacity: .42;
+  animation: lavashModalHaloSpin 16s linear infinite;
+  pointer-events: none;
+}
+
+.lavash-modal__card--rating > *,
+.lavash-modal__card--guide > * {
+  position: relative;
+  z-index: 2;
+}
+
+.lavash-rating-hero {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 6px 0 18px;
+  padding: 16px;
+  border-radius: 24px;
+  background: radial-gradient(circle at 15% 50%, rgba(255,211,91,.18), transparent 36%), rgba(255,255,255,.045);
+  border: 1px solid rgba(255,255,255,.08);
+}
+
+.lavash-rating-hero__orb {
+  width: 62px;
+  height: 62px;
+  min-width: 62px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: conic-gradient(from -90deg, #ffd35b, #38dfff, #7c5cff, #ffd35b);
+  box-shadow: 0 0 28px rgba(56,223,255,.18), 0 0 34px rgba(255,211,91,.18);
+}
+
+.lavash-rating-hero__orb span {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #071126;
+  color: #fff4bd;
+  font-weight: 950;
+}
+
+.lavash-rating-hero__text {
+  display: grid;
+  gap: 4px;
+}
+
+.lavash-rating-hero__text strong {
+  font-size: 20px;
+  font-weight: 950;
+}
+
+.lavash-rating-hero__text span {
+  color: rgba(230,236,255,.66);
+  font-size: 13px;
+}
+
+.lavash-rating-list {
+  display: grid;
+  gap: 12px;
+}
+
+.lavash-rating-row {
+  display: grid;
+  grid-template-columns: 42px 46px minmax(150px, 1fr) 160px 88px;
+  align-items: center;
+  gap: 12px;
+  min-height: 72px;
+  padding: 12px 14px;
+  border-radius: 22px;
+  background: linear-gradient(90deg, rgba(255,255,255,.075), rgba(255,255,255,.035));
+  border: 1px solid rgba(255,255,255,.08);
+}
+
+.lavash-rating-row.is-top {
+  background: linear-gradient(90deg, rgba(255,211,91,.16), rgba(56,223,255,.08));
+  border-color: rgba(255,211,91,.22);
+}
+
+.lavash-rating-row__place {
+  font-size: 13px;
+  font-weight: 950;
+  color: rgba(173,210,255,.66);
+  letter-spacing: .12em;
+}
+
+.lavash-rating-row__avatar {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 15px;
+  background: rgba(255,255,255,.075);
+  color: #ffd35b;
+  font-weight: 950;
+}
+
+.lavash-rating-row__main {
+  display: grid;
+  gap: 3px;
+}
+
+.lavash-rating-row__main strong {
+  color: #fff;
+  font-size: 16px;
+  font-weight: 950;
+}
+
+.lavash-rating-row__main small {
+  color: rgba(230,236,255,.56);
+  font-weight: 800;
+}
+
+.lavash-rating-row__bar {
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.08);
+  overflow: hidden;
+  box-shadow: inset 0 0 8px rgba(0,0,0,.55);
+}
+
+.lavash-rating-row__bar i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #38dfff, #7ff4ff, #ffd35b);
+  box-shadow: 0 0 14px rgba(56,223,255,.45);
+}
+
+.lavash-rating-row__xp {
+  justify-self: end;
+  color: #fff4bd;
+  font-size: 15px;
+}
+
+.lavash-guide-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-top: 10px;
+}
+
+.lavash-guide-card {
+  min-height: 170px;
+  padding: 18px;
+  border-radius: 24px;
+  background: radial-gradient(circle at 50% 0%, rgba(56,223,255,.14), transparent 42%), rgba(255,255,255,.045);
+  border: 1px solid rgba(255,255,255,.085);
+  box-shadow: inset 0 0 24px rgba(255,255,255,.035);
+}
+
+.lavash-guide-card__num {
+  display: inline-flex;
+  margin-bottom: 22px;
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: rgba(56,223,255,.12);
+  color: #94f4ff;
+  font-size: 11px;
+  font-weight: 950;
+  letter-spacing: .16em;
+}
+
+.lavash-guide-card strong {
+  display: block;
+  margin-bottom: 8px;
+  color: #fff;
+  font-size: 17px;
+  font-weight: 950;
+}
+
+.lavash-guide-card p {
+  margin: 0;
+  color: rgba(230,236,255,.64);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.lavash-guide-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.lavash-guide-legend span {
+  padding: 10px 14px;
+  border-radius: 999px;
+  color: rgba(230,236,255,.78);
+  background: rgba(255,255,255,.055);
+  border: 1px solid rgba(255,255,255,.08);
+}
+
+.lavash-guide-legend b {
+  color: #36f0ff;
+}
+
+@keyframes lavashModalCardIn {
+  from { opacity: 0; transform: translateY(18px) scale(.965); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes lavashModalHaloSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 760px) {
+  .lavash-rating-row {
+    grid-template-columns: 34px 40px 1fr;
+  }
+
+  .lavash-rating-row__bar,
+  .lavash-rating-row__xp {
+    grid-column: 3;
+    justify-self: stretch;
+  }
+
+  .lavash-guide-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* =====================================================
+   GUIDE MODAL — HOTKEYS / AAA VISUAL
+===================================================== */
+
+.lavash-modal__card--guide-pro {
+  width: min(860px, calc(100vw - 42px)) !important;
+  padding: 28px 28px 22px !important;
+}
+
+.lavash-modal__header--pro {
+  align-items: center !important;
+  margin-bottom: 22px !important;
+}
+
+.lavash-modal__head-icon {
+  width: 72px;
+  height: 72px;
+  min-width: 72px;
+  border-radius: 26px;
+  display: grid;
+  place-items: center;
+
+  background:
+    radial-gradient(circle at 50% 25%, rgba(255,255,255,0.26), transparent 38%),
+    linear-gradient(135deg, rgba(56,223,255,0.34), rgba(124,92,255,0.42));
+  border: 1px solid rgba(255,255,255,0.16);
+
+  box-shadow:
+    0 0 28px rgba(56,223,255,0.22),
+    inset 0 0 24px rgba(255,255,255,0.07);
+}
+
+.lavash-modal__head-icon svg {
+  width: 34px;
+  height: 34px;
+  stroke: #ffffff;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.lavash-guide-pro {
+  display: grid;
+  gap: 18px;
+}
+
+.lavash-guide-flow {
+  display: grid;
+  gap: 14px;
+}
+
+.lavash-guide-step {
+  position: relative;
+  display: grid;
+  grid-template-columns: 76px 1fr;
+  align-items: center;
+  gap: 18px;
+
+  min-height: 106px;
+  padding: 18px 22px;
+  border-radius: 26px;
+
+  background:
+    linear-gradient(115deg, rgba(255,255,255,0.075), rgba(255,255,255,0.032)),
+    radial-gradient(circle at 0% 50%, rgba(56,223,255,0.12), transparent 34%);
+  border: 1px solid rgba(255,255,255,0.09);
+
+  box-shadow:
+    inset 0 0 26px rgba(255,255,255,0.035),
+    0 18px 34px rgba(0,0,0,0.16);
+}
+
+.lavash-guide-step::after {
+  content: "";
+  position: absolute;
+  right: 24px;
+  top: 50%;
+  width: 190px;
+  height: 58px;
+  transform: translateY(-50%);
+  border-radius: 18px;
+  background:
+    linear-gradient(90deg, transparent, rgba(56,223,255,0.08), transparent);
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+.lavash-guide-step__icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 22px;
+  display: grid;
+  place-items: center;
+
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255,255,255,0.22), transparent 46%),
+    linear-gradient(135deg, rgba(56,223,255,0.30), rgba(124,92,255,0.46));
+  box-shadow:
+    0 0 24px rgba(56,223,255,0.16),
+    inset 0 0 18px rgba(255,255,255,0.055);
+}
+
+.lavash-guide-step__icon svg {
+  width: 28px;
+  height: 28px;
+  stroke: #ffffff;
+  stroke-width: 2.1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.lavash-guide-step strong {
+  display: block;
+  margin-bottom: 6px;
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 950;
+  letter-spacing: -0.02em;
+}
+
+.lavash-guide-step p {
+  max-width: 560px;
+  margin: 0;
+  color: rgba(226,236,255,0.68);
+  font-size: 14px;
+  line-height: 1.48;
+}
+
+.lavash-hotkeys-panel {
+  padding: 18px;
+  border-radius: 28px;
+
+  background:
+    radial-gradient(circle at 10% 0%, rgba(255,211,91,0.14), transparent 32%),
+    radial-gradient(circle at 95% 100%, rgba(124,92,255,0.18), transparent 40%),
+    rgba(255,255,255,0.045);
+  border: 1px solid rgba(255,255,255,0.09);
+
+  box-shadow:
+    inset 0 0 26px rgba(255,255,255,0.035),
+    0 20px 40px rgba(0,0,0,0.17);
+}
+
+.lavash-hotkeys-panel__head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.lavash-hotkeys-panel__head span {
+  font-size: 19px;
+  font-weight: 950;
+  color: #fff;
+}
+
+.lavash-hotkeys-panel__head small {
+  color: rgba(226,236,255,0.54);
+  font-weight: 800;
+}
+
+.lavash-hotkeys-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.lavash-hotkey {
+  min-height: 132px;
+  padding: 14px 12px;
+  border-radius: 22px;
+
+  display: grid;
+  align-content: start;
+  gap: 10px;
+
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.035));
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.lavash-hotkey kbd {
+  justify-self: start;
+  min-width: 42px;
+  height: 38px;
+  padding: 0 12px;
+
+  display: inline-grid;
+  place-items: center;
+
+  border-radius: 13px;
+  border: 1px solid rgba(56,223,255,0.28);
+
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255,255,255,0.22), transparent 44%),
+    rgba(6,18,48,0.82);
+
+  color: #bff8ff;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 950;
+
+  box-shadow:
+    0 0 18px rgba(56,223,255,0.12),
+    inset 0 -4px 10px rgba(0,0,0,0.28);
+}
+
+.lavash-hotkey span {
+  color: rgba(233,240,255,0.72);
+  font-size: 12px;
+  line-height: 1.38;
+  font-weight: 750;
+}
+
+.lavash-hotkey b {
+  align-self: end;
+  justify-self: start;
+  margin-top: auto;
+  padding: 6px 9px;
+  border-radius: 999px;
+  background: rgba(56,223,255,0.10);
+  color: #fff2a8;
+  font-size: 11px;
+  font-weight: 950;
+}
+
+.lavash-guide-tip {
+  display: grid;
+  grid-template-columns: 1fr 110px;
+  align-items: center;
+  gap: 18px;
+
+  padding: 18px 22px;
+  border-radius: 26px;
+
+  background:
+    linear-gradient(90deg, rgba(56,223,255,0.10), rgba(124,92,255,0.12)),
+    rgba(255,255,255,0.035);
+  border: 1px solid rgba(56,223,255,0.16);
+}
+
+.lavash-guide-tip strong {
+  display: block;
+  margin-bottom: 6px;
+  color: #83eaff;
+  font-size: 17px;
+  font-weight: 950;
+}
+
+.lavash-guide-tip p {
+  margin: 0;
+  color: rgba(226,236,255,0.68);
+  font-size: 14px;
+  line-height: 1.48;
+}
+
+.lavash-guide-tip__orb {
+  width: 82px;
+  height: 82px;
+  justify-self: center;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 50%;
+  color: #fff5b8;
+  font-size: 38px;
+
+  background:
+    radial-gradient(circle at 50% 35%, rgba(255,255,255,0.30), transparent 34%),
+    radial-gradient(circle, rgba(255,211,91,0.45), rgba(124,92,255,0.20) 58%, transparent 72%);
+
+  box-shadow:
+    0 0 34px rgba(255,211,91,0.20),
+    0 0 48px rgba(124,92,255,0.18);
+}
+
+.lavash-guide-footer {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+.lavash-guide-footer span {
+  color: rgba(226,236,255,0.60);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.lavash-guide-ok {
+  height: 46px;
+  min-width: 156px;
+  padding: 0 22px;
+
+  border: none;
+  border-radius: 15px;
+
+  color: #fff;
+  font-size: 15px;
+  font-weight: 950;
+
+  cursor: pointer;
+  background: linear-gradient(90deg, #386dff, #7c4dff);
+
+  box-shadow:
+    0 16px 32px rgba(79,124,255,0.24),
+    inset 0 0 18px rgba(255,255,255,0.10);
+}
+
+.lavash-guide-ok:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.08);
+}
+
+@media (max-width: 900px) {
+  .lavash-hotkeys-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .lavash-guide-tip {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .lavash-modal__header--pro {
+    align-items: flex-start !important;
+  }
+
+  .lavash-modal__head-icon {
+    display: none;
+  }
+
+  .lavash-guide-step {
+    grid-template-columns: 1fr;
+  }
+
+  .lavash-hotkeys-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .lavash-guide-footer {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .lavash-guide-ok {
+    width: 100%;
+  }
+}
+
