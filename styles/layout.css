@@ -114,3 +114,199 @@
     transform: translateY(-6px) scale(.96);
   }
 }
+
+/* =========================================================
+   LAVASH ADMIN — NAVBAR LAYER FIX
+   Мета:
+   1) лівий navbar завжди поверх контенту;
+   2) правий navbar завжди поверх контенту;
+   3) нормальний розмір кнопок та іконок;
+   4) картка редактора не перекриває навігацію.
+   ========================================================= */
+
+:root {
+  --lavash-left-nav-z: 30000;
+  --lavash-right-nav-z: 30000;
+  --lavash-content-z: 1;
+}
+
+/* Лівий navbar: підтримка кількох можливих назв класів */
+.sidebar,
+.left-sidebar,
+.app-sidebar,
+.side-nav,
+.left-nav,
+.lavash-sidebar,
+#sidebar,
+#leftSidebar,
+#leftNav {
+  position: fixed !important;
+  left: 0 !important;
+  top: 0 !important;
+  height: 100vh !important;
+  z-index: var(--lavash-left-nav-z) !important;
+  isolation: isolate !important;
+  transform: none !important;
+  filter: none !important;
+}
+
+/* Якщо sidebar розкривається — він також має бути поверх усього */
+.sidebar.is-open,
+.sidebar.expanded,
+.left-sidebar.is-open,
+.left-sidebar.expanded,
+.app-sidebar.is-open,
+.app-sidebar.expanded,
+.side-nav.is-open,
+.side-nav.expanded,
+.left-nav.is-open,
+.left-nav.expanded,
+.lavash-sidebar.is-open,
+.lavash-sidebar.expanded {
+  z-index: calc(var(--lavash-left-nav-z) + 10) !important;
+}
+
+/* Правий navbar / панель інструментів */
+.tools-panel,
+.right-sidebar,
+.right-nav,
+.tools-sidebar,
+.lavash-tools,
+.app-tools,
+#toolsPanel,
+#rightSidebar,
+#rightNav {
+  position: fixed !important;
+  right: 0 !important;
+  top: 0 !important;
+  height: 100vh !important;
+  z-index: var(--lavash-right-nav-z) !important;
+  isolation: isolate !important;
+  transform: none !important;
+  filter: none !important;
+}
+
+/* Контент тримаємо нижче navbar */
+.main-content,
+.page-content,
+.app-main,
+.app-content,
+.content,
+.page,
+.view,
+#app,
+#pageRoot,
+#viewRoot,
+#appRoot,
+#pendingGamePage {
+  position: relative;
+  z-index: var(--lavash-content-z);
+}
+
+/* Картка редактора не повинна ставати поверх navbar */
+.pg-card,
+.pg-card__inner,
+.pg-card__front,
+.pg-card__back,
+.pg-card__face {
+  z-index: auto;
+}
+
+/* Нормальні розміри кнопок правого navbar */
+.tools-panel button,
+.tools-panel .tool-btn,
+.tools-panel .nav-tool,
+.right-sidebar button,
+.right-sidebar .tool-btn,
+.right-sidebar .nav-tool,
+.right-nav button,
+.right-nav .tool-btn,
+.right-nav .nav-tool,
+.lavash-tools button,
+.lavash-tools .tool-btn,
+.lavash-tools .nav-tool {
+  width: 64px !important;
+  height: 64px !important;
+  min-width: 64px !important;
+  min-height: 64px !important;
+  max-width: 64px !important;
+  max-height: 64px !important;
+
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  padding: 0 !important;
+  box-sizing: border-box !important;
+}
+
+/* Коли правий navbar розкритий і має текст — дозволяємо ширші кнопки */
+.tools-panel.expanded button,
+.tools-panel.is-open button,
+.tools-panel.expanded .tool-btn,
+.tools-panel.is-open .tool-btn,
+.right-sidebar.expanded button,
+.right-sidebar.is-open button,
+.right-sidebar.expanded .tool-btn,
+.right-sidebar.is-open .tool-btn,
+.right-nav.expanded button,
+.right-nav.is-open button,
+.right-nav.expanded .tool-btn,
+.right-nav.is-open .tool-btn,
+.lavash-tools.expanded button,
+.lavash-tools.is-open button,
+.lavash-tools.expanded .tool-btn,
+.lavash-tools.is-open .tool-btn {
+  width: 176px !important;
+  max-width: 176px !important;
+  justify-content: flex-start !important;
+  gap: 14px !important;
+  padding: 0 22px !important;
+}
+
+/* Нормальні розміри SVG-іконок */
+.tools-panel svg,
+.tools-panel img,
+.tools-panel .tool-icon,
+.right-sidebar svg,
+.right-sidebar img,
+.right-sidebar .tool-icon,
+.right-nav svg,
+.right-nav img,
+.right-nav .tool-icon,
+.lavash-tools svg,
+.lavash-tools img,
+.lavash-tools .tool-icon {
+  width: 24px !important;
+  height: 24px !important;
+  min-width: 24px !important;
+  min-height: 24px !important;
+  max-width: 24px !important;
+  max-height: 24px !important;
+  flex: 0 0 24px !important;
+  object-fit: contain !important;
+}
+
+/* Текст у правому navbar не має роздувати іконки */
+.tools-panel span,
+.tools-panel .tool-label,
+.right-sidebar span,
+.right-sidebar .tool-label,
+.right-nav span,
+.right-nav .tool-label,
+.lavash-tools span,
+.lavash-tools .tool-label {
+  font-size: 15px !important;
+  line-height: 1.1 !important;
+  white-space: nowrap !important;
+}
+
+/* Модалки мають бути вище контенту і navbar */
+.modal,
+.modal-backdrop,
+.pg-modal,
+.pg-modal-backdrop,
+.lavash-modal,
+.lavash-modal-backdrop {
+  z-index: 40000 !important;
+}
