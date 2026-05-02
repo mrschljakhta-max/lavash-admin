@@ -1508,10 +1508,10 @@ body.lavash-modal-open {
 }
 
 .lavash-modal__card--operator-ranks {
-  width: min(760px, calc(100vw - 48px)) !important;
-  max-height: min(760px, calc(100vh - 44px)) !important;
+  width: min(980px, calc(100vw - 48px)) !important;
+  max-height: min(780px, calc(100vh - 44px)) !important;
   overflow: hidden;
-  padding: 26px !important;
+  padding: 24px !important;
   border-radius: 32px !important;
   border: 1px solid rgba(255,211,91,.22) !important;
   background:
@@ -1541,103 +1541,148 @@ body.lavash-modal-open {
   z-index: 2;
 }
 
+.lavash-ranks-grid {
+  max-height: min(600px, calc(100vh - 190px));
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  padding: 2px 6px 2px 0;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,211,91,.45) rgba(255,255,255,.06);
+}
+
+.lavash-rank-card {
+  position: relative;
+  min-height: 164px;
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  gap: 8px;
+  padding: 14px;
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255,255,255,.11), transparent 44%),
+    linear-gradient(180deg, rgba(255,255,255,.075), rgba(255,255,255,.032));
+  border: 1px solid rgba(255,255,255,.09);
+  box-shadow: inset 0 0 22px rgba(255,255,255,.028);
+  transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+}
+
+.lavash-rank-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(120,226,255,.22);
+  box-shadow: 0 16px 32px rgba(0,0,0,.20), inset 0 0 22px rgba(255,255,255,.035);
+}
+
+.lavash-rank-card.is-current {
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255,211,91,.20), transparent 46%),
+    linear-gradient(180deg, rgba(255,211,91,.14), rgba(56,223,255,.06)),
+    rgba(255,255,255,.04);
+  border-color: rgba(255,211,91,.36);
+  box-shadow:
+    0 0 30px rgba(255,211,91,.13),
+    inset 0 0 24px rgba(255,255,255,.05);
+}
+
+.lavash-rank-card__place {
+  position: absolute;
+  top: 12px;
+  left: 14px;
+  color: rgba(173,210,255,.68);
+  font-size: 11px;
+  font-weight: 950;
+  letter-spacing: .16em;
+}
+
+.lavash-rank-card__badge {
+  width: 62px;
+  height: 62px;
+  margin: 4px auto 2px;
+  display: grid;
+  place-items: center;
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 50% 20%, rgba(255,255,255,.22), transparent 42%),
+    linear-gradient(135deg, rgba(255,211,91,.16), rgba(124,92,255,.30));
+  box-shadow: 0 0 22px rgba(255,211,91,.12), inset 0 0 18px rgba(255,255,255,.05);
+  overflow: hidden;
+}
+
+.lavash-rank-card__badge img {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 10px rgba(255,226,128,.20));
+}
+
+.lavash-rank-card__main {
+  display: grid;
+  gap: 5px;
+  text-align: center;
+  min-width: 0;
+}
+
+.lavash-rank-card__main strong {
+  color: #fff;
+  font-size: 14px;
+  font-weight: 950;
+  line-height: 1.12;
+}
+
+.lavash-rank-card__main small {
+  color: rgba(226,236,255,.62);
+  font-size: 11px;
+  line-height: 1.25;
+}
+
+.lavash-rank-card__meta {
+  display: grid;
+  justify-items: center;
+  gap: 3px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(255,255,255,.07);
+}
+
+.lavash-rank-card__meta b {
+  color: #9af4ff;
+  font-size: 11px;
+  font-weight: 950;
+}
+
+.lavash-rank-card__meta small {
+  color: #fff2a8;
+  font-size: 10px;
+  font-weight: 900;
+}
+
+/* backward compatibility if older markup is cached */
 .lavash-ranks-list {
   max-height: min(560px, calc(100vh - 210px));
   overflow-y: auto;
   display: grid;
   gap: 10px;
   padding-right: 4px;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255,211,91,.45) rgba(255,255,255,.06);
 }
 
-.lavash-rank-row {
-  display: grid;
-  grid-template-columns: 44px 54px minmax(0, 1fr) 132px;
-  align-items: center;
-  gap: 12px;
-  min-height: 74px;
-  padding: 12px 14px;
-  border-radius: 22px;
-  background: linear-gradient(90deg, rgba(255,255,255,.075), rgba(255,255,255,.032));
-  border: 1px solid rgba(255,255,255,.085);
-  box-shadow: inset 0 0 22px rgba(255,255,255,.028);
-}
-
-.lavash-rank-row.is-current {
-  background:
-    linear-gradient(90deg, rgba(255,211,91,.16), rgba(56,223,255,.08)),
-    rgba(255,255,255,.04);
-  border-color: rgba(255,211,91,.28);
-  box-shadow:
-    0 0 26px rgba(255,211,91,.10),
-    inset 0 0 22px rgba(255,255,255,.04);
-}
-
-.lavash-rank-row__place {
-  color: rgba(173,210,255,.62);
-  font-size: 12px;
-  font-weight: 950;
-  letter-spacing: .14em;
-}
-
-.lavash-rank-row__badge {
-  width: 48px;
-  height: 48px;
-  display: grid;
-  place-items: center;
-  border-radius: 17px;
-  color: #fff4bd;
-  font-size: 24px;
-  background:
-    radial-gradient(circle at 50% 20%, rgba(255,255,255,.22), transparent 42%),
-    linear-gradient(135deg, rgba(255,211,91,.22), rgba(124,92,255,.34));
-  box-shadow: 0 0 20px rgba(255,211,91,.12), inset 0 0 18px rgba(255,255,255,.05);
-}
-
-.lavash-rank-row__main {
-  display: grid;
-  gap: 4px;
-  min-width: 0;
-}
-
-.lavash-rank-row__main strong {
-  color: #fff;
-  font-size: 15px;
-  font-weight: 950;
-}
-
-.lavash-rank-row__main small {
-  color: rgba(226,236,255,.62);
-  font-size: 12px;
-  line-height: 1.28;
-}
-
-.lavash-rank-row__meta {
-  display: grid;
-  justify-items: end;
-  gap: 4px;
-}
-
-.lavash-rank-row__meta b {
-  color: #9af4ff;
-  font-size: 12px;
-  font-weight: 950;
-}
-
-.lavash-rank-row__meta small {
-  color: #fff2a8;
-  font-size: 11px;
-  font-weight: 900;
-}
-
-@media (max-width: 760px) {
-  .lavash-rank-row {
-    grid-template-columns: 34px 46px 1fr;
-  }
-
-  .lavash-rank-row__meta {
-    grid-column: 3;
-    justify-items: start;
+@media (max-width: 900px) {
+  .lavash-ranks-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+@media (max-width: 620px) {
+  .lavash-modal__card--operator-ranks {
+    width: calc(100vw - 28px) !important;
+    padding: 18px !important;
+  }
+
+  .lavash-ranks-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .lavash-rank-card {
+    min-height: 138px;
+  }
+}
+
