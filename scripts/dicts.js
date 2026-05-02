@@ -271,7 +271,7 @@
   }
 
   function setDictsViewMode(mode) {
-    const normalizedMode = mode === 'schema' || mode === 'table' ? mode : 'carousel';
+    const normalizedMode = mode === 'schema' ? 'schema' : 'carousel';
 
     const page = document.getElementById('dictsPage');
     const carouselView = document.getElementById('dictsCarouselView');
@@ -280,7 +280,6 @@
     if (page) {
       page.classList.toggle('dicts-view--carousel', normalizedMode === 'carousel');
       page.classList.toggle('dicts-view--schema', normalizedMode === 'schema');
-      page.classList.toggle('dicts-view--table', normalizedMode === 'table');
       page.setAttribute('data-dicts-view-mode', normalizedMode);
     }
 
@@ -296,11 +295,6 @@
       schemaView.setAttribute('aria-hidden', normalizedMode !== 'schema' ? 'true' : 'false');
     }
 
-    if (normalizedMode === 'table') {
-      document.dispatchEvent(new CustomEvent('lavash:dicts-table-request', { detail: { source: 'right-navbar' } }));
-      return;
-    }
-
     if (normalizedMode === 'schema') {
       window.LAVASH_DICTS_SCHEMA?.initSchemaView?.();
     } else {
@@ -314,13 +308,6 @@
   }
 
   window.setDictsViewMode = setDictsViewMode;
-
-  window.LAVASH_PAGE_ACTIONS = {
-    'dicts.mode': () => window.LAVASH_NAVBAR?.openModal?.('dictsModeDialog'),
-    'dicts.rating': () => window.LAVASH_NAVBAR?.openModal?.('ratingModal'),
-    'dicts.table': () => setDictsViewMode('table'),
-    'dicts.refresh': () => window.LAVASH_ROUTER?.loadLavashView?.()
-  };
 
   window.LAVASH_DICTS = {
     initDictsPage,

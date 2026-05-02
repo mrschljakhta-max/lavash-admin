@@ -850,27 +850,9 @@ async function startUploadFlow() {
 
 function bindUploadActions() {
   const sideStartBtn = document.getElementById('uploadStartSideBtn');
-  const panelStartBtn = document.getElementById('uploadStartPanelBtn');
-
-  if (sideStartBtn && sideStartBtn.dataset.uploadStartBound !== '1') {
-    sideStartBtn.dataset.uploadStartBound = '1';
+  if (sideStartBtn) {
     sideStartBtn.addEventListener('click', startUploadFlow);
   }
-
-  if (panelStartBtn && panelStartBtn.dataset.uploadStartBound !== '1') {
-    panelStartBtn.dataset.uploadStartBound = '1';
-    panelStartBtn.addEventListener('click', startUploadFlow);
-  }
-
-  window.LAVASH_PAGE_ACTIONS = {
-    'upload.start': startUploadFlow,
-    'start': startUploadFlow,
-    'upload.queue': showDebugQueue,
-    'upload.validate': showDebugValidate,
-    'upload.parse': showDebugParse,
-    'upload.extract': showDebugEvents,
-    'upload.database': showDebugDatabase
-  };
 }
 
 window.initUploadPage = async function initUploadPage() {

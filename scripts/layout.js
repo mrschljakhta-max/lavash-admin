@@ -39,7 +39,7 @@
           </div>
 
           <nav class="left-nav__menu" aria-label="Основна навігація">
-            <button class="nav-item ${(activeKey === 'editor' || activeKey === 'pending') ? 'is-active' : ''}" data-route="pending" type="button">
+            <button class="nav-item ${activeKey === 'editor' ? 'is-active' : ''}" data-route="pending" type="button">
               <span class="nav-item__icon-wrap">
                 <img src="/lavash-admin/assets/icons/nav-editor.svg?v=12" alt="" class="nav-item__icon" />
               </span>
@@ -72,116 +72,11 @@
     `;
   }
 
-  const LAVASH_RIGHT_NAV_ACTIONS = {
-    pending: [
-      { action: 'pending.rating', label: 'Рейтинг', title: 'Рейтинг користувачів', icon: 'trophy' },
-      { action: 'pending.guide', label: 'Інструкція', title: 'Інструкція до роботи', icon: 'guide' },
-      { action: 'pending.refresh', label: 'Оновити', title: 'Оновити сторінку', icon: 'refresh' }
-    ],
-    editor: [
-      { action: 'pending.rating', label: 'Рейтинг', title: 'Рейтинг користувачів', icon: 'trophy' },
-      { action: 'pending.guide', label: 'Інструкція', title: 'Інструкція до роботи', icon: 'guide' },
-      { action: 'pending.refresh', label: 'Оновити', title: 'Оновити сторінку', icon: 'refresh' }
-    ],
-    upload: [
-      { action: 'upload.queue', uploadTool: 'queue', label: 'Черга', title: 'Черга файлів', iconImg: '/lavash-admin/assets/icons/upload/stack.svg?v=12' },
-      { action: 'upload.validate', uploadTool: 'validate', label: 'Перевірка', title: 'Перевірити файли', iconImg: '/lavash-admin/assets/icons/upload/shield.svg?v=12' },
-      { action: 'upload.parse', uploadTool: 'parse', label: 'Парсинг', title: 'Параметри парсингу', iconImg: '/lavash-admin/assets/icons/upload/settings.svg?v=12' },
-      { action: 'upload.extract', uploadTool: 'extract', label: 'Події', title: 'Витяг подій', iconImg: '/lavash-admin/assets/icons/upload/target.svg?v=12' },
-      { action: 'upload.database', uploadTool: 'database', label: 'Supabase', title: 'Стан Supabase', iconImg: '/lavash-admin/assets/icons/upload/database.svg?v=12' },
-      { action: 'upload.start', label: 'Запуск', title: 'Запустити обробку', iconImg: '/lavash-admin/assets/icons/upload/bolt.svg?v=12', accent: true, id: 'uploadStartSideBtn' }
-    ],
-    dicts: [
-      { action: 'dicts.mode', label: 'Режими', title: 'Режими довідників', icon: 'dicts-mode', id: 'dictsModeTrigger', extraClass: 'tool-item--dicts-mode', aria: 'aria-haspopup="dialog" aria-controls="dictsModeDialog"' },
-      { action: 'dicts.rating', label: 'Рейтинг', title: 'Рейтинг користувачів', icon: 'trophy' },
-      { action: 'dicts.table', label: 'Таблиця', title: 'Табличний режим довідників', icon: 'table' },
-      { action: 'dicts.refresh', label: 'Оновити', title: 'Оновити довідники', icon: 'refresh' }
-    ],
-    logs: [
-      { action: 'logs.rating', label: 'Рейтинг', title: 'Рейтинг користувачів', icon: 'trophy' },
-      { action: 'logs.guide', label: 'Інструкція', title: 'Інструкція до роботи', icon: 'guide' },
-      { action: 'logs.refresh', label: 'Оновити', title: 'Оновити логування', icon: 'refresh' }
-    ]
-  };
-
-  function lavashGetRightNavActions(pageKey = lavashCurrentPageKey()) {
-    return LAVASH_RIGHT_NAV_ACTIONS[pageKey] || LAVASH_RIGHT_NAV_ACTIONS.pending;
-  }
-
-  function lavashRenderToolIcon(action) {
-    if (action.iconImg) {
-      return `
-        <span class="tool-item__icon-wrap">
-          <img src="${action.iconImg}" alt="" class="tool-item__icon" />
-        </span>
-      `;
-    }
-
-    const icons = {
-      trophy: `
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M8 21h8"></path><path d="M12 17v4"></path><path d="M7 4h10v5a5 5 0 0 1-10 0V4Z"></path><path d="M7 6H4a2 2 0 0 0 2 4h1"></path><path d="M17 6h3a2 2 0 0 1-2 4h-1"></path>
-        </svg>
-      `,
-      guide: `
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15Z"></path><path d="M8 7h8"></path><path d="M8 11h6"></path>
-        </svg>
-      `,
-      refresh: `
-        <img src="/lavash-admin/assets/icons/tool-refresh.svg?v=12" alt="" class="tool-item__icon" />
-      `,
-      'dicts-mode': `
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="3" y="4" width="7" height="7" rx="1.6"></rect><rect x="14" y="4" width="7" height="7" rx="1.6"></rect><rect x="3" y="15" width="7" height="6" rx="1.6"></rect><path d="M14 18h7"></path><path d="M17.5 15v6"></path>
-        </svg>
-      `,
-      table: `
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <rect x="4" y="4" width="16" height="16" rx="2"></rect><path d="M4 10h16"></path><path d="M4 16h16"></path><path d="M10 4v16"></path><path d="M16 4v16"></path>
-        </svg>
-      `
-    };
-
-    return `
-      <span class="tool-item__icon-wrap ${action.icon === 'refresh' ? '' : 'tool-item__icon-wrap--svg'}">
-        ${icons[action.icon] || icons.guide}
-      </span>
-    `;
-  }
-
-  function lavashRenderRightToolButton(action) {
-    const uploadAttr = action.uploadTool ? `data-upload-tool="${action.uploadTool}"` : '';
-    const idAttr = action.id ? `id="${action.id}"` : '';
-    const ariaAttr = action.aria || '';
-    const className = [
-      'tool-item',
-      action.uploadTool ? 'tool-item--upload' : '',
-      action.accent ? 'tool-item--accent' : '',
-      action.extraClass || ''
-    ].filter(Boolean).join(' ');
-
-    return `
-      <button
-        class="${className}"
-        ${idAttr}
-        type="button"
-        data-nav-action="${action.action}"
-        ${uploadAttr}
-        ${ariaAttr}
-        title="${action.title || action.label}"
-      >
-        ${lavashRenderToolIcon(action)}
-        <span class="tool-item__label">${action.label}</span>
-      </button>
-    `;
-  }
-
   function lavashBuildDefaultRightTools(pageKey = lavashCurrentPageKey()) {
-    const actions = lavashGetRightNavActions(pageKey);
+    const isDictsPage = pageKey === 'dicts';
 
     return `
-      <aside class="right-tools" id="rightTools" data-page-key="${pageKey}">
+      <aside class="right-tools" id="rightTools">
         <div class="right-tools__inner">
           <div class="right-tools__top">
             <div class="right-tools__title-wrap">
@@ -190,20 +85,70 @@
           </div>
 
           <div class="right-tools__menu" aria-label="Інструменти сторінки">
-            ${actions.map(lavashRenderRightToolButton).join('')}
+            ${isDictsPage ? `
+              <button
+                class="tool-item tool-item--dicts-mode"
+                id="dictsModeTrigger"
+                type="button"
+                aria-haspopup="dialog"
+                aria-controls="dictsModeDialog"
+                title="Режими довідників"
+              >
+                <span class="tool-item__icon-wrap tool-item__icon-wrap--svg">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="4" width="7" height="7" rx="1.6"></rect>
+                    <rect x="14" y="4" width="7" height="7" rx="1.6"></rect>
+                    <rect x="3" y="15" width="7" height="6" rx="1.6"></rect>
+                    <path d="M14 18h7"></path>
+                    <path d="M17.5 15v6"></path>
+                  </svg>
+                </span>
+                <span class="tool-item__label">Режими</span>
+              </button>
+            ` : ''}
+
+            <button class="tool-item" data-tool="rating" type="button" title="Рейтинг користувачів">
+              <span class="tool-item__icon-wrap tool-item__icon-wrap--svg">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M8 21h8"></path>
+                  <path d="M12 17v4"></path>
+                  <path d="M7 4h10v5a5 5 0 0 1-10 0V4Z"></path>
+                  <path d="M7 6H4a2 2 0 0 0 2 4h1"></path>
+                  <path d="M17 6h3a2 2 0 0 1-2 4h-1"></path>
+                </svg>
+              </span>
+              <span class="tool-item__label">Рейтинг</span>
+            </button>
+
+            <button class="tool-item" data-tool="guide" type="button" title="Інструкція до роботи">
+              <span class="tool-item__icon-wrap tool-item__icon-wrap--svg">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                  <path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15Z"></path>
+                  <path d="M8 7h8"></path>
+                  <path d="M8 11h6"></path>
+                </svg>
+              </span>
+              <span class="tool-item__label">Інструкція</span>
+            </button>
+
+            <button class="tool-item" data-tool="refresh" type="button" title="Оновити">
+              <span class="tool-item__icon-wrap">
+                <img src="/lavash-admin/assets/icons/tool-refresh.svg?v=12" alt="" class="tool-item__icon" />
+              </span>
+              <span class="tool-item__label">Оновити</span>
+            </button>
           </div>
 
-          <div class="right-tools__panel" id="layoutRightPanel"></div>
+          ${isDictsPage ? '' : '<div class="right-tools__panel" id="layoutRightPanel"></div>'}
         </div>
       </aside>
     `;
   }
 
   function lavashBuildUploadRightTools() {
-    const actions = lavashGetRightNavActions('upload');
-
     return `
-      <aside class="right-tools right-tools--upload" id="rightTools" data-page-key="upload">
+      <aside class="right-tools right-tools--upload" id="rightTools">
         <div class="right-tools__inner">
           <div class="right-tools__top">
             <div class="right-tools__title-wrap">
@@ -212,7 +157,47 @@
           </div>
 
           <div class="right-tools__menu" aria-label="Інструменти завантаження">
-            ${actions.map(lavashRenderRightToolButton).join('')}
+            <button class="tool-item tool-item--upload" type="button" data-upload-tool="queue">
+              <span class="tool-item__icon-wrap">
+                <img src="/lavash-admin/assets/icons/upload/stack.svg?v=12" alt="" class="tool-item__icon" />
+              </span>
+              <span class="tool-item__label">Черга</span>
+            </button>
+
+            <button class="tool-item tool-item--upload" type="button" data-upload-tool="validate">
+              <span class="tool-item__icon-wrap">
+                <img src="/lavash-admin/assets/icons/upload/shield.svg?v=12" alt="" class="tool-item__icon" />
+              </span>
+              <span class="tool-item__label">Перевірка</span>
+            </button>
+
+            <button class="tool-item tool-item--upload" type="button" data-upload-tool="parse">
+              <span class="tool-item__icon-wrap">
+                <img src="/lavash-admin/assets/icons/upload/settings.svg?v=12" alt="" class="tool-item__icon" />
+              </span>
+              <span class="tool-item__label">Парсинг</span>
+            </button>
+
+            <button class="tool-item tool-item--upload" type="button" data-upload-tool="extract">
+              <span class="tool-item__icon-wrap">
+                <img src="/lavash-admin/assets/icons/upload/target.svg?v=12" alt="" class="tool-item__icon" />
+              </span>
+              <span class="tool-item__label">Події</span>
+            </button>
+
+            <button class="tool-item tool-item--upload" type="button" data-upload-tool="database">
+              <span class="tool-item__icon-wrap">
+                <img src="/lavash-admin/assets/icons/upload/database.svg?v=12" alt="" class="tool-item__icon" />
+              </span>
+              <span class="tool-item__label">Supabase</span>
+            </button>
+
+            <button class="tool-item tool-item--upload tool-item--accent" type="button" id="uploadStartSideBtn">
+              <span class="tool-item__icon-wrap">
+                <img src="/lavash-admin/assets/icons/upload/bolt.svg?v=12" alt="" class="tool-item__icon" />
+              </span>
+              <span class="tool-item__label">Запуск</span>
+            </button>
           </div>
 
           <div class="right-tools__panel right-tools__panel--upload" id="layoutRightPanel">
@@ -224,7 +209,7 @@
               </div>
             </div>
 
-            <button id="uploadStartPanelBtn" class="tool-refresh-btn tool-refresh-btn--upload" type="button" data-nav-action="upload.start">
+            <button id="uploadStartPanelBtn" class="tool-refresh-btn tool-refresh-btn--upload" type="button">
               <img src="/lavash-admin/assets/icons/upload/bolt.svg?v=12" class="icon-sm" alt="">
               Завантажити і обробити
             </button>

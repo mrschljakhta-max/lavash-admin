@@ -1356,7 +1356,7 @@
 
     if (!event.shiftKey && !event.ctrlKey && !event.altKey && event.code === 'KeyA') {
       event.preventDefault();
-      handleAction('confirm');
+      handleAction('ignore');
       return;
     }
 
@@ -1368,7 +1368,7 @@
 
     if (!event.shiftKey && !event.ctrlKey && !event.altKey && event.code === 'KeyD') {
       event.preventDefault();
-      handleAction('ignore');
+      handleAction('confirm');
       return;
     }
 
@@ -1411,12 +1411,6 @@
   }
 
   window.LAVASH_PENDING_GAME = {
-    init,
-    prev,
-    next,
-    handleAction,
-    confirm: () => handleAction('confirm'),
-    reject: () => handleAction('skip'),
-    ignore: () => handleAction('ignore')
+    init
   };
 })();
