@@ -4680,119 +4680,12 @@ select {
 }
 
 
-/* =========================
-   Upload overlay final states + action buttons
-   Added for upload success/error UX
-========================= */
-.upload-overlay-actions,
-#uploadOverlayActions {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-  margin: 18px 0 12px;
+/* FIX: modal */
+.upload-details-modal.hidden {display:none;}
+.upload-details-modal{
+  position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+  background:rgba(0,0,0,0.6);z-index:9999;
 }
-
-.upload-overlay-action {
-  appearance: none;
-  border: 1px solid rgba(132, 165, 255, 0.32);
-  background: linear-gradient(145deg, rgba(18, 35, 78, 0.88), rgba(11, 24, 62, 0.76));
-  color: rgba(238, 244, 255, 0.94);
-  border-radius: 16px;
-  padding: 12px 18px;
-  font: inherit;
-  font-size: 14px;
-  font-weight: 900;
-  line-height: 1;
-  cursor: pointer;
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,0.10),
-    0 14px 34px rgba(0,0,0,0.24),
-    0 0 26px rgba(89, 121, 255, 0.12);
-  transition:
-    transform .18s ease,
-    border-color .18s ease,
-    background .18s ease,
-    box-shadow .18s ease,
-    filter .18s ease;
-}
-
-.upload-overlay-action:hover {
-  transform: translateY(-1px);
-  border-color: rgba(122, 102, 255, 0.82);
-  background: linear-gradient(145deg, rgba(32, 52, 112, 0.92), rgba(23, 38, 93, 0.82));
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,0.12),
-    0 18px 40px rgba(0,0,0,0.28),
-    0 0 34px rgba(112, 92, 255, 0.22);
-}
-
-.upload-overlay-action.primary {
-  background: linear-gradient(135deg, rgba(78, 122, 255, 0.98), rgba(137, 82, 255, 0.98));
-  border-color: rgba(210, 220, 255, 0.72);
-  color: #fff;
-}
-
-.upload-overlay.is-success .upload-overlay__loader,
-.upload-overlay.is-error .upload-overlay__loader {
-  animation: none !important;
-  opacity: 0 !important;
-  transform: none !important;
-}
-
-.upload-overlay.is-success .upload-overlay__top,
-.upload-overlay.is-error .upload-overlay__top {
-  position: relative;
-  min-height: 62px;
-}
-
-.upload-overlay.is-success .upload-overlay__top::after,
-.upload-overlay.is-error .upload-overlay__top::after {
-  content: "✓";
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: 64px;
-  height: 64px;
-  display: grid;
-  place-items: center;
-  border-radius: 22px;
-  font-size: 34px;
-  font-weight: 950;
-  color: #ffffff;
-  border: 1px solid rgba(255,255,255,0.18);
-  background:
-    radial-gradient(circle at 32% 25%, rgba(255,255,255,0.36), transparent 34%),
-    linear-gradient(135deg, rgba(42, 220, 180, 0.95), rgba(91, 112, 255, 0.92));
-  box-shadow:
-    0 0 34px rgba(49, 222, 180, 0.34),
-    0 18px 45px rgba(0,0,0,0.30),
-    inset 0 1px 0 rgba(255,255,255,0.22);
-}
-
-.upload-overlay.is-error .upload-overlay__top::after {
-  content: "!";
-  background:
-    radial-gradient(circle at 32% 25%, rgba(255,255,255,0.34), transparent 34%),
-    linear-gradient(135deg, rgba(255, 92, 122, 0.96), rgba(137, 82, 255, 0.90));
-  box-shadow:
-    0 0 34px rgba(255, 92, 122, 0.34),
-    0 18px 45px rgba(0,0,0,0.30),
-    inset 0 1px 0 rgba(255,255,255,0.22);
-}
-
-.debug-pre {
-  max-height: 260px;
-  overflow: auto;
-  white-space: pre-wrap;
-  word-break: break-word;
-  padding: 14px;
-  border-radius: 16px;
-  background: rgba(4, 12, 32, 0.58);
-  border: 1px solid rgba(120, 150, 255, 0.16);
-  color: rgba(230, 238, 255, 0.86);
-  font-size: 12px;
-  line-height: 1.55;
+.upload-details-modal__box{
+  background:#0b1a3a;padding:20px;border-radius:12px;color:white;width:600px;
 }
