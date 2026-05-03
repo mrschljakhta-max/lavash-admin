@@ -59,6 +59,44 @@
     <div id="dictsSchemaRoot"></div>
   </section>
 
+  <!-- ========================= -->
+  <!-- РЕЖИМ ТАБЛИЦІ -->
+  <!-- ========================= -->
+
+  <section
+    id="dictsTableView"
+    class="dicts-table-view hidden"
+    aria-label="Таблиця довідників"
+    hidden
+    aria-hidden="true"
+  >
+    <div class="dicts-table-view__head">
+      <div>
+        <h2>Таблиця довідників</h2>
+        <p>Швидкий огляд усіх довідників, кількості записів, статусів і типів.</p>
+      </div>
+      <button id="dictsTableCreateBtn" class="dicts-table-view__create" type="button">
+        <span>＋</span> Новий довідник
+      </button>
+    </div>
+
+    <div class="dicts-table-shell">
+      <table class="dicts-table">
+        <thead>
+          <tr>
+            <th>Довідник</th>
+            <th>Тип</th>
+            <th>Статус</th>
+            <th>Записів</th>
+            <th>Дія</th>
+          </tr>
+        </thead>
+        <tbody id="dictsTableBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+
 
   <!-- ========================= -->
   <!-- МОДАЛКА СТВОРЕННЯ -->
