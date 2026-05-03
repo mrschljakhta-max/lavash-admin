@@ -554,16 +554,60 @@ function bindDebugActions() {
    SUPABASE STORAGE / BATCH
 ========================= */
 
+async function getCurrentUploadUser(sb) {
+  const {
+    data: { session },
+    error
+  } = await sb.auth.getSession();
+
+  if (error) {
+    throw new Error(`Не вдалося отримати сесію користувача: ${error.message}`);
+  }
+
+  if (!session?.user) {
+    throw new Error('Користувач не авторизований. Увійди в систему перед завантаженням файлів.');
+  }
+
+  return {
+    session,
+    email: session.user.email || session.user.user_metadata?.email || null
+  };
+}
+
+function getBatchType() {
+  const hasWord = uploadState.docxFiles.length > 0;
+  const hasExcel = uploadState.excelFiles.length > 0;
+
+  if (hasWord && hasExcel) return 'mixed';
+  if (hasWord) return 'word';
+  if (hasExcel) return 'excel';
+  return 'mixed';
+}
+
+function makeBatchNote(extra = {}) {
+  const payload = {
+    app: 'lavash-admin',
+    page: 'upload',
+    docx_files: uploadState.docxFiles.length,
+    excel_files: uploadState.excelFiles.length,
+    ...extra
+  };
+
+  return JSON.stringify(payload);
+}
+
 async function createBatchRecord(sb) {
   const cfg = getUploadConfig();
   const batchId = uid();
+  const user = await getCurrentUploadUser(sb);
 
   const payload = {
     id: batchId,
-    created_at: nowIso(),
+    source_system: 'lavash-admin',
+    batch_type: getBatchType(),
+    uploaded_by: user.email,
     status: 'created',
-    source: 'lavash-admin-upload',
-    total_files: uploadState.docxFiles.length + uploadState.excelFiles.length
+    note: makeBatchNote({ stage: 'created' })
   };
 
   const { error } = await sb.from(cfg.batchTable).insert(payload);
@@ -575,10 +619,39 @@ async function createBatchRecord(sb) {
   return batchId;
 }
 
+async function updateBatchStatus(sb, batchId, status, noteExtra = {}) {
+  const cfg = getUploadConfig();
+
+  if (!batchId) return;
+
+  const payload = {
+    status,
+    note: makeBatchNote({
+      stage: status,
+      ...noteExtra
+    })
+  };
+
+  if (status === 'processed' || status === 'completed' || status === 'error') {
+    payload.processed_at = nowIso();
+  }
+
+  const { error } = await sb
+    .from(cfg.batchTable)
+    .update(payload)
+    .eq('id', batchId);
+
+  if (error) {
+    console.warn('Не вдалося оновити статус batch:', error.message);
+  }
+}
+
 async function uploadSingleFileToStorage(sb, file, batchId, type) {
   const cfg = getUploadConfig();
   const ext = fileExt(file.name);
-  const path = `${batchId}/${type}/${Date.now()}_${uid()}_${safeFileName(file.name)}`;
+  const fileId = uid();
+  const folder = type === 'word' ? 'word' : 'excel';
+  const path = `${batchId}/${folder}/${fileId}_${safeFileName(file.name)}`;
 
   const { error: storageError } = await sb.storage
     .from(cfg.uploadBucket)
@@ -593,32 +666,41 @@ async function uploadSingleFileToStorage(sb, file, batchId, type) {
   }
 
   const filePayload = {
-    id: uid(),
+    id: fileId,
     batch_id: batchId,
-    source_file_name: file.name,
-    storage_bucket: cfg.uploadBucket,
-    storage_path: path,
+    file_name: file.name,
     file_ext: ext,
     mime_type: file.type || null,
-    file_size: file.size,
-    file_kind: type,
-    uploaded_at: nowIso(),
-    parse_status: 'uploaded'
+    source_sheet: null,
+    file_size_bytes: file.size,
+    storage_path: path
   };
 
-  const { error: fileRowError } = await sb
+  const { data: fileRow, error: fileRowError } = await sb
     .from(cfg.uploadedFilesTable)
-    .insert(filePayload);
+    .insert(filePayload)
+    .select('id,batch_id,file_name,file_ext,mime_type,source_sheet,file_size_bytes,storage_path,created_at')
+    .single();
 
   if (fileRowError) {
     throw new Error(`Помилка запису uploaded_files для ${file.name}: ${fileRowError.message}`);
   }
 
   return {
+    id: fileRow?.id || fileId,
+    file_id: fileRow?.id || fileId,
+    batch_id: batchId,
     name: file.name,
+    file_name: file.name,
+    ext,
     path,
+    storage_path: path,
+    bucket: cfg.uploadBucket,
     type,
-    size: file.size
+    file_kind: type,
+    size: file.size,
+    file_size_bytes: file.size,
+    mime_type: file.type || null
   };
 }
 
@@ -677,14 +759,13 @@ async function triggerWordProcessing(sb, batchId, uploadedWordFiles) {
     throw new Error('Не задано edgeWordProcessUrl в config.js');
   }
 
-  const {
-    data: { session }
-  } = await sb.auth.getSession();
+  const { session } = await getCurrentUploadUser(sb);
 
   return postJson(
     cfg.edgeWordProcessUrl,
     {
       batch_id: batchId,
+      file_type: 'word',
       files: uploadedWordFiles
     },
     session?.access_token || ''
@@ -699,14 +780,13 @@ async function triggerExcelProcessing(sb, batchId, uploadedExcelFiles) {
     throw new Error('Не задано edgeExcelProcessUrl в config.js');
   }
 
-  const {
-    data: { session }
-  } = await sb.auth.getSession();
+  const { session } = await getCurrentUploadUser(sb);
 
   return postJson(
     cfg.edgeExcelProcessUrl,
     {
       batch_id: batchId,
+      file_type: 'excel',
       files: uploadedExcelFiles
     },
     session?.access_token || ''
@@ -716,23 +796,12 @@ async function triggerExcelProcessing(sb, batchId, uploadedExcelFiles) {
 async function finalizeBatch(sb, batchId, summary) {
   const cfg = getUploadConfig();
 
-  const { error } = await sb
-    .from(cfg.batchTable)
-    .update({
-      status: 'completed',
-      finished_at: nowIso(),
-      result_summary: summary
-    })
-    .eq('id', batchId);
-
-  if (error) {
-    throw new Error(`Не вдалося завершити batch: ${error.message}`);
-  }
+  await updateBatchStatus(sb, batchId, 'processed', {
+    summary
+  });
 
   if (cfg.edgeBatchFinalizeUrl) {
-    const {
-      data: { session }
-    } = await sb.auth.getSession();
+    const { session } = await getCurrentUploadUser(sb);
 
     await postJson(
       cfg.edgeBatchFinalizeUrl,
@@ -745,6 +814,15 @@ async function finalizeBatch(sb, batchId, summary) {
   }
 
   return true;
+}
+
+async function markBatchError(sb, batchId, errorMessage, stage = 'unknown') {
+  if (!sb || !batchId) return;
+
+  await updateBatchStatus(sb, batchId, 'error', {
+    error_stage: stage,
+    error_message: errorMessage
+  });
 }
 
 /* =========================
@@ -853,10 +931,25 @@ async function runRealUploadFlow() {
 }
 
 async function startUploadFlow() {
+  let sb = null;
+
   try {
+    sb = getSupabaseClient();
     await runRealUploadFlow();
   } catch (err) {
     console.error('startUploadFlow error:', err);
+
+    try {
+      await markBatchError(
+        sb,
+        uploadState.currentBatchId,
+        err.message || 'Щось пішло не так',
+        err.stage || 'unknown'
+      );
+    } catch (markError) {
+      console.warn('Не вдалося зафіксувати помилку batch:', markError);
+    }
+
     setUploadStageError(err.stage || 'validate');
     showOverlay('Помилка', err.message || 'Щось пішло не так');
   }
