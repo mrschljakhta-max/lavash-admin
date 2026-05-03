@@ -98,7 +98,7 @@
         content: pageHtml,
         useRightTools: true,
         contentClass: 'workspace-body--page',
-        rightToolsVariant: route.key === 'upload' ? 'upload' : 'default'
+        rightToolsVariant: 'default'
       });
     }
 

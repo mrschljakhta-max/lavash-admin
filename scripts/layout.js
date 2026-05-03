@@ -108,6 +108,33 @@
           <path d="M12 3l2.35 4.76 5.25.76-3.8 3.7.9 5.23L12 14.98 7.3 17.45l.9-5.23-3.8-3.7 5.25-.76L12 3Z"></path>
           <path d="M5 21h14"></path>
           <path d="M8 18h8"></path>
+        </svg>`,
+      stack: `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 2 3 6.5l9 4.5 9-4.5L12 2Z"></path>
+          <path d="m3 11 9 4.5 9-4.5"></path>
+          <path d="m3 15.5 9 4.5 9-4.5"></path>
+        </svg>`,
+      shield: `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"></path>
+          <path d="m9 12 2 2 4-5"></path>
+        </svg>`,
+      target: `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="8"></circle>
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M12 2v3"></path><path d="M12 19v3"></path><path d="M2 12h3"></path><path d="M19 12h3"></path>
+        </svg>`,
+      database: `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <ellipse cx="12" cy="5" rx="7" ry="3"></ellipse>
+          <path d="M5 5v6c0 1.7 3.1 3 7 3s7-1.3 7-3V5"></path>
+          <path d="M5 11v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6"></path>
+        </svg>`,
+      bolt: `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M13 2 4 14h7l-1 8 10-13h-7l0-7Z"></path>
         </svg>`
     };
 
@@ -119,22 +146,33 @@
     const attrs = [
       `class="tool-item${extraClass}"`,
       'type="button"',
-      `title="${tool.title}"`
+      `title="${tool.title || tool.label}"`
     ];
 
     if (tool.id) attrs.push(`id="${tool.id}"`);
     if (tool.action) attrs.push(`data-tool="${tool.action}"`);
+    if (tool.uploadAction) attrs.push(`data-upload-tool="${tool.uploadAction}"`);
     if (tool.ariaHasPopup) attrs.push('aria-haspopup="dialog"');
     if (tool.ariaControls) attrs.push(`aria-controls="${tool.ariaControls}"`);
+    if (tool.disabled) attrs.push('disabled');
 
-    const iconHtml = tool.img
-      ? `<span class="tool-item__icon-wrap"><img src="${tool.img}" alt="" class="tool-item__icon" /></span>`
-      : `<span class="tool-item__icon-wrap tool-item__icon-wrap--svg">${lavashIconSvg(tool.icon)}</span>`;
+    const iconHtml = tool.badge
+      ? `<span class="tool-item__icon-wrap tool-item__icon-wrap--badge">${tool.badge}</span>`
+      : (tool.img
+          ? `<span class="tool-item__icon-wrap"><img src="${tool.img}" alt="" class="tool-item__icon" /></span>`
+          : `<span class="tool-item__icon-wrap tool-item__icon-wrap--svg">${lavashIconSvg(tool.icon)}</span>`);
+
+    const metaHtml = tool.meta
+      ? `<span class="tool-item__meta">${tool.meta}</span>`
+      : '';
 
     return `
       <button ${attrs.join(' ')}>
         ${iconHtml}
-        <span class="tool-item__label">${tool.label}</span>
+        <span class="tool-item__text">
+          <span class="tool-item__label">${tool.label}</span>
+          ${metaHtml}
+        </span>
       </button>
     `;
   }
@@ -153,6 +191,36 @@
         { action: 'guide', icon: 'guide', label: 'Інструкція', title: 'Інструкція до роботи з картками' },
         { action: 'operator-ranks', icon: 'ranks', label: 'Ранги', title: 'Ранги оператора' },
         commonRefresh
+      ],
+      upload: [
+        {
+          id: 'uploadStepQueue',
+          uploadAction: 'queue',
+          badge: '1',
+          label: 'Завантаження',
+          meta: '<span id="uploadStepQueueCount">0</span> файлів у черзі',
+          title: 'Черга завантажених файлів',
+          className: 'tool-item--upload tool-item--upload-step is-active'
+        },
+        {
+          id: 'uploadStageValidateBlock',
+          uploadAction: 'validate',
+          badge: '2',
+          label: 'Обробка',
+          meta: 'перевірка · парсинг · події',
+          title: 'Етапи обробки файлів',
+          className: 'tool-item--upload tool-item--upload-step'
+        },
+        {
+          id: 'uploadStartSideBtn',
+          action: 'upload-start',
+          icon: 'bolt',
+          label: 'Запуск',
+          meta: '<span id="uploadRunCount">додай файл</span>',
+          title: 'Запустити обробку файлів',
+          className: 'tool-item--upload tool-item--accent tool-item--upload-start',
+          disabled: true
+        }
       ],
       dicts: [
         {
@@ -178,16 +246,34 @@
     return configs[pageKey] || configs.pending;
   }
 
+  function lavashGetRightToolsMeta(pageKey) {
+    const meta = {
+      upload: { title: 'Процес', subtitle: 'завантаження' },
+      dicts: { title: 'Інструменти', subtitle: '' },
+      logs: { title: 'Інструменти', subtitle: '' },
+      pending: { title: 'Інструменти', subtitle: '' },
+      editor: { title: 'Інструменти', subtitle: '' }
+    };
+
+    return meta[pageKey] || meta.pending;
+  }
+
   function lavashBuildDefaultRightTools(pageKey = lavashCurrentPageKey()) {
     const isDictsPage = pageKey === 'dicts';
+    const isUploadPage = pageKey === 'upload';
     const tools = lavashGetRightToolsConfig(pageKey);
+    const meta = lavashGetRightToolsMeta(pageKey);
+    const asideClass = isUploadPage
+      ? 'right-tools right-tools--upload right-tools--upload-config'
+      : 'right-tools';
 
     return `
-      <aside class="right-tools" id="rightTools" data-page-tools="${pageKey}">
+      <aside class="${asideClass}" id="rightTools" data-page-tools="${pageKey}">
         <div class="right-tools__inner">
           <div class="right-tools__top">
             <div class="right-tools__title-wrap">
-              <span class="right-tools__title">Інструменти</span>
+              <span class="right-tools__title">${meta.title}</span>
+              ${meta.subtitle ? `<span class="right-tools__subtitle">${meta.subtitle}</span>` : ''}
             </div>
           </div>
 
@@ -195,54 +281,7 @@
             ${tools.map(lavashToolButton).join('')}
           </div>
 
-          ${isDictsPage ? '' : '<div class="right-tools__panel" id="layoutRightPanel"></div>'}
-        </div>
-      </aside>
-    `;
-  }
-
-  function lavashBuildUploadRightTools() {
-    return `
-      <aside class="right-tools right-tools--upload right-tools--upload-clean" id="rightTools" data-page-key="upload">
-        <div class="right-tools__inner">
-          <div class="right-tools__top right-tools__top--upload-clean">
-            <div class="right-tools__title-wrap">
-              <span class="right-tools__title">Процес</span>
-              <span class="right-tools__subtitle">завантаження</span>
-            </div>
-          </div>
-
-          <div class="upload-process" aria-label="Етапи завантаження">
-            <button class="upload-process__step upload-process__step--queue is-active" type="button" data-upload-tool="queue" id="uploadStepQueue">
-              <span class="upload-process__badge">1</span>
-              <span class="upload-process__body">
-                <span class="upload-process__title">Завантаження</span>
-                <span class="upload-process__meta"><span id="uploadStepQueueCount">0</span> файлів у черзі</span>
-              </span>
-            </button>
-
-            <span class="upload-process__line" aria-hidden="true"></span>
-
-            <button class="upload-process__step" type="button" data-upload-tool="validate" id="uploadStageValidateBlock">
-              <span class="upload-process__badge">2</span>
-              <span class="upload-process__body">
-                <span class="upload-process__title">Обробка</span>
-                <span class="upload-process__meta">перевірка · парсинг · події</span>
-              </span>
-            </button>
-
-            <span class="upload-process__line" aria-hidden="true"></span>
-
-            <button class="upload-process__step upload-process__step--start" type="button" id="uploadStartSideBtn" disabled>
-              <span class="upload-process__badge">
-                <img src="/lavash-admin/assets/icons/upload/bolt.svg?v=14" alt="" />
-              </span>
-              <span class="upload-process__body">
-                <span class="upload-process__title">Запуск</span>
-                <span class="upload-process__meta"><span id="uploadRunCount">додай файл</span></span>
-              </span>
-            </button>
-          </div>
+          ${(isDictsPage || isUploadPage) ? '' : '<div class="right-tools__panel" id="layoutRightPanel"></div>'}
         </div>
       </aside>
     `;
@@ -610,9 +649,7 @@ badge.setAttribute('title', map[normalized]);
 
     const rightToolsHtml = !useRightTools
       ? '<aside class="right-tools right-tools--empty"></aside>'
-      : (rightToolsVariant === 'upload'
-          ? lavashBuildUploadRightTools()
-          : lavashBuildDefaultRightTools(pageKey));
+      : lavashBuildDefaultRightTools(pageKey);
 
     const dictsDialogHtml = pageKey === 'dicts' ? lavashBuildDictsModeDialog() : '';
     const commonDialogsHtml = `
@@ -726,6 +763,11 @@ badge.setAttribute('title', map[normalized]);
 
         if (tool === 'operator-ranks') {
           lavashOpenModal('operatorRanksModal');
+          return;
+        }
+
+        if (tool === 'upload-start') {
+          document.dispatchEvent(new CustomEvent('lavash:upload-start', { bubbles: true }));
           return;
         }
 
