@@ -4526,3 +4526,155 @@ select {
 .right-tools:not(:hover) .tool-item--upload-start:disabled {
   opacity: 0.45 !important;
 }
+
+/* =========================================================
+   UPLOAD RIGHT TOOLS — ICON-BASED PREMIUM BUTTONS
+   Після переносу upload у загальний navbar: прибираємо цифри-бейджі
+   і робимо нормальні іконки-кнопки з чистим виглядом.
+========================================================= */
+.right-tools--upload-config {
+  --upload-tool-size: 74px;
+  --upload-icon-size: 46px;
+}
+
+.right-tools--upload-config .right-tools__menu {
+  gap: 18px !important;
+}
+
+.right-tools--upload-config .tool-item--upload {
+  position: relative !important;
+  min-height: var(--upload-tool-size) !important;
+  border-radius: 22px !important;
+  overflow: visible !important;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(108, 137, 255, .18), transparent 62%),
+    linear-gradient(145deg, rgba(255,255,255,.07), rgba(255,255,255,.025)),
+    rgba(12, 28, 66, .72) !important;
+  border: 1px solid rgba(122, 154, 245, .14) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.08),
+    0 14px 34px rgba(0,0,0,.12) !important;
+}
+
+.right-tools--upload-config .tool-item--upload::before {
+  content: "";
+  position: absolute;
+  inset: 9px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, rgba(255,255,255,.08), rgba(255,255,255,.015));
+  opacity: .42;
+  pointer-events: none;
+}
+
+.right-tools--upload-config .tool-item--upload::after {
+  position: absolute;
+  right: 10px;
+  top: 9px;
+  width: 18px;
+  height: 18px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 950;
+  line-height: 1;
+  color: rgba(236, 242, 255, .9);
+  background: rgba(255,255,255,.09);
+  border: 1px solid rgba(255,255,255,.10);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
+  pointer-events: none;
+}
+
+.right-tools--upload-config #uploadStepQueue::after { content: "1"; }
+.right-tools--upload-config #uploadStageValidateBlock::after { content: "2"; }
+.right-tools--upload-config #uploadStartSideBtn::after { content: "3"; }
+
+.right-tools--upload-config .tool-item--upload .tool-item__icon-wrap {
+  position: relative !important;
+  z-index: 1 !important;
+  width: var(--upload-icon-size) !important;
+  min-width: var(--upload-icon-size) !important;
+  height: var(--upload-icon-size) !important;
+  border-radius: 16px !important;
+  display: grid !important;
+  place-items: center !important;
+  color: rgba(237, 243, 255, .92) !important;
+  background:
+    radial-gradient(circle at 35% 25%, rgba(255,255,255,.22), transparent 42%),
+    linear-gradient(135deg, rgba(72, 112, 220, .22), rgba(137, 92, 246, .16)) !important;
+  border: 1px solid rgba(219, 230, 255, .13) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.12),
+    0 10px 24px rgba(30, 65, 175, .18) !important;
+}
+
+.right-tools--upload-config .tool-item--upload .tool-item__icon-wrap svg,
+.right-tools--upload-config .tool-item--upload .tool-item__icon {
+  width: 23px !important;
+  height: 23px !important;
+  filter: drop-shadow(0 0 8px rgba(255,255,255,.16));
+}
+
+.right-tools--upload-config .tool-item--upload:hover:not(:disabled) {
+  transform: translateY(-2px) scale(1.015) !important;
+  border-color: rgba(121, 164, 255, .34) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.10),
+    0 22px 46px rgba(45, 89, 210, .20) !important;
+}
+
+.right-tools--upload-config .tool-item--upload.is-active {
+  border-color: rgba(116, 166, 255, .58) !important;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(135, 99, 255, .30), transparent 60%),
+    linear-gradient(145deg, rgba(78, 132, 255, .20), rgba(139, 92, 246, .10)),
+    rgba(13, 31, 78, .82) !important;
+  box-shadow:
+    0 0 0 1px rgba(94, 147, 255, .20) inset,
+    0 0 34px rgba(93, 132, 255, .17),
+    0 22px 48px rgba(50, 86, 220, .18) !important;
+}
+
+.right-tools--upload-config .tool-item--upload.is-active .tool-item__icon-wrap {
+  background:
+    radial-gradient(circle at 35% 25%, rgba(255,255,255,.30), transparent 42%),
+    linear-gradient(135deg, #5b8dff, #8757ff) !important;
+  border-color: rgba(237, 243, 255, .28) !important;
+  box-shadow:
+    0 0 26px rgba(113, 108, 255, .52),
+    inset 0 1px 0 rgba(255,255,255,.18) !important;
+}
+
+.right-tools--upload-config .tool-item--upload.is-done .tool-item__icon-wrap {
+  color: #f7fffc !important;
+  background:
+    radial-gradient(circle at 35% 25%, rgba(255,255,255,.28), transparent 42%),
+    linear-gradient(135deg, rgba(47, 215, 150, .96), rgba(58, 146, 255, .78)) !important;
+  box-shadow: 0 0 24px rgba(37, 218, 156, .28), inset 0 1px 0 rgba(255,255,255,.18) !important;
+}
+
+.right-tools--upload-config .tool-item--upload-start.is-ready,
+.right-tools--upload-config .tool-item--upload-start.is-active,
+.right-tools--upload-config .tool-item--upload-start.is-done {
+  background:
+    radial-gradient(circle at 50% 0%, rgba(139, 92, 246, .34), transparent 62%),
+    linear-gradient(135deg, rgba(77, 132, 255, .78), rgba(125, 85, 255, .88)) !important;
+}
+
+.right-tools--upload-config .tool-item--upload-start:disabled .tool-item__icon-wrap {
+  opacity: .78;
+  color: rgba(196, 209, 238, .78) !important;
+  background:
+    radial-gradient(circle at 35% 25%, rgba(255,255,255,.12), transparent 42%),
+    linear-gradient(135deg, rgba(72, 112, 220, .12), rgba(137, 92, 246, .08)) !important;
+}
+
+.right-tools--upload-config .tool-item--upload .tool-item__text {
+  position: relative;
+  z-index: 1;
+}
+
+.right-tools--upload-config .upload-process__badge,
+.right-tools--upload-config .tool-item__icon-wrap--badge {
+  font-size: 0 !important;
+}
