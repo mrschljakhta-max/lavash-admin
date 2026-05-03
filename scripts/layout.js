@@ -196,20 +196,20 @@
         {
           id: 'uploadStepQueue',
           uploadAction: 'queue',
-          badge: '1',
+          icon: 'stack',
           label: 'Завантаження',
           meta: '<span id="uploadStepQueueCount">0</span> файлів у черзі',
           title: 'Черга завантажених файлів',
-          className: 'tool-item--upload tool-item--upload-step is-active'
+          className: 'tool-item--upload tool-item--upload-step tool-item--upload-queue is-active'
         },
         {
           id: 'uploadStageValidateBlock',
           uploadAction: 'validate',
-          badge: '2',
+          icon: 'shield',
           label: 'Обробка',
           meta: 'перевірка · парсинг · події',
           title: 'Етапи обробки файлів',
-          className: 'tool-item--upload tool-item--upload-step'
+          className: 'tool-item--upload tool-item--upload-step tool-item--upload-process'
         },
         {
           id: 'uploadStartSideBtn',
