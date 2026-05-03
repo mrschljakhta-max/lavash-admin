@@ -479,14 +479,31 @@ function showOverlay(title, subtitle) {
   const titleNode = document.getElementById('uploadOverlayTitle');
   const subtitleNode = document.getElementById('uploadOverlaySubtitle');
 
-  if (overlay) overlay.classList.remove('hidden');
+  if (overlay) {
+    overlay.classList.remove('hidden', 'is-success', 'is-error');
+    overlay.classList.add('is-processing');
+  }
   if (titleNode) titleNode.textContent = title;
   if (subtitleNode) subtitleNode.textContent = subtitle;
 }
 
+function setOverlayMode(mode = 'processing') {
+  const overlay = document.getElementById('uploadOverlay');
+  if (!overlay) return;
+
+  overlay.classList.remove('is-processing', 'is-success', 'is-error');
+
+  if (mode === 'success') overlay.classList.add('is-success');
+  else if (mode === 'error') overlay.classList.add('is-error');
+  else overlay.classList.add('is-processing');
+}
+
 function hideOverlay() {
   const overlay = document.getElementById('uploadOverlay');
-  if (overlay) overlay.classList.add('hidden');
+  if (overlay) {
+    overlay.classList.add('hidden');
+    overlay.classList.remove('is-processing', 'is-success', 'is-error');
+  }
   setOverlayActions('');
 }
 
@@ -1105,6 +1122,7 @@ async function runRealUploadFlow() {
     'Готово',
     `Batch ${batchId} оброблено · Word RAW: ${wordInserted} · Excel RAW: ${excelInserted}`
   );
+  setOverlayMode('success');
 
   setOverlayActions(`
     <button class="upload-overlay-action" type="button" id="uploadSummaryBtn">Деталі batch</button>
@@ -1147,6 +1165,7 @@ async function startUploadFlow() {
 
     setUploadStageError(err.stage || 'validate');
     showOverlay('Помилка', err.message || 'Щось пішло не так');
+    setOverlayMode('error');
 
     setOverlayActions(`
       <button class="upload-overlay-action" type="button" id="uploadErrorDetailsBtn">Деталі</button>
