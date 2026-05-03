@@ -4680,12 +4680,261 @@ select {
 }
 
 
-/* FIX: modal */
-.upload-details-modal.hidden {display:none;}
-.upload-details-modal{
-  position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
-  background:rgba(0,0,0,0.6);z-index:9999;
+/* =========================
+   Upload overlay final states + action buttons
+   Added for upload success/error UX
+========================= */
+.upload-overlay-actions,
+#uploadOverlayActions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 18px 0 12px;
 }
-.upload-details-modal__box{
-  background:#0b1a3a;padding:20px;border-radius:12px;color:white;width:600px;
+
+.upload-overlay-action {
+  appearance: none;
+  border: 1px solid rgba(132, 165, 255, 0.32);
+  background: linear-gradient(145deg, rgba(18, 35, 78, 0.88), rgba(11, 24, 62, 0.76));
+  color: rgba(238, 244, 255, 0.94);
+  border-radius: 16px;
+  padding: 12px 18px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 900;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.10),
+    0 14px 34px rgba(0,0,0,0.24),
+    0 0 26px rgba(89, 121, 255, 0.12);
+  transition:
+    transform .18s ease,
+    border-color .18s ease,
+    background .18s ease,
+    box-shadow .18s ease,
+    filter .18s ease;
+}
+
+.upload-overlay-action:hover {
+  transform: translateY(-1px);
+  border-color: rgba(122, 102, 255, 0.82);
+  background: linear-gradient(145deg, rgba(32, 52, 112, 0.92), rgba(23, 38, 93, 0.82));
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.12),
+    0 18px 40px rgba(0,0,0,0.28),
+    0 0 34px rgba(112, 92, 255, 0.22);
+}
+
+.upload-overlay-action.primary {
+  background: linear-gradient(135deg, rgba(78, 122, 255, 0.98), rgba(137, 82, 255, 0.98));
+  border-color: rgba(210, 220, 255, 0.72);
+  color: #fff;
+}
+
+.upload-overlay.is-success .upload-overlay__loader,
+.upload-overlay.is-error .upload-overlay__loader {
+  animation: none !important;
+  opacity: 0 !important;
+  transform: none !important;
+}
+
+.upload-overlay.is-success .upload-overlay__top,
+.upload-overlay.is-error .upload-overlay__top {
+  position: relative;
+  min-height: 62px;
+}
+
+.upload-overlay.is-success .upload-overlay__top::after,
+.upload-overlay.is-error .upload-overlay__top::after {
+  content: "✓";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 64px;
+  height: 64px;
+  display: grid;
+  place-items: center;
+  border-radius: 22px;
+  font-size: 34px;
+  font-weight: 950;
+  color: #ffffff;
+  border: 1px solid rgba(255,255,255,0.18);
+  background:
+    radial-gradient(circle at 32% 25%, rgba(255,255,255,0.36), transparent 34%),
+    linear-gradient(135deg, rgba(42, 220, 180, 0.95), rgba(91, 112, 255, 0.92));
+  box-shadow:
+    0 0 34px rgba(49, 222, 180, 0.34),
+    0 18px 45px rgba(0,0,0,0.30),
+    inset 0 1px 0 rgba(255,255,255,0.22);
+}
+
+.upload-overlay.is-error .upload-overlay__top::after {
+  content: "!";
+  background:
+    radial-gradient(circle at 32% 25%, rgba(255,255,255,0.34), transparent 34%),
+    linear-gradient(135deg, rgba(255, 92, 122, 0.96), rgba(137, 82, 255, 0.90));
+  box-shadow:
+    0 0 34px rgba(255, 92, 122, 0.34),
+    0 18px 45px rgba(0,0,0,0.30),
+    inset 0 1px 0 rgba(255,255,255,0.22);
+}
+
+.debug-pre {
+  max-height: 260px;
+  overflow: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  padding: 14px;
+  border-radius: 16px;
+  background: rgba(4, 12, 32, 0.58);
+  border: 1px solid rgba(120, 150, 255, 0.16);
+  color: rgba(230, 238, 255, 0.86);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+
+/* Upload details modal — clean fix */
+.upload-details-modal.hidden {
+  display: none;
+}
+
+.upload-details-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.upload-details-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 30%, rgba(97, 116, 255, .20), transparent 42%),
+    rgba(2, 8, 24, .72);
+  backdrop-filter: blur(18px);
+}
+
+.upload-details-modal__box {
+  position: relative;
+  width: min(780px, calc(100vw - 40px));
+  max-height: min(760px, calc(100vh - 48px));
+  overflow: auto;
+  border: 1px solid rgba(118, 148, 255, .28);
+  border-radius: 28px;
+  background:
+    linear-gradient(145deg, rgba(14, 31, 80, .96), rgba(8, 18, 52, .98));
+  box-shadow:
+    0 34px 90px rgba(0,0,0,.48),
+    inset 0 1px 0 rgba(255,255,255,.08),
+    0 0 60px rgba(91,119,255,.18);
+}
+
+.upload-details-modal__head {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: flex-start;
+  padding: 26px 28px 18px;
+  border-bottom: 1px solid rgba(132, 165, 255, .16);
+}
+
+.upload-details-modal__eyebrow {
+  color: rgba(154, 181, 255, .76);
+  font-weight: 800;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  font-size: 11px;
+}
+
+.upload-details-modal__head h3 {
+  margin: 6px 0 0;
+  color: #f5f8ff;
+  font-size: 28px;
+  line-height: 1.05;
+}
+
+.upload-details-modal__close {
+  width: 46px;
+  height: 46px;
+  border-radius: 16px;
+  border: 1px solid rgba(150, 174, 255, .24);
+  background: rgba(255,255,255,.06);
+  color: #f5f8ff;
+  font-size: 28px;
+  cursor: pointer;
+}
+
+.upload-details-modal__body {
+  padding: 22px 28px 28px;
+}
+
+.debug-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.debug-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.debug-stat,
+.debug-panel {
+  border: 1px solid rgba(118, 148, 255, .18);
+  border-radius: 20px;
+  background: rgba(7, 18, 54, .62);
+  padding: 16px;
+}
+
+.debug-stat__value {
+  color: #fff;
+  font-weight: 900;
+  word-break: break-all;
+}
+
+.debug-stat__label,
+.debug-panel__title {
+  color: rgba(183, 199, 246, .78);
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+
+.debug-kv {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 8px 0;
+  color: rgba(218, 228, 255, .78);
+}
+
+.debug-kv strong {
+  color: #fff;
+}
+
+.debug-pre {
+  max-height: 280px;
+  overflow: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  padding: 14px;
+  border-radius: 16px;
+  background: rgba(4, 12, 32, .7);
+  border: 1px solid rgba(120, 150, 255, .16);
+  color: rgba(230, 238, 255, .86);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+@media (max-width: 720px) {
+  .debug-columns {
+    grid-template-columns: 1fr;
+  }
 }
