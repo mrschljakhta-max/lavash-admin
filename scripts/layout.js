@@ -232,8 +232,6 @@
           ariaHasPopup: true,
           ariaControls: 'dictsModeDialog'
         },
-        { action: 'rating', icon: 'trophy', label: 'Рейтинг', title: 'Рейтинг користувачів' },
-        { action: 'guide', icon: 'guide', label: 'Інструкція', title: 'Інструкція до роботи з довідниками' },
         commonRefresh
       ],
       logs: [
