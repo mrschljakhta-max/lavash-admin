@@ -1706,3 +1706,195 @@
   transform: translateX(-50%) !important;
   z-index: 35 !important;
 }
+
+
+/* ========================= */
+/* DICTS TABLE MODE */
+/* ========================= */
+
+.dicts-table-view {
+  width: min(1180px, calc(100vw - 340px));
+  min-height: 560px;
+  margin: 42px auto 0;
+  padding: 28px;
+  border: 1px solid rgba(91, 132, 255, 0.22);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(102, 111, 255, 0.18), transparent 34%),
+    linear-gradient(145deg, rgba(15, 31, 75, 0.82), rgba(8, 20, 54, 0.92));
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255,255,255,0.08);
+  overflow: hidden;
+}
+
+.dicts-table-view.hidden {
+  display: none !important;
+}
+
+.dicts-table-view__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 22px;
+  margin-bottom: 24px;
+}
+
+.dicts-table-view__head h2 {
+  margin: 0 0 6px;
+  color: #ffffff;
+  font-size: 30px;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+}
+
+.dicts-table-view__head p {
+  margin: 0;
+  color: rgba(211, 222, 255, 0.66);
+  font-size: 15px;
+}
+
+.dicts-table-view__create,
+.dicts-table__open {
+  border: 1px solid rgba(132, 161, 255, 0.34);
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(82, 119, 255, 0.52), rgba(130, 82, 255, 0.58));
+  color: #fff;
+  font-weight: 900;
+  cursor: pointer;
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.dicts-table-view__create {
+  min-height: 50px;
+  padding: 0 18px;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.dicts-table-view__create:hover,
+.dicts-table__open:hover {
+  transform: translateY(-2px);
+  border-color: rgba(133, 221, 255, 0.72);
+  box-shadow: 0 18px 34px rgba(82, 119, 255, 0.24);
+}
+
+.dicts-table-shell {
+  border: 1px solid rgba(107, 139, 255, 0.18);
+  border-radius: 22px;
+  background: rgba(8, 20, 52, 0.54);
+  overflow: hidden;
+}
+
+.dicts-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #eef3ff;
+}
+
+.dicts-table th,
+.dicts-table td {
+  padding: 16px 18px;
+  border-bottom: 1px solid rgba(139, 160, 218, 0.12);
+  text-align: left;
+}
+
+.dicts-table th {
+  color: rgba(216, 227, 255, 0.62);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: rgba(255,255,255,0.035);
+}
+
+.dicts-table tbody tr {
+  transition: background 180ms ease, transform 180ms ease;
+}
+
+.dicts-table tbody tr:hover {
+  background: rgba(89, 125, 255, 0.10);
+}
+
+.dicts-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.dicts-table__name {
+  display: inline-flex;
+  align-items: center;
+  gap: 13px;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+
+.dicts-table__name strong {
+  display: block;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.dicts-table__name small {
+  display: block;
+  margin-top: 3px;
+  color: rgba(211, 222, 255, 0.46);
+  font-size: 12px;
+}
+
+.dicts-table__icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(111, 128, 255, 0.16);
+  border: 1px solid rgba(145, 166, 255, 0.18);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.10);
+}
+
+.dicts-table__icon .dict-card__icon-img {
+  width: 22px;
+  height: 22px;
+}
+
+.dicts-table__pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(156, 174, 255, 0.20);
+  background: rgba(255,255,255,0.055);
+  color: rgba(232, 239, 255, 0.78);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.dicts-table__pill--status {
+  border-color: rgba(40, 255, 208, 0.25);
+  background: rgba(20, 202, 172, 0.10);
+  color: #6fffe4;
+}
+
+.dicts-table__count {
+  color: #fff;
+  font-size: 18px;
+  font-weight: 950;
+}
+
+.dicts-table__open {
+  min-height: 38px;
+  padding: 0 14px;
+  font-size: 13px;
+}
+
+@media (max-width: 1180px) {
+  .dicts-table-view {
+    width: calc(100vw - 180px);
+  }
+}
