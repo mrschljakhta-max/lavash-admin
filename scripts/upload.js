@@ -754,23 +754,50 @@ async function postJson(url, body, accessToken = '') {
 
 async function triggerWordProcessing(sb, batchId, uploadedWordFiles) {
   const cfg = getUploadConfig();
-  if (!uploadedWordFiles.length) return { ok: true, skipped: true };
+  if (!uploadedWordFiles.length) return { ok: true, skipped: true, files: [] };
 
   if (!cfg.edgeWordProcessUrl) {
     throw new Error('Не задано edgeWordProcessUrl в config.js');
   }
 
   const { session } = await getCurrentUploadUser(sb);
+  const results = [];
 
-  return postJson(
-    cfg.edgeWordProcessUrl,
-    {
-      batch_id: batchId,
-      file_type: 'word',
-      files: uploadedWordFiles
-    },
-    session?.access_token || ''
-  );
+  // process-word-batch v2 приймає file_id.
+  // Обробляємо Word файли по одному, щоб 5-10 файлів не вкладались
+  // в один довгий Edge Function виклик і не ловили timeout.
+  for (let i = 0; i < uploadedWordFiles.length; i += 1) {
+    const file = uploadedWordFiles[i];
+
+    showOverlay(
+      'Парсинг Word',
+      `Обробка ${i + 1}/${uploadedWordFiles.length}: ${file.file_name || file.name}`
+    );
+
+    const result = await postJson(
+      cfg.edgeWordProcessUrl,
+      {
+        batch_id: batchId,
+        file_id: file.file_id || file.id,
+        file_type: 'word',
+        file
+      },
+      session?.access_token || ''
+    );
+
+    results.push({
+      file_id: file.file_id || file.id,
+      file_name: file.file_name || file.name,
+      result
+    });
+  }
+
+  return {
+    ok: true,
+    mode: 'per-file',
+    processed: results.length,
+    files: results
+  };
 }
 
 async function triggerExcelProcessing(sb, batchId, uploadedExcelFiles) {
@@ -925,6 +952,17 @@ async function runRealUploadFlow() {
 
   finishUploadStages();
   showOverlay('Готово', `Batch ${batchId} успішно оброблено`);
+
+  // Після успішної обробки очищаємо поточну чергу на сторінці.
+  // Файли вже лежать у Storage, записи є в uploaded_files/raw_*,
+  // тому локальний список більше не потрібен.
+  uploadState.docxFiles = [];
+  uploadState.excelFiles = [];
+  uploadState.currentBatchId = null;
+  renderFileList('docx');
+  renderFileList('excel');
+  updateQueueCounters();
+
   await sleep(900);
   hideOverlay();
 
