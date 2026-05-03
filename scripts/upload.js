@@ -966,7 +966,7 @@ function bindUploadActions() {
   }
 }
 
-window.initUploadPage = async function initUploadPage() {
+async function initUploadPage() {
   uploadState.docxFiles = [];
   uploadState.excelFiles = [];
   uploadState.currentBatchId = null;
@@ -980,6 +980,16 @@ window.initUploadPage = async function initUploadPage() {
   resetUploadRightStages();
   bindUploadActions();
   bindDebugActions();
+}
+
+// ВАЖЛИВО: router.js викликає саме window.LAVASH_UPLOAD.initUploadPage().
+// Дублюємо старий глобальний initUploadPage для сумісності зі старими версіями роутера.
+window.initUploadPage = initUploadPage;
+window.LAVASH_UPLOAD = {
+  initUploadPage,
+  startUploadFlow,
+  updateQueueCounters,
+  getState: () => uploadState
 };
 /* =========================
    CARD PARALLAX (VISION FEEL)
