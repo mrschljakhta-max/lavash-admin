@@ -110,6 +110,24 @@ function updateQueueCounters() {
   const sideNode = document.getElementById('uploadQueueCount');
   if (sideNode) sideNode.textContent = String(total);
 
+  const stepQueueCount = document.getElementById('uploadStepQueueCount');
+  if (stepQueueCount) stepQueueCount.textContent = String(total);
+
+  const runCount = document.getElementById('uploadRunCount');
+  if (runCount) runCount.textContent = total ? `${total} готово` : 'додай файл';
+
+  const startBtn = document.getElementById('uploadStartSideBtn');
+  if (startBtn) {
+    startBtn.disabled = total === 0;
+    startBtn.classList.toggle('is-ready', total > 0);
+  }
+
+  const queueStep = document.getElementById('uploadStepQueue');
+  if (queueStep) {
+    queueStep.classList.toggle('is-done', total > 0);
+    queueStep.classList.toggle('is-active', total === 0);
+  }
+
   const docxCount = document.getElementById('docxCount');
   if (docxCount) docxCount.textContent = String(uploadState.docxFiles.length);
 
@@ -238,6 +256,7 @@ function setupDropZone(type) {
       uploadState.excelFiles = [];
       renderFileList('excel');
     }
+    updateQueueCounters();
   });
 }
 
@@ -248,9 +267,7 @@ function setupDropZone(type) {
 function resetUploadRightStages() {
   [
     'uploadStageValidateBlock',
-    'uploadStageParseBlock',
-    'uploadStageExtractBlock',
-    'uploadStageDbBlock',
+    'uploadStartSideBtn',
     'overlayStageValidate',
     'overlayStageParse',
     'overlayStageExtract',
@@ -259,28 +276,30 @@ function resetUploadRightStages() {
     const node = document.getElementById(id);
     if (node) node.classList.remove('is-active', 'is-done', 'is-error');
   });
+  updateQueueCounters();
 }
 
 function activateUploadStage(name) {
   const map = {
     validate: {
       active: ['uploadStageValidateBlock', 'overlayStageValidate'],
-      done: []
+      done: ['uploadStepQueue']
     },
     parse: {
-      active: ['uploadStageParseBlock', 'overlayStageParse'],
-      done: ['uploadStageValidateBlock', 'overlayStageValidate']
+      active: ['uploadStageValidateBlock', 'overlayStageParse'],
+      done: ['uploadStepQueue', 'overlayStageValidate']
     },
     extract: {
-      active: ['uploadStageExtractBlock', 'overlayStageExtract'],
-      done: ['uploadStageValidateBlock', 'overlayStageValidate', 'uploadStageParseBlock', 'overlayStageParse']
+      active: ['uploadStageValidateBlock', 'overlayStageExtract'],
+      done: ['uploadStepQueue', 'overlayStageValidate', 'overlayStageParse']
     },
     db: {
-      active: ['uploadStageDbBlock', 'overlayStageDb'],
+      active: ['uploadStageValidateBlock', 'overlayStageDb'],
       done: [
-        'uploadStageValidateBlock', 'overlayStageValidate',
-        'uploadStageParseBlock', 'overlayStageParse',
-        'uploadStageExtractBlock', 'overlayStageExtract'
+        'uploadStepQueue',
+        'overlayStageValidate',
+        'overlayStageParse',
+        'overlayStageExtract'
       ]
     }
   };
@@ -304,9 +323,9 @@ function activateUploadStage(name) {
 function setUploadStageError(name) {
   const map = {
     validate: ['uploadStageValidateBlock', 'overlayStageValidate'],
-    parse: ['uploadStageParseBlock', 'overlayStageParse'],
-    extract: ['uploadStageExtractBlock', 'overlayStageExtract'],
-    db: ['uploadStageDbBlock', 'overlayStageDb']
+    parse: ['uploadStageValidateBlock', 'overlayStageParse'],
+    extract: ['uploadStageValidateBlock', 'overlayStageExtract'],
+    db: ['uploadStageValidateBlock', 'overlayStageDb']
   };
 
   const ids = map[name] || [];
@@ -321,10 +340,9 @@ function setUploadStageError(name) {
 
 function finishUploadStages() {
   [
+    'uploadStepQueue',
     'uploadStageValidateBlock',
-    'uploadStageParseBlock',
-    'uploadStageExtractBlock',
-    'uploadStageDbBlock',
+    'uploadStartSideBtn',
     'overlayStageValidate',
     'overlayStageParse',
     'overlayStageExtract',

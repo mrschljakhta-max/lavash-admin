@@ -203,70 +203,44 @@
 
   function lavashBuildUploadRightTools() {
     return `
-      <aside class="right-tools right-tools--upload" id="rightTools">
+      <aside class="right-tools right-tools--upload right-tools--upload-clean" id="rightTools" data-page-key="upload">
         <div class="right-tools__inner">
-          <div class="right-tools__top">
+          <div class="right-tools__top right-tools__top--upload-clean">
             <div class="right-tools__title-wrap">
-              <span class="right-tools__title">Обробка</span>
+              <span class="right-tools__title">Процес</span>
+              <span class="right-tools__subtitle">завантаження</span>
             </div>
           </div>
 
-          <div class="right-tools__menu" aria-label="Інструменти завантаження">
-            <button class="tool-item tool-item--upload" type="button" data-upload-tool="queue">
-              <span class="tool-item__icon-wrap">
-                <img src="/lavash-admin/assets/icons/upload/stack.svg?v=12" alt="" class="tool-item__icon" />
+          <div class="upload-process" aria-label="Етапи завантаження">
+            <button class="upload-process__step upload-process__step--queue is-active" type="button" data-upload-tool="queue" id="uploadStepQueue">
+              <span class="upload-process__badge">1</span>
+              <span class="upload-process__body">
+                <span class="upload-process__title">Завантаження</span>
+                <span class="upload-process__meta"><span id="uploadStepQueueCount">0</span> файлів у черзі</span>
               </span>
-              <span class="tool-item__label">Черга</span>
             </button>
 
-            <button class="tool-item tool-item--upload" type="button" data-upload-tool="validate">
-              <span class="tool-item__icon-wrap">
-                <img src="/lavash-admin/assets/icons/upload/shield.svg?v=12" alt="" class="tool-item__icon" />
+            <span class="upload-process__line" aria-hidden="true"></span>
+
+            <button class="upload-process__step" type="button" data-upload-tool="validate" id="uploadStageValidateBlock">
+              <span class="upload-process__badge">2</span>
+              <span class="upload-process__body">
+                <span class="upload-process__title">Обробка</span>
+                <span class="upload-process__meta">перевірка · парсинг · події</span>
               </span>
-              <span class="tool-item__label">Перевірка</span>
             </button>
 
-            <button class="tool-item tool-item--upload" type="button" data-upload-tool="parse">
-              <span class="tool-item__icon-wrap">
-                <img src="/lavash-admin/assets/icons/upload/settings.svg?v=12" alt="" class="tool-item__icon" />
+            <span class="upload-process__line" aria-hidden="true"></span>
+
+            <button class="upload-process__step upload-process__step--start" type="button" id="uploadStartSideBtn" disabled>
+              <span class="upload-process__badge">
+                <img src="/lavash-admin/assets/icons/upload/bolt.svg?v=14" alt="" />
               </span>
-              <span class="tool-item__label">Парсинг</span>
-            </button>
-
-            <button class="tool-item tool-item--upload" type="button" data-upload-tool="extract">
-              <span class="tool-item__icon-wrap">
-                <img src="/lavash-admin/assets/icons/upload/target.svg?v=12" alt="" class="tool-item__icon" />
+              <span class="upload-process__body">
+                <span class="upload-process__title">Запуск</span>
+                <span class="upload-process__meta"><span id="uploadRunCount">додай файл</span></span>
               </span>
-              <span class="tool-item__label">Події</span>
-            </button>
-
-            <button class="tool-item tool-item--upload" type="button" data-upload-tool="database">
-              <span class="tool-item__icon-wrap">
-                <img src="/lavash-admin/assets/icons/upload/database.svg?v=12" alt="" class="tool-item__icon" />
-              </span>
-              <span class="tool-item__label">Supabase</span>
-            </button>
-
-            <button class="tool-item tool-item--upload tool-item--accent" type="button" id="uploadStartSideBtn">
-              <span class="tool-item__icon-wrap">
-                <img src="/lavash-admin/assets/icons/upload/bolt.svg?v=12" alt="" class="tool-item__icon" />
-              </span>
-              <span class="tool-item__label">Запуск</span>
-            </button>
-          </div>
-
-          <div class="right-tools__panel right-tools__panel--upload" id="layoutRightPanel">
-            <div class="tool-block tool-block--upload-queue">
-              <label class="tool-block__label">Файлів у черзі</label>
-              <div class="upload-side-stat">
-                <span class="upload-side-stat__value" id="uploadQueueCount">0</span>
-                <span class="upload-side-stat__text">готово до обробки</span>
-              </div>
-            </div>
-
-            <button id="uploadStartPanelBtn" class="tool-refresh-btn tool-refresh-btn--upload" type="button">
-              <img src="/lavash-admin/assets/icons/upload/bolt.svg?v=12" class="icon-sm" alt="">
-              Завантажити і обробити
             </button>
           </div>
         </div>
