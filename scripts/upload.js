@@ -1,7 +1,9 @@
 const uploadState = {
   docxFiles: [],
   excelFiles: [],
-  currentBatchId: null
+  currentBatchId: null,
+  lastSummary: null,
+  lastError: null
 };
 
 /* =========================
@@ -23,6 +25,117 @@ function escapeHtml(value) {
     .replaceAll('>', '&gt;')
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&#039;');
+}
+
+function safeJson(value) {
+  try {
+    return JSON.stringify(value, null, 2);
+  } catch {
+    return String(value);
+  }
+}
+
+function getInsertedRows(result) {
+  if (!result || result.skipped) return 0;
+  if (typeof result.inserted === 'number') return result.inserted;
+
+  if (Array.isArray(result.files)) {
+    return result.files.reduce((sum, item) => {
+      const nested = item?.result || item;
+
+      if (typeof nested?.inserted === 'number') {
+        return sum + nested.inserted;
+      }
+
+      if (Array.isArray(nested?.files)) {
+        return sum + nested.files.reduce((inner, fileResult) => {
+          return inner + (Number(fileResult?.inserted) || 0);
+        }, 0);
+      }
+
+      return sum;
+    }, 0);
+  }
+
+  return 0;
+}
+
+function getProcessedFilesCount(result) {
+  if (!result || result.skipped) return 0;
+  if (typeof result.processed === 'number') return result.processed;
+  if (Array.isArray(result.files)) return result.files.length;
+  return 0;
+}
+
+function setOverlayActions(html = '') {
+  const node = document.getElementById('uploadOverlayActions');
+  if (node) node.innerHTML = html;
+}
+
+function clearUploadQueue() {
+  uploadState.docxFiles = [];
+  uploadState.excelFiles = [];
+  uploadState.currentBatchId = null;
+  renderFileList('docx');
+  renderFileList('excel');
+  updateQueueCounters();
+}
+
+function renderUploadSummaryHtml(summary) {
+  if (!summary) {
+    return `<div class="debug-empty">Поки немає даних останнього запуску</div>`;
+  }
+
+  const wordInserted = getInsertedRows(summary.word_result);
+  const excelInserted = getInsertedRows(summary.excel_result);
+  const wordProcessed = getProcessedFilesCount(summary.word_result);
+  const excelProcessed = getProcessedFilesCount(summary.excel_result);
+
+  return `
+    <div class="debug-grid">
+      <div class="debug-stat">
+        <div class="debug-stat__value">${escapeHtml(summary.batch_id || '—')}</div>
+        <div class="debug-stat__label">batch_id</div>
+      </div>
+
+      <div class="debug-columns">
+        <div class="debug-panel">
+          <div class="debug-panel__title">Word</div>
+          <div class="debug-kv"><span>Завантажено файлів:</span><strong>${Number(summary.uploaded_docx) || 0}</strong></div>
+          <div class="debug-kv"><span>Оброблено файлів:</span><strong>${wordProcessed}</strong></div>
+          <div class="debug-kv"><span>RAW рядків:</span><strong>${wordInserted}</strong></div>
+        </div>
+
+        <div class="debug-panel">
+          <div class="debug-panel__title">Excel</div>
+          <div class="debug-kv"><span>Завантажено файлів:</span><strong>${Number(summary.uploaded_excel) || 0}</strong></div>
+          <div class="debug-kv"><span>Оброблено файлів:</span><strong>${excelProcessed}</strong></div>
+          <div class="debug-kv"><span>RAW рядків:</span><strong>${excelInserted}</strong></div>
+        </div>
+      </div>
+
+      <div class="debug-panel">
+        <div class="debug-panel__title">Технічний результат</div>
+        <pre class="debug-pre">${escapeHtml(safeJson(summary))}</pre>
+      </div>
+    </div>
+  `;
+}
+
+function showLastUploadSummary() {
+  openUploadDebugModal('Останній batch', renderUploadSummaryHtml(uploadState.lastSummary));
+}
+
+function showUploadErrorDetails() {
+  const err = uploadState.lastError;
+  openUploadDebugModal('Остання помилка', `
+    <div class="debug-panel">
+      <div class="debug-panel__title">Деталі</div>
+      <div class="debug-kv"><span>Етап:</span><strong>${escapeHtml(err?.stage || 'unknown')}</strong></div>
+      <div class="debug-kv"><span>Повідомлення:</span><strong>${escapeHtml(err?.message || '—')}</strong></div>
+      <pre class="debug-pre">${escapeHtml(safeJson(err || {}))}</pre>
+    </div>
+  `);
 }
 
 function sleep(ms) {
@@ -374,6 +487,7 @@ function showOverlay(title, subtitle) {
 function hideOverlay() {
   const overlay = document.getElementById('uploadOverlay');
   if (overlay) overlay.classList.add('hidden');
+  setOverlayActions('');
 }
 
 /* =========================
@@ -534,6 +648,8 @@ function showDebugDatabase() {
       <div class="debug-kv"><span>Очікувані операції:</span><strong>insert / normalize / log</strong></div>
       <div class="debug-kv"><span>Ціль:</span><strong>Supabase tables + processing logs</strong></div>
     </div>
+
+    ${uploadState.lastSummary ? renderUploadSummaryHtml(uploadState.lastSummary) : ''}
   `);
 }
 
@@ -977,21 +1093,28 @@ async function runRealUploadFlow() {
     };
   }
 
+  uploadState.lastSummary = summary;
+  uploadState.lastError = null;
+
   finishUploadStages();
-  showOverlay('Готово', `Batch ${batchId} успішно оброблено`);
 
-  // Після успішної обробки очищаємо поточну чергу на сторінці.
-  // Файли вже лежать у Storage, записи є в uploaded_files/raw_*,
-  // тому локальний список більше не потрібен.
-  uploadState.docxFiles = [];
-  uploadState.excelFiles = [];
-  uploadState.currentBatchId = null;
-  renderFileList('docx');
-  renderFileList('excel');
-  updateQueueCounters();
+  const wordInserted = getInsertedRows(wordResult);
+  const excelInserted = getInsertedRows(excelResult);
 
-  await sleep(900);
-  hideOverlay();
+  showOverlay(
+    'Готово',
+    `Batch ${batchId} оброблено · Word RAW: ${wordInserted} · Excel RAW: ${excelInserted}`
+  );
+
+  setOverlayActions(`
+    <button class="upload-overlay-action" type="button" id="uploadSummaryBtn">Деталі batch</button>
+    <button class="upload-overlay-action primary" type="button" id="uploadCloseOverlayBtn">Закрити</button>
+  `);
+
+  document.getElementById('uploadSummaryBtn')?.addEventListener('click', showLastUploadSummary);
+  document.getElementById('uploadCloseOverlayBtn')?.addEventListener('click', hideOverlay);
+
+  clearUploadQueue();
 
   return summary;
 }
@@ -1016,8 +1139,27 @@ async function startUploadFlow() {
       console.warn('Не вдалося зафіксувати помилку batch:', markError);
     }
 
+    uploadState.lastError = {
+      stage: err.stage || 'unknown',
+      message: err.message || 'Щось пішло не так',
+      raw: err
+    };
+
     setUploadStageError(err.stage || 'validate');
     showOverlay('Помилка', err.message || 'Щось пішло не так');
+
+    setOverlayActions(`
+      <button class="upload-overlay-action" type="button" id="uploadErrorDetailsBtn">Деталі</button>
+      <button class="upload-overlay-action primary" type="button" id="uploadRetryBtn">Повторити</button>
+      <button class="upload-overlay-action" type="button" id="uploadCloseOverlayBtn">Закрити</button>
+    `);
+
+    document.getElementById('uploadErrorDetailsBtn')?.addEventListener('click', showUploadErrorDetails);
+    document.getElementById('uploadRetryBtn')?.addEventListener('click', () => {
+      hideOverlay();
+      startUploadFlow();
+    });
+    document.getElementById('uploadCloseOverlayBtn')?.addEventListener('click', hideOverlay);
   }
 }
 
@@ -1055,6 +1197,7 @@ window.LAVASH_UPLOAD = {
   initUploadPage,
   startUploadFlow,
   updateQueueCounters,
+  showLastUploadSummary,
   getState: () => uploadState
 };
 /* =========================
