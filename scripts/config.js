@@ -8,5 +8,5 @@ window.APP_CONFIG = {
 
   edgeWordProcessUrl: 'https://vfshxogiuaefrgppuypt.supabase.co/functions/v1/process-word-batch',
   edgeExcelProcessUrl: 'https://vfshxogiuaefrgppuypt.supabase.co/functions/v1/process-excel-batch',
-  edgeBatchFinalizeUrl: 'https://vfshxogiuaefrgppuypt.supabase.co/functions/v1/finalize-upload-batch'
+  edgeBatchFinalizeUrl: ''
 };
