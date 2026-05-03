@@ -270,16 +270,64 @@
     }
   }
 
+  function openCreateDictionaryModal() {
+    const modal = document.getElementById('dictCreateModal');
+    if (modal) {
+      modal.classList.remove('hidden');
+      return;
+    }
+
+    alert('Створення довідника');
+  }
+
+  function renderTable() {
+    const body = document.getElementById('dictsTableBody');
+    if (!body) return;
+
+    const rows = dictsState.items.map((item, index) => `
+      <tr data-index="${index}">
+        <td>
+          <button class="dicts-table__name" type="button" data-table-index="${index}">
+            <span class="dicts-table__icon">${renderDictIcon(item.icon)}</span>
+            <span>
+              <strong>${item.title}</strong>
+              <small>ID: ${item.id}</small>
+            </span>
+          </button>
+        </td>
+        <td><span class="dicts-table__pill">${item.type || 'dictionary'}</span></td>
+        <td><span class="dicts-table__pill dicts-table__pill--status">${item.status || 'active'}</span></td>
+        <td class="dicts-table__count">${formatNumber(item.total)}</td>
+        <td>
+          <button class="dicts-table__open" type="button" data-table-index="${index}">Відкрити</button>
+        </td>
+      </tr>
+    `).join('');
+
+    body.innerHTML = rows;
+
+    body.querySelectorAll('[data-table-index]').forEach((button) => {
+      button.addEventListener('click', () => {
+        dictsState.activeIndex = Number(button.dataset.tableIndex);
+        setDictsViewMode('carousel');
+      });
+    });
+
+    document.getElementById('dictsTableCreateBtn')?.addEventListener('click', openCreateDictionaryModal);
+  }
+
   function setDictsViewMode(mode) {
-    const normalizedMode = mode === 'schema' ? 'schema' : 'carousel';
+    const normalizedMode = ['carousel', 'schema', 'table'].includes(mode) ? mode : 'carousel';
 
     const page = document.getElementById('dictsPage');
     const carouselView = document.getElementById('dictsCarouselView');
     const schemaView = document.getElementById('dictsSchemaView');
+    const tableView = document.getElementById('dictsTableView');
 
     if (page) {
       page.classList.toggle('dicts-view--carousel', normalizedMode === 'carousel');
       page.classList.toggle('dicts-view--schema', normalizedMode === 'schema');
+      page.classList.toggle('dicts-view--table', normalizedMode === 'table');
       page.setAttribute('data-dicts-view-mode', normalizedMode);
     }
 
@@ -295,8 +343,16 @@
       schemaView.setAttribute('aria-hidden', normalizedMode !== 'schema' ? 'true' : 'false');
     }
 
+    if (tableView) {
+      tableView.classList.toggle('hidden', normalizedMode !== 'table');
+      tableView.hidden = normalizedMode !== 'table';
+      tableView.setAttribute('aria-hidden', normalizedMode !== 'table' ? 'true' : 'false');
+    }
+
     if (normalizedMode === 'schema') {
       window.LAVASH_DICTS_SCHEMA?.initSchemaView?.();
+    } else if (normalizedMode === 'table') {
+      renderTable();
     } else {
       renderCarousel();
     }
@@ -312,6 +368,7 @@
   window.LAVASH_DICTS = {
     initDictsPage,
     renderCarousel,
-    setDictsViewMode
+    setDictsViewMode,
+    renderTable
   };
 })();

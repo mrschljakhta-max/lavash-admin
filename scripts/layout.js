@@ -317,6 +317,13 @@
               </span>
             </button>
 
+            <button type="button" class="dicts-mode-dialog__action" data-dicts-mode="table">
+              <span class="dicts-mode-dialog__text">
+                <strong>Таблиця</strong>
+                <small>Список довідників із кількістю записів і статусами</small>
+              </span>
+            </button>
+
             <button type="button" class="dicts-mode-dialog__action dicts-mode-dialog__action--accent" id="dictsAddDictionaryBtn">
               <span class="dicts-mode-dialog__text">
                 <strong>Додати довідник</strong>
