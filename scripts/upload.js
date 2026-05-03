@@ -802,23 +802,50 @@ async function triggerWordProcessing(sb, batchId, uploadedWordFiles) {
 
 async function triggerExcelProcessing(sb, batchId, uploadedExcelFiles) {
   const cfg = getUploadConfig();
-  if (!uploadedExcelFiles.length) return { ok: true, skipped: true };
+  if (!uploadedExcelFiles.length) return { ok: true, skipped: true, files: [] };
 
   if (!cfg.edgeExcelProcessUrl) {
     throw new Error('Не задано edgeExcelProcessUrl в config.js');
   }
 
   const { session } = await getCurrentUploadUser(sb);
+  const results = [];
 
-  return postJson(
-    cfg.edgeExcelProcessUrl,
-    {
-      batch_id: batchId,
-      file_type: 'excel',
-      files: uploadedExcelFiles
-    },
-    session?.access_token || ''
-  );
+  // process-excel-batch приймає file_id.
+  // Excel також обробляємо по одному файлу, щоб уникнути timeout
+  // при великих таблицях або 5-10 файлах у batch.
+  for (let i = 0; i < uploadedExcelFiles.length; i += 1) {
+    const file = uploadedExcelFiles[i];
+
+    showOverlay(
+      'Парсинг Excel',
+      `Обробка ${i + 1}/${uploadedExcelFiles.length}: ${file.file_name || file.name}`
+    );
+
+    const result = await postJson(
+      cfg.edgeExcelProcessUrl,
+      {
+        batch_id: batchId,
+        file_id: file.file_id || file.id,
+        file_type: 'excel',
+        file
+      },
+      session?.access_token || ''
+    );
+
+    results.push({
+      file_id: file.file_id || file.id,
+      file_name: file.file_name || file.name,
+      result
+    });
+  }
+
+  return {
+    ok: true,
+    mode: 'per-file',
+    processed: results.length,
+    files: results
+  };
 }
 
 async function finalizeBatch(sb, batchId, summary) {
