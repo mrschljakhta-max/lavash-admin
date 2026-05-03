@@ -122,13 +122,64 @@ function renderUploadSummaryHtml(summary) {
   `;
 }
 
+
+function ensureUploadDetailsModal() {
+  let modal = document.getElementById('uploadDetailsModal');
+
+  if (modal) return modal;
+
+  modal = document.createElement('div');
+  modal.id = 'uploadDetailsModal';
+  modal.className = 'upload-details-modal hidden';
+  modal.innerHTML = `
+    <div class="upload-details-modal__backdrop" data-upload-details-close="1"></div>
+    <div class="upload-details-modal__box">
+      <div class="upload-details-modal__head">
+        <div>
+          <div class="upload-details-modal__eyebrow">Lavash Upload</div>
+          <h3 id="uploadDetailsTitle">Деталі batch</h3>
+        </div>
+        <button class="upload-details-modal__close" type="button" data-upload-details-close="1">×</button>
+      </div>
+      <div class="upload-details-modal__body" id="uploadDetailsBody"></div>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+
+  modal.addEventListener('click', (event) => {
+    if (event.target?.dataset?.uploadDetailsClose) {
+      closeUploadDetailsModal();
+    }
+  });
+
+  return modal;
+}
+
+function openUploadDetailsModal(title, html) {
+  const modal = ensureUploadDetailsModal();
+  const titleNode = document.getElementById('uploadDetailsTitle');
+  const bodyNode = document.getElementById('uploadDetailsBody');
+
+  if (titleNode) titleNode.textContent = title || 'Деталі batch';
+  if (bodyNode) bodyNode.innerHTML = html || '';
+
+  modal.classList.remove('hidden');
+}
+
+function closeUploadDetailsModal() {
+  const modal = document.getElementById('uploadDetailsModal');
+  if (modal) modal.classList.add('hidden');
+}
+
+
 function showLastUploadSummary() {
-  openUploadDebugModal('Останній batch', renderUploadSummaryHtml(uploadState.lastSummary));
+  openUploadDetailsModal('Останній batch', renderUploadSummaryHtml(uploadState.lastSummary));
 }
 
 function showUploadErrorDetails() {
   const err = uploadState.lastError;
-  openUploadDebugModal('Остання помилка', `
+  openUploadDetailsModal('Остання помилка', `
     <div class="debug-panel">
       <div class="debug-panel__title">Деталі</div>
       <div class="debug-kv"><span>Етап:</span><strong>${escapeHtml(err?.stage || 'unknown')}</strong></div>
