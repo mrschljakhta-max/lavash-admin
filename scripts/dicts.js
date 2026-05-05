@@ -26,6 +26,7 @@
     activeIndex: 0,
     selectedTable: null,
     selectedRows: [],
+    tableMode: 'list',
     isLoadingCounts: false,
     isLoadingRows: false,
     lastError: null
@@ -134,17 +135,17 @@
     dictsState.isLoadingRows = true;
     dictsState.selectedTable = item;
     dictsState.selectedRows = [];
+    dictsState.tableMode = 'detail';
 
     try {
+      // ВАЖЛИВО: select('*') — щоб не падати, якщо у різних довідників різні назви колонок.
       let query = db
         .from(item.table)
-        .select(pickColumnsForItem(item))
-        .limit(50);
+        .select('*')
+        .limit(100);
 
       if (item.table === 'dict_pending') {
-        query = query.eq('decision_status', 'pending').order('created_at', { ascending: false });
-      } else if (item.nameField) {
-        query = query.order(item.nameField, { ascending: true });
+        query = query.eq('decision_status', 'pending');
       }
 
       const { data, error } = await query;
@@ -155,6 +156,7 @@
     } catch (err) {
       dictsState.lastError = err?.message || String(err);
       console.warn(`Dictionary rows load error: ${item.table}`, err);
+      dictsState.selectedRows = [];
       return false;
     } finally {
       dictsState.isLoadingRows = false;
@@ -333,8 +335,9 @@
 
   function bindCardClicks(items) {
     document.querySelectorAll('.dict-card').forEach((card) => {
-      card.addEventListener('click', () => {
+      card.addEventListener('click', async () => {
         const index = Number(card.dataset.index);
+        const offset = Number(card.dataset.offset);
         const item = items[index];
 
         if (item.__create) {
@@ -342,8 +345,16 @@
           return;
         }
 
+        // 1-й клік по боковій картці — просто робимо її центральною.
+        if (offset !== 0) {
+          dictsState.activeIndex = index;
+          renderCarousel();
+          return;
+        }
+
+        // Клік по центральній картці — відкриваємо конкретний довідник у табличному режимі.
         dictsState.activeIndex = index;
-        renderCarousel();
+        await openDictionary(item);
       });
     });
   }
@@ -424,11 +435,42 @@
       return;
     }
 
-    openCreateDictionaryModal();
+    alert('Створення довідника');
+  }
+
+  function getRowCreatedAt(row) {
+    return row?.created_at || row?.updated_at || row?.verified_at || row?.resolved_at || null;
+  }
+
+  function getRowExtraText(row) {
+    if (!row) return '';
+
+    const ignore = new Set([
+      'id', 'created_at', 'updated_at', 'verified_at', 'resolved_at',
+      'name', 'normalized_name', 'uav_name', 'station_name', 'unit_name', 'object_name',
+      'raw_value', 'normalized_candidate'
+    ]);
+
+    return Object.entries(row)
+      .filter(([key, value]) => !ignore.has(key) && value !== null && value !== undefined && value !== '')
+      .slice(0, 4)
+      .map(([key, value]) => `${key}: ${String(value).slice(0, 70)}`)
+      .join(' · ');
+  }
+
+  async function openDictionary(item) {
+    if (!item || item.__create) {
+      openCreateDictionaryModal();
+      return;
+    }
+
+    await loadDictionaryRows(item);
+    setDictsViewMode('table');
+    renderTable();
   }
 
   function renderDictionaryPreview() {
-    const item = dictsState.selectedTable || dictsState.items[dictsState.activeIndex];
+    const item = dictsState.selectedTable;
     const rows = dictsState.selectedRows || [];
 
     if (!item || item.__create) return '';
@@ -441,50 +483,100 @@
       `;
     }
 
-    const rowsHtml = rows.length ? rows.map((row) => `
+    const rowsHtml = rows.length ? rows.map((row, idx) => {
+      const createdAt = getRowCreatedAt(row);
+      const extra = getRowExtraText(row);
+
+      return `
+        <tr>
+          <td class="dicts-preview-table__num">${idx + 1}</td>
+          <td>
+            <strong>${escapeHtml(getPrimaryLabel(item, row))}</strong>
+            <small>${escapeHtml(getSecondaryLabel(item, row) || extra)}</small>
+          </td>
+          <td><code>${escapeHtml(row.id || '—')}</code></td>
+          <td>${escapeHtml(createdAt ? new Date(createdAt).toLocaleString('uk-UA') : '—')}</td>
+        </tr>
+      `;
+    }).join('') : `
       <tr>
-        <td>
-          <strong>${escapeHtml(getPrimaryLabel(item, row))}</strong>
-          <small>${escapeHtml(getSecondaryLabel(item, row))}</small>
-        </td>
-        <td><code>${escapeHtml(row.id || '—')}</code></td>
-        <td>${escapeHtml(row.created_at ? new Date(row.created_at).toLocaleString('uk-UA') : '—')}</td>
-      </tr>
-    `).join('') : `
-      <tr>
-        <td colspan="3" class="dicts-preview-empty">Записів поки немає або немає доступу для читання.</td>
+        <td colspan="4" class="dicts-preview-empty">Записів поки немає або немає доступу для читання.</td>
       </tr>
     `;
 
     return `
-      <div class="dicts-preview-shell">
+      <div class="dicts-preview-shell dicts-preview-shell--full">
         <div class="dicts-preview-head">
           <div>
+            <button class="dicts-back-btn" type="button" id="dictsBackToListBtn">‹ До списку довідників</button>
             <h3>${escapeHtml(item.title)}</h3>
-            <p>${escapeHtml(item.table)} · показано до 50 записів</p>
+            <p>${escapeHtml(item.table)} · показано до 100 записів</p>
           </div>
           <button class="dicts-table__open" type="button" id="dictsPreviewRefreshBtn">Оновити записи</button>
         </div>
-        <table class="dicts-table dicts-preview-table">
-          <thead>
-            <tr>
-              <th>Назва</th>
-              <th>ID</th>
-              <th>Створено</th>
-            </tr>
-          </thead>
-          <tbody>${rowsHtml}</tbody>
-        </table>
+        <div class="dicts-table-shell dicts-table-shell--records">
+          <table class="dicts-table dicts-preview-table">
+            <thead>
+              <tr>
+                <th>№</th>
+                <th>Назва / дані</th>
+                <th>ID</th>
+                <th>Дата</th>
+              </tr>
+            </thead>
+            <tbody>${rowsHtml}</tbody>
+          </table>
+        </div>
       </div>
     `;
   }
 
   function renderTable() {
+    const tableView = document.getElementById('dictsTableView');
     const body = document.getElementById('dictsTableBody');
-    if (!body) return;
+    if (!tableView || !body) return;
+
+    let preview = document.getElementById('dictsPreviewMount');
+    if (!preview) {
+      preview = document.createElement('div');
+      preview.id = 'dictsPreviewMount';
+      tableView.appendChild(preview);
+    }
+
+    const listHead = tableView.querySelector('.dicts-table-view__head');
+    const listShell = tableView.querySelector('.dicts-table-shell:not(.dicts-table-shell--records)');
+
+    if (dictsState.tableMode === 'detail' && dictsState.selectedTable) {
+      if (listHead) listHead.hidden = true;
+      if (listShell) listShell.hidden = true;
+      preview.hidden = false;
+      preview.innerHTML = renderDictionaryPreview();
+
+      document.getElementById('dictsBackToListBtn')?.addEventListener('click', () => {
+        dictsState.tableMode = 'list';
+        dictsState.selectedTable = null;
+        dictsState.selectedRows = [];
+        renderTable();
+      });
+
+      document.getElementById('dictsPreviewRefreshBtn')?.addEventListener('click', async () => {
+        if (dictsState.selectedTable) {
+          await loadDictionaryRows(dictsState.selectedTable);
+          renderTable();
+        }
+      });
+
+      return;
+    }
+
+    dictsState.tableMode = 'list';
+    if (listHead) listHead.hidden = false;
+    if (listShell) listShell.hidden = false;
+    preview.hidden = true;
+    preview.innerHTML = '';
 
     const rows = dictsState.items.map((item, index) => `
-      <tr data-index="${index}" class="${dictsState.selectedTable?.table === item.table ? 'is-selected' : ''}">
+      <tr data-index="${index}">
         <td>
           <button class="dicts-table__name" type="button" data-table-index="${index}">
             <span class="dicts-table__icon">${renderDictIcon(item.icon)}</span>
@@ -505,29 +597,13 @@
 
     body.innerHTML = rows;
 
-    let preview = document.getElementById('dictsPreviewMount');
-    if (!preview) {
-      preview = document.createElement('div');
-      preview.id = 'dictsPreviewMount';
-      document.getElementById('dictsTableView')?.appendChild(preview);
-    }
-    preview.innerHTML = renderDictionaryPreview();
-
     body.querySelectorAll('[data-table-index]').forEach((button) => {
       button.addEventListener('click', async () => {
         const index = Number(button.dataset.tableIndex);
         dictsState.activeIndex = index;
         const item = dictsState.items[index];
-        await loadDictionaryRows(item);
-        renderTable();
+        await openDictionary(item);
       });
-    });
-
-    document.getElementById('dictsPreviewRefreshBtn')?.addEventListener('click', async () => {
-      if (dictsState.selectedTable) {
-        await loadDictionaryRows(dictsState.selectedTable);
-        renderTable();
-      }
     });
 
     document.getElementById('dictsTableCreateBtn')?.addEventListener('click', openCreateDictionaryModal);
@@ -569,10 +645,6 @@
     if (normalizedMode === 'schema') {
       window.LAVASH_DICTS_SCHEMA?.initSchemaView?.();
     } else if (normalizedMode === 'table') {
-      if (!dictsState.selectedTable) {
-        const item = dictsState.items[dictsState.activeIndex];
-        loadDictionaryRows(item).then(renderTable);
-      }
       renderTable();
     } else {
       renderCarousel();
@@ -587,7 +659,6 @@
     renderCarousel();
 
     if (document.getElementById('dictsPage')?.dataset.dictsViewMode === 'table') {
-      await loadDictionaryRows(dictsState.items[dictsState.activeIndex]);
       renderTable();
     }
   }
