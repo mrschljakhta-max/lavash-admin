@@ -23,18 +23,20 @@
   </section>
 
   <section class="logs-table-section" id="logsTableSection">
-    <div class="logs-hero-card">
-      <div>
+    <div class="logs-table-head">
+      <div class="logs-table-titlebox">
         <p class="logs-access">ДОСТУП РОЗБЛОКОВАНО</p>
-        <h2>Таблиця логування</h2>
-        <p>
-          Журнал системних подій, входів користувачів, дій операторів і результатів обробки.
-        </p>
+        <div class="logs-title-row">
+          <h2>Журнал подій</h2>
+          <span class="logs-count-pill" id="logsCountPill">—</span>
+        </div>
+        <p>Реальні записи з таблиці <strong>activity_logs</strong>: входи, дії операторів, погодження та системні події.</p>
       </div>
 
-      <button class="logs-reset-btn logs-reset-btn-inside" id="logsLockAgainBtn" type="button">
-        ПОВЕРНУТИ ЗАМОК
-      </button>
+      <div class="logs-actions">
+        <button class="logs-action-btn" id="logsRefreshBtn" type="button">Оновити</button>
+        <button class="logs-reset-btn logs-reset-btn-inside" id="logsLockAgainBtn" type="button">ПОВЕРНУТИ ЗАМОК</button>
+      </div>
     </div>
 
     <div class="logs-table-wrap">
@@ -45,45 +47,12 @@
             <th>Оператор</th>
             <th>Дія</th>
             <th>Статус</th>
-            <th>IP-адреса</th>
+            <th>Деталі</th>
           </tr>
         </thead>
-
-        <tbody>
-          <tr>
-            <td>2026-05-02 09:14:22</td>
-            <td>root</td>
-            <td>Успішний вхід у систему</td>
-            <td class="status-ok">УСПІШНО</td>
-            <td>192.168.1.12</td>
-          </tr>
-          <tr>
-            <td>2026-05-02 09:17:45</td>
-            <td>admin</td>
-            <td>Перегляд таблиці користувачів</td>
-            <td class="status-ok">УСПІШНО</td>
-            <td>192.168.1.12</td>
-          </tr>
-          <tr>
-            <td>2026-05-02 09:21:03</td>
-            <td>operator_01</td>
-            <td>Експорт логів</td>
-            <td class="status-ok">УСПІШНО</td>
-            <td>192.168.1.37</td>
-          </tr>
-          <tr>
-            <td>2026-05-02 09:23:19</td>
-            <td>guest</td>
-            <td>Спроба несанкціонованого доступу</td>
-            <td class="status-deny">ВІДМОВЛЕНО</td>
-            <td>10.0.0.5</td>
-          </tr>
-          <tr>
-            <td>2026-05-02 09:25:47</td>
-            <td>operator_02</td>
-            <td>Зміна налаштувань системи</td>
-            <td class="status-ok">УСПІШНО</td>
-            <td>192.168.1.15</td>
+        <tbody id="logsTableBody">
+          <tr class="logs-placeholder-row">
+            <td colspan="5">Після розблокування тут зʼявляться реальні записи з Supabase.</td>
           </tr>
         </tbody>
       </table>
