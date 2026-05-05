@@ -1012,20 +1012,5 @@
 /* --- ВСЕ ІНШЕ В ФАЙЛІ НЕ ЧІПАЄМО --- */
 
 /* REAL DICTIONARY SCHEMA V7 */
-.schema-node__table {
-  display: block;
-  margin-top: 3px;
-  font-size: 10px;
-  line-height: 1;
-  font-weight: 800;
-  letter-spacing: .02em;
-  text-transform: none;
-  color: rgba(206, 230, 255, .74);
-  text-shadow: none;
-  opacity: .9;
-}
-.schema-node.is-dimmed .schema-node__table { opacity: .32; }
-.schema-node.is-focused .schema-node__table,
-.schema-node.is-related .schema-node__table { color: rgba(255,255,255,.9); opacity: 1; }
 .schema-hub::after { content: none !important; }
 .schema-hub__label, .schema-hub__title { display: none !important; }
