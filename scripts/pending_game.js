@@ -547,6 +547,46 @@
     return { exists: Boolean(data?.length), error: null };
   }
 
+  function buildDictInsertPayload(type, name, normalizedName, record = {}) {
+    const payload = { normalized_name: normalizedName };
+
+    switch (type) {
+      case 'uav':
+        payload.uav_name = name;
+        if (record.ownership) payload.side = record.ownership;
+        if (record.type) payload.uav_category = record.type;
+        break;
+
+      case 'settlement':
+        // У dict_settlements поле name є NOT NULL, тому передаємо його обовʼязково.
+        payload.name = name;
+        if (record.hromada) payload.hromada = record.hromada;
+        if (record.district) payload.district = record.district;
+        if (record.region) payload.region = record.region;
+        if (record.lat) payload.lat = Number(record.lat);
+        if (record.lon) payload.lon = Number(record.lon);
+        break;
+
+      case 'station':
+        payload.station_name = name;
+        break;
+
+      case 'unit':
+        payload.unit_name = name;
+        break;
+
+      case 'object':
+        payload.object_name = name;
+        break;
+
+      default:
+        payload.name = name;
+        break;
+    }
+
+    return payload;
+  }
+
   async function insertDictValue(record) {
     const db = createSupabaseClient();
     if (!db) throw new Error('Supabase client missing');
@@ -563,15 +603,7 @@
     if (existing.error) console.warn('Dict exists check warning:', existing.error.message);
     if (existing.exists) return { inserted: false, tableName, name, normalizedName };
 
-    const payload = { name, normalized_name: normalizedName };
-
-    if (type === 'settlement') {
-      if (record.hromada) payload.hromada = record.hromada;
-      if (record.district) payload.district = record.district;
-      if (record.region) payload.region = record.region;
-      if (record.lat) payload.lat = Number(record.lat);
-      if (record.lon) payload.lon = Number(record.lon);
-    }
+    const payload = buildDictInsertPayload(type, name, normalizedName, record);
 
     const { error } = await db.from(tableName).insert(payload);
     if (error) throw error;
