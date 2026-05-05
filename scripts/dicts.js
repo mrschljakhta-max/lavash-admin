@@ -26,6 +26,10 @@
     activeIndex: 0,
     selectedTable: null,
     selectedRows: [],
+    selectedOffset: 0,
+    selectedPageSize: 100,
+    selectedHasMore: false,
+    selectedTotalLoaded: 0,
     tableMode: 'list',
     isLoadingCounts: false,
     isLoadingRows: false,
@@ -128,35 +132,52 @@
     return row[item.normalizedField] || row.normalized_name || '';
   }
 
-  async function loadDictionaryRows(item) {
+  async function loadDictionaryRows(item, options = {}) {
     const db = createSupabaseClient();
     if (!db || !item?.table || item.__create) return false;
 
+    const append = Boolean(options.append);
+    const pageSize = Number(options.pageSize || dictsState.selectedPageSize || 100);
+    const from = append ? dictsState.selectedOffset : 0;
+    const to = from + pageSize - 1;
+
     dictsState.isLoadingRows = true;
     dictsState.selectedTable = item;
-    dictsState.selectedRows = [];
     dictsState.tableMode = 'detail';
 
+    if (!append) {
+      dictsState.selectedRows = [];
+      dictsState.selectedOffset = 0;
+      dictsState.selectedHasMore = false;
+      dictsState.selectedTotalLoaded = 0;
+    }
+
     try {
-      // ВАЖЛИВО: select('*') — щоб не падати, якщо у різних довідників різні назви колонок.
+      // select('*') — довідники мають різні колонки, тому не звужуємо вибірку.
       let query = db
         .from(item.table)
         .select('*')
-        .limit(100);
+        .range(from, to);
 
       if (item.table === 'dict_pending') {
-        query = query.eq('decision_status', 'pending');
+        query = query.eq('decision_status', 'pending').order('created_at', { ascending: false });
+      } else if (item.nameField) {
+        query = query.order(item.nameField, { ascending: true });
       }
 
       const { data, error } = await query;
       if (error) throw error;
 
-      dictsState.selectedRows = data || [];
+      const nextRows = data || [];
+      dictsState.selectedRows = append ? [...dictsState.selectedRows, ...nextRows] : nextRows;
+      dictsState.selectedOffset = from + nextRows.length;
+      dictsState.selectedTotalLoaded = dictsState.selectedRows.length;
+      dictsState.selectedHasMore = nextRows.length === pageSize && dictsState.selectedRows.length < Number(item.total || Infinity);
       return true;
     } catch (err) {
       dictsState.lastError = err?.message || String(err);
       console.warn(`Dictionary rows load error: ${item.table}`, err);
-      dictsState.selectedRows = [];
+      if (!append) dictsState.selectedRows = [];
       return false;
     } finally {
       dictsState.isLoadingRows = false;
@@ -458,6 +479,79 @@
       .join(' · ');
   }
 
+
+  async function updateDictionaryRow(item, rowId, nextName, nextNormalizedName) {
+    const db = createSupabaseClient();
+    if (!db || !item?.table || !rowId) throw new Error('Немає підключення або ID запису');
+    if (item.table === 'dict_pending') throw new Error('Pending-записи редагуються на сторінці Редактор');
+
+    const name = String(nextName || '').trim();
+    const normalizedName = String(nextNormalizedName || name).trim().toLowerCase();
+    if (!name) throw new Error('Назва не може бути порожньою');
+
+    const patch = {};
+    if (item.nameField) patch[item.nameField] = name;
+    if (item.normalizedField) patch[item.normalizedField] = normalizedName;
+    patch.updated_at = new Date().toISOString();
+
+    const { data, error } = await db
+      .from(item.table)
+      .update(patch)
+      .eq('id', rowId)
+      .select('*')
+      .single();
+
+    if (error) throw error;
+    dictsState.selectedRows = dictsState.selectedRows.map((row) => row.id === rowId ? { ...row, ...data } : row);
+    return data;
+  }
+
+  function openDictionaryEditModal(item, row) {
+    const old = document.getElementById('dictsEditModal');
+    if (old) old.remove();
+
+    const primary = getPrimaryLabel(item, row);
+    const secondary = getSecondaryLabel(item, row) || String(primary).toLowerCase();
+
+    const modal = document.createElement('div');
+    modal.id = 'dictsEditModal';
+    modal.className = 'dicts-edit-modal';
+    modal.innerHTML = `
+      <div class="dicts-edit-modal__backdrop" data-close="1"></div>
+      <section class="dicts-edit-modal__card" role="dialog" aria-modal="true">
+        <button class="dicts-edit-modal__close" type="button" data-close="1">×</button>
+        <p class="dicts-edit-modal__kicker">${escapeHtml(item.title)}</p>
+        <h3>Редагування запису</h3>
+        <label><span>Назва</span><input id="dictsEditName" value="${escapeHtml(primary)}" autocomplete="off" /></label>
+        <label><span>Нормалізована назва</span><input id="dictsEditNormalized" value="${escapeHtml(secondary)}" autocomplete="off" /></label>
+        <div class="dicts-edit-modal__meta">ID: <code>${escapeHtml(row.id || '—')}</code></div>
+        <div class="dicts-edit-modal__actions">
+          <button type="button" class="dicts-edit-modal__ghost" data-close="1">Скасувати</button>
+          <button type="button" class="dicts-edit-modal__save" id="dictsEditSaveBtn">Зберегти</button>
+        </div>
+      </section>`;
+
+    document.body.appendChild(modal);
+    modal.querySelectorAll('[data-close]').forEach((node) => node.addEventListener('click', () => modal.remove()));
+    modal.querySelector('#dictsEditSaveBtn')?.addEventListener('click', async () => {
+      const btn = modal.querySelector('#dictsEditSaveBtn');
+      const name = modal.querySelector('#dictsEditName')?.value || '';
+      const normalizedName = modal.querySelector('#dictsEditNormalized')?.value || '';
+      try {
+        btn.disabled = true;
+        btn.textContent = 'Зберігаю…';
+        await updateDictionaryRow(item, row.id, name, normalizedName);
+        modal.remove();
+        renderTable();
+      } catch (err) {
+        btn.disabled = false;
+        btn.textContent = 'Зберегти';
+        alert(`Не вдалося зберегти: ${err?.message || err}`);
+      }
+    });
+    setTimeout(() => modal.querySelector('#dictsEditName')?.focus(), 50);
+  }
+
   async function openDictionary(item) {
     if (!item || item.__create) {
       openCreateDictionaryModal();
@@ -496,11 +590,12 @@
           </td>
           <td><code>${escapeHtml(row.id || '—')}</code></td>
           <td>${escapeHtml(createdAt ? new Date(createdAt).toLocaleString('uk-UA') : '—')}</td>
+          <td>${item.table === 'dict_pending' ? '<span class="dicts-muted">—</span>' : `<button class="dicts-row-edit" type="button" data-edit-row="${escapeHtml(row.id || '')}">Редагувати</button>`}</td>
         </tr>
       `;
     }).join('') : `
       <tr>
-        <td colspan="4" class="dicts-preview-empty">Записів поки немає або немає доступу для читання.</td>
+        <td colspan="5" class="dicts-preview-empty">Записів поки немає або немає доступу для читання.</td>
       </tr>
     `;
 
@@ -510,9 +605,9 @@
           <div>
             <button class="dicts-back-btn" type="button" id="dictsBackToListBtn">‹ До списку довідників</button>
             <h3>${escapeHtml(item.title)}</h3>
-            <p>${escapeHtml(item.table)} · показано до 100 записів</p>
+            <p>${escapeHtml(item.table)} · показано ${formatNumber(dictsState.selectedRows.length)} з ${formatNumber(item.total || dictsState.selectedRows.length)} записів</p>
           </div>
-          <button class="dicts-table__open" type="button" id="dictsPreviewRefreshBtn">Оновити записи</button>
+          <div class="dicts-preview-actions"><button class="dicts-table__open" type="button" id="dictsPreviewRefreshBtn">Оновити записи</button>${dictsState.selectedHasMore ? '<button class="dicts-table__open dicts-table__open--secondary" type="button" id="dictsLoadMoreBtn">Показати ще</button>' : ''}</div>
         </div>
         <div class="dicts-table-shell dicts-table-shell--records">
           <table class="dicts-table dicts-preview-table">
@@ -522,6 +617,7 @@
                 <th>Назва / дані</th>
                 <th>ID</th>
                 <th>Дата</th>
+                <th>Дія</th>
               </tr>
             </thead>
             <tbody>${rowsHtml}</tbody>
@@ -564,6 +660,20 @@
           await loadDictionaryRows(dictsState.selectedTable);
           renderTable();
         }
+      });
+
+      document.getElementById('dictsLoadMoreBtn')?.addEventListener('click', async () => {
+        if (dictsState.selectedTable) {
+          await loadDictionaryRows(dictsState.selectedTable, { append: true });
+          renderTable();
+        }
+      });
+
+      preview.querySelectorAll('[data-edit-row]').forEach((button) => {
+        button.addEventListener('click', () => {
+          const row = dictsState.selectedRows.find((item) => item.id === button.dataset.editRow);
+          if (row && dictsState.selectedTable) openDictionaryEditModal(dictsState.selectedTable, row);
+        });
       });
 
       return;
