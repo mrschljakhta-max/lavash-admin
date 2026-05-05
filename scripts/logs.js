@@ -149,7 +149,8 @@
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
     cx = width / 2;
-    cy = height / 2 + 18;
+    // трохи піднімаємо центр вихору всередині фрейму
+    cy = height / 2 - 18;
 
     const maxRadius = Math.min(width * 0.38, height * 0.48);
     const step = maxRadius / 4.7;
