@@ -2,25 +2,25 @@
   const ICON_PATH = "../assets/icons/schema/";
 
   const schemaLeft = [
-    { id: "units", label: "ПІДРОЗДІЛИ", icon: "units.svg", links: ["personnel", "positions", "tasks", "events", "stations"] },
-    { id: "personnel", label: "ПЕРСОНАЛ", icon: "personnel.svg", links: ["units", "roles", "statuses", "events"] },
-    { id: "vehicles", label: "ТЕХНІКА", icon: "vehicles.svg", links: ["units", "positions", "stations", "tasks"] },
-    { id: "positions", label: "ПОЗИЦІЇ", icon: "positions.svg", links: ["units", "vehicles", "settlements", "terrain"] },
-    { id: "tasks", label: "ЗАВДАННЯ", icon: "tasks.svg", links: ["units", "events", "sources", "statuses"] },
-    { id: "events", label: "ПОДІЇ", icon: "events.svg", links: ["tasks", "sources", "settlements", "uav", "stations"] },
-    { id: "stations", label: "СТАНЦІЇ РЕБ", icon: "stations.svg", links: ["units", "vehicles", "positions", "events", "uav"] },
-    { id: "uav", label: "БПЛА", icon: "uav.svg", links: ["events", "stations", "objectTypes", "sources"] }
+    { id: "units", table: "dict_units", label: "ПІДРОЗДІЛИ", icon: "units.svg", links: ["coverObjects", "stations", "contact", "unitAliases", "settlements"] },
+    { id: "coverObjects", table: "dict_cover_objects", label: "ОБʼЄКТИ ПРИКРИТТЯ", icon: "object-types.svg", links: ["units", "settlements", "objectTypes", "contact"] },
+    { id: "stations", table: "dict_stations", label: "СТАНЦІЇ РЕБ", icon: "stations.svg", links: ["units", "stationAliases", "stationTypes", "stationTypeBands", "settlements", "uav"] },
+    { id: "uav", table: "dict_uav", label: "БПЛА", icon: "uav.svg", links: ["uavAliases", "stations", "valueMap"] },
+    { id: "settlements", table: "dict_settlements", label: "НАСЕЛЕНІ ПУНКТИ", icon: "settlements.svg", links: ["settlementAliases", "coverObjects", "stations", "navigation"] },
+    { id: "contact", table: "dict_contact", label: "ПЕРСОНАЛ / КОНТАКТИ", icon: "personnel.svg", links: ["units", "coverObjects", "valueMap"] }
   ];
 
   const schemaRight = [
-    { id: "countries", label: "КРАЇНИ", icon: "countries.svg", links: ["regions", "settlements"] },
-    { id: "regions", label: "РЕГІОНИ", icon: "regions.svg", links: ["countries", "settlements"] },
-    { id: "settlements", label: "НАСЕЛЕНІ ПУНКТИ", icon: "settlements.svg", links: ["regions", "positions", "events", "terrain"] },
-    { id: "terrain", label: "ТИПИ МІСЦЕВОСТІ", icon: "terrain.svg", links: ["settlements", "positions"] },
-    { id: "objectTypes", label: "ТИПИ ОБʼЄКТІВ", icon: "object-types.svg", links: ["positions", "uav", "stations"] },
-    { id: "sources", label: "ДЖЕРЕЛА ІНФОРМАЦІЇ", icon: "sources.svg", links: ["events", "tasks", "uav"] },
-    { id: "statuses", label: "СТАТУСИ", icon: "statuses.svg", links: ["tasks", "events", "personnel"] },
-    { id: "roles", label: "РОЛІ КОРИСТУВАЧІВ", icon: "roles.svg", links: ["personnel", "statuses"] }
+    { id: "uavAliases", table: "dict_uav_aliases", label: "АЛІАСИ БПЛА", icon: "sources.svg", links: ["uav"] },
+    { id: "stationAliases", table: "dict_station_aliases", label: "АЛІАСИ СТАНЦІЙ", icon: "stations.svg", links: ["stations"] },
+    { id: "settlementAliases", table: "dict_settlement_aliases", label: "АЛІАСИ НП", icon: "settlements.svg", links: ["settlements"] },
+    { id: "unitAliases", table: "dict_unit_aliases", label: "АЛІАСИ ПІДРОЗДІЛІВ", icon: "units.svg", links: ["units"] },
+    { id: "stationTypes", table: "dict_station_types", label: "ТИПИ СТАНЦІЙ", icon: "terrain.svg", links: ["stations", "stationTypeBands"] },
+    { id: "stationTypeBands", table: "dict_station_type_bands", label: "ДІАПАЗОНИ СТАНЦІЙ", icon: "statuses.svg", links: ["stationTypes", "stations"] },
+    { id: "objectTypes", table: "dict_object_types", label: "ТИПИ ОБʼЄКТІВ", icon: "object-types.svg", links: ["coverObjects"] },
+    { id: "navigation", table: "dict_navigation", label: "НАВІГАЦІЯ", icon: "sources.svg", links: ["settlements"] },
+    { id: "civilFreq", table: "dict_civil_freq", label: "ЧАСТОТИ", icon: "statuses.svg", links: ["stations"] },
+    { id: "valueMap", table: "dict_value_map", label: "СТАТУСИ / ЗНАЧЕННЯ", icon: "statuses.svg", links: ["uav", "contact"] }
   ];
 
   const state = {
@@ -36,21 +36,22 @@
   };
 
   function buildNodes() {
-    const ySlots = [112, 174, 236, 298, 360, 422, 484, 546];
+    const leftYSlots = [136, 214, 292, 370, 448, 526];
+    const rightYSlots = [86, 136, 186, 236, 286, 336, 386, 436, 486, 536];
 
-    const leftX = [314, 282, 254, 238, 238, 254, 282, 314];
-    const rightX = [886, 918, 946, 962, 962, 946, 918, 886];
+    const leftX = [308, 276, 252, 252, 276, 308];
+    const rightX = [878, 906, 930, 946, 956, 956, 946, 930, 906, 878];
 
     const left = schemaLeft.map((item, index) => ({
       ...item,
       side: "left",
       index,
       x: leftX[index],
-      y: ySlots[index],
+      y: leftYSlots[index],
       portX: leftX[index] + 122,
-      portY: ySlots[index],
+      portY: leftYSlots[index],
       orbitX: 172,
-      orbitY: ySlots[index]
+      orbitY: leftYSlots[index]
     }));
 
     const right = schemaRight.map((item, index) => ({
@@ -58,11 +59,11 @@
       side: "right",
       index,
       x: rightX[index],
-      y: ySlots[index],
+      y: rightYSlots[index],
       portX: rightX[index] - 122,
-      portY: ySlots[index],
+      portY: rightYSlots[index],
       orbitX: 1028,
-      orbitY: ySlots[index]
+      orbitY: rightYSlots[index]
     }));
 
     state.nodes = [...left, ...right];
@@ -88,6 +89,7 @@
         class="schema-node schema-node--${node.side}"
         type="button"
         data-id="${node.id}"
+        data-table="${node.table || ''}"
         style="left:${node.x}px; top:${node.y}px; --node-delay:${index * 0.055}s"
         aria-label="Відкрити довідник: ${node.label}"
       >
@@ -95,6 +97,7 @@
           <img src="${ICON_PATH + node.icon}" alt="" draggable="false" />
         </span>
         <span class="schema-node__label">${node.label}</span>
+        <span class="schema-node__table">${node.table || ''}</span>
         <span class="schema-node__port"></span>
       </button>
     `;
@@ -281,8 +284,9 @@
       node.addEventListener("blur", () => setActiveNode(null));
 
       node.addEventListener("click", () => {
+        const schemaNode = state.byId.get(node.dataset.id);
         window.dispatchEvent(new CustomEvent("lavash:open-dictionary", {
-          detail: { id: node.dataset.id }
+          detail: { id: node.dataset.id, table: schemaNode?.table || node.dataset.table || null }
         }));
       });
     });

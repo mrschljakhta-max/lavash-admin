@@ -12,12 +12,23 @@
   };
 
   const DICT_DEFS = [
-    { id: 'uav', title: 'БпЛА', icon: 'uav', table: 'dict_uav', nameField: 'uav_name', normalizedField: 'normalized_name', status: 'active', type: 'dictionary' },
-    { id: 'settlements', title: 'Населені пункти', icon: 'settlement', table: 'dict_settlements', nameField: 'name', normalizedField: 'normalized_name', status: 'active', type: 'dictionary' },
-    { id: 'stations', title: 'Станції', icon: 'station', table: 'dict_stations', nameField: 'station_name', normalizedField: 'normalized_name', status: 'active', type: 'dictionary' },
-    { id: 'units', title: 'Підрозділи', icon: 'unit', table: 'dict_units', nameField: 'unit_name', normalizedField: 'normalized_name', status: 'active', type: 'dictionary' },
-    { id: 'cover_objects', title: 'Обʼєкти прикриття', icon: 'stack', table: 'dict_cover_objects', nameField: 'object_name', normalizedField: 'normalized_name', status: 'active', type: 'dictionary' },
-    { id: 'station_types', title: 'Типи станцій', icon: 'stack', table: 'dict_station_types', nameField: 'type_name', normalizedField: 'normalized_name', status: 'active', type: 'dictionary' },
+    { id: 'units', title: 'Підрозділи', icon: 'unit', table: 'dict_units', nameField: 'unit_name', normalizedField: 'normalized_name', status: 'active', type: 'core' },
+    { id: 'coverObjects', title: 'Обʼєкти прикриття', icon: 'stack', table: 'dict_cover_objects', nameField: 'object_name', normalizedField: 'normalized_name', status: 'active', type: 'core' },
+    { id: 'stations', title: 'Станції РЕБ', icon: 'station', table: 'dict_stations', nameField: 'station_name', normalizedField: 'normalized_name', status: 'active', type: 'core' },
+    { id: 'uav', title: 'БпЛА', icon: 'uav', table: 'dict_uav', nameField: 'uav_name', normalizedField: 'normalized_name', status: 'active', type: 'core' },
+    { id: 'settlements', title: 'Населені пункти', icon: 'settlement', table: 'dict_settlements', nameField: 'name', normalizedField: 'normalized_name', status: 'active', type: 'core' },
+    { id: 'contact', title: 'Персонал / контакти', icon: 'unit', table: 'dict_contact', nameField: 'full_name', normalizedField: 'normalized_name', status: 'active', type: 'core' },
+
+    { id: 'uavAliases', title: 'Аліаси БпЛА', icon: 'stack', table: 'dict_uav_aliases', nameField: 'alias', normalizedField: 'normalized_alias', status: 'active', type: 'aux' },
+    { id: 'stationAliases', title: 'Аліаси станцій', icon: 'stack', table: 'dict_station_aliases', nameField: 'alias', normalizedField: 'normalized_alias', status: 'active', type: 'aux' },
+    { id: 'settlementAliases', title: 'Аліаси НП', icon: 'settlement', table: 'dict_settlement_aliases', nameField: 'alias', normalizedField: 'normalized_alias', status: 'active', type: 'aux' },
+    { id: 'unitAliases', title: 'Аліаси підрозділів', icon: 'unit', table: 'dict_unit_aliases', nameField: 'alias', normalizedField: 'normalized_alias', status: 'active', type: 'aux' },
+    { id: 'stationTypes', title: 'Типи станцій', icon: 'station', table: 'dict_station_types', nameField: 'type_name', normalizedField: 'normalized_name', status: 'active', type: 'aux' },
+    { id: 'stationTypeBands', title: 'Діапазони станцій', icon: 'station', table: 'dict_station_type_bands', nameField: 'band_name', normalizedField: 'normalized_name', status: 'active', type: 'aux' },
+    { id: 'objectTypes', title: 'Типи обʼєктів', icon: 'stack', table: 'dict_object_types', nameField: 'type_name', normalizedField: 'normalized_name', status: 'active', type: 'aux' },
+    { id: 'navigation', title: 'Навігація', icon: 'stack', table: 'dict_navigation', nameField: 'nav_name', normalizedField: 'normalized_name', status: 'active', type: 'aux' },
+    { id: 'civilFreq', title: 'Частоти', icon: 'stack', table: 'dict_civil_freq', nameField: 'name', normalizedField: 'normalized_name', status: 'active', type: 'aux' },
+    { id: 'valueMap', title: 'Статуси / значення', icon: 'stack', table: 'dict_value_map', nameField: 'raw_value', normalizedField: 'normalized_value', status: 'active', type: 'aux' },
     { id: 'pending', title: 'Pending', icon: 'pending', table: 'dict_pending', nameField: 'raw_value', normalizedField: 'normalized_candidate', status: 'active', type: 'service' }
   ];
 
@@ -436,6 +447,19 @@
   function bindControls() {
     document.getElementById('dictsPrevBtn')?.addEventListener('click', () => shift(-1));
     document.getElementById('dictsNextBtn')?.addEventListener('click', () => shift(1));
+
+    if (!window.__lavashDictOpenEventBound) {
+      window.__lavashDictOpenEventBound = true;
+      window.addEventListener('lavash:open-dictionary', async (event) => {
+        const detail = event.detail || {};
+        const item = dictsState.items.find((entry) =>
+          entry.id === detail.id || entry.table === detail.table
+        );
+        if (!item) return;
+        dictsState.activeIndex = Math.max(0, dictsState.items.findIndex((entry) => entry.id === item.id));
+        await openDictionary(item);
+      });
+    }
 
     const carousel = document.getElementById('dictsCarousel');
 
