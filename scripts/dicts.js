@@ -11,17 +11,164 @@
     plus: 'plus.svg'
   };
 
+  const DICT_DEFS = [
+    { id: 'uav', title: 'БпЛА', icon: 'uav', table: 'dict_uav', nameField: 'uav_name', normalizedField: 'normalized_name', status: 'active', type: 'dictionary' },
+    { id: 'settlements', title: 'Населені пункти', icon: 'settlement', table: 'dict_settlements', nameField: 'name', normalizedField: 'normalized_name', status: 'active', type: 'dictionary' },
+    { id: 'stations', title: 'Станції', icon: 'station', table: 'dict_stations', nameField: 'station_name', normalizedField: 'normalized_name', status: 'active', type: 'dictionary' },
+    { id: 'units', title: 'Підрозділи', icon: 'unit', table: 'dict_units', nameField: 'unit_name', normalizedField: 'normalized_name', status: 'active', type: 'dictionary' },
+    { id: 'cover_objects', title: 'Обʼєкти прикриття', icon: 'stack', table: 'dict_cover_objects', nameField: 'object_name', normalizedField: 'normalized_name', status: 'active', type: 'dictionary' },
+    { id: 'station_types', title: 'Типи станцій', icon: 'stack', table: 'dict_station_types', nameField: 'type_name', normalizedField: 'normalized_name', status: 'active', type: 'dictionary' },
+    { id: 'pending', title: 'Pending', icon: 'pending', table: 'dict_pending', nameField: 'raw_value', normalizedField: 'normalized_candidate', status: 'active', type: 'service' }
+  ];
+
   const dictsState = {
-    items: [
-      { id: '1', title: 'БпЛА', icon: 'uav', total: 1248, status: 'active', type: 'dictionary' },
-      { id: '2', title: 'Населені пункти', icon: 'settlement', total: 15892, status: 'active', type: 'dictionary' },
-      { id: '3', title: 'Станції', icon: 'station', total: 3751, status: 'active', type: 'dictionary' },
-      { id: '4', title: 'Підрозділи', icon: 'unit', total: 2156, status: 'active', type: 'dictionary' },
-      { id: '5', title: 'Типи станцій', icon: 'stack', total: 142, status: 'active', type: 'dictionary' },
-      { id: '6', title: 'Pending', icon: 'pending', total: 87, status: 'active', type: 'service' }
-    ],
-    activeIndex: 0
+    items: DICT_DEFS.map((item) => ({ ...item, total: 0, loaded: false, error: null })),
+    activeIndex: 0,
+    selectedTable: null,
+    selectedRows: [],
+    isLoadingCounts: false,
+    isLoadingRows: false,
+    lastError: null
   };
+
+  const dictsRuntime = {
+    db: null
+  };
+
+  function createSupabaseClient() {
+    if (dictsRuntime.db) return dictsRuntime.db;
+
+    const cfg = window.APP_CONFIG || {};
+    const url = cfg.supabaseUrl;
+    const key = cfg.supabaseAnonKey;
+
+    if (!url || !key || !window.supabase?.createClient) {
+      dictsState.lastError = 'Supabase config/client missing';
+      return null;
+    }
+
+    dictsRuntime.db = window.supabase.createClient(url, key, {
+      auth: {
+        storage: window.sessionStorage,
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true
+      }
+    });
+
+    return dictsRuntime.db;
+  }
+
+  function getDictByIndex(index) {
+    const items = getRenderItems();
+    return items[index] || null;
+  }
+
+  async function loadDictionaryCounts() {
+    const db = createSupabaseClient();
+    if (!db) return false;
+
+    dictsState.isLoadingCounts = true;
+    dictsState.lastError = null;
+
+    try {
+      const loadedItems = await Promise.all(dictsState.items.map(async (item) => {
+        try {
+          let query = db.from(item.table).select('id', { count: 'exact', head: true });
+
+          if (item.table === 'dict_pending') {
+            query = db.from(item.table).select('id', { count: 'exact', head: true }).eq('decision_status', 'pending');
+          }
+
+          const { count, error } = await query;
+          if (error) throw error;
+
+          return { ...item, total: count || 0, loaded: true, error: null };
+        } catch (err) {
+          console.warn(`Dictionary count load error: ${item.table}`, err);
+          return { ...item, loaded: false, error: err?.message || String(err) };
+        }
+      }));
+
+      dictsState.items = loadedItems;
+      return true;
+    } catch (err) {
+      dictsState.lastError = err?.message || String(err);
+      console.warn('Dictionary counts load error:', err);
+      return false;
+    } finally {
+      dictsState.isLoadingCounts = false;
+    }
+  }
+
+  function pickColumnsForItem(item) {
+    const base = ['id'];
+    if (item.nameField) base.push(item.nameField);
+    if (item.normalizedField && item.normalizedField !== item.nameField) base.push(item.normalizedField);
+
+    if (item.table === 'dict_pending') {
+      return 'id,field_name,raw_value,normalized_candidate,decision_status,resolved_table,created_at';
+    }
+
+    base.push('created_at');
+    return [...new Set(base)].join(',');
+  }
+
+  function getPrimaryLabel(item, row) {
+    if (!row) return '—';
+    return row[item.nameField] || row.name || row.uav_name || row.station_name || row.unit_name || row.object_name || row.raw_value || row.normalized_name || row.id || '—';
+  }
+
+  function getSecondaryLabel(item, row) {
+    if (!row) return '';
+    if (item.table === 'dict_pending') {
+      return [row.field_name, row.resolved_table, row.decision_status].filter(Boolean).join(' · ');
+    }
+    return row[item.normalizedField] || row.normalized_name || '';
+  }
+
+  async function loadDictionaryRows(item) {
+    const db = createSupabaseClient();
+    if (!db || !item?.table || item.__create) return false;
+
+    dictsState.isLoadingRows = true;
+    dictsState.selectedTable = item;
+    dictsState.selectedRows = [];
+
+    try {
+      let query = db
+        .from(item.table)
+        .select(pickColumnsForItem(item))
+        .limit(50);
+
+      if (item.table === 'dict_pending') {
+        query = query.eq('decision_status', 'pending').order('created_at', { ascending: false });
+      } else if (item.nameField) {
+        query = query.order(item.nameField, { ascending: true });
+      }
+
+      const { data, error } = await query;
+      if (error) throw error;
+
+      dictsState.selectedRows = data || [];
+      return true;
+    } catch (err) {
+      dictsState.lastError = err?.message || String(err);
+      console.warn(`Dictionary rows load error: ${item.table}`, err);
+      return false;
+    } finally {
+      dictsState.isLoadingRows = false;
+    }
+  }
+
+  function escapeHtml(value) {
+    return String(value ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
 
   function formatNumber(value) {
     return new Intl.NumberFormat('uk-UA').format(value || 0);
@@ -191,7 +338,7 @@
         const item = items[index];
 
         if (item.__create) {
-          alert('Створення довідника');
+          openCreateDictionaryModal();
           return;
         }
 
@@ -277,7 +424,59 @@
       return;
     }
 
-    alert('Створення довідника');
+    openCreateDictionaryModal();
+  }
+
+  function renderDictionaryPreview() {
+    const item = dictsState.selectedTable || dictsState.items[dictsState.activeIndex];
+    const rows = dictsState.selectedRows || [];
+
+    if (!item || item.__create) return '';
+
+    if (dictsState.isLoadingRows) {
+      return `
+        <div class="dicts-preview-shell">
+          <div class="dicts-preview-empty">Завантажую записи з Supabase…</div>
+        </div>
+      `;
+    }
+
+    const rowsHtml = rows.length ? rows.map((row) => `
+      <tr>
+        <td>
+          <strong>${escapeHtml(getPrimaryLabel(item, row))}</strong>
+          <small>${escapeHtml(getSecondaryLabel(item, row))}</small>
+        </td>
+        <td><code>${escapeHtml(row.id || '—')}</code></td>
+        <td>${escapeHtml(row.created_at ? new Date(row.created_at).toLocaleString('uk-UA') : '—')}</td>
+      </tr>
+    `).join('') : `
+      <tr>
+        <td colspan="3" class="dicts-preview-empty">Записів поки немає або немає доступу для читання.</td>
+      </tr>
+    `;
+
+    return `
+      <div class="dicts-preview-shell">
+        <div class="dicts-preview-head">
+          <div>
+            <h3>${escapeHtml(item.title)}</h3>
+            <p>${escapeHtml(item.table)} · показано до 50 записів</p>
+          </div>
+          <button class="dicts-table__open" type="button" id="dictsPreviewRefreshBtn">Оновити записи</button>
+        </div>
+        <table class="dicts-table dicts-preview-table">
+          <thead>
+            <tr>
+              <th>Назва</th>
+              <th>ID</th>
+              <th>Створено</th>
+            </tr>
+          </thead>
+          <tbody>${rowsHtml}</tbody>
+        </table>
+      </div>
+    `;
   }
 
   function renderTable() {
@@ -285,19 +484,19 @@
     if (!body) return;
 
     const rows = dictsState.items.map((item, index) => `
-      <tr data-index="${index}">
+      <tr data-index="${index}" class="${dictsState.selectedTable?.table === item.table ? 'is-selected' : ''}">
         <td>
           <button class="dicts-table__name" type="button" data-table-index="${index}">
             <span class="dicts-table__icon">${renderDictIcon(item.icon)}</span>
             <span>
-              <strong>${item.title}</strong>
-              <small>ID: ${item.id}</small>
+              <strong>${escapeHtml(item.title)}</strong>
+              <small>${escapeHtml(item.table)}${item.error ? ' · помилка доступу' : ''}</small>
             </span>
           </button>
         </td>
-        <td><span class="dicts-table__pill">${item.type || 'dictionary'}</span></td>
-        <td><span class="dicts-table__pill dicts-table__pill--status">${item.status || 'active'}</span></td>
-        <td class="dicts-table__count">${formatNumber(item.total)}</td>
+        <td><span class="dicts-table__pill">${escapeHtml(item.type || 'dictionary')}</span></td>
+        <td><span class="dicts-table__pill dicts-table__pill--status">${escapeHtml(item.status || 'active')}</span></td>
+        <td class="dicts-table__count">${item.loaded ? formatNumber(item.total) : '—'}</td>
         <td>
           <button class="dicts-table__open" type="button" data-table-index="${index}">Відкрити</button>
         </td>
@@ -306,11 +505,29 @@
 
     body.innerHTML = rows;
 
+    let preview = document.getElementById('dictsPreviewMount');
+    if (!preview) {
+      preview = document.createElement('div');
+      preview.id = 'dictsPreviewMount';
+      document.getElementById('dictsTableView')?.appendChild(preview);
+    }
+    preview.innerHTML = renderDictionaryPreview();
+
     body.querySelectorAll('[data-table-index]').forEach((button) => {
-      button.addEventListener('click', () => {
-        dictsState.activeIndex = Number(button.dataset.tableIndex);
-        setDictsViewMode('carousel');
+      button.addEventListener('click', async () => {
+        const index = Number(button.dataset.tableIndex);
+        dictsState.activeIndex = index;
+        const item = dictsState.items[index];
+        await loadDictionaryRows(item);
+        renderTable();
       });
+    });
+
+    document.getElementById('dictsPreviewRefreshBtn')?.addEventListener('click', async () => {
+      if (dictsState.selectedTable) {
+        await loadDictionaryRows(dictsState.selectedTable);
+        renderTable();
+      }
     });
 
     document.getElementById('dictsTableCreateBtn')?.addEventListener('click', openCreateDictionaryModal);
@@ -352,15 +569,27 @@
     if (normalizedMode === 'schema') {
       window.LAVASH_DICTS_SCHEMA?.initSchemaView?.();
     } else if (normalizedMode === 'table') {
+      if (!dictsState.selectedTable) {
+        const item = dictsState.items[dictsState.activeIndex];
+        loadDictionaryRows(item).then(renderTable);
+      }
       renderTable();
     } else {
       renderCarousel();
     }
   }
 
-  function initDictsPage() {
+  async function initDictsPage() {
     bindControls();
     renderCarousel();
+
+    await loadDictionaryCounts();
+    renderCarousel();
+
+    if (document.getElementById('dictsPage')?.dataset.dictsViewMode === 'table') {
+      await loadDictionaryRows(dictsState.items[dictsState.activeIndex]);
+      renderTable();
+    }
   }
 
   window.setDictsViewMode = setDictsViewMode;
@@ -369,6 +598,8 @@
     initDictsPage,
     renderCarousel,
     setDictsViewMode,
-    renderTable
+    renderTable,
+    loadDictionaryCounts,
+    loadDictionaryRows
   };
 })();
