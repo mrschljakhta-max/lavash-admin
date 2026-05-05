@@ -623,24 +623,21 @@
       </tr>
     `;
 
-    const totalText = formatNumber(item.total || dictsState.selectedRows.length);
+    const countText = `${formatNumber(item.total || dictsState.selectedRows.length)} записів`;
+    const moreButton = dictsState.selectedHasMore
+      ? '<button class="dicts-table__open dicts-table__open--secondary" type="button" id="dictsLoadMoreBtn">Показати ще</button>'
+      : '';
 
     return `
-      <div class="dicts-detail-workspace">
-        <div class="dicts-detail-toolbar">
-          <button class="dicts-back-btn" type="button" id="dictsBackToListBtn">‹ До списку довідників</button>
-
-          <div class="dicts-detail-title">
+      <div class="dicts-preview-shell dicts-preview-shell--full">
+        <div class="dicts-preview-head dicts-preview-head--compact">
+          <div class="dicts-preview-titleline">
+            <button class="dicts-back-btn" type="button" id="dictsBackToListBtn">‹ До списку довідників</button>
             <h3>${escapeHtml(item.title)}</h3>
-            <span>${totalText} записів</span>
+            <span class="dicts-count-chip">${escapeHtml(countText)}</span>
           </div>
-
-          <div class="dicts-preview-actions">
-            <button class="dicts-table__open dicts-table__open--ghost" type="button" id="dictsPreviewRefreshBtn">↻ Оновити записи</button>
-            ${dictsState.selectedHasMore ? '<button class="dicts-table__open dicts-table__open--secondary" type="button" id="dictsLoadMoreBtn">Показати ще</button>' : ''}
-          </div>
+          <div class="dicts-preview-actions">${moreButton}</div>
         </div>
-
         <div class="dicts-table-shell dicts-table-shell--records">
           <table class="dicts-table dicts-preview-table">
             <thead>
@@ -686,13 +683,6 @@
         dictsState.selectedTable = null;
         dictsState.selectedRows = [];
         renderTable();
-      });
-
-      document.getElementById('dictsPreviewRefreshBtn')?.addEventListener('click', async () => {
-        if (dictsState.selectedTable) {
-          await loadDictionaryRows(dictsState.selectedTable);
-          renderTable();
-        }
       });
 
       document.getElementById('dictsLoadMoreBtn')?.addEventListener('click', async () => {
