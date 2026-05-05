@@ -361,26 +361,12 @@
           </div>
 
           <div class="lavash-rating-list" id="ratingModalList">
-            <div class="lavash-rating-row is-top">
-              <span class="lavash-rating-row__place">01</span>
-              <span class="lavash-rating-row__avatar">★</span>
-              <span class="lavash-rating-row__main"><strong>Оператор</strong><small>Рівень 12 · Аналітик II</small></span>
-              <span class="lavash-rating-row__bar"><i style="width:84%"></i></span>
-              <strong class="lavash-rating-row__xp">842 XP</strong>
-            </div>
             <div class="lavash-rating-row">
-              <span class="lavash-rating-row__place">02</span>
-              <span class="lavash-rating-row__avatar">◆</span>
-              <span class="lavash-rating-row__main"><strong>Аналітик</strong><small>Рівень 9 · Контролер</small></span>
-              <span class="lavash-rating-row__bar"><i style="width:68%"></i></span>
-              <strong class="lavash-rating-row__xp">680 XP</strong>
-            </div>
-            <div class="lavash-rating-row">
-              <span class="lavash-rating-row__place">03</span>
-              <span class="lavash-rating-row__avatar">◇</span>
-              <span class="lavash-rating-row__main"><strong>Черговий</strong><small>Рівень 7 · Навідник</small></span>
-              <span class="lavash-rating-row__bar"><i style="width:52%"></i></span>
-              <strong class="lavash-rating-row__xp">515 XP</strong>
+              <span class="lavash-rating-row__place">…</span>
+              <span class="lavash-rating-row__avatar">⌁</span>
+              <span class="lavash-rating-row__main"><strong>Завантаження рейтингу</strong><small>Читаю operator_profiles із Supabase</small></span>
+              <span class="lavash-rating-row__bar"><i style="width:12%"></i></span>
+              <strong class="lavash-rating-row__xp">...</strong>
             </div>
           </div>
         </div>
@@ -734,6 +720,140 @@ badge.setAttribute('title', map[normalized]);
     }
   }
 
+
+  function lavashEscapeHtml(value) {
+    return String(value ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  function lavashFormatXp(value) {
+    const xp = Number(value || 0);
+    return xp.toLocaleString('uk-UA');
+  }
+
+  function lavashRatingProgress(xp) {
+    const value = Number(xp || 0);
+    if (value <= 0) return 3;
+    return Math.max(8, Math.min(100, Math.round((value / Math.max(value, 900)) * 100)));
+  }
+
+  function lavashGetSupabaseClient() {
+    if (window.__lavashLayoutSupabaseClient) return window.__lavashLayoutSupabaseClient;
+
+    const cfg = window.APP_CONFIG || {};
+    const url = cfg.supabaseUrl;
+    const key = cfg.supabaseAnonKey;
+
+    if (!url || !key || !window.supabase?.createClient) return null;
+
+    window.__lavashLayoutSupabaseClient = window.supabase.createClient(url, key, {
+      auth: {
+        storage: window.sessionStorage,
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true
+      }
+    });
+
+    return window.__lavashLayoutSupabaseClient;
+  }
+
+  function lavashRenderRatingRows(users = []) {
+    const list = document.getElementById('ratingModalList');
+    if (!list) return;
+
+    if (!users.length) {
+      list.innerHTML = `
+        <div class="lavash-rating-row">
+          <span class="lavash-rating-row__place">00</span>
+          <span class="lavash-rating-row__avatar">∅</span>
+          <span class="lavash-rating-row__main"><strong>Поки немає операторів</strong><small>Перший approve/ignore/skip створить профіль</small></span>
+          <span class="lavash-rating-row__bar"><i style="width:0%"></i></span>
+          <strong class="lavash-rating-row__xp">0 XP</strong>
+        </div>
+      `;
+      return;
+    }
+
+    const maxXp = Math.max(...users.map((u) => Number(u.xp || 0)), 100);
+
+    list.innerHTML = users.map((user, index) => {
+      const place = String(index + 1).padStart(2, '0');
+      const displayName = lavashEscapeHtml(user.display_name || user.user_email || `Оператор ${place}`);
+      const email = lavashEscapeHtml(user.user_email || '');
+      const xp = Number(user.xp || 0);
+      const level = Number(user.level || 1);
+      const rankName = lavashEscapeHtml(user.rank_name || 'Стажер');
+      const approved = Number(user.approved_count || 0);
+      const ignored = Number(user.ignored_count || 0);
+      const skipped = Number(user.skipped_count || 0);
+      const progress = Math.max(5, Math.min(100, Math.round((xp / maxXp) * 100)));
+      const avatar = index === 0 ? '★' : index === 1 ? '◆' : index === 2 ? '◇' : '•';
+
+      return `
+        <div class="lavash-rating-row ${index === 0 ? 'is-top' : ''}">
+          <span class="lavash-rating-row__place">${place}</span>
+          <span class="lavash-rating-row__avatar">${avatar}</span>
+          <span class="lavash-rating-row__main">
+            <strong>${displayName}</strong>
+            <small>Рівень ${level} · ${rankName} · ✅ ${approved} · ⛔ ${ignored} · ⏭ ${skipped}${email ? ` · ${email}` : ''}</small>
+          </span>
+          <span class="lavash-rating-row__bar"><i style="width:${progress}%"></i></span>
+          <strong class="lavash-rating-row__xp">${lavashFormatXp(xp)} XP</strong>
+        </div>
+      `;
+    }).join('');
+  }
+
+  async function lavashLoadOperatorLeaderboard() {
+    const list = document.getElementById('ratingModalList');
+    if (list) {
+      list.innerHTML = `
+        <div class="lavash-rating-row">
+          <span class="lavash-rating-row__place">…</span>
+          <span class="lavash-rating-row__avatar">⌁</span>
+          <span class="lavash-rating-row__main"><strong>Завантаження рейтингу</strong><small>Читаю operator_profiles із Supabase</small></span>
+          <span class="lavash-rating-row__bar"><i style="width:18%"></i></span>
+          <strong class="lavash-rating-row__xp">...</strong>
+        </div>
+      `;
+    }
+
+    const db = lavashGetSupabaseClient();
+    if (!db) {
+      lavashRenderRatingRows([]);
+      return;
+    }
+
+    try {
+      const { data, error } = await db
+        .from('operator_profiles')
+        .select('user_email,display_name,xp,level,rank_name,approved_count,ignored_count,skipped_count,updated_at')
+        .order('xp', { ascending: false })
+        .limit(20);
+
+      if (error) throw error;
+      lavashRenderRatingRows(data || []);
+    } catch (error) {
+      console.warn('Leaderboard load error:', error);
+      if (list) {
+        list.innerHTML = `
+          <div class="lavash-rating-row">
+            <span class="lavash-rating-row__place">!</span>
+            <span class="lavash-rating-row__avatar">⚠</span>
+            <span class="lavash-rating-row__main"><strong>Не вдалося завантажити рейтинг</strong><small>${lavashEscapeHtml(error?.message || String(error))}</small></span>
+            <span class="lavash-rating-row__bar"><i style="width:0%"></i></span>
+            <strong class="lavash-rating-row__xp">ERR</strong>
+          </div>
+        `;
+      }
+    }
+  }
+
   function bindGenericModal(dialogId, closeId, closeDataName) {
     const dialog = document.getElementById(dialogId);
     if (!dialog || dialog.dataset.bound === 'true') return;
@@ -757,6 +877,7 @@ badge.setAttribute('title', map[normalized]);
 
         if (tool === 'rating') {
           lavashOpenModal('ratingModal');
+          lavashLoadOperatorLeaderboard();
           return;
         }
 
