@@ -347,6 +347,12 @@
     lastError: null
   };
 
+  const operatorRuntime = {
+    email: null,
+    profileLoaded: false,
+    lastProfileError: null
+  };
+
   function createSupabaseClient() {
     if (pendingRuntime.db) return pendingRuntime.db;
 
@@ -359,7 +365,14 @@
       return null;
     }
 
-    pendingRuntime.db = window.supabase.createClient(url, key);
+    pendingRuntime.db = window.supabase.createClient(url, key, {
+      auth: {
+        storage: window.sessionStorage,
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true
+      }
+    });
     return pendingRuntime.db;
   }
 
@@ -679,6 +692,151 @@
     state.rank = currentRank.title;
     state.xpMax = currentRank.max;
     return currentRank;
+  }
+
+
+  async function getOperatorEmail() {
+    if (operatorRuntime.email) return operatorRuntime.email;
+
+    const db = createSupabaseClient();
+    if (!db) return 'local_operator@lavash.local';
+
+    try {
+      const { data, error } = await db.auth.getUser();
+      const user = data?.user;
+
+      if (!error && user) {
+        operatorRuntime.email = user.email || user.id || 'unknown_operator@lavash.local';
+        return operatorRuntime.email;
+      }
+    } catch (err) {
+      console.warn('Operator auth read warning:', err);
+    }
+
+    operatorRuntime.email = window.sessionStorage.getItem('lavash_operator_email') || 'local_operator@lavash.local';
+    return operatorRuntime.email;
+  }
+
+  async function loadOperatorProfile() {
+    const db = createSupabaseClient();
+    if (!db) return null;
+
+    const userEmail = await getOperatorEmail();
+
+    try {
+      const { data: profile, error } = await db
+        .from('operator_profiles')
+        .select('*')
+        .eq('user_email', userEmail)
+        .maybeSingle();
+
+      if (error) throw error;
+
+      if (!profile) {
+        const rank = getRankByXp(0);
+        const payload = {
+          user_email: userEmail,
+          display_name: userEmail.split('@')[0],
+          xp: 0,
+          level: rank.id,
+          rank_name: rank.title,
+          approved_count: 0,
+          ignored_count: 0,
+          skipped_count: 0,
+          updated_at: new Date().toISOString()
+        };
+
+        const { data: created, error: createError } = await db
+          .from('operator_profiles')
+          .insert(payload)
+          .select('*')
+          .single();
+
+        if (createError) throw createError;
+        applyOperatorProfileToState(created);
+        operatorRuntime.profileLoaded = true;
+        return created;
+      }
+
+      applyOperatorProfileToState(profile);
+      operatorRuntime.profileLoaded = true;
+      return profile;
+    } catch (err) {
+      operatorRuntime.lastProfileError = err?.message || String(err);
+      console.warn('Operator profile load error:', err);
+      return null;
+    }
+  }
+
+  function applyOperatorProfileToState(profile) {
+    if (!profile) return;
+
+    state.xp = Number(profile.xp || 0);
+    const rank = getRankByXp(state.xp);
+    state.level = rank.id;
+    state.rank = rank.title;
+    state.xpMax = rank.max;
+
+    state.approvedCount = Number(profile.approved_count || 0);
+    state.ignoredCount = Number(profile.ignored_count || 0);
+    state.skippedCount = Number(profile.skipped_count || 0);
+  }
+
+  async function saveOperatorAction(action, record, xpDelta) {
+    const db = createSupabaseClient();
+    if (!db) return null;
+
+    const userEmail = await getOperatorEmail();
+    const now = new Date().toISOString();
+
+    try {
+      const { data: profile } = await db
+        .from('operator_profiles')
+        .select('*')
+        .eq('user_email', userEmail)
+        .maybeSingle();
+
+      const currentXp = Number(profile?.xp || 0);
+      const nextXp = currentXp + Number(xpDelta || 0);
+      const nextRank = getRankByXp(nextXp);
+
+      const patch = {
+        user_email: userEmail,
+        display_name: profile?.display_name || userEmail.split('@')[0],
+        xp: nextXp,
+        level: nextRank.id,
+        rank_name: nextRank.title,
+        approved_count: Number(profile?.approved_count || 0) + (action === 'confirm' ? 1 : 0),
+        ignored_count: Number(profile?.ignored_count || 0) + (action === 'ignore' ? 1 : 0),
+        skipped_count: Number(profile?.skipped_count || 0) + (action === 'skip' ? 1 : 0),
+        updated_at: now
+      };
+
+      const { data: saved, error: saveError } = await db
+        .from('operator_profiles')
+        .upsert(patch, { onConflict: 'user_email' })
+        .select('*')
+        .single();
+
+      if (saveError) throw saveError;
+
+      await db.from('operator_activity_log').insert({
+        user_email: userEmail,
+        action_type: action,
+        entity_type: record?.unknownType || null,
+        raw_value: record?.mainValue || record?.rawValue || null,
+        pending_id: record?.pendingIds?.[0] || null,
+        xp_delta: Number(xpDelta || 0),
+        created_at: now
+      });
+
+      applyOperatorProfileToState(saved);
+      return saved;
+    } catch (err) {
+      operatorRuntime.lastProfileError = err?.message || String(err);
+      console.warn('Operator stats save error:', err);
+      return null;
+    }
   }
 
   function getRankProgress() {
@@ -1735,10 +1893,14 @@
       };
 
       const xp = xpMap[action] || 5;
-      state.xp += xp;
-      syncRankState();
-      state.todayXp += xp;
+      const savedProfile = await saveOperatorAction(action, activeRecord, xp);
 
+      if (!savedProfile) {
+        state.xp += xp;
+        syncRankState();
+      }
+
+      state.todayXp += xp;
       window.LAVASH_PENDING_RANK_XP?.addXP(xp);
 
       if (page) {
@@ -1857,6 +2019,9 @@
   async function init() {
     syncRankState();
     render();
+
+    await loadOperatorProfile();
+    syncRankState();
 
     window.LAVASH_PENDING_RANK_XP?.init({
       level: state.level,
