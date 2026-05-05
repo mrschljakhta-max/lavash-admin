@@ -560,3 +560,67 @@
     font-size: 14px;
   }
 }
+
+/* =========================
+   LOGS TABLE SCROLLBAR FIX
+   Keeps the header visible and scrolls only the records area.
+========================= */
+.logs-table-wrap {
+  max-height: calc(100vh - 455px);
+  min-height: 320px;
+  overflow-y: auto !important;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(87, 232, 255, 0.72) rgba(255, 255, 255, 0.045);
+}
+
+.logs-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: linear-gradient(180deg, rgba(12, 48, 86, 0.98), rgba(10, 32, 66, 0.98));
+  box-shadow: 0 1px 0 rgba(110, 213, 255, 0.12), 0 14px 28px rgba(0, 0, 0, 0.18);
+}
+
+.logs-table-wrap::-webkit-scrollbar {
+  width: 12px;
+}
+
+.logs-table-wrap::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 999px;
+  margin: 12px 0;
+}
+
+.logs-table-wrap::-webkit-scrollbar-thumb {
+  border: 3px solid rgba(3, 11, 24, 0.92);
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(95, 246, 255, 0.95), rgba(125, 101, 255, 0.82));
+  box-shadow: 0 0 18px rgba(70, 229, 255, 0.28);
+}
+
+.logs-table-wrap::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, rgba(145, 255, 255, 1), rgba(153, 119, 255, 0.95));
+}
+
+.logs-table tbody tr:last-child td {
+  border-bottom: 1px solid rgba(110, 213, 255, 0.08);
+}
+
+@media (max-height: 820px) {
+  .logs-table-head {
+    padding: 16px 20px;
+    margin-bottom: 14px;
+  }
+
+  .logs-table-wrap {
+    max-height: calc(100vh - 400px);
+    min-height: 280px;
+  }
+
+  .logs-table th,
+  .logs-table td {
+    padding-top: 14px;
+    padding-bottom: 14px;
+  }
+}
