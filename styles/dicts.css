@@ -2244,32 +2244,3 @@
 .dicts-table-card::-webkit-scrollbar-track {
   background: rgba(255,255,255,.04);
 }
-/* FIX: dicts page bottom clipping */
-#dictsPage,
-.dicts-page,
-.workspace-body:has(.dicts-page),
-.workspace-body:has(#dictsPage) {
-  height: calc(100vh - 120px) !important;
-  max-height: calc(100vh - 120px) !important;
-  overflow-y: auto !important;
-  overflow-x: hidden !important;
-  padding-bottom: 140px !important;
-}
-
-.dicts-shell,
-.dicts-table-card,
-.dicts-detail-card {
-  min-height: auto !important;
-  max-height: none !important;
-  overflow: visible !important;
-}
-
-.dicts-records-table,
-.dicts-table {
-  padding-bottom: 160px !important;
-}
-
-.dicts-record-row:last-child,
-.dicts-table-row:last-child {
-  margin-bottom: 160px !important;
-}
