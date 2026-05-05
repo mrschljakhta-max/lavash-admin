@@ -750,3 +750,31 @@
     subtree: true
   });
 })();
+function initLogsSafe() {
+  try {
+    console.log("🔥 init logs vortex");
+
+    if (typeof initVortex === "function") {
+      initVortex();
+    } else if (typeof initVortexGate === "function") {
+      initVortexGate();
+    }
+
+  } catch (e) {
+    console.error("Vortex init error:", e);
+  }
+}
+
+// при першому відкритті
+document.addEventListener("DOMContentLoaded", () => {
+  if (location.hash.includes("logs")) {
+    setTimeout(initLogsSafe, 100);
+  }
+});
+
+// при переходах по меню
+window.addEventListener("hashchange", () => {
+  if (location.hash.includes("logs")) {
+    setTimeout(initLogsSafe, 100);
+  }
+});
