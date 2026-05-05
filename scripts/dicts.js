@@ -623,16 +623,24 @@
       </tr>
     `;
 
+    const totalText = formatNumber(item.total || dictsState.selectedRows.length);
+
     return `
-      <div class="dicts-preview-shell dicts-preview-shell--full">
-        <div class="dicts-preview-head">
-          <div>
-            <button class="dicts-back-btn" type="button" id="dictsBackToListBtn">‹ До списку довідників</button>
+      <div class="dicts-detail-workspace">
+        <div class="dicts-detail-toolbar">
+          <button class="dicts-back-btn" type="button" id="dictsBackToListBtn">‹ До списку довідників</button>
+
+          <div class="dicts-detail-title">
             <h3>${escapeHtml(item.title)}</h3>
-            <p>${escapeHtml(item.table)} · показано ${formatNumber(dictsState.selectedRows.length)} з ${formatNumber(item.total || dictsState.selectedRows.length)} записів</p>
+            <span>${totalText} записів</span>
           </div>
-          <div class="dicts-preview-actions"><button class="dicts-table__open" type="button" id="dictsPreviewRefreshBtn">Оновити записи</button>${dictsState.selectedHasMore ? '<button class="dicts-table__open dicts-table__open--secondary" type="button" id="dictsLoadMoreBtn">Показати ще</button>' : ''}</div>
+
+          <div class="dicts-preview-actions">
+            <button class="dicts-table__open dicts-table__open--ghost" type="button" id="dictsPreviewRefreshBtn">↻ Оновити записи</button>
+            ${dictsState.selectedHasMore ? '<button class="dicts-table__open dicts-table__open--secondary" type="button" id="dictsLoadMoreBtn">Показати ще</button>' : ''}
+          </div>
         </div>
+
         <div class="dicts-table-shell dicts-table-shell--records">
           <table class="dicts-table dicts-preview-table">
             <thead>
@@ -667,6 +675,7 @@
     const listShell = tableView.querySelector('.dicts-table-shell:not(.dicts-table-shell--records)');
 
     if (dictsState.tableMode === 'detail' && dictsState.selectedTable) {
+      tableView.classList.add('is-detail');
       if (listHead) listHead.hidden = true;
       if (listShell) listShell.hidden = true;
       preview.hidden = false;
@@ -704,6 +713,7 @@
     }
 
     dictsState.tableMode = 'list';
+    tableView.classList.remove('is-detail');
     if (listHead) listHead.hidden = false;
     if (listShell) listShell.hidden = false;
     preview.hidden = true;
