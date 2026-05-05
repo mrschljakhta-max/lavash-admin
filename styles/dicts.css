@@ -2244,3 +2244,42 @@
 .dicts-table-card::-webkit-scrollbar-track {
   background: rgba(255,255,255,.04);
 }
+/* DICTS DETAIL TABLE — FIX INNER SCROLL */
+.dicts-detail-card {
+  height: calc(100vh - 300px) !important;
+  max-height: calc(100vh - 300px) !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.dicts-detail-head,
+.dicts-detail-toolbar,
+.dicts-detail-title {
+  flex: 0 0 auto !important;
+}
+
+.dicts-records-table {
+  flex: 1 1 auto !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  min-height: 0 !important;
+  padding-bottom: 120px !important;
+}
+
+.dicts-record-row:last-child {
+  margin-bottom: 120px !important;
+}
+
+.dicts-records-table::-webkit-scrollbar {
+  width: 10px;
+}
+
+.dicts-records-table::-webkit-scrollbar-thumb {
+  background: rgba(115, 119, 255, .55);
+  border-radius: 999px;
+}
+
+.dicts-records-table::-webkit-scrollbar-track {
+  background: rgba(255,255,255,.04);
+}
