@@ -1,5 +1,5 @@
 (() => {
-  const records = [
+  let records = [
     {
       id: 'uav-001',
       title: 'БПЛА Shahed-136',
@@ -338,6 +338,265 @@
     accuracy: 92,
     isResolving: false
   };
+
+
+  const pendingRuntime = {
+    db: null,
+    loading: false,
+    loadedFromSupabase: false,
+    lastError: null
+  };
+
+  function createSupabaseClient() {
+    if (pendingRuntime.db) return pendingRuntime.db;
+
+    const cfg = window.APP_CONFIG || {};
+    const url = cfg.supabaseUrl;
+    const key = cfg.supabaseAnonKey;
+
+    if (!url || !key || !window.supabase?.createClient) {
+      pendingRuntime.lastError = 'Supabase config/client missing';
+      return null;
+    }
+
+    pendingRuntime.db = window.supabase.createClient(url, key);
+    return pendingRuntime.db;
+  }
+
+  function normalizePendingValue(value) {
+    return String(value ?? '')
+      .replace(/ /g, ' ')
+      .replace(/[«»"“”]/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  function normalizeDictValue(value) {
+    return normalizePendingValue(value)
+      .toLowerCase()
+      .replace(/[ʼ’`]/g, "'")
+      .replace(/[–—−]/g, '-')
+      .trim();
+  }
+
+  function mapPendingType(row) {
+    const field = String(row.field_name || '').toLowerCase();
+    const table = String(row.resolved_table || row.resolved_dict_table || '').toLowerCase();
+
+    if (field.includes('uav') || table.includes('uav')) return 'uav';
+    if (field.includes('settlement') || table.includes('settlement')) return 'settlement';
+    if (field.includes('station') || table.includes('station')) return 'station';
+    if (field.includes('unit') || table.includes('unit')) return 'unit';
+    if (field.includes('object') || table.includes('object')) return 'object';
+    return 'record';
+  }
+
+  function getDictTableForType(type, fallbackTable) {
+    if (fallbackTable) return fallbackTable;
+    return {
+      uav: 'dict_uav',
+      settlement: 'dict_settlements',
+      station: 'dict_stations',
+      unit: 'dict_units',
+      object: 'dict_cover_objects'
+    }[type] || null;
+  }
+
+  function getDisplayTypeLabel(type) {
+    return getUnknownConfig(type).shortLabel || 'Запис';
+  }
+
+  function groupPendingRows(rows) {
+    const groups = new Map();
+
+    rows.forEach((row) => {
+      const rawValue = normalizePendingValue(row.raw_value || row.normalized_candidate);
+      if (!rawValue) return;
+
+      const type = mapPendingType(row);
+      const resolvedTable = row.resolved_table || row.resolved_dict_table || getDictTableForType(type);
+      const key = [type, row.field_name || '', rawValue, resolvedTable || ''].join('::');
+
+      if (!groups.has(key)) {
+        groups.set(key, {
+          type,
+          fieldName: row.field_name || '',
+          rawValue,
+          normalizedCandidate: row.normalized_candidate || normalizeDictValue(rawValue),
+          resolvedTable,
+          ids: [],
+          sourceTable: row.source_table || 'dict_pending',
+          createdAt: row.created_at || null,
+          cnt: 0
+        });
+      }
+
+      const group = groups.get(key);
+      group.ids.push(row.id);
+      group.cnt += 1;
+      if (!group.createdAt && row.created_at) group.createdAt = row.created_at;
+    });
+
+    return [...groups.values()].sort((a, b) => b.cnt - a.cnt);
+  }
+
+  function pendingGroupToRecord(group, index) {
+    const config = getUnknownConfig(group.type);
+    const mainValue = group.rawValue || group.normalizedCandidate || 'Невідоме значення';
+
+    return {
+      id: `pending-${group.type}-${index}-${group.ids[0]}`,
+      pendingIds: group.ids,
+      pendingCount: group.cnt,
+      fieldName: group.fieldName,
+      resolvedTable: group.resolvedTable,
+      normalizedCandidate: group.normalizedCandidate,
+      title: `${config.shortLabel} ${mainValue}`,
+      status: 'unknown',
+      dataType: config.shortLabel,
+      mainValue,
+      unknownType: group.type,
+      createdAt: group.createdAt ? new Date(group.createdAt).toLocaleString('uk-UA') : '—',
+      source: group.sourceTable || 'dict_pending',
+      confidence: Math.min(95, Math.max(20, 40 + Math.min(group.cnt, 50))),
+      settlement: group.type === 'settlement' ? mainValue : '—',
+      station: group.type === 'station' ? mainValue : '—',
+      model: group.type === 'uav' ? mainValue : '',
+      parentUnit: group.type === 'unit' ? '' : undefined,
+      unitOwner: group.type === 'object' ? '' : undefined
+    };
+  }
+
+  function getEmptyQueueRecord() {
+    return {
+      id: 'empty-queue',
+      title: 'Черга порожня',
+      status: 'valid',
+      dataType: 'Готово',
+      mainValue: 'Pending чистий',
+      unknownType: 'record',
+      createdAt: new Date().toLocaleString('uk-UA'),
+      source: 'dict_pending',
+      confidence: 100,
+      pendingIds: [],
+      pendingCount: 0
+    };
+  }
+
+  async function loadPendingRecordsFromSupabase() {
+    const db = createSupabaseClient();
+    if (!db) return false;
+
+    pendingRuntime.loading = true;
+    pendingRuntime.lastError = null;
+
+    try {
+      const { data, error } = await db
+        .from('dict_pending')
+        .select('id,source_table,source_record_id,field_name,raw_value,normalized_candidate,decision_status,resolved_table,resolved_dict_table,created_at')
+        .eq('decision_status', 'pending')
+        .order('created_at', { ascending: false })
+        .limit(1000);
+
+      if (error) throw error;
+
+      const grouped = groupPendingRows(data || []);
+      records = grouped.length ? grouped.map(pendingGroupToRecord) : [getEmptyQueueRecord()];
+      state.active = 0;
+      pendingRuntime.loadedFromSupabase = true;
+      return true;
+    } catch (err) {
+      pendingRuntime.lastError = err?.message || String(err);
+      console.error('Pending load error:', err);
+      return false;
+    } finally {
+      pendingRuntime.loading = false;
+    }
+  }
+
+  async function dictRowExists(db, tableName, normalizedName) {
+    const { data, error } = await db
+      .from(tableName)
+      .select('id')
+      .eq('normalized_name', normalizedName)
+      .limit(1);
+
+    if (error) return { exists: false, error };
+    return { exists: Boolean(data?.length), error: null };
+  }
+
+  async function insertDictValue(record) {
+    const db = createSupabaseClient();
+    if (!db) throw new Error('Supabase client missing');
+
+    const type = record.unknownType || 'record';
+    const tableName = getDictTableForType(type, record.resolvedTable);
+    if (!tableName) throw new Error(`Для типу ${type} ще не визначено таблицю довідника`);
+
+    const name = normalizePendingValue(record.mainValue || record.normalizedCandidate || record.title);
+    const normalizedName = normalizeDictValue(record.normalizedCandidate || record.mainValue || name);
+    if (!name || !normalizedName) throw new Error('Порожня назва для довідника');
+
+    const existing = await dictRowExists(db, tableName, normalizedName);
+    if (existing.error) console.warn('Dict exists check warning:', existing.error.message);
+    if (existing.exists) return { inserted: false, tableName, name, normalizedName };
+
+    const payload = { name, normalized_name: normalizedName };
+
+    if (type === 'settlement') {
+      if (record.hromada) payload.hromada = record.hromada;
+      if (record.district) payload.district = record.district;
+      if (record.region) payload.region = record.region;
+      if (record.lat) payload.lat = Number(record.lat);
+      if (record.lon) payload.lon = Number(record.lon);
+    }
+
+    const { error } = await db.from(tableName).insert(payload);
+    if (error) throw error;
+
+    return { inserted: true, tableName, name, normalizedName };
+  }
+
+  async function updatePendingDecision(record, status, extra = {}) {
+    const db = createSupabaseClient();
+    if (!db) throw new Error('Supabase client missing');
+    if (!record.pendingIds?.length) return { updated: 0 };
+
+    const patch = {
+      decision_status: status,
+      resolved_at: new Date().toISOString(),
+      ...extra
+    };
+
+    const { error } = await db
+      .from('dict_pending')
+      .update(patch)
+      .in('id', record.pendingIds);
+
+    if (error) throw error;
+    return { updated: record.pendingIds.length };
+  }
+
+  async function resolveRecordAction(record, action) {
+    if (!record || record.id === 'empty-queue') return;
+
+    if (action === 'confirm') {
+      const inserted = await insertDictValue(record);
+      await updatePendingDecision(record, 'approved', {
+        operator_comment: `UI approve → ${inserted.tableName}: ${inserted.name}`
+      });
+      return inserted;
+    }
+
+    if (action === 'ignore') {
+      await updatePendingDecision(record, 'ignored', {
+        ignore_reason: 'UI ignore'
+      });
+      return { ignored: true };
+    }
+
+    return { skipped: true };
+  }
 
   function formatXP(value) {
     if (value === Infinity) return '100k+';
@@ -937,6 +1196,7 @@
       const config = getUnknownConfig(value);
       record.dataType = config.shortLabel;
       record.status = 'unknown';
+      record.resolvedTable = getDictTableForType(value, null) || record.resolvedTable;
     }
   }
 
@@ -1389,60 +1649,79 @@
     }[action] || '';
   }
 
-  function handleAction(action) {
+  async function handleAction(action) {
     if (state.isResolving) return;
 
-    const xpMap = {
-      ignore: 8,
-      confirm: 10,
-      skip: 5
-    };
-
-    const xp = xpMap[action] || 5;
+    const activeRecord = records[state.active];
     const activeCard = qs('.pg-card.is-active');
     const page = qs('#pendingGamePage');
 
     state.isResolving = true;
-    state.xp += xp;
-    syncRankState();
-    state.todayXp += xp;
 
-    window.LAVASH_PENDING_RANK_XP?.addXP(xp);
-
-    if (page) {
-      page.dataset.actionFlash = action;
-      page.dataset.actionLabel = getActionLabel(action);
-    }
-
-    if (activeCard) {
-      activeCard.style.transform = '';
-      
-      activeCard.classList.remove(
-        'is-key-ignore',
-        'is-key-confirm',
-        'is-key-skip',
-        'is-resolving-ignore',
-        'is-resolving-confirm',
-        'is-resolving-skip'
-      );
-
-      void activeCard.offsetWidth;
-      activeCard.classList.add(`is-key-${action}`);
-    }
-
-    showXpPop(xp);
-
-    setTimeout(() => {
-      state.active = (state.active + 1) % records.length;
-      state.isResolving = false;
-
-      if (page) {
-        page.dataset.actionFlash = '';
-        page.dataset.actionLabel = '';
+    try {
+      if (action === 'confirm' && activeCard?.classList.contains('is-flipped')) {
+        saveActiveCardEdits(activeCard);
       }
 
+      await resolveRecordAction(activeRecord, action);
+
+      const xpMap = {
+        ignore: 8,
+        confirm: 10,
+        skip: 5
+      };
+
+      const xp = xpMap[action] || 5;
+      state.xp += xp;
+      syncRankState();
+      state.todayXp += xp;
+
+      window.LAVASH_PENDING_RANK_XP?.addXP(xp);
+
+      if (page) {
+        page.dataset.actionFlash = action;
+        page.dataset.actionLabel = getActionLabel(action);
+      }
+
+      if (activeCard) {
+        activeCard.style.transform = '';
+        activeCard.classList.remove(
+          'is-key-ignore',
+          'is-key-confirm',
+          'is-key-skip',
+          'is-resolving-ignore',
+          'is-resolving-confirm',
+          'is-resolving-skip'
+        );
+
+        void activeCard.offsetWidth;
+        activeCard.classList.add(`is-key-${action}`);
+      }
+
+      showXpPop(xp);
+
+      setTimeout(async () => {
+        if (action === 'confirm' || action === 'ignore') {
+          await loadPendingRecordsFromSupabase();
+        } else {
+          state.active = (state.active + 1) % Math.max(records.length, 1);
+        }
+
+        state.isResolving = false;
+
+        if (page) {
+          page.dataset.actionFlash = '';
+          page.dataset.actionLabel = '';
+        }
+
+        render();
+      }, 620);
+    } catch (err) {
+      state.isResolving = false;
+      console.error('Pending resolve error:', err);
+      alert(`Не вдалося виконати дію: ${err?.message || err}`);
       render();
-    }, 620);
+    }
   }
 
   function showXpPop(xp) {
@@ -1512,7 +1791,7 @@
   });
 }
 
-  function init() {
+  async function init() {
     syncRankState();
     render();
 
@@ -1522,6 +1801,9 @@
       xpMax: state.xpMax,
       rank: state.rank
     });
+
+    await loadPendingRecordsFromSupabase();
+    render();
 
     if (!window.__LAVASH_PENDING_GAME_HOTKEYS_BOUND__) {
       window.__LAVASH_PENDING_GAME_HOTKEYS_BOUND__ = true;
