@@ -415,12 +415,15 @@
 
       const type = mapPendingType(row);
       const resolvedTable = row.resolved_table || row.resolved_dict_table || getDictTableForType(type);
-      const key = [type, row.field_name || '', rawValue, resolvedTable || ''].join('::');
+      // Групуємо не по field_name, а по суті значення.
+      // Бо одне й те саме значення може прилетіти як settlement_raw / settlement_id тощо.
+      const key = [type, rawValue, resolvedTable || ''].join('::');
 
       if (!groups.has(key)) {
         groups.set(key, {
           type,
           fieldName: row.field_name || '',
+          fieldNames: new Set(),
           rawValue,
           normalizedCandidate: row.normalized_candidate || normalizeDictValue(rawValue),
           resolvedTable,
@@ -432,12 +435,18 @@
       }
 
       const group = groups.get(key);
+      if (row.field_name) group.fieldNames.add(row.field_name);
       group.ids.push(row.id);
       group.cnt += 1;
       if (!group.createdAt && row.created_at) group.createdAt = row.created_at;
     });
 
-    return [...groups.values()].sort((a, b) => b.cnt - a.cnt);
+    return [...groups.values()]
+      .map((group) => ({
+        ...group,
+        fieldName: group.fieldNames?.size ? [...group.fieldNames].join(', ') : group.fieldName
+      }))
+      .sort((a, b) => b.cnt - a.cnt);
   }
 
   function pendingGroupToRecord(group, index) {
@@ -577,22 +586,76 @@
     return { updated: record.pendingIds.length };
   }
 
+
+  async function findMatchingPendingIds(record) {
+    const db = createSupabaseClient();
+    if (!db) throw new Error('Supabase client missing');
+
+    const ids = new Set(record.pendingIds || []);
+    const rawValue = normalizePendingValue(record.mainValue || record.rawValue);
+    const normalizedCandidate = normalizeDictValue(record.normalizedCandidate || rawValue);
+
+    async function collectBy(column, value) {
+      if (!value) return;
+
+      let query = db
+        .from('dict_pending')
+        .select('id')
+        .eq('decision_status', 'pending')
+        .eq(column, value)
+        .limit(10000);
+
+      const { data, error } = await query;
+      if (error) throw error;
+      (data || []).forEach((row) => row?.id && ids.add(row.id));
+    }
+
+    // Охоплюємо всі дублікати: і ті, що прийшли як raw_value,
+    // і ті, що мають те саме normalized_candidate.
+    await collectBy('raw_value', rawValue);
+    await collectBy('normalized_candidate', normalizedCandidate);
+
+    return [...ids];
+  }
+
+  async function updateAllMatchingPendingDecision(record, status, extra = {}) {
+    const db = createSupabaseClient();
+    if (!db) throw new Error('Supabase client missing');
+
+    const ids = await findMatchingPendingIds(record);
+    if (!ids.length) return { updated: 0 };
+
+    const patch = {
+      decision_status: status,
+      resolved_at: new Date().toISOString(),
+      ...extra
+    };
+
+    const { error } = await db
+      .from('dict_pending')
+      .update(patch)
+      .in('id', ids);
+
+    if (error) throw error;
+    return { updated: ids.length };
+  }
+
   async function resolveRecordAction(record, action) {
     if (!record || record.id === 'empty-queue') return;
 
     if (action === 'confirm') {
       const inserted = await insertDictValue(record);
-      await updatePendingDecision(record, 'approved', {
+      const updated = await updateAllMatchingPendingDecision(record, 'approved', {
         operator_comment: `UI approve → ${inserted.tableName}: ${inserted.name}`
       });
-      return inserted;
+      return { ...inserted, updatedPending: updated.updated };
     }
 
     if (action === 'ignore') {
-      await updatePendingDecision(record, 'ignored', {
+      const updated = await updateAllMatchingPendingDecision(record, 'ignored', {
         ignore_reason: 'UI ignore'
       });
-      return { ignored: true };
+      return { ignored: true, updatedPending: updated.updated };
     }
 
     return { skipped: true };
