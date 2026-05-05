@@ -97,7 +97,6 @@
           <img src="${ICON_PATH + node.icon}" alt="" draggable="false" />
         </span>
         <span class="schema-node__label">${node.label}</span>
-        <span class="schema-node__table">${node.table || ''}</span>
         <span class="schema-node__port"></span>
       </button>
     `;
