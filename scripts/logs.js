@@ -6,6 +6,9 @@
   const hud = document.getElementById("logsVortexStatus");
   const resetBtn = document.getElementById("logsResetBtn");
   const lockAgainBtn = document.getElementById("logsLockAgainBtn");
+  const logsRefreshBtn = document.getElementById("logsRefreshBtn");
+  const logsTableBody = document.getElementById("logsTableBody");
+  const logsCountPill = document.getElementById("logsCountPill");
 
   if (!page || !shell || !canvas) return;
 
@@ -160,6 +163,141 @@
     });
   }
 
+
+
+  function getLogsClient() {
+    if (window.__lavashLogsSb) return window.__lavashLogsSb;
+
+    const cfg = window.APP_CONFIG || {};
+    const url = cfg.supabaseUrl;
+    const key = cfg.supabaseAnonKey;
+
+    if (!url || !key || !window.supabase?.createClient) return null;
+
+    window.__lavashLogsSb = window.supabase.createClient(url, key, {
+      auth: {
+        storage: window.sessionStorage,
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true
+      }
+    });
+
+    return window.__lavashLogsSb;
+  }
+
+  function escapeHtml(value) {
+    return String(value ?? '')
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#039;');
+  }
+
+  function parseDetails(value) {
+    if (!value) return {};
+    if (typeof value === 'object') return value;
+    try { return JSON.parse(value); } catch (_) { return { message: String(value) }; }
+  }
+
+  function formatDate(value) {
+    if (!value) return '—';
+    const d = new Date(value);
+    if (Number.isNaN(d.getTime())) return String(value);
+    return d.toLocaleString('uk-UA', {
+      day: '2-digit', month: '2-digit', year: 'numeric',
+      hour: '2-digit', minute: '2-digit', second: '2-digit'
+    });
+  }
+
+  function normalizeStatus(details, row) {
+    const raw = String(details.status || row.status || row.level || 'info').toLowerCase();
+    if (['success', 'ok', 'approved', 'done'].includes(raw)) return { label: 'УСПІШНО', cls: 'status-ok' };
+    if (['error', 'failed', 'fail', 'denied', 'rejected'].includes(raw)) return { label: 'ПОМИЛКА', cls: 'status-deny' };
+    if (['warning', 'warn'].includes(raw)) return { label: 'УВАГА', cls: 'status-warn' };
+    return { label: 'ІНФО', cls: 'status-info' };
+  }
+
+  function renderLogRows(rows) {
+    if (!logsTableBody) return;
+
+    if (!rows?.length) {
+      logsTableBody.innerHTML = `
+        <tr class="logs-empty-row">
+          <td colspan="5">
+            <div class="logs-empty-state">
+              <strong>Записів поки немає</strong>
+              <span>У таблиці activity_logs немає доступних записів або доступ обмежено політиками RLS.</span>
+            </div>
+          </td>
+        </tr>`;
+      if (logsCountPill) logsCountPill.textContent = '0 записів';
+      return;
+    }
+
+    logsTableBody.innerHTML = rows.map((row) => {
+      const details = parseDetails(row.details);
+      const actor = details.actor_email || row.user_email || row.email || row.user_id || 'Система';
+      const action = row.action || details.action || 'Подія';
+      const msg = details.message || details.entity_type || details.entity_id || '';
+      const meta = details.meta && typeof details.meta === 'object' ? details.meta : {};
+      const extra = [msg, meta.batch_id ? `batch: ${meta.batch_id}` : '', meta.table ? `table: ${meta.table}` : '']
+        .filter(Boolean).join(' · ');
+      const status = normalizeStatus(details, row);
+
+      return `
+        <tr>
+          <td><span class="logs-date">${escapeHtml(formatDate(row.created_at || row.inserted_at || row.updated_at))}</span></td>
+          <td><span class="logs-actor">${escapeHtml(actor)}</span></td>
+          <td><span class="logs-action-name">${escapeHtml(action)}</span></td>
+          <td><span class="logs-status ${status.cls}">${escapeHtml(status.label)}</span></td>
+          <td><span class="logs-detail-text">${escapeHtml(extra || '—')}</span></td>
+        </tr>`;
+    }).join('');
+
+    if (logsCountPill) logsCountPill.textContent = `${rows.length} записів`;
+  }
+
+  async function loadLogsTable() {
+    if (!logsTableBody) return;
+
+    logsTableBody.innerHTML = `
+      <tr class="logs-loading-row">
+        <td colspan="5">Завантажую реальні логи з Supabase…</td>
+      </tr>`;
+    if (logsCountPill) logsCountPill.textContent = 'завантаження';
+
+    const db = getLogsClient();
+    if (!db) {
+      renderLogRows([]);
+      return;
+    }
+
+    const { data, error } = await db
+      .from('activity_logs')
+      .select('id, user_id, action, details, created_at')
+      .order('created_at', { ascending: false })
+      .limit(100);
+
+    if (error) {
+      console.warn('activity_logs load error:', error);
+      logsTableBody.innerHTML = `
+        <tr class="logs-empty-row">
+          <td colspan="5">
+            <div class="logs-empty-state is-error">
+              <strong>Не вдалося завантажити activity_logs</strong>
+              <span>${escapeHtml(error.message || String(error))}</span>
+            </div>
+          </td>
+        </tr>`;
+      if (logsCountPill) logsCountPill.textContent = 'помилка';
+      return;
+    }
+
+    renderLogRows(data || []);
+  }
+
   function resetLock() {
     unlocked = false;
     activeRing = -1;
@@ -305,6 +443,7 @@
 
       setTimeout(() => {
         page.classList.add("is-table-visible");
+        loadLogsTable();
 
         const table = document.getElementById("logsTableSection");
         if (table) {
@@ -698,6 +837,10 @@
           block: "start"
         });
       });
+    }
+
+    if (logsRefreshBtn) {
+      logsRefreshBtn.addEventListener("click", loadLogsTable);
     }
   }
 
