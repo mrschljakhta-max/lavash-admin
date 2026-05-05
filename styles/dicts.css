@@ -2049,3 +2049,166 @@
 .dicts-table tr:hover {
   background: rgba(74, 116, 255, .10);
 }
+
+/* ===== Dicts table v3: pagination + inline edit modal ===== */
+.dicts-preview-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.dicts-table__open--secondary {
+  background: rgba(50, 224, 255, 0.12) !important;
+  border: 1px solid rgba(74, 236, 255, 0.35) !important;
+  color: #dffbff !important;
+}
+
+.dicts-row-edit {
+  border: 1px solid rgba(118, 135, 255, .45);
+  background: linear-gradient(135deg, rgba(103, 86, 255, .82), rgba(70, 210, 230, .22));
+  color: #ffffff;
+  border-radius: 14px;
+  padding: 10px 14px;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 10px 25px rgba(72, 92, 255, .18);
+}
+
+.dicts-row-edit:hover {
+  transform: translateY(-1px);
+  border-color: rgba(94, 246, 255, .7);
+  box-shadow: 0 16px 34px rgba(72, 235, 255, .18);
+}
+
+.dicts-muted {
+  opacity: .55;
+}
+
+.dicts-edit-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.dicts-edit-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(4, 8, 24, .72);
+  backdrop-filter: blur(18px);
+}
+
+.dicts-edit-modal__card {
+  position: relative;
+  width: min(620px, calc(100vw - 40px));
+  border: 1px solid rgba(82, 232, 255, .28);
+  background:
+    radial-gradient(circle at 20% 0%, rgba(86, 230, 255, .18), transparent 36%),
+    linear-gradient(145deg, rgba(18, 36, 88, .96), rgba(12, 18, 52, .98));
+  border-radius: 30px;
+  padding: 34px;
+  box-shadow: 0 34px 90px rgba(0, 0, 0, .46), 0 0 50px rgba(82, 232, 255, .14);
+  color: #fff;
+}
+
+.dicts-edit-modal__close {
+  position: absolute;
+  right: 22px;
+  top: 20px;
+  width: 42px;
+  height: 42px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,.15);
+  background: rgba(255,255,255,.08);
+  color: #fff;
+  font-size: 28px;
+  cursor: pointer;
+}
+
+.dicts-edit-modal__kicker {
+  margin: 0 0 8px;
+  color: #75f3ff;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.dicts-edit-modal__card h3 {
+  margin: 0 0 24px;
+  font-size: 30px;
+  line-height: 1.05;
+}
+
+.dicts-edit-modal__card label {
+  display: grid;
+  gap: 10px;
+  margin: 0 0 18px;
+}
+
+.dicts-edit-modal__card label span {
+  color: rgba(220, 232, 255, .72);
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.dicts-edit-modal__card input {
+  width: 100%;
+  border: 1px solid rgba(130, 160, 255, .28);
+  background: rgba(7, 14, 39, .72);
+  color: #fff;
+  border-radius: 18px;
+  padding: 16px 18px;
+  font-size: 16px;
+  font-weight: 800;
+  outline: none;
+}
+
+.dicts-edit-modal__card input:focus {
+  border-color: rgba(81, 239, 255, .7);
+  box-shadow: 0 0 0 4px rgba(81, 239, 255, .12);
+}
+
+.dicts-edit-modal__meta {
+  margin: 6px 0 24px;
+  color: rgba(220, 232, 255, .62);
+  font-size: 12px;
+}
+
+.dicts-edit-modal__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.dicts-edit-modal__ghost,
+.dicts-edit-modal__save {
+  border: 0;
+  border-radius: 18px;
+  padding: 14px 22px;
+  font-weight: 1000;
+  cursor: pointer;
+}
+
+.dicts-edit-modal__ghost {
+  color: #dce8ff;
+  background: rgba(255,255,255,.09);
+  border: 1px solid rgba(255,255,255,.12);
+}
+
+.dicts-edit-modal__save {
+  color: #061327;
+  background: linear-gradient(135deg, #41f2ff, #77ffdd);
+  box-shadow: 0 16px 34px rgba(65, 242, 255, .22);
+}
+
+.dicts-edit-modal__save:disabled {
+  opacity: .7;
+  cursor: wait;
+}
