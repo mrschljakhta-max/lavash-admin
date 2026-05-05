@@ -2212,3 +2212,35 @@
   opacity: .7;
   cursor: wait;
 }
+.dicts-table-card,
+.dicts-detail-card {
+  max-height: calc(100vh - 260px);
+  overflow-y: auto;
+  padding-bottom: 90px;
+}
+
+.dicts-records-table,
+.dicts-table {
+  padding-bottom: 90px;
+}
+
+.dicts-record-row:last-child,
+.dicts-table-row:last-child {
+  margin-bottom: 90px;
+}
+
+.dicts-detail-card::-webkit-scrollbar,
+.dicts-table-card::-webkit-scrollbar {
+  width: 10px;
+}
+
+.dicts-detail-card::-webkit-scrollbar-thumb,
+.dicts-table-card::-webkit-scrollbar-thumb {
+  background: rgba(115, 119, 255, .55);
+  border-radius: 999px;
+}
+
+.dicts-detail-card::-webkit-scrollbar-track,
+.dicts-table-card::-webkit-scrollbar-track {
+  background: rgba(255,255,255,.04);
+}
