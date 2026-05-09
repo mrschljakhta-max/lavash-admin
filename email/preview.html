@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BASTION — Email Preview</title>
+  <style>
+    body {
+      margin: 0;
+      background: #111;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+    .bar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      padding: 16px 22px;
+      background: rgba(5,5,6,.94);
+      border-bottom: 1px solid rgba(255,255,255,.12);
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .bar a {
+      color: #fff;
+      text-decoration: none;
+      border: 1px solid rgba(255,255,255,.16);
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: #ff3158;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    iframe {
+      width: 100%;
+      height: calc(100vh - 70px);
+      border: 0;
+      background: #050506;
+    }
+  </style>
+</head>
+<body>
+  <div class="bar">
+    <strong>BASTION Email Preview</strong>
+    <a href="../admin/index.html?v=7">Назад в admin</a>
+  </div>
+  <iframe id="preview"></iframe>
+
+  <script>
+    const vars = {
+      "{{EMAIL}}": "lavash.squad@gmail.com",
+      "{{ROLE}}": "demo",
+      "{{CREATED_AT}}": "09 травня 2026, 19:39",
+      "{{SETUP_URL}}": "https://bastion-system.com/setup-account.html?token=a6182ac02d80005f4091e4080127b170bc923aa1ffb2f292209ff9978011184d",
+      "{{LOGO_URL}}": "https://bastion-system.com/assets/logo/bastion-mark.png",
+      "{{HERO_URL}}": "https://bastion-system.com/email/assets/bastion-email-hero.jpg"
+    };
+
+    fetch("./template.html?v=1")
+      .then(r => r.text())
+      .then(html => {
+        for (const [key, value] of Object.entries(vars)) {
+          html = html.replaceAll(key, value);
+        }
+        document.getElementById("preview").srcdoc = html;
+      });
+  </script>
+</body>
+</html>

@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BASTION — Email Template</title>
+</head>
+<body style="margin:0;padding:0;background:#050506;color:#ffffff;font-family:Arial,Helvetica,sans-serif;">
+  <div style="display:none;max-height:0;overflow:hidden;color:transparent;opacity:0;">
+    BASTION: вам надано доступ. Активуйте персональне посилання для завершення налаштування.
+  </div>
+
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#050506;">
+    <tr>
+      <td align="center" style="padding:34px 12px;">
+
+        <table role="presentation" width="760" cellspacing="0" cellpadding="0" border="0" style="width:760px;max-width:100%;border-collapse:separate;border-spacing:0;background:#08090d;border:1px solid #651122;overflow:hidden;box-shadow:0 0 0 1px rgba(255,55,85,.16),0 0 70px rgba(255,0,60,.18);">
+
+          <tr>
+            <td style="padding:0;background:#08090d;">
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" background="{{HERO_URL}}" style="background-color:#10070b;background-image:linear-gradient(180deg,rgba(5,5,6,.10),rgba(5,5,6,.72)),url('{{HERO_URL}}');background-size:cover;background-position:center;">
+                <tr>
+                  <td style="padding:24px 30px 0;">
+                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                      <tr>
+                        <td align="left" style="font-size:10px;line-height:1.65;letter-spacing:3px;color:#ff415f;text-transform:uppercase;font-weight:800;">
+                          Захищений канал<br>
+                          <span style="color:#e6e6ec;">Вузол доступу: BASTION</span>
+                        </td>
+                        <td align="right" style="font-size:11px;letter-spacing:4px;color:#ffffff;text-transform:uppercase;font-weight:800;">
+                          Статус: активно <span style="color:#ff3158;">●</span>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td align="center" style="padding:50px 34px 72px;">
+                    <img src="{{LOGO_URL}}" width="76" height="76" alt="BASTION" style="display:block;width:76px;height:76px;margin:0 auto 20px;border:0;outline:none;text-decoration:none;" />
+
+                    <div style="font-size:46px;line-height:1.05;letter-spacing:13px;font-weight:300;color:#ffffff;text-shadow:0 0 24px rgba(255,255,255,.18);">
+                      BASTION
+                    </div>
+
+                    <div style="margin-top:16px;font-size:14px;letter-spacing:8px;color:#ff3d5d;font-weight:800;text-transform:uppercase;">
+                      Вузол доступу
+                    </div>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding:0 34px 36px;background:#08090d;">
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="border:1px solid #771525;background:linear-gradient(180deg,#0d0f15 0%,#08090d 100%);box-shadow:0 0 44px rgba(255,0,60,.14);">
+                <tr>
+                  <td align="center" style="padding:38px 30px 20px;">
+                    <div style="font-size:13px;letter-spacing:8px;color:#ff3d5d;text-transform:uppercase;font-weight:900;">
+                      Доступ надано
+                    </div>
+                    <h1 style="margin:18px 0 0;font-size:38px;line-height:1.16;color:#ffffff;letter-spacing:.3px;">
+                      Вам надано доступ
+                    </h1>
+                    <div style="margin-top:10px;font-size:21px;line-height:1.45;color:#cfcfd7;">
+                      до системи <b style="color:#ff3d5d;letter-spacing:2px;">BASTION</b>
+                    </div>
+                    <p style="margin:25px auto 0;max-width:580px;color:#bfc0c9;font-size:16px;line-height:1.75;">
+                      Адміністратор створив для вас персональне посилання для налаштування облікового запису.
+                      Перейдіть за ним, щоб створити пароль і активувати доступ.
+                    </p>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td style="padding:18px 34px 16px;">
+                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="border:1px solid rgba(255,255,255,.12);border-radius:16px;background:rgba(255,255,255,.025);">
+                      <tr>
+                        <td width="50%" style="padding:22px 22px 12px;border-right:1px solid rgba(255,255,255,.08);">
+                          <div style="font-size:10px;letter-spacing:4px;color:#a5a5af;text-transform:uppercase;">Електронна пошта</div>
+                          <div style="margin-top:9px;font-size:16px;color:#ffffff;word-break:break-all;">{{EMAIL}}</div>
+                        </td>
+                        <td width="50%" style="padding:22px 22px 12px;">
+                          <div style="font-size:10px;letter-spacing:4px;color:#a5a5af;text-transform:uppercase;">Рівень доступу</div>
+                          <div style="margin-top:9px;font-size:16px;color:#ffffff;">Стандартний</div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td width="50%" style="padding:14px 22px 12px;border-right:1px solid rgba(255,255,255,.08);">
+                          <div style="font-size:10px;letter-spacing:4px;color:#a5a5af;text-transform:uppercase;">Роль доступу</div>
+                          <div style="margin-top:9px;font-size:16px;color:#ffbf18;font-weight:800;">{{ROLE}}</div>
+                        </td>
+                        <td width="50%" style="padding:14px 22px 12px;">
+                          <div style="font-size:10px;letter-spacing:4px;color:#a5a5af;text-transform:uppercase;">Безпека каналу</div>
+                          <div style="margin-top:9px;font-size:16px;color:#ffffff;">Захищений канал</div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td width="50%" style="padding:14px 22px 22px;border-right:1px solid rgba(255,255,255,.08);">
+                          <div style="font-size:10px;letter-spacing:4px;color:#a5a5af;text-transform:uppercase;">Створено</div>
+                          <div style="margin-top:9px;font-size:16px;color:#ffffff;">{{CREATED_AT}}</div>
+                        </td>
+                        <td width="50%" style="padding:14px 22px 22px;">
+                          <div style="font-size:10px;letter-spacing:4px;color:#a5a5af;text-transform:uppercase;">Термін дії посилання</div>
+                          <div style="margin-top:9px;font-size:16px;color:#ffffff;">7 днів</div>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td align="center" style="padding:26px 34px 22px;">
+                    <a href="{{SETUP_URL}}" style="display:block;max-width:590px;padding:20px 24px;border-radius:8px;background:linear-gradient(90deg,#ff143f,#ff342e 70%,#ff7a22);color:#ffffff;text-decoration:none;font-size:15px;font-weight:900;letter-spacing:5px;text-transform:uppercase;box-shadow:0 0 40px rgba(255,42,60,.48);border:1px solid rgba(255,255,255,.18);">
+                      Активувати доступ →
+                    </a>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td style="padding:16px 34px 20px;">
+                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="border:1px solid rgba(255,255,255,.11);border-left:5px solid #ff3158;border-radius:11px;background:rgba(255,255,255,.025);">
+                      <tr>
+                        <td style="padding:19px 22px;color:#c4c5ce;font-size:15px;line-height:1.7;">
+                          Це персональне посилання. Не передавайте його іншим особам.
+                          Усі дії в системі логуються та захищені.
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td style="padding:8px 34px 36px;">
+                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="border:1px solid #4d1020;border-radius:11px;background:#07080c;">
+                      <tr>
+                        <td style="padding:19px 22px;">
+                          <div style="font-size:10px;letter-spacing:4px;color:#a2a2ad;text-transform:uppercase;margin-bottom:13px;">
+                            Резервне посилання, якщо кнопка не працює
+                          </div>
+                          <div style="font-size:13px;line-height:1.65;color:#ff3d5d;word-break:break-all;">
+                            {{SETUP_URL}}
+                          </div>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+
+              </table>
+            </td>
+          </tr>
+
+          <tr>
+            <td align="center" style="padding:21px 24px 34px;background:#050506;">
+              <div style="font-size:11px;letter-spacing:6px;color:#ff3d5d;text-transform:uppercase;">
+                BASTION · Вузол керування доступом
+              </div>
+              <div style="margin-top:18px;color:#858590;font-size:12px;letter-spacing:2px;">
+                Захищений доступ · Захищена передача · Контроль дій
+              </div>
+            </td>
+          </tr>
+
+        </table>
+
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

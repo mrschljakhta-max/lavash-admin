@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1520" height="640" viewBox="0 0 1520 640">
+<defs>
+<radialGradient id="sun" cx="50%" cy="78%" r="32%"><stop offset="0" stop-color="#ff2c18"/><stop offset=".28" stop-color="#9b0c15"/><stop offset="1" stop-color="#08090d"/></radialGradient>
+<linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#13050a"/><stop offset=".5" stop-color="#08090d"/><stop offset="1" stop-color="#210805"/></linearGradient>
+</defs>
+<rect width="1520" height="640" fill="url(#g)"/>
+<rect width="1520" height="640" fill="url(#sun)" opacity=".85"/>
+<path d="M0 520 C180 420 260 470 420 410 C600 340 700 420 830 360 C1040 260 1190 300 1520 210 L1520 640 L0 640 Z" fill="#050506" opacity=".9"/>
+<circle cx="760" cy="474" r="95" fill="none" stroke="#ff2c18" stroke-width="9" opacity=".65"/>
+<path d="M1140 120 L1210 500 L1030 500 L1100 120 Z" fill="#09090d" stroke="#ff2c18" stroke-width="4"/>
+<path d="M1158 112 L1168 500" stroke="#ff2c18" stroke-width="12" opacity=".8"/>
+<text x="760" y="250" text-anchor="middle" font-family="Arial" font-size="70" fill="#fff" letter-spacing="30">BASTION</text>
+<text x="760" y="305" text-anchor="middle" font-family="Arial" font-size="24" fill="#ff3d5d" letter-spacing="14">ВУЗОЛ ДОСТУПУ</text>
+</svg>
